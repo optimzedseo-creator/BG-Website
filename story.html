@@ -422,7 +422,17 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
   .timeline-section { padding: 64px 0; }
   .finale { padding: 72px 0 78px; }
 }
-  </style>
+  
+/* ---------- schedule-a-call ---------- */
+.nav .nav-cal { color: #fff; background: var(--bronze-deep); padding: 10px 20px; border-radius: 100px; transition: background 0.2s; }
+.nav .nav-cal:hover { background: var(--ink); color: var(--cream); }
+.mobile-nav a.nav-cal { color: var(--bronze-deep); font-weight: 600; }
+.btn-bronze { background: var(--bronze-deep); color: #fff; border-color: var(--bronze-deep); }
+.btn-bronze:hover { background: var(--ink); border-color: var(--ink); color: var(--cream); }
+.fin-ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.btn-gold { background: #C79A5E; color: var(--ink); border-color: #C79A5E; }
+.btn-gold:hover { background: var(--cream); border-color: var(--cream); color: var(--ink); }
+</style>
   <meta name="description" content="From the 75th Ranger Regiment to the boardroom: a parachute that didn&#x27;t open, thirty seconds to decide, and the standard behind two exits and a NASDAQ acquisition." />
   <link rel="canonical" href="https://www.bradleygriffin.us/story" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -450,6 +460,7 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
         <a href="/story">About</a>
         <a href="/speaking">Speaking</a>
         <a class="nav-cta" href="/contact">Contact</a>
+        <a class="nav-cal cal-link" href="https://calendly.com/optimzedseo/30min" target="_blank" rel="noopener">Schedule a call</a>
       </nav>
       <button class="menu-btn" aria-label="Menu" aria-expanded="false">
         <span class="mi"></span><span class="mi"></span><span class="mi"></span>
@@ -460,6 +471,7 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
       <a href="/story">About</a>
       <a href="/speaking">Speaking</a>
       <a class="nav-cta" href="/contact">Contact</a>
+        <a class="nav-cal cal-link" href="https://calendly.com/optimzedseo/30min" target="_blank" rel="noopener">Schedule a call</a>
     </div>
   </header>
 
@@ -679,7 +691,8 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
       <span class="microlabel">Start a conversation</span>
       <h2>You've read the story. <em>Put it to work.</em></h2>
       <p>The standard that survived a failed canopy is the same one I'll bring to your P&amp;L. If your company has a mission worth that kind of discipline — tell me about it.</p>
-      <a class="btn btn-solid" href="/contact">Start a conversation <span class="arr">&rarr;</span></a>
+      <div class="fin-ctas"><a class="btn btn-solid" href="/contact">Start a conversation <span class="arr">&rarr;</span></a>
+      <a class="btn btn-gold cal-link" href="https://calendly.com/optimzedseo/30min" target="_blank" rel="noopener">Schedule a call <span class="arr">&rarr;</span></a></div>
     </div>
   </section>
 
@@ -726,5 +739,30 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
       document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
     })();
   </script>
+
+<script>
+/* Schedule-a-call: lazy-load Calendly popup on first click; falls back to the link itself. */
+(function () {
+  var CAL_URL = "https://calendly.com/optimzedseo/30min?hide_gdpr_banner=1&primary_color=9a6e3a";
+  function popup() { window.Calendly.initPopupWidget({ url: CAL_URL }); }
+  document.addEventListener("click", function (e) {
+    var a = e.target && e.target.closest ? e.target.closest(".cal-link") : null;
+    if (!a) return;
+    e.preventDefault();
+    if (window.Calendly && window.Calendly.initPopupWidget) { popup(); return; }
+    if (!document.getElementById("cal-css")) {
+      var l = document.createElement("link"); l.id = "cal-css"; l.rel = "stylesheet";
+      l.href = "https://assets.calendly.com/assets/external/widget.css"; document.head.appendChild(l);
+    }
+    if (!document.getElementById("cal-js")) {
+      var s = document.createElement("script"); s.id = "cal-js";
+      s.src = "https://assets.calendly.com/assets/external/widget.js";
+      s.onload = popup;
+      s.onerror = function () { window.open(a.href, "_blank", "noopener"); };
+      document.body.appendChild(s);
+    }
+  });
+})();
+</script>
 </body>
 </html>
