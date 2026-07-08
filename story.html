@@ -6,30 +6,28 @@
   <title>From Army Ranger to CMO - The Bradley Griffin Story</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
 /* ============================================================
-   BRADLEY GRIFFIN — bradleygriffin.us — OPTION C
-   "Modern Executive" · Swiss grid · data-forward
-   Display: Space Grotesk · Body/UI: Inter
-   Bone #F2F1ED · Ink #121417 · Signal #B33A2B · Charcoal #16181C
+   BRADLEY GRIFFIN — story — "Conversational / Human"
+   Warm, first-person, one idea per screen.
+   Headings: Fraunces (soft) · Body/UI: DM Sans
+   Paper #FFFDF7 / #FBF7EF · Ink #2A2521 · Clay #C0563A
    ============================================================ */
 
 :root {
-  --bone: #F2F1ED;
-  --bone-2: #EDEBE5;
-  --ink: #121417;
-  --charcoal: #16181C;
-  --red: #B33A2B;
-  --red-soft: #C4503F;
-  --mute: #565A60;
-  --mute-d: #9A9FA6;
-  --line: #C9C6BD;
-  --line-strong: #121417;
-  --line-d: rgba(242, 241, 237, 0.14);
-  --disp: "Space Grotesk", "Inter", -apple-system, sans-serif;
-  --sans: "Inter", -apple-system, "Segoe UI", sans-serif;
-  --wrap: 1240px;
+  --paper: #FFFDF7;
+  --paper-2: #FBF7EF;
+  --paper-3: #F4EDE0;
+  --ink: #2A2521;
+  --ink-soft: #5C544C;
+  --ink-mute: #857B70;
+  --clay: #C0563A;
+  --clay-deep: #A5462E;
+  --line: #E9DFCF;
+  --disp: "Fraunces", Georgia, serif;
+  --sans: "DM Sans", -apple-system, "Segoe UI", sans-serif;
+  --wrap: 1060px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -37,1060 +35,418 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--sans);
-  background: var(--bone);
+  background: var(--paper);
   color: var(--ink);
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 18px;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
-  font-variant-numeric: tabular-nums;
 }
 
-.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 32px; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 28px; }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
-em, i { font-style: normal; }
-h1, h2, h3, h4 { font-family: var(--disp); font-weight: 700; line-height: 1.02; letter-spacing: -0.02em; }
+h1, h2, h3, h4 { font-family: var(--disp); font-weight: 600; line-height: 1.08; letter-spacing: -0.01em; }
+::selection { background: var(--clay); color: #fff; }
 
-::selection { background: var(--red); color: var(--bone); }
-
-/* ---------- type utilities ---------- */
 .microlabel {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--ink);
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  color: var(--clay);
 }
-.microlabel .tick { color: var(--red); font-weight: 600; }
-.on-dark .microlabel { color: var(--bone); }
 
 /* ---------- buttons ---------- */
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  font-family: var(--disp);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 18px 32px;
-  border: 1px solid var(--ink);
-  border-radius: 0;
-  transition: background 0.22s ease, color 0.22s ease, border-color 0.22s ease;
+  gap: 10px;
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 600;
+  padding: 16px 30px;
+  border-radius: 40px;
+  border: 1.5px solid transparent;
+  transition: transform 0.18s ease, background 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
 }
-.btn-solid { background: var(--ink); color: var(--bone); }
-.btn-solid:hover { background: var(--red); border-color: var(--red); color: #fff; }
-.btn-ghost { background: transparent; color: var(--ink); }
-.btn-ghost:hover { background: var(--ink); color: var(--bone); }
-.btn .arr { font-family: var(--sans); transition: transform 0.22s ease; }
-.btn:hover .arr { transform: translateX(4px); }
+.btn-solid { background: var(--clay); color: #fff; box-shadow: 0 6px 20px rgba(192, 86, 58, 0.22); }
+.btn-solid:hover { background: var(--clay-deep); transform: translateY(-2px); box-shadow: 0 10px 26px rgba(192, 86, 58, 0.28); }
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn-ghost:hover { border-color: var(--ink); transform: translateY(-2px); }
+.btn .arr { transition: transform 0.18s ease; }
+.btn:hover .arr { transform: translateX(3px); }
 
 /* ---------- header ---------- */
 .header {
-  position: fixed;
-  inset: 0 0 auto 0;
+  position: sticky;
+  top: 0;
   z-index: 50;
-  background: rgba(242, 241, 237, 0.92);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--line-strong);
+  background: rgba(255, 253, 247, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
 }
 .header .wrap {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 68px;
+  height: 72px;
 }
-.brand { display: flex; align-items: baseline; gap: 14px; white-space: nowrap; }
-.brand .mark {
+.brand {
   font-family: var(--disp);
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--ink);
 }
-.brand .mark em { color: var(--red); }
-.brand .tag {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--mute);
-}
-.nav { display: flex; align-items: center; gap: 28px; }
+.brand .dot { color: var(--clay); }
+.nav { display: flex; align-items: center; gap: 30px; }
 .nav a {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--mute);
-  transition: color 0.2s;
-  white-space: nowrap;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  transition: color 0.18s;
 }
-.nav a:hover { color: var(--red); }
+.nav a:hover { color: var(--clay); }
 .nav .nav-cta {
-  color: var(--bone);
+  color: #fff;
   background: var(--ink);
-  border: 1px solid var(--ink);
-  padding: 10px 18px;
-  transition: background 0.22s, border-color 0.22s;
+  padding: 10px 20px;
+  border-radius: 40px;
+  transition: background 0.2s;
 }
-.nav .nav-cta:hover { background: var(--red); border-color: var(--red); color: #fff; }
-@media (max-width: 1240px) { .brand .tag { display: none; } }
+.nav .nav-cta:hover { background: var(--clay); }
 
-/* ---------- hero ---------- */
-.hero {
-  position: relative;
-  padding: 168px 0 0;
-  background:
-    radial-gradient(circle at 1px 1px, rgba(18, 20, 23, 0.0) 0, transparent 0),
-    var(--bone);
-  border-bottom: 1px solid var(--line-strong);
-  overflow: hidden;
+.menu-btn {
+  display: none;
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  width: 46px; height: 42px;
+  flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  cursor: pointer; padding: 0;
 }
-.hero .crosses {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(18,20,23,0.12) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(18,20,23,0.12) 1px, transparent 1px);
-  background-size: 120px 120px;
-  -webkit-mask-image: radial-gradient(700px 480px at 78% 30%, #000 0%, transparent 72%);
-  mask-image: radial-gradient(700px 480px at 78% 30%, #000 0%, transparent 72%);
-  pointer-events: none;
-}
-.hero-grid {
-  position: relative;
-  z-index: 1;
+.menu-btn .mi { display: block; width: 20px; height: 2px; background: var(--ink); border-radius: 2px; transition: transform .2s, opacity .2s; }
+body.nav-open .menu-btn .mi:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+body.nav-open .menu-btn .mi:nth-child(2) { opacity: 0; }
+body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobile-nav { display: none; border-top: 1px solid var(--line); background: var(--paper); }
+.mobile-nav a { display: block; padding: 16px 28px; font-size: 17px; font-weight: 500; color: var(--ink); border-bottom: 1px solid var(--line); }
+.mobile-nav a.nav-cta { color: var(--clay); font-weight: 600; }
+
+/* ---------- section rhythm ---------- */
+.section { padding: 104px 0; }
+
+/* ============================================================
+   STORY PAGE — page-specific components (Conversational)
+   ============================================================ */
+
+/* ---------- story hero ---------- */
+.story-hero { padding: 84px 0 92px; }
+.story-hero-grid {
   display: grid;
-  grid-template-columns: 1.35fr 0.65fr;
+  grid-template-columns: 1.15fr 0.85fr;
   gap: 64px;
-  align-items: end;
-  padding-bottom: 88px;
+  align-items: center;
 }
-.hero .cred-row {
+.story-hero .hi {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--clay);
+  margin-bottom: 22px;
+}
+.story-hero h1 {
+  font-size: clamp(40px, 6vw, 68px);
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 28px;
+}
+.story-hero h1 em { font-style: italic; color: var(--clay); }
+.story-hero .lede {
+  font-size: 20px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 52ch;
+  margin-bottom: 30px;
+}
+.story-hero .lede strong { color: var(--ink); font-weight: 600; }
+.story-hero .jump-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px 28px;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--mute);
-  margin-bottom: 40px;
+  gap: 10px 26px;
+  font-size: 14px;
+  color: var(--ink-mute);
 }
-.hero .cred-row span::before { content: "/ "; color: var(--red); font-weight: 600; }
-.hero h1 {
-  font-size: clamp(54px, 7.2vw, 104px);
-  text-transform: uppercase;
-  letter-spacing: -0.03em;
-  color: var(--ink);
-  margin: 0 0 34px;
-}
-.hero h1 em { color: var(--red); }
-.hero .lede {
-  font-size: 17px;
-  line-height: 1.75;
-  color: var(--mute);
-  max-width: 58ch;
-  margin-bottom: 44px;
-}
-.hero .lede strong { color: var(--ink); font-weight: 600; }
-.hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
+.story-hero .jump-row span { display: inline-flex; align-items: center; gap: 8px; }
+.story-hero .jump-row span::before { content: "·"; color: var(--clay); font-weight: 700; }
+.story-hero .jump-row span:first-child::before { content: none; }
 
-/* portrait */
 .portrait {
   position: relative;
+  border-radius: 28px;
+  overflow: hidden;
+  background: var(--paper-2);
+  box-shadow: 0 24px 60px rgba(42, 37, 33, 0.14);
   aspect-ratio: 4 / 5;
-  border: 1px solid var(--line-strong);
-  background: var(--bone-2);
+  margin: 0;
 }
-.portrait-inner { height: 100%; overflow: hidden; }
-.portrait-inner img {
-  width: 100%;
-  height: 100%;
+.portrait img {
+  width: 100%; height: 100%;
   object-fit: cover;
-  object-position: 50% 12%;
-  filter: grayscale(0.15) contrast(1.05);
+  object-position: 50% 22%;
 }
 .portrait::after {
   content: "";
   position: absolute;
-  left: -1px;
-  right: -1px;
-  bottom: -7px;
-  height: 6px;
-  background: var(--red);
-}
-.portrait-caption {
-  position: absolute;
-  top: -1px;
-  right: -1px;
-  background: var(--ink);
-  color: var(--bone);
-  font-family: var(--disp);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  padding: 9px 14px;
-  z-index: 2;
-}
-
-/* ---------- stat band ---------- */
-.stats { background: var(--bone); border-bottom: 1px solid var(--line-strong); }
-.stats .wrap {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  border-left: 1px solid var(--line-strong);
-  border-right: 1px solid var(--line-strong);
-}
-.stat {
-  padding: 42px 24px 38px;
-  border-left: 1px solid var(--line);
-  position: relative;
-}
-.stat:first-child { border-left: none; }
-.stat .num {
-  font-family: var(--disp);
-  font-size: 42px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: var(--ink);
-  line-height: 1;
-  white-space: nowrap;
-}
-.stat .num em { color: var(--red); }
-.stat .lbl {
-  margin-top: 14px;
-  font-size: 10.5px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--mute);
-  line-height: 1.6;
-}
-
-/* ---------- shared section scaffolding ---------- */
-.section { padding: 108px 0 116px; border-bottom: 1px solid var(--line-strong); }
-.section-head { margin-bottom: 64px; }
-.section-head .head-rule {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 24px;
-  align-items: center;
-  margin-bottom: 40px;
-}
-.section-head .head-rule::before { content: none; }
-.section-head .head-rule .line { height: 1px; background: var(--line); }
-.section-head .idx-num {
-  font-family: var(--disp);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  color: var(--red);
-}
-.section-head h2 {
-  font-size: clamp(38px, 4.6vw, 62px);
-  text-transform: uppercase;
-  letter-spacing: -0.025em;
-  color: var(--ink);
-  margin: 0 0 20px;
-  max-width: 20ch;
-}
-.section-head h2 em { color: var(--red); }
-.section-head p.sub { font-size: 16px; color: var(--mute); max-width: 66ch; }
-.on-dark .section-head h2 { color: var(--bone); }
-.on-dark .section-head p.sub { color: var(--mute-d); }
-.on-dark .section-head .head-rule .line { background: var(--line-d); }
-
-/* ---------- offers ---------- */
-.offers {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border: 1px solid var(--line-strong);
-  background: var(--bone);
-}
-.offer {
-  padding: 40px 30px 36px;
-  display: flex;
-  flex-direction: column;
-  min-height: 420px;
-  border-left: 1px solid var(--line-strong);
-  background: var(--bone);
-  transition: background 0.22s ease, color 0.22s ease;
-  position: relative;
-}
-.offer:first-child { border-left: none; }
-.offer .idx {
-  font-family: var(--disp);
-  font-size: 44px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--red);
-  line-height: 1;
-  margin-bottom: 34px;
-}
-.offer h3 {
-  font-size: 23px;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  margin-bottom: 10px;
-  transition: color 0.22s ease;
-}
-.offer .for {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--mute);
-  margin-bottom: 18px;
-  transition: color 0.22s ease;
-}
-.offer p { font-size: 14px; line-height: 1.7; color: var(--mute); flex: 1; transition: color 0.22s ease; }
-.offer .link {
-  margin-top: 30px;
-  font-family: var(--disp);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ink);
-  display: inline-flex;
-  gap: 10px;
-  align-items: center;
-  transition: color 0.22s ease;
-}
-.offer .link .arr { transition: transform 0.22s; }
-.offer:hover { background: var(--ink); }
-.offer:hover h3, .offer:hover .link { color: var(--bone); }
-.offer:hover .for, .offer:hover p { color: var(--mute-d); }
-.offer:hover .link { color: var(--red-soft); }
-.offer:hover .link .arr { transform: translateX(5px); }
-
-/* ---------- case studies (ruled table rows) ---------- */
-.cases { border-top: 1px solid var(--line-strong); }
-.case {
-  display: grid;
-  grid-template-columns: 170px 1.05fr 1.5fr 64px;
-  gap: 40px;
-  align-items: center;
-  border-bottom: 1px solid var(--line-strong);
-  padding: 44px 0;
-  transition: background 0.22s ease;
-  position: relative;
-}
-.case .big {
-  font-family: var(--disp);
-  font-size: 40px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: var(--red);
-  line-height: 1;
-  white-space: nowrap;
-}
-.case h3 {
-  font-size: 22px;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  margin-bottom: 10px;
-  transition: color 0.22s ease;
-}
-.case .co {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--mute);
-}
-.case p { font-size: 14.5px; line-height: 1.7; color: var(--mute); }
-.case .go {
-  font-family: var(--sans);
-  font-size: 20px;
-  color: var(--ink);
-  border: 1px solid var(--line-strong);
-  width: 52px;
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0;
-  transition: background 0.22s, color 0.22s;
-  justify-self: end;
-}
-.case:hover { background: var(--bone-2); }
-.case:hover h3 { color: var(--red); }
-.case:hover .go { background: var(--red); border-color: var(--red); color: #fff; }
-
-/* ---------- story (dark full-bleed) ---------- */
-.story {
-  background: var(--charcoal);
-  color: var(--bone);
-}
-.story-grid {
-  display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  gap: 88px;
-  align-items: start;
-}
-.story h2 {
-  font-size: clamp(36px, 4.2vw, 58px);
-  text-transform: uppercase;
-  letter-spacing: -0.025em;
-  color: var(--bone);
-  margin: 0 0 30px;
-}
-.story h2 em { color: var(--red-soft); }
-.story .microlabel { color: var(--bone); margin-bottom: 34px; }
-.story-copy p {
-  font-size: 16px;
-  line-height: 1.8;
-  color: var(--mute-d);
-  margin-bottom: 20px;
-}
-.story-copy p strong { color: var(--bone); font-weight: 600; }
-.story-copy .pull {
-  font-family: var(--disp);
-  font-size: 24px;
-  font-weight: 500;
-  line-height: 1.35;
-  letter-spacing: -0.01em;
-  color: var(--bone);
-  border-left: 3px solid var(--red);
-  padding-left: 26px;
-  margin: 36px 0;
-}
-.timeline { border-left: 1px solid var(--line-d); }
-.tl-item { position: relative; padding: 0 0 36px 34px; }
-.tl-item:last-child { padding-bottom: 0; }
-.tl-item::before {
-  content: "";
-  position: absolute;
-  left: -4px;
-  top: 8px;
-  width: 7px;
-  height: 7px;
-  background: var(--red);
-}
-.tl-item .yr {
-  font-family: var(--disp);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  color: var(--red-soft);
-}
-.tl-item h4 {
-  font-size: 18px;
-  text-transform: uppercase;
-  letter-spacing: 0;
-  color: var(--bone);
-  margin: 8px 0 6px;
-}
-.tl-item p { font-size: 13.5px; line-height: 1.65; color: var(--mute-d); }
-
-/* ---------- speaking ---------- */
-.speaking-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border: 1px solid var(--line-strong);
-}
-.venue {
-  padding: 48px 44px;
-  border-left: 1px solid var(--line-strong);
-  background: var(--bone);
-}
-.venue:first-child { border-left: none; }
-.venue .where {
-  font-family: var(--disp);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--red);
-  margin-bottom: 20px;
-}
-.venue h3 {
-  font-size: 26px;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  margin-bottom: 14px;
-}
-.venue p { font-size: 14.5px; line-height: 1.75; color: var(--mute); }
-.venue .quotebox {
-  margin-top: 26px;
-  font-family: var(--disp);
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 1.5;
-  letter-spacing: -0.005em;
-  color: var(--ink);
-  border-top: 1px solid var(--line);
-  padding-top: 22px;
-}
-.venue .quotebox .src {
-  display: inline-block;
-  margin-top: 12px;
-  font-family: var(--sans);
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--red);
-}
-
-/* ---------- testimonials ---------- */
-.quotes {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  border: 1px solid var(--line-strong);
-}
-.quote {
-  padding: 44px 36px 40px;
-  border-left: 1px solid var(--line-strong);
-  display: flex;
-  flex-direction: column;
-  background: var(--bone);
-}
-.quote:first-child { border-left: none; }
-.quote .qmark {
-  font-family: var(--disp);
-  font-size: 84px;
-  font-weight: 700;
-  line-height: 0.55;
-  color: var(--red);
-  margin-bottom: 30px;
-}
-.quote p {
-  font-size: 15.5px;
-  font-weight: 500;
-  line-height: 1.7;
-  color: var(--ink);
-  flex: 1;
-}
-.quote .who { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--line); }
-.quote .who .nm {
-  font-family: var(--disp);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink);
-}
-.quote .who .rl { font-size: 12px; color: var(--mute); margin-top: 4px; }
-
-/* ---------- credentials ---------- */
-.creds {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 80px;
-  align-items: start;
-}
-.cred-list { display: grid; gap: 0; }
-.cred {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 20px;
-  align-items: baseline;
-  padding: 24px 0;
-  border-bottom: 1px solid var(--line);
-}
-.cred:first-child { border-top: 1px solid var(--line-strong); }
-.cred:last-child { border-bottom: 1px solid var(--line-strong); }
-.cred h4 { font-size: 18px; letter-spacing: -0.005em; color: var(--ink); }
-.cred .sub { font-size: 13px; color: var(--mute); margin-top: 5px; }
-.cred .yr {
-  font-family: var(--disp);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--red);
-  white-space: nowrap;
-}
-.cert-wall h3 {
-  font-size: 24px;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  margin-bottom: 12px;
-}
-.cert-wall > p { font-size: 14px; line-height: 1.7; color: var(--mute); margin-bottom: 28px; }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--ink);
-  background: transparent;
-  border: 1px solid var(--line);
-  padding: 9px 15px;
-}
-.chip.more {
-  background: var(--red);
-  border-color: var(--red);
-  color: #fff;
-  font-weight: 600;
-}
-
-/* ---------- final cta ---------- */
-.finale {
-  text-align: center;
-  padding: 130px 0 140px;
-  background: var(--bone);
-  border-bottom: 1px solid var(--line-strong);
-  position: relative;
-  overflow: hidden;
-}
-.finale .crosses {
-  position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(rgba(18,20,23,0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(18,20,23,0.1) 1px, transparent 1px);
-  background-size: 120px 120px;
-  -webkit-mask-image: radial-gradient(640px 380px at 50% 55%, #000 0%, transparent 74%);
-  mask-image: radial-gradient(640px 380px at 50% 55%, #000 0%, transparent 74%);
-  pointer-events: none;
+  border-radius: 28px;
+  box-shadow: inset 0 0 0 1px rgba(42, 37, 33, 0.06);
 }
-.finale .wrap { position: relative; z-index: 1; }
-.finale .microlabel { justify-content: center; }
-.finale h2 {
-  font-size: clamp(42px, 5.4vw, 76px);
-  text-transform: uppercase;
-  letter-spacing: -0.03em;
-  color: var(--ink);
-  margin: 28px auto 22px;
-  max-width: 16ch;
-}
-.finale h2 em { color: var(--red); }
-.finale p { color: var(--mute); max-width: 56ch; margin: 0 auto 46px; font-size: 16px; }
-
-/* ---------- footer ---------- */
-.footer { padding: 40px 0; background: var(--bone); }
-.footer .wrap {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-.footer .fbrand {
-  font-family: var(--disp);
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--ink);
-}
-.footer .fbrand em { color: var(--red); }
-.footer nav { display: flex; gap: 24px; }
-.footer nav a {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--mute);
-}
-.footer nav a:hover { color: var(--red); }
-.footer .fine { font-size: 11.5px; color: var(--mute); }
-
-/* ---------- style switcher ---------- */
-.switcher {
-  position: fixed;
-  right: 22px;
-  bottom: 22px;
-  z-index: 60;
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--line-strong);
-  background: rgba(242, 241, 237, 0.95);
-  backdrop-filter: blur(10px);
-}
-.switcher .sw-label {
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--mute);
-  padding: 0 12px;
-  border-right: 1px solid var(--line);
-}
-.switcher a {
-  font-family: var(--disp);
-  font-size: 12px;
-  font-weight: 700;
-  width: 38px;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--mute);
-  border-left: 1px solid var(--line);
-  transition: background 0.2s, color 0.2s;
-}
-.switcher a:first-of-type { border-left: none; }
-.switcher a:hover { background: var(--ink); color: var(--bone); }
-.switcher a.active { background: var(--red); color: #fff; }
-
-/* ---------- reveal animation ---------- */
-.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s ease; }
-.reveal.in { opacity: 1; transform: none; }
-
-/* ---------- responsive ---------- */
-@media (max-width: 1020px) {
-  .hero-grid { grid-template-columns: 1fr; gap: 56px; }
-  .portrait { max-width: 380px; }
-  .stats .wrap { grid-template-columns: repeat(3, 1fr); }
-  .stat:nth-child(4) { border-left: none; }
-  .stat { border-top: 1px solid var(--line); }
-  .stat:nth-child(-n + 3) { border-top: none; }
-  .offers { grid-template-columns: repeat(2, 1fr); }
-  .offer { border-top: 1px solid var(--line-strong); min-height: 0; }
-  .offer:nth-child(-n + 2) { border-top: none; }
-  .offer:nth-child(odd) { border-left: none; }
-  .offer:nth-child(even) { border-left: 1px solid var(--line-strong); }
-  .story-grid { grid-template-columns: 1fr; gap: 64px; }
-  .quotes { grid-template-columns: 1fr; }
-  .quote { border-left: none; border-top: 1px solid var(--line-strong); }
-  .quote:first-child { border-top: none; }
-  .creds { grid-template-columns: 1fr; gap: 56px; }
-  .speaking-grid { grid-template-columns: 1fr; }
-  .venue { border-left: none; border-top: 1px solid var(--line-strong); }
-  .venue:first-child { border-top: none; }
-  .case { grid-template-columns: 1fr; gap: 18px; padding: 36px 0; }
-  .case .go { display: none; }
-  .nav { display: none; }
-}
-@media (max-width: 640px) {
-  .stats .wrap { grid-template-columns: 1fr 1fr; }
-  .stat { border-left: none; border-top: 1px solid var(--line); }
-  .stat:nth-child(-n + 2) { border-top: none; }
-  .offers { grid-template-columns: 1fr; }
-  .offer { border-left: none !important; border-top: 1px solid var(--line-strong); }
-  .offer:first-child { border-top: none; }
-  .hero { padding-top: 140px; }
-  .switcher .sw-label { display: none; }
-}
-
-/* ============================================================
-   STORY PAGE — page-specific additions
-   ============================================================ */
-
-/* ---------- story hero (dark) ---------- */
-.story-hero {
-  position: relative;
-  background: var(--charcoal);
-  padding: 168px 0 96px;
-  border-bottom: 1px solid var(--line-strong);
-  overflow: hidden;
-}
-.story-hero .crosses-d {
+.portrait figcaption {
   position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(242,241,237,0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(242,241,237,0.07) 1px, transparent 1px);
-  background-size: 120px 120px;
-  -webkit-mask-image: radial-gradient(720px 480px at 74% 34%, #000 0%, transparent 72%);
-  mask-image: radial-gradient(720px 480px at 74% 34%, #000 0%, transparent 72%);
-  pointer-events: none;
-}
-.story-hero-grid {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 1.3fr 0.7fr;
-  gap: 72px;
-  align-items: end;
-}
-.story-hero .microlabel { color: var(--bone); margin-bottom: 38px; }
-.story-hero h1 {
-  font-size: clamp(50px, 6.6vw, 96px);
+  left: 16px;
+  bottom: 16px;
+  background: rgba(42, 37, 33, 0.86);
+  color: var(--paper);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  letter-spacing: -0.03em;
-  color: var(--bone);
-  margin: 0 0 32px;
+  padding: 8px 14px;
+  border-radius: 40px;
+  backdrop-filter: blur(4px);
 }
-.story-hero h1 em { color: var(--red-soft); }
-.story-hero .lede {
-  font-size: 17px;
-  line-height: 1.8;
-  color: var(--mute-d);
-  max-width: 58ch;
-}
-.story-hero .lede strong { color: var(--bone); font-weight: 600; }
-.story-hero .portrait { border-color: var(--line-d); background: var(--charcoal); }
-.story-hero .jump-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 28px;
-  margin-top: 44px;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--mute-d);
-}
-.story-hero .jump-row span::before { content: "/ "; color: var(--red-soft); font-weight: 600; }
 
 /* ---------- chapters ---------- */
-.chapter { padding: 116px 0 124px; border-bottom: 1px solid var(--line-strong); background: var(--bone); }
-.chapter.dark { background: var(--charcoal); }
+.chapter { padding: 96px 0; border-top: 1px solid var(--line); background: var(--paper); }
+.chapter.dark { background: var(--ink); color: var(--paper); border-top-color: transparent; }
 .ch-grid {
   display: grid;
-  grid-template-columns: 230px 1fr;
-  gap: 80px;
+  grid-template-columns: 210px 1fr;
+  gap: 64px;
   align-items: start;
 }
-.ch-rail { position: sticky; top: 108px; }
+.ch-rail { position: sticky; top: 100px; }
 .ch-num {
   font-family: var(--disp);
-  font-weight: 700;
-  font-size: clamp(88px, 9.5vw, 138px);
-  line-height: 0.82;
-  letter-spacing: -0.04em;
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--ink);
+  font-weight: 600;
+  font-size: clamp(72px, 8vw, 112px);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: var(--paper-3);
 }
-.chapter.dark .ch-num { -webkit-text-stroke: 1.5px var(--bone); }
-@supports not (-webkit-text-stroke: 1px black) {
-  .ch-num { color: var(--line); }
-  .chapter.dark .ch-num { color: var(--line-d); }
-}
-.ch-rail .microlabel { margin-top: 30px; }
-.chapter.dark .ch-rail .microlabel { color: var(--bone); }
+.chapter.dark .ch-num { color: #3B342E; }
+.ch-rail .microlabel { display: block; margin-top: 24px; }
+.chapter.dark .ch-rail .microlabel { color: #E8A38F; }
 .ch-meta {
-  margin-top: 14px;
-  font-size: 10.5px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--mute);
-  line-height: 1.9;
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--ink-mute);
+  line-height: 1.6;
 }
-.chapter.dark .ch-meta { color: var(--mute-d); }
-.ch-rail .rule { width: 56px; height: 3px; background: var(--red); margin-top: 26px; }
+.chapter.dark .ch-meta { color: #B7ADA2; }
+.ch-rail .rule { width: 52px; height: 3px; background: var(--clay); border-radius: 3px; margin-top: 22px; }
 
 .ch-body h2 {
-  font-size: clamp(34px, 4.2vw, 56px);
-  text-transform: uppercase;
-  letter-spacing: -0.025em;
+  font-size: clamp(30px, 4.4vw, 46px);
   color: var(--ink);
-  margin: 0 0 38px;
-  max-width: 18ch;
+  margin: 0 0 30px;
+  max-width: 20ch;
 }
-.ch-body h2 em { color: var(--red); }
-.chapter.dark .ch-body h2 { color: var(--bone); }
-.chapter.dark .ch-body h2 em { color: var(--red-soft); }
+.ch-body h2 em { font-style: italic; color: var(--clay); }
+.chapter.dark .ch-body h2 { color: var(--paper); }
+.chapter.dark .ch-body h2 em { color: #E8A38F; }
 .ch-body p.prose {
-  font-size: 16.5px;
-  line-height: 1.85;
-  color: var(--mute);
-  max-width: 68ch;
-  margin-bottom: 24px;
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--ink-soft);
+  max-width: 66ch;
+  margin-bottom: 22px;
 }
 .ch-body p.prose strong { color: var(--ink); font-weight: 600; }
-.chapter.dark .ch-body p.prose { color: var(--mute-d); }
-.chapter.dark .ch-body p.prose strong { color: var(--bone); }
-.ch-body p.opener::first-letter {
-  font-family: var(--disp);
-  font-weight: 700;
-  font-size: 56px;
-  line-height: 0.85;
-  float: left;
-  padding: 7px 14px 0 0;
-  color: var(--red);
-}
+.chapter.dark .ch-body p.prose { color: #D8CFC4; }
+.chapter.dark .ch-body p.prose strong { color: var(--paper); }
+
 .ch-body .pullq {
   font-family: var(--disp);
-  font-size: clamp(22px, 2.4vw, 28px);
+  font-size: clamp(22px, 2.6vw, 30px);
   font-weight: 500;
+  font-style: italic;
   line-height: 1.35;
-  letter-spacing: -0.01em;
   color: var(--ink);
-  border-left: 3px solid var(--red);
-  padding-left: 28px;
-  margin: 44px 0;
-  max-width: 30ch;
+  border-left: 3px solid var(--clay);
+  padding-left: 26px;
+  margin: 38px 0;
+  max-width: 32ch;
 }
-.chapter.dark .ch-body .pullq { color: var(--bone); }
-
-/* ruled fact rows inside chapters */
-.ch-facts { margin-top: 48px; border-top: 1px solid var(--line-strong); max-width: 620px; }
-.chapter.dark .ch-facts { border-top-color: var(--bone); }
-.fact {
-  display: grid;
-  grid-template-columns: 150px 1fr;
-  gap: 26px;
-  align-items: baseline;
-  padding: 15px 0;
-  border-bottom: 1px solid var(--line);
-}
-.chapter.dark .fact { border-bottom-color: var(--line-d); }
-.fact .fv {
-  font-family: var(--disp);
-  font-size: 23px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--red);
-  white-space: nowrap;
-}
-.chapter.dark .fact .fv { color: var(--red-soft); }
-.fact .fl {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--mute);
-  line-height: 1.7;
-}
-.chapter.dark .fact .fl { color: var(--mute-d); }
+.chapter.dark .ch-body .pullq { color: var(--paper); }
 
 /* motto tag (ch 01) */
 .motto {
   display: inline-flex;
-  gap: 26px;
-  margin-top: 40px;
-  font-family: var(--disp);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--mute);
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  margin-top: 34px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--ink-mute);
   border: 1px solid var(--line);
-  padding: 13px 22px;
+  border-radius: 40px;
+  padding: 12px 24px;
 }
-.chapter.dark .motto { color: var(--mute-d); border-color: var(--line-d); }
-.motto b { color: var(--red); font-weight: 700; }
-.chapter.dark .motto b { color: var(--red-soft); }
+.chapter.dark .motto { color: #B7ADA2; border-color: rgba(233, 223, 207, 0.18); }
+.motto span { display: inline-flex; align-items: center; gap: 8px; }
+.motto b { color: var(--clay); font-weight: 700; }
+.chapter.dark .motto b { color: #E8A38F; }
 
-/* ---------- chapter photo (ruled frame) ---------- */
-.ch-duo {
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 64px;
-  align-items: start;
-}
+/* ---------- chapter photos (warm rounded frames) ---------- */
+.arch-figs { display: grid; grid-template-columns: 0.85fr 1.3fr; gap: 24px; margin-top: 40px; align-items: start; }
 .ch-photo {
   position: relative;
-  border: 1px solid var(--line-strong);
-  background: var(--bone-2);
-  max-width: 320px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--paper-2);
+  box-shadow: 0 14px 34px rgba(42, 37, 33, 0.12);
+  margin: 0;
 }
-.ch-photo img {
-  width: 100%;
-  display: block;
-  filter: grayscale(0.15) contrast(1.05);
-}
+.ch-photo img { width: 100%; display: block; }
 .ch-photo::after {
   content: "";
   position: absolute;
-  left: -1px;
-  right: -1px;
-  bottom: -7px;
-  height: 6px;
-  background: var(--red);
+  inset: 0;
+  border-radius: 20px;
+  box-shadow: inset 0 0 0 1px rgba(42, 37, 33, 0.06);
+  pointer-events: none;
 }
 .ch-photo figcaption {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--mute);
-  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  padding: 14px 18px;
+  background: var(--paper);
   border-top: 1px solid var(--line);
-  background: var(--bone);
 }
-.chapter.dark .ch-photo { border-color: var(--line-d); background: var(--charcoal); }
-.chapter.dark .ch-photo figcaption { color: var(--mute-d); border-top-color: var(--line-d); background: var(--charcoal); }
+.chapter.dark .ch-photo { background: #221E1A; box-shadow: 0 14px 34px rgba(0,0,0,0.28); }
+.chapter.dark .ch-photo figcaption { color: #D8CFC4; background: #221E1A; border-top-color: rgba(233, 223, 207, 0.14); }
+.chapter.dark .ch-photo::after { box-shadow: inset 0 0 0 1px rgba(233, 223, 207, 0.1); }
 
-/* ---------- full ruled timeline (light section) ---------- */
-.tl-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 88px; align-items: start; }
-.timeline.lt { border-left-color: var(--line-strong); }
-.timeline.lt .tl-item .yr { color: var(--red); }
-.timeline.lt .tl-item h4 { color: var(--ink); }
-.timeline.lt .tl-item p { color: var(--mute); }
+.ch-duo {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 56px;
+  align-items: start;
+}
+.ch-duo .ch-photo + .ch-photo { margin-top: 28px; }
 
-/* ---------- responsive additions ---------- */
-@media (max-width: 1020px) {
-  .story-hero-grid { grid-template-columns: 1fr; gap: 56px; }
-  .story-hero .portrait { max-width: 380px; }
-  .ch-grid { grid-template-columns: 1fr; gap: 44px; }
-  .ch-rail { position: static; display: flex; align-items: baseline; gap: 26px; flex-wrap: wrap; }
-  .ch-num { font-size: 72px; }
+/* ---------- timeline ---------- */
+.timeline-section { background: var(--paper-2); }
+.section-intro { max-width: 40ch; margin-bottom: 52px; }
+.section-intro h2 {
+  font-size: clamp(30px, 4.4vw, 46px);
+  color: var(--ink);
+  margin: 16px 0 18px;
+}
+.section-intro h2 em { font-style: italic; color: var(--clay); }
+.section-intro p { font-size: 18px; color: var(--ink-soft); }
+
+.tl-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 72px; align-items: start; }
+.timeline { border-left: 2px solid var(--line); padding-left: 4px; }
+.tl-item { position: relative; padding: 0 0 34px 30px; }
+.tl-item:last-child { padding-bottom: 0; }
+.tl-item::before {
+  content: "";
+  position: absolute;
+  left: -9px;
+  top: 8px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--clay);
+  border: 3px solid var(--paper-2);
+}
+.tl-item .yr {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--clay);
+}
+.tl-item h4 {
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 8px 0 8px;
+}
+.tl-item p { font-size: 16px; line-height: 1.6; color: var(--ink-soft); }
+
+/* ---------- final cta ---------- */
+.contact { text-align: center; background: var(--paper); border-top: 1px solid var(--line); }
+.contact h2 {
+  font-size: clamp(34px, 5vw, 56px);
+  color: var(--ink);
+  margin: 18px auto 22px;
+  max-width: 18ch;
+}
+.contact h2 em { font-style: italic; color: var(--clay); }
+.contact p {
+  font-size: 19px;
+  color: var(--ink-soft);
+  max-width: 50ch;
+  margin: 0 auto 36px;
+}
+.contact .btn-solid { font-size: 18px; padding: 18px 36px; }
+
+/* ---------- footer ---------- */
+.footer { padding: 44px 0; background: var(--paper); border-top: 1px solid var(--line); }
+.footer .wrap {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap;
+}
+.footer .fbrand { font-family: var(--disp); font-size: 18px; font-weight: 600; color: var(--ink); }
+.footer .fbrand .dot { color: var(--clay); }
+.footer nav { display: flex; gap: 22px; flex-wrap: wrap; }
+.footer nav a { font-size: 15px; color: var(--ink-soft); }
+.footer nav a:hover { color: var(--clay); }
+.footer .fine { font-size: 14px; color: var(--ink-mute); }
+
+/* ---------- reveal ---------- */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px) {
+  .nav { display: none; }
+  .menu-btn { display: flex; }
+  body.nav-open .mobile-nav { display: block; }
+  .story-hero-grid { grid-template-columns: 1fr; gap: 44px; }
+  .story-hero .portrait-wrap { order: -1; max-width: 360px; }
+  .section { padding: 80px 0; }
+  .story-hero { padding: 56px 0 64px; }
+  .chapter { padding: 72px 0; }
+  .ch-grid { grid-template-columns: 1fr; gap: 34px; }
+  .ch-rail { position: static; display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
   .ch-rail .microlabel { margin-top: 0; }
   .ch-rail .rule { display: none; }
   .ch-meta { flex-basis: 100%; margin-top: 0; }
+  .ch-duo { grid-template-columns: 1fr; gap: 40px; }
+  .ch-duo .photos { max-width: 360px; }
   .tl-cols { grid-template-columns: 1fr; gap: 0; }
-  .tl-cols .timeline + .timeline .tl-item:first-child { padding-top: 36px; }
-  .ch-duo { grid-template-columns: 1fr; gap: 48px; }
-  .ch-photo { max-width: 320px; }
+  .tl-cols .timeline + .timeline .tl-item:first-child { padding-top: 34px; }
 }
-@media (max-width: 640px) {
-  .story-hero { padding: 140px 0 80px; }
-  .chapter { padding: 84px 0 92px; }
-  .fact { grid-template-columns: 1fr; gap: 6px; }
-}
-
-/* ---------- archival figures (ch-01) ---------- */
-.arch-figs { display: grid; grid-template-columns: 0.85fr 1.3fr; gap: 28px; margin-top: 44px; align-items: start; }
-.arch-figs .ch-photo { max-width: none; }
-@media (max-width: 640px) { .arch-figs { grid-template-columns: 1fr; gap: 36px; } }
-
-/* ---------- MOBILE REFINEMENTS (shared pass) ---------- */
-.menu-btn { display: none; background: none; border: 1px solid var(--line-strong); width: 46px; height: 38px; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; padding: 0; }
-.menu-btn .mi { display: block; width: 16px; height: 2px; background: var(--ink); transition: transform .2s, opacity .2s; }
-body.nav-open .menu-btn .mi:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-body.nav-open .menu-btn .mi:nth-child(2) { opacity: 0; }
-body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-.mobile-nav { display: none; border-top: 1px solid var(--line-strong); background: var(--bone); max-height: calc(100vh - 68px); overflow-y: auto; }
-.mobile-nav a { display: block; padding: 16px 24px; font-family: var(--disp); font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); border-bottom: 1px solid var(--line); }
-.mobile-nav a.nav-cta { background: var(--ink); color: var(--bone); border-bottom: none; }
-@media (max-width: 1020px) {
-  .menu-btn { display: flex; }
-  body.nav-open .mobile-nav { display: block; }
-}
-@media (max-width: 640px) {
+@media (max-width: 560px) {
+  body { font-size: 17px; }
   .wrap { padding: 0 20px; }
-  .header .wrap { height: 60px; }
-  .hero { padding-top: 118px; }
-  .hero h1 { font-size: clamp(36px, 11vw, 52px); margin-bottom: 24px; }
-  .hero .lede { font-size: 15px; line-height: 1.7; margin-bottom: 32px; }
-  .hero .cred-row { gap: 8px 18px; font-size: 10px; margin-bottom: 28px; }
-  .hero-grid { gap: 40px; padding-bottom: 56px; }
-  .hero-ctas { gap: 12px; }
-  .hero-ctas .btn { flex: 1 1 auto; justify-content: center; }
-  .btn { padding: 15px 20px; font-size: 12px; }
-  .portrait { max-width: 320px; }
-  h2 { letter-spacing: -0.01em; }
+  .header .wrap { height: 64px; }
+  .story-hero h1 { font-size: clamp(34px, 10vw, 46px); }
+  .story-hero .lede { font-size: 18px; }
+  .arch-figs { grid-template-columns: 1fr; gap: 28px; }
+  .ch-body p.prose { font-size: 17px; }
   .section { padding: 64px 0; }
-  .section-head { margin-bottom: 40px; }
-  .section-head h2, .finale h2 { font-size: clamp(28px, 8.8vw, 42px); }
-  .section-head p.sub, .section-head p { font-size: 15px; }
-  .stat { padding: 22px 16px 20px; }
-  .stat .num { font-size: 28px; }
-  .stat .lbl { font-size: 10px; letter-spacing: .1em; }
-  .case { padding: 26px 0; gap: 12px; }
-  .case .big { font-size: 32px; }
-  .case h3 { font-size: 20px; }
-  .offer { padding: 30px 22px; }
-  .offer h3 { font-size: 22px; }
-  .quote { padding: 30px 22px; }
-  .quote p { font-size: 16px; }
-  .finale { padding: 84px 0; }
-  .finale p { font-size: 15px; }
-  .footer .wrap { flex-direction: column; align-items: flex-start; gap: 16px; padding-top: 4px; }
-  .footer nav { flex-wrap: wrap; gap: 10px 18px; }
-  img, iframe, table, pre { max-width: 100%; }
+  .chapter { padding: 60px 0; }
 }
-
-</style>
+  </style>
   <meta name="description" content="From the 75th Ranger Regiment to the boardroom: a parachute that didn&#x27;t open, thirty seconds to decide, and the standard behind two exits and a NASDAQ acquisition." />
   <link rel="canonical" href="https://www.bradleygriffin.us/story" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -1112,47 +468,52 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-4
   <!-- ======= HEADER ======= -->
   <header class="header">
     <div class="wrap">
-      <a class="brand" href="/">
-        <span class="mark">Bradley <em>Griffin</em></span>
-        <span class="tag">CMO · Growth Executive</span>
-      </a>
+      <a class="brand" href="/">Bradley Griffin<span class="dot">.</span></a>
       <nav class="nav">
-        <a href="/#work">Work With Me</a>
+        <a href="/#help">Work with me</a>
         <a href="/case-studies">Results</a>
-        <a href="/story">The Story</a>
+        <a href="/story">About</a>
         <a href="/speaking">Speaking</a>
-        <a href="/credentials">Credentials</a>
-        <a class="nav-cta" href="/contact">Start a Conversation</a>
+        <a class="nav-cta" href="/contact">Let's talk</a>
       </nav>
+      <button class="menu-btn" aria-label="Menu" aria-expanded="false">
+        <span class="mi"></span><span class="mi"></span><span class="mi"></span>
+      </button>
     </div>
+    <nav class="mobile-nav">
+      <a href="/#help">Work with me</a>
+      <a href="/case-studies">Results</a>
+      <a href="/story">About</a>
+      <a href="/speaking">Speaking</a>
+      <a class="nav-cta" href="/contact">Let's talk</a>
+    </nav>
   </header>
 
-  <!-- ======= STORY HERO (dark) ======= -->
+  <!-- ======= STORY HERO ======= -->
   <section class="story-hero" id="top">
-    <div class="crosses-d"></div>
     <div class="wrap story-hero-grid">
       <div>
-        <p class="microlabel"><span class="tick">/</span> The Story · Told First-Person</p>
+        <p class="hi">My story</p>
         <h1>Before the boardroom, <em>the jump.</em></h1>
         <p class="lede">
           Executives like to talk about pressure. I measure it differently. This is the part of the record
-          that never fits on a résumé — <strong>the 75th Ranger Regiment, a parachute that didn&rsquo;t open,
-          and the thirty seconds</strong> that have governed every decision I&rsquo;ve made since. Two companies
+          that never fits on a résumé — <strong>the 75th Ranger Regiment, a parachute that didn't open,
+          and the thirty seconds</strong> that have governed every decision I've made since. Two companies
           built and sold, a NASDAQ acquisition, a region that now leads a national platform — all of it traces back
           to a standard set at Fort Benning.
         </p>
         <p class="jump-row">
-          <span>Seven Chapters</span>
-          <span>2005 — Today</span>
-          <span>No Embellishment Required</span>
+          <span>Seven chapters</span>
+          <span>2005 — today</span>
+          <span>No embellishment required</span>
         </p>
       </div>
-      <figure class="portrait">
-        <div class="portrait-inner">
-          <img src="assets/military-griffin-solo.jpg" alt="A young Bradley Griffin in U.S. Army dress uniform and beret" style="object-position: 50% 22%;" />
-        </div>
-        <figcaption class="portrait-caption">Bradley Griffin &middot; U.S. Army</figcaption>
-      </figure>
+      <div class="portrait-wrap">
+        <figure class="portrait">
+          <img src="assets/military-griffin-solo.jpg" alt="A young Bradley Griffin in U.S. Army dress uniform and beret" />
+          <figcaption>Bradley Griffin · U.S. Army</figcaption>
+        </figure>
+      </div>
     </div>
   </section>
 
@@ -1161,25 +522,25 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-4
     <div class="wrap ch-grid">
       <div class="ch-rail reveal">
         <div class="ch-num">01</div>
-        <p class="microlabel"><span class="tick">/</span> Fort Benning</p>
+        <span class="microlabel">Fort Benning</span>
         <p class="ch-meta">Fort Benning, Georgia<br />U.S. Army · 2005</p>
         <div class="rule"></div>
       </div>
       <div class="ch-body reveal">
         <h2>The standard <em>finds you first.</em></h2>
-        <p class="prose opener">I was selected for the 75th Ranger Regiment — one of the most elite special operations units the United States military fields. People imagine that path as a highlight reel. It isn&rsquo;t. The path to a Ranger unit is not designed to build you up; it is designed to find the exact point where you break, and then ask you — plainly, repeatedly — whether you intend to continue. Most men answer no. Nobody blames them.</p>
+        <p class="prose">I was selected for the 75th Ranger Regiment — one of the most elite special operations units the United States military fields. People imagine that path as a highlight reel. It isn't. The path to a Ranger unit is not designed to build you up; it is designed to find the exact point where you break, and then ask you — plainly, repeatedly — whether you intend to continue. Most men answer no. Nobody blames them.</p>
         <p class="prose">The demands were mental as much as physical. Sleep deprivation. Extreme weather. The constant pressure to perform at your peak when everything in your body is filing objections. In the beginning I questioned the sanity of what I was doing — whether I was strong enough, whether I would even make it out alive. Some days I was battling myself more than the elements or any enemy. But every step forward built something no schoolhouse issues: the hardened knowledge that I could persevere through any obstacle put in front of me.</p>
-        <p class="pullq">The training isn&rsquo;t designed to build you up. It&rsquo;s designed to find where you break — and ask whether you intend to continue.</p>
-        <p class="prose">What the Regiment actually equips you with isn&rsquo;t gear. It&rsquo;s a code: <strong>integrity, honor, and a sense of duty</strong> that places the mission above your own security — because the mission is usually a matter of life and death, and trust between Rangers has to be absolute. Rangers move first and hold the standard because someone has to. I have carried that into every room I&rsquo;ve entered since.</p>
-        <p class="motto"><span><b>/</b> Rangers Lead The Way</span><span><b>/</b> Sua Sponte</span></p>
+        <p class="pullq">The training isn't designed to build you up. It's designed to find where you break — and ask whether you intend to continue.</p>
+        <p class="prose">What the Regiment actually equips you with isn't gear. It's a code: <strong>integrity, honor, and a sense of duty</strong> that places the mission above your own security — because the mission is usually a matter of life and death, and trust between Rangers has to be absolute. Rangers move first and hold the standard because someone has to. I have carried that into every room I've entered since.</p>
+        <p class="motto"><span><b>·</b> Rangers lead the way</span><span><b>·</b> Sua Sponte</span></p>
         <div class="arch-figs">
           <figure class="ch-photo">
             <img src="assets/military-jumpwings.jpg" alt="A young Bradley Griffin in uniform with a fellow soldier, holding their newly earned parachutist wings at Airborne School" loading="lazy" />
-            <figcaption>Airborne School &middot; The Day The Wings Were Pinned</figcaption>
+            <figcaption>Airborne School · the day the wings were pinned</figcaption>
           </figure>
           <figure class="ch-photo">
             <img src="assets/military-three-generations.jpg" alt="Bradley Griffin in Army dress uniform and beret, flanked by his father and grandfather on graduation day" loading="lazy" />
-            <figcaption>Graduation Day &middot; A Proud Legacy</figcaption>
+            <figcaption>Graduation day · a proud legacy</figcaption>
           </figure>
         </div>
       </div>
@@ -1187,21 +548,21 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-4
   </section>
 
   <!-- ======= CH 02 — THIRTY SECONDS (dark) ======= -->
-  <section class="chapter dark on-dark" id="ch-02">
+  <section class="chapter dark" id="ch-02">
     <div class="wrap ch-grid">
       <div class="ch-rail reveal">
         <div class="ch-num">02</div>
-        <p class="microlabel"><span class="tick">/</span> Thirty Seconds</p>
-        <p class="ch-meta">Airborne Operation<br />One Jump · One Decision</p>
+        <span class="microlabel">Thirty seconds</span>
+        <p class="ch-meta">Airborne operation<br />One jump · one decision</p>
         <div class="rule"></div>
       </div>
       <div class="ch-body reveal">
-        <h2>The canopy <em>didn&rsquo;t open.</em></h2>
-        <p class="prose opener">A jump is a procedure. You rehearse it until it is boring, because boring is what keeps planeloads of men alive. Hundreds of jumps run exactly as drawn. Then one doesn&rsquo;t. I exited the aircraft the way I had been trained to — and my parachute did not open.</p>
+        <h2>The canopy <em>didn't open.</em></h2>
+        <p class="prose">A jump is a procedure. You rehearse it until it is boring, because boring is what keeps planeloads of men alive. Hundreds of jumps run exactly as drawn. Then one doesn't. I exited the aircraft the way I had been trained to — and my parachute did not open.</p>
         <p class="prose">What I had was <strong>less than thirty seconds</strong>. Thirty seconds to mentally review every hour of training, diagnose the best available option under a failing canopy, and act — while the ground did the only thing the ground ever does. There was no committee. No second opinion. No more data coming. There was a decision, and there was the execution of that decision, and the space between the two was where my life sat.</p>
-        <p class="prose">I made the call, and the call is why I&rsquo;m alive. It is not why I&rsquo;m whole. The impact broke things that training couldn&rsquo;t fix and doctors couldn&rsquo;t fully give back. The recovery was long, and it ended with the paperwork no soldier wants to read his own name on: an <strong>honorable medical discharge</strong>. In 2007 I took the uniform off for the last time — in my twenties, carrying injuries I hadn&rsquo;t planned for and the highest standard I&rsquo;d ever been held to, with nowhere left to apply it.</p>
-        <p class="pullq">A parachute accident ended my military career. It didn&rsquo;t end the standard it set.</p>
-        <p class="prose">People ask what I learned in the military and expect a slogan. Here is what I actually learned: when the canopy fails, you don&rsquo;t get to negotiate with the situation. You get your training, your judgment, and thirty seconds. Every business decision I&rsquo;ve made since has been easier than that — and I&rsquo;ve made every one of them like it mattered as much.</p>
+        <p class="prose">I made the call, and the call is why I'm alive. It is not why I'm whole. The impact broke things that training couldn't fix and doctors couldn't fully give back. The recovery was long, and it ended with the paperwork no soldier wants to read his own name on: an <strong>honorable medical discharge</strong>. In 2007 I took the uniform off for the last time — in my twenties, carrying injuries I hadn't planned for and the highest standard I'd ever been held to, with nowhere left to apply it.</p>
+        <p class="pullq">A parachute accident ended my military career. It didn't end the standard it set.</p>
+        <p class="prose">People ask what I learned in the military and expect a slogan. Here is what I actually learned: when the canopy fails, you don't get to negotiate with the situation. You get your training, your judgment, and thirty seconds. Every business decision I've made since has been easier than that — and I've made every one of them like it mattered as much.</p>
       </div>
     </div>
   </section>
@@ -1211,32 +572,32 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-4
     <div class="wrap ch-grid">
       <div class="ch-rail reveal">
         <div class="ch-num">03</div>
-        <p class="microlabel"><span class="tick">/</span> Starting Over</p>
-        <p class="ch-meta">CDW → Toshiba<br />The Sales Floors</p>
+        <span class="microlabel">Starting over</span>
+        <p class="ch-meta">CDW → Toshiba<br />The sales floors</p>
         <div class="rule"></div>
       </div>
       <div class="ch-body reveal">
         <h2>Revenue, learned <em>from the ground.</em></h2>
-        <p class="prose opener">There is no field on a civilian résumé for &ldquo;held to the Ranger standard.&rdquo; The market didn&rsquo;t owe me anything for it, and I didn&rsquo;t ask. I started where revenue actually starts: on the floor. At <strong>CDW</strong>, as an account manager, I learned that every dollar on an income statement began as one person keeping a promise to another — a call made, a follow-up honored, a problem owned all the way to resolution.</p>
-        <p class="prose">Then <strong>Toshiba</strong> — outside sales rep, Hawaii. Paradise, if you&rsquo;ve never carried a quota through it. I worked the territory the way I&rsquo;d been taught to work an operation: plan, execute, debrief, adjust, repeat. <strong>Eighteen months later I was the sales manager.</strong> Not because anyone handed it over — because the numbers kept making the argument for me.</p>
-        <p class="prose">Those years are why no dashboard has ever been able to lie to me. I know what the frontline knows, because I have been the frontline. Every forecast I&rsquo;ve signed since, I&rsquo;ve signed as someone who has personally made the cold call behind the number.</p>
+        <p class="prose">There is no field on a civilian résumé for "held to the Ranger standard." The market didn't owe me anything for it, and I didn't ask. I started where revenue actually starts: on the floor. At <strong>CDW</strong>, as an account manager, I learned that every dollar on an income statement began as one person keeping a promise to another — a call made, a follow-up honored, a problem owned all the way to resolution.</p>
+        <p class="prose">Then <strong>Toshiba</strong> — outside sales rep, Hawaii. Paradise, if you've never carried a quota through it. I worked the territory the way I'd been taught to work an operation: plan, execute, debrief, adjust, repeat. <strong>Eighteen months later I was the sales manager.</strong> Not because anyone handed it over — because the numbers kept making the argument for me.</p>
+        <p class="prose">Those years are why no dashboard has ever been able to lie to me. I know what the frontline knows, because I have been the frontline. Every forecast I've signed since, I've signed as someone who has personally made the cold call behind the number.</p>
       </div>
     </div>
   </section>
 
   <!-- ======= CH 04 — TEAM OF ONE (dark) ======= -->
-  <section class="chapter dark on-dark" id="ch-04">
+  <section class="chapter dark" id="ch-04">
     <div class="wrap ch-grid">
       <div class="ch-rail reveal">
         <div class="ch-num">04</div>
-        <p class="microlabel"><span class="tick">/</span> Team of One</p>
-        <p class="ch-meta">Founder ×2 · Exits ×2<br />2011 — 2018</p>
+        <span class="microlabel">Team of one</span>
+        <p class="ch-meta">Founder ×2 · exits ×2<br />2011 — 2018</p>
         <div class="rule"></div>
       </div>
       <div class="ch-body reveal">
         <h2>Every seat, <em>earned the hard way.</em></h2>
-        <p class="prose opener">In 2011 I founded <strong>Optimized</strong>, and for a long stretch the entire company was me. By day I was the whole sales team: the cold calls, the pipeline, the proposals, the contracts. By night I was the whole delivery team: the SEO, the PPC, the social campaigns, the web development. Every deliverable a client paid for passed through my hands — because there were no other hands.</p>
-        <p class="prose">It never took a dollar of outside money. It didn&rsquo;t need one. Optimized bootstrapped its way to <strong>23 employees, $5M in revenue, and seven satellite offices</strong> across the continental U.S. — outranking the very agencies who claimed the same expertise, in their own search results. Alongside it I built <strong>Florida Landscaping Services</strong> to $3M and eight employees. Both companies sold. Every role I hire for today, I have personally done — which means nobody who works for me carries a job I don&rsquo;t understand.</p>
+        <p class="prose">In 2011 I founded <strong>Optimized</strong>, and for a long stretch the entire company was me. By day I was the whole sales team: the cold calls, the pipeline, the proposals, the contracts. By night I was the whole delivery team: the SEO, the PPC, the social campaigns, the web development. Every deliverable a client paid for passed through my hands — because there were no other hands.</p>
+        <p class="prose">It never took a dollar of outside money. It didn't need one. Optimized bootstrapped its way to <strong>23 employees, $5M in revenue, and seven satellite offices</strong> across the continental U.S. — outranking the very agencies who claimed the same expertise, in their own search results. Alongside it I built <strong>Florida Landscaping Services</strong> to $3M and eight employees. Both companies sold. Every role I hire for today, I have personally done — which means nobody who works for me carries a job I don't understand.</p>
         <p class="pullq">By day I was the entire sales team. By night, the entire delivery team. There were no other hands.</p>
         <p class="prose">And in 2018, while running companies, I took on a different kind of build: a <strong>U.S. congressional campaign, constructed from zero</strong> — the organization, the field operation, the communications, all of it stood up from nothing — culminating in a <strong>live debate on statewide PBS</strong>, unscripted, under the lights. Set aside everything else a campaign is: as a test of leadership and communication under maximum public pressure, there is nothing else like it in civilian life.</p>
       </div>
@@ -1248,34 +609,34 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-4
     <div class="wrap ch-grid">
       <div class="ch-rail reveal">
         <div class="ch-num">05</div>
-        <p class="microlabel"><span class="tick">/</span> The Executive Years</p>
-        <p class="ch-meta">Head of Marketing → CMO<br />2019 — Today</p>
+        <span class="microlabel">The executive years</span>
+        <p class="ch-meta">Head of Marketing → CMO<br />2019 — today</p>
         <div class="rule"></div>
       </div>
       <div class="ch-body reveal">
         <h2>The system, <em>proven at scale.</em></h2>
-        <p class="prose opener">The operator years came next — the ones a résumé lists cleanly and the work never was. At <strong>Wensco</strong> I owned every outcome, and the records for sales, revenue, and growth fell one after another. At <strong>Roofing GR</strong>, the lead engine I built grew qualified volume 1,000% year over year — not a typo, a system.</p>
-        <p class="prose">Then <strong>AcreValue</strong>, the one that proved the system travels. I came in fractional: a platform with 1.5 million users and recurring revenue that had declined two straight years. I rebuilt the go-to-market from the inside sales calls out, repositioned the product, returned MRR to growth — and set the table for the ending: <strong>acquisition by CoStar Group, a NASDAQ company</strong>. A turnaround that ends on a stock ticker doesn&rsquo;t need adjectives.</p>
+        <p class="prose">The operator years came next — the ones a résumé lists cleanly and the work never was. At <strong>Wensco</strong> I owned every outcome, and the records for sales, revenue, and growth fell one after another. At <strong>Roofing GR</strong>, the lead engine I built grew qualified volume 1,000% year over year — not a typo, a system.</p>
+        <p class="prose">Then <strong>AcreValue</strong>, the one that proved the system travels. I came in fractional: a platform with 1.5 million users and recurring revenue that had declined two straight years. I rebuilt the go-to-market from the inside sales calls out, repositioned the product, returned MRR to growth — and set the table for the ending: <strong>acquisition by CoStar Group, a NASDAQ company</strong>. A turnaround that ends on a stock ticker doesn't need adjectives.</p>
         <p class="prose"><strong>Atrium</strong> handed me a $25M budget across six brands, and it was deployed like a budget that size should be — with discipline, attribution, and zero sentiment. <strong>Vertex</strong> made me Chief Marketing Officer, and within four months inbound calls were up 490% and the booking rate had gone from 16% to 59%. Today I run Midwest marketing for <strong>Infinity Home Services</strong> — and the region leads the entire company: <strong>double-digit growth and tens of millions in new sales, year over year</strong>.</p>
       </div>
     </div>
   </section>
 
   <!-- ======= CH 06 — THE UNFINISHED DEGREE (dark) ======= -->
-  <section class="chapter dark on-dark" id="ch-06">
+  <section class="chapter dark" id="ch-06">
     <div class="wrap ch-grid">
       <div class="ch-rail reveal">
         <div class="ch-num">06</div>
-        <p class="microlabel"><span class="tick">/</span> The Unfinished Degree</p>
+        <span class="microlabel">The unfinished degree</span>
         <p class="ch-meta">Central Michigan → Auburn<br />2025 — 2027</p>
         <div class="rule"></div>
       </div>
       <div class="ch-body reveal">
         <h2>Unfinished is not <em>a word I keep.</em></h2>
-        <p class="prose opener">There was one item left open on the ledger, and it had been open for twenty years. I left for the Army before the bachelor&rsquo;s degree was done, and life kept not requiring it — the companies didn&rsquo;t ask, the campaigns didn&rsquo;t ask, the C-suites didn&rsquo;t ask. But the standard doesn&rsquo;t accept &ldquo;not required.&rdquo;</p>
-        <p class="prose">So I went back. <strong>Central Michigan University</strong> — while simultaneously running a $25M growth engine at work. I finished <strong>summa cum laude, with a 3.97</strong>, twenty years after the first credit was earned. Not because my career needed the credential. I did it to be a good example to my children — that you can do it, and it doesn&rsquo;t have to happen in any specific order of life. And then, because a standard doesn&rsquo;t know how to stop, I enrolled again: a <strong>dual MBA and M.S. in Information Systems at Auburn University</strong>, on schedule for 2027.</p>
+        <p class="prose">There was one item left open on the ledger, and it had been open for twenty years. I left for the Army before the bachelor's degree was done, and life kept not requiring it — the companies didn't ask, the campaigns didn't ask, the C-suites didn't ask. But the standard doesn't accept "not required."</p>
+        <p class="prose">So I went back. <strong>Central Michigan University</strong> — while simultaneously running a $25M growth engine at work. I finished <strong>summa cum laude, with a 3.97</strong>, twenty years after the first credit was earned. Not because my career needed the credential. I did it to be a good example to my children — that you can do it, and it doesn't have to happen in any specific order of life. And then, because a standard doesn't know how to stop, I enrolled again: a <strong>dual MBA and M.S. in Information Systems at Auburn University</strong>, on schedule for 2027.</p>
         <p class="pullq">Twenty years later: summa cum laude, 3.97 — earned nights and weekends, next to a $25M P&amp;L.</p>
-        <p class="prose">People ask what a Ranger tab has to do with marketing. Everything. The plan. The rehearsal. The brutal honesty about what the data actually says. The refusal to leave a mission half-finished — even one that waits twenty years for you to come back to it. <strong>Discipline isn&rsquo;t a slide in my deck. It&rsquo;s the operating system.</strong></p>
+        <p class="prose">People ask what a Ranger tab has to do with marketing. Everything. The plan. The rehearsal. The brutal honesty about what the data actually says. The refusal to leave a mission half-finished — even one that waits twenty years for you to come back to it. <strong>Discipline isn't a slide in my deck. It's the operating system.</strong></p>
       </div>
     </div>
   </section>
@@ -1285,27 +646,27 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-4
     <div class="wrap ch-grid">
       <div class="ch-rail reveal">
         <div class="ch-num">07</div>
-        <p class="microlabel"><span class="tick">/</span> Off the Clock</p>
-        <p class="ch-meta">Michigan, by choice<br />Family · Water · Faith</p>
+        <span class="microlabel">Off the clock</span>
+        <p class="ch-meta">Michigan, by choice<br />Family · water · faith</p>
         <div class="rule"></div>
       </div>
       <div class="ch-body reveal">
-        <h2>The résumé stops <em>at the water&rsquo;s edge.</em></h2>
+        <h2>The résumé stops <em>at the water's edge.</em></h2>
         <div class="ch-duo">
           <div>
-            <p class="prose opener">Everything above is what I do. It is not the whole of what I am. Before any title on this page, I&rsquo;m a husband and a father — a family man building a life in Michigan, which is what all the other chapters were for.</p>
-            <p class="prose">When the calendar allows, we&rsquo;re outside — Michigan lakes and long days on the water with my family. Time outdoors keeps honest books: the water doesn&rsquo;t care what you ran last quarter, and neither do the people who matter most.</p>
-            <p class="prose">And I&rsquo;m a Christian. I don&rsquo;t lead meetings with it, and I won&rsquo;t hide it either. The standards named throughout this story — <strong>integrity, service, stewardship</strong> — didn&rsquo;t come out of a leadership book. They come from somewhere deeper, and they don&rsquo;t clock out when I do.</p>
+            <p class="prose">Everything above is what I do. It is not the whole of what I am. Before any title on this page, I'm a husband and a father — a family man building a life in Michigan, which is what all the other chapters were for.</p>
+            <p class="prose">When the calendar allows, we're outside — Michigan lakes and long days on the water with my family. Time outdoors keeps honest books: the water doesn't care what you ran last quarter, and neither do the people who matter most.</p>
+            <p class="prose">And I'm a Christian. I don't lead meetings with it, and I won't hide it either. The standards named throughout this story — <strong>integrity, service, stewardship</strong> — didn't come out of a leadership book. They come from somewhere deeper, and they don't clock out when I do.</p>
             <p class="pullq">One standard — at home, in the field, and in the boardroom.</p>
           </div>
-          <div>
+          <div class="photos">
             <figure class="ch-photo">
               <img src="assets/brad-family-lake.jpg" alt="Bradley Griffin lifting his young child into the air on the dock at a Michigan lake" loading="lazy" />
-              <figcaption>Lake Days · Michigan</figcaption>
+              <figcaption>Lake days · Michigan</figcaption>
             </figure>
-            <figure class="ch-photo" style="margin-top: 38px;">
+            <figure class="ch-photo">
               <img src="assets/brad-lake-fishing.jpg" alt="Bradley Griffin casting from a boat on a Michigan lake at dusk" loading="lazy" />
-              <figcaption>Michigan Water · Honest Books</figcaption>
+              <figcaption>Michigan water · honest books</figcaption>
             </figure>
           </div>
         </div>
@@ -1313,50 +674,49 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-4
     </div>
   </section>
 
-  <!-- ======= FULL RULED TIMELINE ======= -->
-  <section class="section" id="timeline">
+  <!-- ======= FULL TIMELINE ======= -->
+  <section class="section timeline-section" id="timeline">
     <div class="wrap">
-      <div class="section-head reveal">
-        <div class="head-rule"><span class="idx-num">08 /</span><span class="line"></span><span class="microlabel">The Record, Ruled</span></div>
-        <h2>Twenty years. <em>One line.</em></h2>
-        <p class="sub">Every chapter above, laid end to end. No gaps, no gloss — the same standard, applied to whatever the year demanded.</p>
+      <div class="section-intro reveal">
+        <span class="microlabel">The record, laid out</span>
+        <h2>Twenty years, <em>one line.</em></h2>
+        <p>Every chapter above, laid end to end. No gaps, no gloss — the same standard, applied to whatever the year demanded.</p>
       </div>
       <div class="tl-cols reveal">
-        <div class="timeline lt">
+        <div class="timeline">
           <div class="tl-item"><span class="yr">2005 — 2007</span><h4>U.S. Army · 75th Ranger Regiment</h4><p>Airborne Ranger, Fort Benning. A parachute malfunction, a thirty-second decision, and an honorable medical discharge that ended the career — not the standard.</p></div>
-          <div class="tl-item"><span class="yr">2007 — 2011</span><h4>The Sales Floors</h4><p>CDW account manager, then Toshiba outside sales in Hawaii — promoted to sales manager in eighteen months. Revenue, learned one conversation at a time.</p></div>
-          <div class="tl-item"><span class="yr">2011 — 2018</span><h4>Founder ×2 · Exits ×2</h4><p>Optimized: a team of one, bootstrapped to 23 employees, $5M, and seven satellite offices. Florida Landscaping Services: $3M, eight employees. Both companies sold.</p></div>
-          <div class="tl-item"><span class="yr">2018</span><h4>U.S. Congressional Candidate</h4><p>Built a full campaign organization from zero — raising funds, growing a following, and debating live on statewide PBS. A leadership-and-communications chapter run on honor and integrity.</p></div>
+          <div class="tl-item"><span class="yr">2007 — 2011</span><h4>The sales floors</h4><p>CDW account manager, then Toshiba outside sales in Hawaii — promoted to sales manager in eighteen months. Revenue, learned one conversation at a time.</p></div>
+          <div class="tl-item"><span class="yr">2011 — 2018</span><h4>Founder ×2 · exits ×2</h4><p>Optimized: a team of one, bootstrapped to 23 employees, $5M, and seven satellite offices. Florida Landscaping Services: $3M, eight employees. Both companies sold.</p></div>
+          <div class="tl-item"><span class="yr">2018</span><h4>U.S. congressional candidate</h4><p>Built a full campaign organization from zero — raising funds, growing a following, and debating live on statewide PBS. A leadership-and-communications chapter run on honor and integrity.</p></div>
         </div>
-        <div class="timeline lt">
+        <div class="timeline">
           <div class="tl-item"><span class="yr">2019 — 2025</span><h4>Head of Marketing → CMO</h4><p>Wensco → Roofing GR (1,000% lead growth) → AcreValue, fractional, through its CoStar/NASDAQ acquisition → Atrium ($25M, six brands) → Vertex, CMO (+490% inbound calls, booking rate 16%→59%).</p></div>
           <div class="tl-item"><span class="yr">2025</span><h4>Central Michigan University · B.A.</h4><p>The degree finished twenty years after it started — summa cum laude, 3.97 — earned while running a $25M growth engine.</p></div>
-          <div class="tl-item"><span class="yr">Today</span><h4>Infinity Home Services · Regional Marketing</h4><p>The Midwest region leads the company: #1 in the company, with tens of millions in new YoY sales.</p></div>
-          <div class="tl-item"><span class="yr">2027</span><h4>Auburn University · MBA + M.S. IS</h4><p>Dual master&rsquo;s in progress at the Harbert College of Business. The standard doesn&rsquo;t know how to stop.</p></div>
+          <div class="tl-item"><span class="yr">Today</span><h4>Infinity Home Services · regional marketing</h4><p>The Midwest region leads the company: #1 in the company, with tens of millions in new YoY sales.</p></div>
+          <div class="tl-item"><span class="yr">2027</span><h4>Auburn University · MBA + M.S. IS</h4><p>Dual master's in progress at the Harbert College of Business. The standard doesn't know how to stop.</p></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ======= FINALE CTA ======= -->
-  <section class="finale" id="contact">
-    <div class="crosses"></div>
+  <!-- ======= FINAL CTA ======= -->
+  <section class="section contact" id="contact">
     <div class="wrap reveal">
-      <p class="microlabel"><span class="tick">09 /</span> Start a Conversation</p>
-      <h2>You&rsquo;ve read the story. <em>Put it to work.</em></h2>
-      <p>The standard that survived a failed canopy is the same one I&rsquo;ll bring to your P&amp;L. If your company has a mission worth that kind of discipline — tell me about it.</p>
-      <a class="btn btn-solid" href="/contact">Start a Conversation <span class="arr">→</span></a>
+      <span class="microlabel">Let's talk</span>
+      <h2>You've read the story. <em>Put it to work.</em></h2>
+      <p>The standard that survived a failed canopy is the same one I'll bring to your P&amp;L. If your company has a mission worth that kind of discipline — tell me about it.</p>
+      <a class="btn btn-solid" href="/contact">Start a conversation <span class="arr">→</span></a>
     </div>
   </section>
 
   <!-- ======= FOOTER ======= -->
   <footer class="footer">
     <div class="wrap">
-      <span class="fbrand">Bradley <em>Griffin</em></span>
+      <span class="fbrand">Bradley Griffin<span class="dot">.</span></span>
       <nav>
-        <a href="/#work">Work With Me</a>
+        <a href="/#help">Work with me</a>
         <a href="/case-studies">Results</a>
-        <a href="/story">Story</a>
+        <a href="/story">About</a>
         <a href="/speaking">Speaking</a>
         <a href="/credentials">Credentials</a>
         <a href="/contact">Contact</a>
@@ -1367,29 +727,32 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-4
   </footer>
 
   <script>
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
-    }, { threshold: 0.12 });
-    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
-  </script>
+    // Mobile menu
+    (function () {
+      var btn = document.querySelector(".menu-btn");
+      var body = document.body;
+      if (!btn) return;
+      btn.addEventListener("click", function () {
+        var open = body.classList.toggle("nav-open");
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+      document.querySelectorAll(".mobile-nav a").forEach(function (a) {
+        a.addEventListener("click", function () {
+          body.classList.remove("nav-open");
+          btn.setAttribute("aria-expanded", "false");
+        });
+      });
+    })();
 
-<script>
-(function () {
-  var nav = document.querySelector(".header .nav");
-  var wrap = document.querySelector(".header .wrap");
-  var header = document.querySelector(".header");
-  if (!nav || !wrap || !header) return;
-  var btn = document.createElement("button");
-  btn.className = "menu-btn"; btn.setAttribute("aria-label", "Menu");
-  btn.innerHTML = "<span class=\"mi\"></span><span class=\"mi\"></span><span class=\"mi\"></span>";
-  var panel = document.createElement("div");
-  panel.className = "mobile-nav";
-  nav.querySelectorAll("a").forEach(function (a) { panel.appendChild(a.cloneNode(true)); });
-  btn.addEventListener("click", function () { document.body.classList.toggle("nav-open"); });
-  panel.addEventListener("click", function (e) { if (e.target.tagName === "A") document.body.classList.remove("nav-open"); });
-  wrap.appendChild(btn);
-  header.appendChild(panel);
-})();
-</script>
+    // Reveal on scroll
+    (function () {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.12 });
+      document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+    })();
+  </script>
 </body>
 </html>

@@ -6,30 +6,28 @@
   <title>Bradley Griffin - Chief Marketing Officer &amp; Growth Executive</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
 /* ============================================================
-   BRADLEY GRIFFIN — bradleygriffin.us — OPTION C
-   "Modern Executive" · Swiss grid · data-forward
-   Display: Space Grotesk · Body/UI: Inter
-   Bone #F2F1ED · Ink #121417 · Signal #B33A2B · Charcoal #16181C
+   BRADLEY GRIFFIN — redesign-3 — "Conversational / Human"
+   Warm, first-person, one idea per screen.
+   Headings: Fraunces (soft) · Body/UI: DM Sans
+   Paper #FFFDF7 / #FBF7EF · Ink #2A2521 · Clay #C0563A
    ============================================================ */
 
 :root {
-  --bone: #F2F1ED;
-  --bone-2: #EDEBE5;
-  --ink: #121417;
-  --charcoal: #16181C;
-  --red: #B33A2B;
-  --red-soft: #C4503F;
-  --mute: #565A60;
-  --mute-d: #9A9FA6;
-  --line: #C9C6BD;
-  --line-strong: #121417;
-  --line-d: rgba(242, 241, 237, 0.14);
-  --disp: "Space Grotesk", "Inter", -apple-system, sans-serif;
-  --sans: "Inter", -apple-system, "Segoe UI", sans-serif;
-  --wrap: 1240px;
+  --paper: #FFFDF7;
+  --paper-2: #FBF7EF;
+  --paper-3: #F4EDE0;
+  --ink: #2A2521;
+  --ink-soft: #5C544C;
+  --ink-mute: #857B70;
+  --clay: #C0563A;
+  --clay-deep: #A5462E;
+  --line: #E9DFCF;
+  --disp: "Fraunces", Georgia, serif;
+  --sans: "DM Sans", -apple-system, "Segoe UI", sans-serif;
+  --wrap: 1060px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -37,801 +35,359 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--sans);
-  background: var(--bone);
+  background: var(--paper);
   color: var(--ink);
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 18px;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
-  font-variant-numeric: tabular-nums;
 }
 
-.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 32px; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 28px; }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
-em, i { font-style: normal; }
-h1, h2, h3, h4 { font-family: var(--disp); font-weight: 700; line-height: 1.02; letter-spacing: -0.02em; }
+h1, h2, h3 { font-family: var(--disp); font-weight: 600; line-height: 1.08; letter-spacing: -0.01em; }
+::selection { background: var(--clay); color: #fff; }
 
-::selection { background: var(--red); color: var(--bone); }
-
-/* ---------- type utilities ---------- */
 .microlabel {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--ink);
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  color: var(--clay);
 }
-.microlabel .tick { color: var(--red); font-weight: 600; }
-.on-dark .microlabel { color: var(--bone); }
 
 /* ---------- buttons ---------- */
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  font-family: var(--disp);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 18px 32px;
-  border: 1px solid var(--ink);
-  border-radius: 0;
-  transition: background 0.22s ease, color 0.22s ease, border-color 0.22s ease;
+  gap: 10px;
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 600;
+  padding: 16px 30px;
+  border-radius: 40px;
+  border: 1.5px solid transparent;
+  transition: transform 0.18s ease, background 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
 }
-.btn-solid { background: var(--ink); color: var(--bone); }
-.btn-solid:hover { background: var(--red); border-color: var(--red); color: #fff; }
-.btn-ghost { background: transparent; color: var(--ink); }
-.btn-ghost:hover { background: var(--ink); color: var(--bone); }
-.btn .arr { font-family: var(--sans); transition: transform 0.22s ease; }
-.btn:hover .arr { transform: translateX(4px); }
+.btn-solid { background: var(--clay); color: #fff; box-shadow: 0 6px 20px rgba(192, 86, 58, 0.22); }
+.btn-solid:hover { background: var(--clay-deep); transform: translateY(-2px); box-shadow: 0 10px 26px rgba(192, 86, 58, 0.28); }
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn-ghost:hover { border-color: var(--ink); transform: translateY(-2px); }
+.btn .arr { transition: transform 0.18s ease; }
+.btn:hover .arr { transform: translateX(3px); }
 
 /* ---------- header ---------- */
 .header {
-  position: fixed;
-  inset: 0 0 auto 0;
+  position: sticky;
+  top: 0;
   z-index: 50;
-  background: rgba(242, 241, 237, 0.92);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--line-strong);
+  background: rgba(255, 253, 247, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
 }
 .header .wrap {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 68px;
+  height: 72px;
 }
-.brand { display: flex; align-items: baseline; gap: 14px; white-space: nowrap; }
-.brand .mark {
+.brand {
   font-family: var(--disp);
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--ink);
 }
-.brand .mark em { color: var(--red); }
-.brand .tag {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--mute);
-}
-.nav { display: flex; align-items: center; gap: 28px; }
+.brand .dot { color: var(--clay); }
+.nav { display: flex; align-items: center; gap: 30px; }
 .nav a {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--mute);
-  transition: color 0.2s;
-  white-space: nowrap;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  transition: color 0.18s;
 }
-.nav a:hover { color: var(--red); }
+.nav a:hover { color: var(--clay); }
 .nav .nav-cta {
-  color: var(--bone);
+  color: #fff;
   background: var(--ink);
-  border: 1px solid var(--ink);
-  padding: 10px 18px;
-  transition: background 0.22s, border-color 0.22s;
+  padding: 10px 20px;
+  border-radius: 40px;
+  transition: background 0.2s;
 }
-.nav .nav-cta:hover { background: var(--red); border-color: var(--red); color: #fff; }
-@media (max-width: 1240px) { .brand .tag { display: none; } }
+.nav .nav-cta:hover { background: var(--clay); }
+
+.menu-btn {
+  display: none;
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  width: 46px; height: 42px;
+  flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  cursor: pointer; padding: 0;
+}
+.menu-btn .mi { display: block; width: 20px; height: 2px; background: var(--ink); border-radius: 2px; transition: transform .2s, opacity .2s; }
+body.nav-open .menu-btn .mi:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+body.nav-open .menu-btn .mi:nth-child(2) { opacity: 0; }
+body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobile-nav { display: none; border-top: 1px solid var(--line); background: var(--paper); }
+.mobile-nav a { display: block; padding: 16px 28px; font-size: 17px; font-weight: 500; color: var(--ink); border-bottom: 1px solid var(--line); }
+.mobile-nav a.nav-cta { color: var(--clay); font-weight: 600; }
+
+/* ---------- section rhythm ---------- */
+.section { padding: 104px 0; }
+.section + .section { border-top: 1px solid var(--line); }
 
 /* ---------- hero ---------- */
-.hero {
-  position: relative;
-  padding: 168px 0 0;
-  background:
-    radial-gradient(circle at 1px 1px, rgba(18, 20, 23, 0.0) 0, transparent 0),
-    var(--bone);
-  border-bottom: 1px solid var(--line-strong);
-  overflow: hidden;
-}
-.hero .crosses {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(18,20,23,0.12) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(18,20,23,0.12) 1px, transparent 1px);
-  background-size: 120px 120px;
-  -webkit-mask-image: radial-gradient(700px 480px at 78% 30%, #000 0%, transparent 72%);
-  mask-image: radial-gradient(700px 480px at 78% 30%, #000 0%, transparent 72%);
-  pointer-events: none;
-}
+.hero { padding: 84px 0 96px; }
 .hero-grid {
-  position: relative;
-  z-index: 1;
   display: grid;
-  grid-template-columns: 1.12fr 0.88fr;
-  gap: 72px;
-  align-items: stretch;
-  padding-bottom: 88px;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 64px;
+  align-items: center;
 }
-.hero .cred-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 28px;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--mute);
-  margin-bottom: 40px;
+.hero .hi {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--clay);
+  margin-bottom: 22px;
 }
-.hero .cred-row span::before { content: "/ "; color: var(--red); font-weight: 600; }
 .hero h1 {
-  font-size: clamp(54px, 7.2vw, 104px);
-  text-transform: uppercase;
-  letter-spacing: -0.03em;
+  font-size: clamp(40px, 6vw, 68px);
+  font-weight: 600;
   color: var(--ink);
-  margin: 0 0 34px;
+  margin-bottom: 28px;
 }
-.hero h1 em { color: var(--red); }
+.hero h1 em { font-style: italic; color: var(--clay); }
 .hero .lede {
-  font-size: 17px;
-  line-height: 1.75;
-  color: var(--mute);
-  max-width: 58ch;
-  margin-bottom: 44px;
+  font-size: 20px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 30ch;
+  margin-bottom: 38px;
 }
-.hero .lede strong { color: var(--ink); font-weight: 600; }
-.hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
+.hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+.hero-note { font-size: 15px; color: var(--ink-mute); margin-top: 22px; }
 
-/* portrait */
 .portrait {
   position: relative;
-  height: 100%;
-  min-height: 560px;
-  border: 1px solid var(--line-strong);
-  background: var(--bone-2);
+  border-radius: 28px;
+  overflow: hidden;
+  background: var(--paper-2);
+  box-shadow: 0 24px 60px rgba(42, 37, 33, 0.14);
+  aspect-ratio: 4 / 5;
 }
-.portrait-inner { height: 100%; overflow: hidden; }
-.portrait-inner img {
-  width: 100%;
-  height: 100%;
+.portrait img {
+  width: 100%; height: 100%;
   object-fit: cover;
   object-position: 50% 12%;
-  filter: grayscale(0.15) contrast(1.05);
 }
 .portrait::after {
   content: "";
   position: absolute;
-  left: -1px;
-  right: -1px;
-  bottom: -7px;
-  height: 6px;
-  background: var(--red);
-}
-.portrait-caption {
-  position: absolute;
-  top: -1px;
-  right: -1px;
-  background: var(--ink);
-  color: var(--bone);
-  font-family: var(--disp);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  padding: 9px 14px;
-  z-index: 2;
+  inset: 0;
+  border-radius: 28px;
+  box-shadow: inset 0 0 0 1px rgba(42, 37, 33, 0.06);
 }
 
-/* ---------- stat band ---------- */
-.stats { background: var(--bone); border-bottom: 1px solid var(--line-strong); }
-.stats .wrap {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  border-left: 1px solid var(--line-strong);
-  border-right: 1px solid var(--line-strong);
-}
-.stat {
-  padding: 42px 24px 38px;
-  border-left: 1px solid var(--line);
-  position: relative;
-}
-.stat:first-child { border-left: none; }
-.stat .num {
-  font-family: var(--disp);
-  font-size: 42px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
+/* ---------- how i can help ---------- */
+.help { background: var(--paper-2); }
+.section-intro { max-width: 34ch; margin-bottom: 52px; }
+.section-intro h2 {
+  font-size: clamp(30px, 4.4vw, 46px);
   color: var(--ink);
-  line-height: 1;
-  white-space: nowrap;
+  margin: 16px 0 18px;
 }
-.stat .num em { color: var(--red); }
-.stat .lbl {
-  margin-top: 14px;
-  font-size: 10.5px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--mute);
-  line-height: 1.6;
-}
+.section-intro h2 em { font-style: italic; color: var(--clay); }
+.section-intro p { font-size: 18px; color: var(--ink-soft); }
 
-/* ---------- shared section scaffolding ---------- */
-.section { padding: 108px 0 116px; border-bottom: 1px solid var(--line-strong); }
-.section-head { margin-bottom: 64px; }
-.section-head .head-rule {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 24px;
-  align-items: center;
-  margin-bottom: 40px;
-}
-.section-head .head-rule::before { content: none; }
-.section-head .head-rule .line { height: 1px; background: var(--line); }
-.section-head .idx-num {
-  font-family: var(--disp);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  color: var(--red);
-}
-.section-head h2 {
-  font-size: clamp(38px, 4.6vw, 62px);
-  text-transform: uppercase;
-  letter-spacing: -0.025em;
-  color: var(--ink);
-  margin: 0 0 20px;
-  max-width: 20ch;
-}
-.section-head h2 em { color: var(--red); }
-.section-head p.sub { font-size: 16px; color: var(--mute); max-width: 66ch; }
-.on-dark .section-head h2 { color: var(--bone); }
-.on-dark .section-head p.sub { color: var(--mute-d); }
-.on-dark .section-head .head-rule .line { background: var(--line-d); }
-
-/* ---------- offers ---------- */
-.offers {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border: 1px solid var(--line-strong);
-  background: var(--bone);
-}
-.offer {
-  padding: 40px 30px 36px;
-  display: flex;
-  flex-direction: column;
-  min-height: 420px;
-  border-left: 1px solid var(--line-strong);
-  background: var(--bone);
-  transition: background 0.22s ease, color 0.22s ease;
-  position: relative;
-}
-.offer:first-child { border-left: none; }
-.offer .idx {
-  font-family: var(--disp);
-  font-size: 44px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--red);
-  line-height: 1;
-  margin-bottom: 34px;
-}
-.offer h3 {
-  font-size: 23px;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  margin-bottom: 10px;
-  transition: color 0.22s ease;
-}
-.offer .for {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--mute);
-  margin-bottom: 18px;
-  transition: color 0.22s ease;
-}
-.offer p { font-size: 14px; line-height: 1.7; color: var(--mute); flex: 1; transition: color 0.22s ease; }
-.offer .link {
-  margin-top: 30px;
-  font-family: var(--disp);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ink);
-  display: inline-flex;
-  gap: 10px;
-  align-items: center;
-  transition: color 0.22s ease;
-}
-.offer .link .arr { transition: transform 0.22s; }
-.offer:hover { background: var(--ink); }
-.offer:hover h3, .offer:hover .link { color: var(--bone); }
-.offer:hover .for, .offer:hover p { color: var(--mute-d); }
-.offer:hover .link { color: var(--red-soft); }
-.offer:hover .link .arr { transform: translateX(5px); }
-
-/* ---------- case studies (ruled table rows) ---------- */
-.cases { border-top: 1px solid var(--line-strong); }
-.case {
-  display: grid;
-  grid-template-columns: 170px 1.05fr 1.5fr 64px;
-  gap: 40px;
-  align-items: center;
-  border-bottom: 1px solid var(--line-strong);
-  padding: 44px 0;
-  transition: background 0.22s ease;
-  position: relative;
-}
-.case .big {
-  font-family: var(--disp);
-  font-size: 40px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: var(--red);
-  line-height: 1;
-  white-space: nowrap;
-}
-.case h3 {
-  font-size: 22px;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  margin-bottom: 10px;
-  transition: color 0.22s ease;
-}
-.case .co {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--mute);
-}
-.case p { font-size: 14.5px; line-height: 1.7; color: var(--mute); }
-.case .go {
-  font-family: var(--sans);
-  font-size: 20px;
-  color: var(--ink);
-  border: 1px solid var(--line-strong);
-  width: 52px;
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0;
-  transition: background 0.22s, color 0.22s;
-  justify-self: end;
-}
-.case:hover { background: var(--bone-2); }
-.case:hover h3 { color: var(--red); }
-.case:hover .go { background: var(--red); border-color: var(--red); color: #fff; }
-
-/* ---------- story (dark full-bleed) ---------- */
-.story {
-  background: var(--charcoal);
-  color: var(--bone);
-}
-.story-grid {
-  display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  gap: 88px;
-  align-items: start;
-}
-.story h2 {
-  font-size: clamp(36px, 4.2vw, 58px);
-  text-transform: uppercase;
-  letter-spacing: -0.025em;
-  color: var(--bone);
-  margin: 0 0 30px;
-}
-.story h2 em { color: var(--red-soft); }
-.story .microlabel { color: var(--bone); margin-bottom: 34px; }
-.story-copy p {
-  font-size: 16px;
-  line-height: 1.8;
-  color: var(--mute-d);
-  margin-bottom: 20px;
-}
-.story-copy p strong { color: var(--bone); font-weight: 600; }
-.story-copy .pull {
-  font-family: var(--disp);
-  font-size: 24px;
-  font-weight: 500;
-  line-height: 1.35;
-  letter-spacing: -0.01em;
-  color: var(--bone);
-  border-left: 3px solid var(--red);
-  padding-left: 26px;
-  margin: 36px 0;
-}
-.timeline { border-left: 1px solid var(--line-d); }
-.tl-item { position: relative; padding: 0 0 36px 34px; }
-.tl-item:last-child { padding-bottom: 0; }
-.tl-item::before {
-  content: "";
-  position: absolute;
-  left: -4px;
-  top: 8px;
-  width: 7px;
-  height: 7px;
-  background: var(--red);
-}
-.tl-item .yr {
-  font-family: var(--disp);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  color: var(--red-soft);
-}
-.tl-item h4 {
-  font-size: 18px;
-  text-transform: uppercase;
-  letter-spacing: 0;
-  color: var(--bone);
-  margin: 8px 0 6px;
-}
-.tl-item p { font-size: 13.5px; line-height: 1.65; color: var(--mute-d); }
-
-/* ---------- speaking ---------- */
-.speaking-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border: 1px solid var(--line-strong);
-}
-.venue {
-  padding: 48px 44px;
-  border-left: 1px solid var(--line-strong);
-  background: var(--bone);
-}
-.venue:first-child { border-left: none; }
-.venue .where {
-  font-family: var(--disp);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--red);
-  margin-bottom: 20px;
-}
-.venue h3 {
-  font-size: 26px;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  margin-bottom: 14px;
-}
-.venue p { font-size: 14.5px; line-height: 1.75; color: var(--mute); }
-.venue .quotebox {
-  margin-top: 26px;
-  font-family: var(--disp);
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 1.5;
-  letter-spacing: -0.005em;
-  color: var(--ink);
-  border-top: 1px solid var(--line);
-  padding-top: 22px;
-}
-.venue .quotebox .src {
-  display: inline-block;
-  margin-top: 12px;
-  font-family: var(--sans);
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--red);
-}
-
-/* ---------- testimonials ---------- */
-.quotes {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  border: 1px solid var(--line-strong);
-}
-.quote {
-  padding: 44px 36px 40px;
-  border-left: 1px solid var(--line-strong);
-  display: flex;
-  flex-direction: column;
-  background: var(--bone);
-}
-.quote:first-child { border-left: none; }
-.quote .qmark {
-  font-family: var(--disp);
-  font-size: 84px;
-  font-weight: 700;
-  line-height: 0.55;
-  color: var(--red);
-  margin-bottom: 30px;
-}
-.quote p {
-  font-size: 15.5px;
-  font-weight: 500;
-  line-height: 1.7;
-  color: var(--ink);
-  flex: 1;
-}
-.quote .who { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--line); }
-.quote .who .nm {
-  font-family: var(--disp);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink);
-}
-.quote .who .rl { font-size: 12px; color: var(--mute); margin-top: 4px; }
-
-/* ---------- credentials ---------- */
-.creds {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 80px;
-  align-items: start;
-}
-.cred-list { display: grid; gap: 0; }
-.cred {
+.paths { display: flex; flex-direction: column; gap: 16px; }
+.path {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 20px;
-  align-items: baseline;
-  padding: 24px 0;
-  border-bottom: 1px solid var(--line);
-}
-.cred:first-child { border-top: 1px solid var(--line-strong); }
-.cred:last-child { border-bottom: 1px solid var(--line-strong); }
-.cred h4 { font-size: 18px; letter-spacing: -0.005em; color: var(--ink); }
-.cred .sub { font-size: 13px; color: var(--mute); margin-top: 5px; }
-.cred .yr {
-  font-family: var(--disp);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--red);
-  white-space: nowrap;
-}
-.cert-wall h3 {
-  font-size: 24px;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  margin-bottom: 12px;
-}
-.cert-wall > p { font-size: 14px; line-height: 1.7; color: var(--mute); margin-bottom: 28px; }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--ink);
-  background: transparent;
+  align-items: center;
+  gap: 24px;
+  background: var(--paper);
   border: 1px solid var(--line);
-  padding: 9px 15px;
+  border-radius: 20px;
+  padding: 26px 30px;
+  transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
-.chip.more {
-  background: var(--red);
-  border-color: var(--red);
-  color: #fff;
+.path:hover {
+  transform: translateY(-3px);
+  border-color: transparent;
+  box-shadow: 0 14px 34px rgba(42, 37, 33, 0.1);
+}
+.path h3 {
+  font-size: 24px;
   font-weight: 600;
-}
-
-/* ---------- final cta ---------- */
-.finale {
-  text-align: center;
-  padding: 130px 0 140px;
-  background: var(--bone);
-  border-bottom: 1px solid var(--line-strong);
-  position: relative;
-  overflow: hidden;
-}
-.finale .crosses {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(18,20,23,0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(18,20,23,0.1) 1px, transparent 1px);
-  background-size: 120px 120px;
-  -webkit-mask-image: radial-gradient(640px 380px at 50% 55%, #000 0%, transparent 74%);
-  mask-image: radial-gradient(640px 380px at 50% 55%, #000 0%, transparent 74%);
-  pointer-events: none;
-}
-.finale .wrap { position: relative; z-index: 1; }
-.finale .microlabel { justify-content: center; }
-.finale h2 {
-  font-size: clamp(42px, 5.4vw, 76px);
-  text-transform: uppercase;
-  letter-spacing: -0.03em;
   color: var(--ink);
-  margin: 28px auto 22px;
+  margin-bottom: 4px;
+}
+.path p { font-size: 16.5px; color: var(--ink-soft); line-height: 1.5; }
+.path .go {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--clay);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.path .go .arr { transition: transform 0.18s ease; }
+.path:hover .go .arr { transform: translateX(4px); }
+
+/* ---------- results ---------- */
+.results-list { display: flex; flex-direction: column; gap: 46px; margin-top: 8px; }
+.result {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: 40px;
+  align-items: baseline;
+}
+.result .stat {
+  font-family: var(--disp);
+  font-size: clamp(44px, 6vw, 60px);
+  font-weight: 600;
+  line-height: 0.95;
+  color: var(--clay);
+  letter-spacing: -0.02em;
+}
+.result .stat small {
+  display: block;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-top: 10px;
+  line-height: 1.4;
+}
+.result .rc h3 {
+  font-size: 23px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.result .rc p { font-size: 17.5px; color: var(--ink-soft); }
+.results-cta { margin-top: 54px; }
+.results-cta a {
+  font-size: 17px; font-weight: 600; color: var(--clay);
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.results-cta a .arr { transition: transform 0.18s; }
+.results-cta a:hover .arr { transform: translateX(4px); }
+
+/* ---------- who i am ---------- */
+.who { background: var(--ink); color: var(--paper); }
+.who .microlabel { color: #E8A38F; }
+.who h2 {
+  font-size: clamp(30px, 4.4vw, 46px);
+  color: var(--paper);
+  margin: 16px 0 26px;
+  max-width: 18ch;
+}
+.who h2 em { font-style: italic; color: #E8A38F; }
+.who-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+.who p {
+  font-size: 18.5px;
+  line-height: 1.75;
+  color: #D8CFC4;
+  margin-bottom: 18px;
+}
+.who p strong { color: var(--paper); font-weight: 600; }
+.who .who-link {
+  margin-top: 14px;
+  font-size: 17px; font-weight: 600; color: #E8A38F;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.who .who-link .arr { transition: transform 0.18s; }
+.who .who-link:hover .arr { transform: translateX(4px); }
+.who .pull {
+  font-family: var(--disp);
+  font-size: clamp(24px, 3.4vw, 34px);
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1.35;
+  color: var(--paper);
+}
+.who .pull span { color: #E8A38F; }
+
+/* ---------- contact ---------- */
+.contact { text-align: center; background: var(--paper-2); }
+.contact h2 {
+  font-size: clamp(34px, 5vw, 56px);
+  color: var(--ink);
+  margin: 18px auto 22px;
   max-width: 16ch;
 }
-.finale h2 em { color: var(--red); }
-.finale p { color: var(--mute); max-width: 56ch; margin: 0 auto 46px; font-size: 16px; }
+.contact h2 em { font-style: italic; color: var(--clay); }
+.contact p {
+  font-size: 19px;
+  color: var(--ink-soft);
+  max-width: 46ch;
+  margin: 0 auto 36px;
+}
+.contact .btn-solid { font-size: 18px; padding: 18px 36px; }
+.contact .email {
+  display: block;
+  margin-top: 22px;
+  font-size: 16px;
+  color: var(--ink-mute);
+}
+.contact .email a { color: var(--clay); font-weight: 600; }
 
 /* ---------- footer ---------- */
-.footer { padding: 40px 0; background: var(--bone); }
+.footer { padding: 44px 0; background: var(--paper); border-top: 1px solid var(--line); }
 .footer .wrap {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap;
 }
-.footer .fbrand {
-  font-family: var(--disp);
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--ink);
-}
-.footer .fbrand em { color: var(--red); }
-.footer nav { display: flex; gap: 24px; }
-.footer nav a {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--mute);
-}
-.footer nav a:hover { color: var(--red); }
-.footer .fine { font-size: 11.5px; color: var(--mute); }
+.footer .fbrand { font-family: var(--disp); font-size: 18px; font-weight: 600; color: var(--ink); }
+.footer .fbrand .dot { color: var(--clay); }
+.footer nav { display: flex; gap: 22px; flex-wrap: wrap; }
+.footer nav a { font-size: 15px; color: var(--ink-soft); }
+.footer nav a:hover { color: var(--clay); }
+.footer .fine { font-size: 14px; color: var(--ink-mute); }
 
-/* ---------- style switcher ---------- */
-.switcher {
-  position: fixed;
-  right: 22px;
-  bottom: 22px;
-  z-index: 60;
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--line-strong);
-  background: rgba(242, 241, 237, 0.95);
-  backdrop-filter: blur(10px);
-}
-.switcher .sw-label {
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--mute);
-  padding: 0 12px;
-  border-right: 1px solid var(--line);
-}
-.switcher a {
-  font-family: var(--disp);
-  font-size: 12px;
-  font-weight: 700;
-  width: 38px;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--mute);
-  border-left: 1px solid var(--line);
-  transition: background 0.2s, color 0.2s;
-}
-.switcher a:first-of-type { border-left: none; }
-.switcher a:hover { background: var(--ink); color: var(--bone); }
-.switcher a.active { background: var(--red); color: #fff; }
-
-/* ---------- reveal animation ---------- */
+/* ---------- reveal ---------- */
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s ease; }
 .reveal.in { opacity: 1; transform: none; }
 
 /* ---------- responsive ---------- */
-@media (max-width: 1020px) {
-  .hero-grid { grid-template-columns: 1fr; gap: 56px; }
-  .portrait { max-width: 380px; height: auto; min-height: 0; aspect-ratio: 4 / 5; }
-  .stats .wrap { grid-template-columns: repeat(3, 1fr); }
-  .stat:nth-child(4) { border-left: none; }
-  .stat { border-top: 1px solid var(--line); }
-  .stat:nth-child(-n + 3) { border-top: none; }
-  .offers { grid-template-columns: repeat(2, 1fr); }
-  .offer { border-top: 1px solid var(--line-strong); min-height: 0; }
-  .offer:nth-child(-n + 2) { border-top: none; }
-  .offer:nth-child(odd) { border-left: none; }
-  .offer:nth-child(even) { border-left: 1px solid var(--line-strong); }
-  .story-grid { grid-template-columns: 1fr; gap: 64px; }
-  .quotes { grid-template-columns: 1fr; }
-  .quote { border-left: none; border-top: 1px solid var(--line-strong); }
-  .quote:first-child { border-top: none; }
-  .creds { grid-template-columns: 1fr; gap: 56px; }
-  .speaking-grid { grid-template-columns: 1fr; }
-  .venue { border-left: none; border-top: 1px solid var(--line-strong); }
-  .venue:first-child { border-top: none; }
-  .case { grid-template-columns: 1fr; gap: 18px; padding: 36px 0; }
-  .case .go { display: none; }
+@media (max-width: 900px) {
   .nav { display: none; }
-}
-@media (max-width: 640px) {
-  .stats .wrap { grid-template-columns: 1fr 1fr; }
-  .stat { border-left: none; border-top: 1px solid var(--line); }
-  .stat:nth-child(-n + 2) { border-top: none; }
-  .offers { grid-template-columns: 1fr; }
-  .offer { border-left: none !important; border-top: 1px solid var(--line-strong); }
-  .offer:first-child { border-top: none; }
-  .hero { padding-top: 140px; }
-  .switcher .sw-label { display: none; }
-}
-
-
-/* ---------- MOBILE REFINEMENTS (shared pass) ---------- */
-.menu-btn { display: none; background: none; border: 1px solid var(--line-strong); width: 46px; height: 38px; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; padding: 0; }
-.menu-btn .mi { display: block; width: 16px; height: 2px; background: var(--ink); transition: transform .2s, opacity .2s; }
-body.nav-open .menu-btn .mi:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-body.nav-open .menu-btn .mi:nth-child(2) { opacity: 0; }
-body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-.mobile-nav { display: none; border-top: 1px solid var(--line-strong); background: var(--bone); max-height: calc(100vh - 68px); overflow-y: auto; }
-.mobile-nav a { display: block; padding: 16px 24px; font-family: var(--disp); font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); border-bottom: 1px solid var(--line); }
-.mobile-nav a.nav-cta { background: var(--ink); color: var(--bone); border-bottom: none; }
-@media (max-width: 1020px) {
   .menu-btn { display: flex; }
   body.nav-open .mobile-nav { display: block; }
+  .hero-grid { grid-template-columns: 1fr; gap: 44px; }
+  .hero .portrait-wrap { order: -1; max-width: 360px; }
+  .hero .lede { max-width: 46ch; }
+  .who-grid { grid-template-columns: 1fr; gap: 34px; }
+  .section { padding: 80px 0; }
+  .hero { padding: 56px 0 72px; }
 }
-@media (max-width: 640px) {
+@media (max-width: 560px) {
+  body { font-size: 17px; }
   .wrap { padding: 0 20px; }
-  .header .wrap { height: 60px; }
-  .hero { padding-top: 118px; }
-  .hero h1 { font-size: clamp(36px, 11vw, 52px); margin-bottom: 24px; }
-  .hero .lede { font-size: 15px; line-height: 1.7; margin-bottom: 32px; }
-  .hero .cred-row { gap: 8px 18px; font-size: 10px; margin-bottom: 28px; }
-  .hero-grid { gap: 40px; padding-bottom: 56px; }
-  .hero-ctas { gap: 12px; }
-  .hero-ctas .btn { flex: 1 1 auto; justify-content: center; }
-  .btn { padding: 15px 20px; font-size: 12px; }
-  .portrait { max-width: 320px; }
-  h2 { letter-spacing: -0.01em; }
+  .header .wrap { height: 64px; }
+  .hero h1 { font-size: clamp(34px, 10vw, 46px); }
+  .hero .lede { font-size: 18px; }
+  .hero-ctas { flex-direction: column; align-items: stretch; }
+  .hero-ctas .btn { justify-content: center; }
+  .path { grid-template-columns: 1fr; gap: 14px; padding: 24px 24px; }
+  .path .go { justify-self: start; }
+  .result { grid-template-columns: 1fr; gap: 12px; }
+  .result .stat { font-size: 46px; }
+  .result .stat small { margin-top: 6px; }
   .section { padding: 64px 0; }
-  .section-head { margin-bottom: 40px; }
-  .section-head h2, .finale h2 { font-size: clamp(28px, 8.8vw, 42px); }
-  .section-head p.sub, .section-head p { font-size: 15px; }
-  .stat { padding: 22px 16px 20px; }
-  .stat .num { font-size: 28px; }
-  .stat .lbl { font-size: 10px; letter-spacing: .1em; }
-  .case { padding: 26px 0; gap: 12px; }
-  .case .big { font-size: 32px; }
-  .case h3 { font-size: 20px; }
-  .offer { padding: 30px 22px; }
-  .offer h3 { font-size: 22px; }
-  .quote { padding: 30px 22px; }
-  .quote p { font-size: 16px; }
-  .finale { padding: 84px 0; }
-  .finale p { font-size: 15px; }
-  .footer .wrap { flex-direction: column; align-items: flex-start; gap: 16px; padding-top: 4px; }
-  .footer nav { flex-wrap: wrap; gap: 10px 18px; }
-  img, iframe, table, pre { max-width: 100%; }
 }
-
-</style>
+  </style>
   <meta name="description" content="CMO and growth executive - two successful exits, a NASDAQ acquisition, a #1-performing region on a national platform. Executive roles, fractional CMO, AI consulting, and keynotes." />
   <link rel="canonical" href="https://www.bradleygriffin.us/" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <meta name="theme-color" content="#121417" />
+  <meta name="theme-color" content="#2A2521" />
   <meta property="og:site_name" content="Bradley Griffin" />
   <meta property="og:type" content="profile" />
   <meta property="og:title" content="Bradley Griffin - Chief Marketing Officer &amp; Growth Executive" />
@@ -849,277 +405,159 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-4
   <!-- ======= HEADER ======= -->
   <header class="header">
     <div class="wrap">
-      <a class="brand" href="#top">
-        <span class="mark">Bradley <em>Griffin</em></span>
-        <span class="tag">CMO · Growth Executive</span>
-      </a>
+      <a class="brand" href="#top">Bradley Griffin<span class="dot">.</span></a>
       <nav class="nav">
-        <a href="#work">Work With Me</a>
-        <a href="/case-studies">Results</a>
-        <a href="/story">The Story</a>
+        <a href="#help">Work with me</a>
+        <a href="#results">Results</a>
+        <a href="/story">About</a>
         <a href="/speaking">Speaking</a>
-        <a href="/credentials">Credentials</a>
-        <a class="nav-cta" href="/contact">Start a Conversation</a>
+        <a class="nav-cta" href="/contact">Let's talk</a>
       </nav>
+      <button class="menu-btn" aria-label="Menu" aria-expanded="false">
+        <span class="mi"></span><span class="mi"></span><span class="mi"></span>
+      </button>
     </div>
+    <nav class="mobile-nav">
+      <a href="#help">Work with me</a>
+      <a href="#results">Results</a>
+      <a href="/story">About</a>
+      <a href="/speaking">Speaking</a>
+      <a class="nav-cta" href="/contact">Let's talk</a>
+    </nav>
   </header>
 
   <!-- ======= HERO ======= -->
   <section class="hero" id="top">
-    <div class="crosses"></div>
     <div class="wrap hero-grid">
       <div>
-        <p class="cred-row">
-          <span>Chief Marketing Officer</span>
-          <span>Growth Executive</span>
-          <span>U.S. Army Ranger Veteran</span>
-        </p>
-        <h1>Growth isn&rsquo;t luck.<br /><em>It&rsquo;s a system.</em></h1>
-        <p class="lede">
-          For twenty years I&rsquo;ve built the systems behind the numbers — <strong>two companies founded and sold</strong>, a turnaround that ended in a <strong>NASDAQ acquisition</strong>, <strong>$25M budgets</strong> deployed with
-          precision, and <strong>a Midwest region that now leads a national platform</strong>. I don&rsquo;t run campaigns.
-          I build machines that compound.
-        </p>
+        <p class="hi">Hi, I'm Brad 👋</p>
+        <h1>I build growth systems that <em>compound</em>.</h1>
+        <p class="lede">Twenty years turning marketing into a machine that keeps paying off — and a few different ways I can help you do the same.</p>
         <div class="hero-ctas">
-          <a class="btn btn-solid" href="/contact">Work With Me <span class="arr">→</span></a>
-          <a class="btn btn-ghost" href="#results">See the Record</a>
+          <a class="btn btn-solid" href="/contact">Let's talk <span class="arr">→</span></a>
+          <a class="btn btn-ghost" href="#help">See how I can help</a>
         </div>
+        <p class="hero-note">CMO &amp; growth executive · Army Ranger veteran · two companies built and sold</p>
       </div>
-      <figure class="portrait">
-        <div class="portrait-inner">
+      <div class="portrait-wrap">
+        <figure class="portrait">
           <img src="assets/bradley-griffin-portrait.jpg" alt="Bradley Griffin" />
-        </div>
-        <figcaption class="portrait-caption">Bradley Griffin</figcaption>
-      </figure>
-    </div>
-  </section>
-
-  <!-- ======= STAT BAND ======= -->
-  <section class="stats">
-    <div class="wrap">
-      <div class="stat reveal"><div class="num">#1</div><div class="lbl">Performing region in the company — IHS Midwest</div></div>
-      <div class="stat reveal"><div class="num">490<em>%</em></div><div class="lbl">Inbound-call growth in four months</div></div>
-      <div class="stat reveal"><div class="num">$25M</div><div class="lbl">Marketing budget owned across six brands</div></div>
-      <div class="stat reveal"><div class="num">2</div><div class="lbl">Companies founded &amp; successfully sold</div></div>
-      <div class="stat reveal"><div class="num">1,000<em>%</em></div><div class="lbl">YoY lead generation growth engineered</div></div>
-      <div class="stat reveal"><div class="num">20<em>+</em></div><div class="lbl">Years scaling B2C, SaaS &amp; multi-location</div></div>
-    </div>
-  </section>
-
-  <!-- ======= OFFERS ======= -->
-  <section class="section" id="work">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <div class="head-rule"><span class="idx-num">01 /</span><span class="line"></span><span class="microlabel">Ways to Work With Me</span></div>
-        <h2>One operator. <em>Four ways in.</em></h2>
-        <p class="sub">Whether you need an executive in the seat, senior firepower on a fraction of the cost, an outside mind on strategy and AI, or a speaker who commands a room — the engagement changes. The standard doesn&rsquo;t.</p>
+        </figure>
       </div>
-      <div class="offers">
-        <a class="offer reveal" href="/executive">
-          <span class="idx">01</span>
-          <h3>Executive Leadership</h3>
-          <p class="for">For boards &amp; investors</p>
-          <p>A CMO/CEO-level operator for the whole P&amp;L conversation: revenue architecture, team building, budget discipline, and growth that survives due diligence. Twenty years of P&amp;L-accountable leadership.</p>
-          <span class="link">Explore <span class="arr">→</span></span>
+    </div>
+  </section>
+
+  <!-- ======= HOW I CAN HELP ======= -->
+  <section class="section help" id="help">
+    <div class="wrap">
+      <div class="section-intro reveal">
+        <span class="microlabel">How I can help</span>
+        <h2>One operator, <em>a few ways in</em>.</h2>
+        <p>Pick whichever fits where you are right now. Same standard behind all of them.</p>
+      </div>
+      <div class="paths">
+        <a class="path reveal" href="/executive">
+          <div>
+            <h3>Executive leadership</h3>
+            <p>A CMO/CEO-level operator in the seat, accountable to the whole P&amp;L.</p>
+          </div>
+          <span class="go">Learn more <span class="arr">→</span></span>
         </a>
-        <a class="offer reveal" href="/fractional">
-          <span class="idx">02</span>
-          <h3>Fractional CMO</h3>
-          <p class="for">For founder-led companies</p>
-          <p>The executive your growth stage demands — without the full-time cost. I install the demand engine, the attribution, and the operating cadence, then hand you the keys. Proven at AcreValue through a NASDAQ exit.</p>
-          <span class="link">Explore <span class="arr">→</span></span>
+        <a class="path reveal" href="/fractional">
+          <div>
+            <h3>Fractional CMO</h3>
+            <p>The executive your growth stage needs — without the full-time cost.</p>
+          </div>
+          <span class="go">Learn more <span class="arr">→</span></span>
         </a>
-        <a class="offer reveal" href="/consulting">
-          <span class="idx">03</span>
-          <h3>Strategy &amp; AI Consulting</h3>
-          <p class="for">For operators buying outcomes</p>
-          <p>An early and relentless AI power user, I rebuild marketing operations around automation, AIO, and data — the systems that cut cost while compounding output. Strategy first, tools second, results always.</p>
-          <span class="link">Explore <span class="arr">→</span></span>
+        <a class="path reveal" href="/consulting">
+          <div>
+            <h3>Strategy &amp; AI consulting</h3>
+            <p>An outside mind to rebuild your marketing around automation, AI, and data.</p>
+          </div>
+          <span class="go">Learn more <span class="arr">→</span></span>
         </a>
-        <a class="offer reveal" href="/speaking">
-          <span class="idx">04</span>
-          <h3>Keynotes &amp; Speaking</h3>
-          <p class="for">For events &amp; organizations</p>
-          <p>From a statewide-televised PBS debate stage to a sell-out session at the Land Investment Expo — market strategy, competition, and AI, delivered with the composure of a man who has briefed tougher rooms.</p>
-          <span class="link">Explore <span class="arr">→</span></span>
+        <a class="path reveal" href="/speaking">
+          <div>
+            <h3>Speaking</h3>
+            <p>A keynote on growth, competition, and AI — for events and organizations.</p>
+          </div>
+          <span class="go">Learn more <span class="arr">→</span></span>
         </a>
       </div>
     </div>
   </section>
 
-  <!-- ======= CASE STUDIES ======= -->
+  <!-- ======= RESULTS ======= -->
   <section class="section" id="results">
     <div class="wrap">
-      <div class="section-head reveal">
-        <div class="head-rule"><span class="idx-num">02 /</span><span class="line"></span><span class="microlabel">Selected Results</span></div>
-        <h2>The record <em>speaks first.</em></h2>
-        <p class="sub">Company names, real numbers, and the systems behind them. Full case studies detail exactly what was built, why it worked, and what it returned.</p>
+      <div class="section-intro reveal">
+        <span class="microlabel">A little of what I've done</span>
+        <h2>A few things I'm <em>proud of</em>.</h2>
+        <p>Real companies, real numbers. Here's the short version.</p>
       </div>
-      <div class="cases">
-        <a class="case reveal" href="/case-studies#acrevalue">
-          <div class="big">2yr→↑</div>
-          <div>
-            <h3>The turnaround behind a NASDAQ acquisition</h3>
-            <p class="co">AcreValue / Ag Analytics — acquired by CoStar Group</p>
+      <div class="results-list">
+        <div class="result reveal">
+          <div class="stat">490%<small>More inbound calls</small></div>
+          <div class="rc">
+            <h3>I rebuilt how Vertex Roofing found customers</h3>
+            <p>We moved 500,000+ records with zero downtime and rewrote the playbook — inbound calls went from 108 to 637, and our booking rate climbed from 16% to 59% in three quarters.</p>
           </div>
-          <p>A platform with 1.5M users and two straight years of declining recurring revenue. I rebuilt the go-to-market from inside sales calls out — repositioned the product, opened the energy sector, returned MRR to growth, and set the table for acquisition.</p>
-          <span class="go">→</span>
-        </a>
-        <a class="case reveal" href="/case-studies#vertex">
-          <div class="big">490%</div>
-          <div>
-            <h3>Rebuilding acquisition end-to-end</h3>
-            <p class="co">Vertex Roofing — Chief Marketing Officer</p>
+        </div>
+        <div class="result reveal">
+          <div class="stat">Acquired<small>NASDAQ exit</small></div>
+          <div class="rc">
+            <h3>I helped turn AcreValue around before it was acquired</h3>
+            <p>A platform of 1.5M users with two straight years of shrinking revenue. We repositioned the product, opened a new sector, got recurring revenue growing again, and set the table for its acquisition by CoStar.</p>
           </div>
-          <p>Migrated 500,000+ CRM records with zero downtime, rewrote the inside-sales playbook, and architected full-funnel attribution — driving inbound calls up 490% (108 → 637) and lifting booking rate from 16% to 59% in three quarters.</p>
-          <span class="go">→</span>
-        </a>
-        <a class="case reveal" href="/case-studies#ihs">
-          <div class="big">#1</div>
-          <div>
-            <h3>The Midwest machine</h3>
-            <p class="co">Infinity Home Services — Regional Marketing</p>
+        </div>
+        <div class="result reveal">
+          <div class="stat">#1<small>Region in the company</small></div>
+          <div class="rc">
+            <h3>I run the Midwest for a national home-services platform</h3>
+            <p>Today my region leads every other in the company — double-digit YoY growth in qualified leads and appointments, and tens of millions in new year-over-year sales.</p>
           </div>
-          <p>Full ownership of Midwest marketing across a national home-services platform. The region now outpaces every other in the company — double-digit growth in qualified leads and appointments, and tens of millions in new year-over-year sales.</p>
-          <span class="go">→</span>
-        </a>
-        <a class="case reveal" href="/case-studies#optimized">
-          <div class="big">1 → sold</div>
-          <div>
-            <h3>Every seat, earned the hard way</h3>
-            <p class="co">Optimized — Founder &amp; President</p>
-          </div>
-          <p>Founded as a team of one — the sales floor by day, the SEO, PPC, social, and web development by night. Bootstrapped into a $5M firm with 23 employees, seven satellite offices, and Fortune 500 clients — then sold to a UK equity firm expanding into the U.S.</p>
-          <span class="go">→</span>
-        </a>
+        </div>
+      </div>
+      <p class="results-cta reveal"><a href="/case-studies">Read the full case studies <span class="arr">→</span></a></p>
+    </div>
+  </section>
+
+  <!-- ======= WHO I AM ======= -->
+  <section class="section who" id="about">
+    <div class="wrap who-grid">
+      <div class="reveal">
+        <span class="microlabel">A little about me</span>
+        <h2>Ranger, operator, <em>and dad</em>.</h2>
+        <p>Before the budgets and boardrooms, I was at Fort Benning with the 75th Ranger Regiment, where I learned how to plan when being wrong isn't an option. A parachute accident ended that career — but not the standard it set.</p>
+        <p>Since then I've <strong>built and sold two companies</strong>, finished my degree twenty years late (summa cum laude), and I'm currently working through a dual MBA and M.S. at Auburn. Mostly, though, I'm a family man who likes hard problems.</p>
+        <a class="who-link" href="/story">Read my story <span class="arr">→</span></a>
+      </div>
+      <div class="reveal">
+        <p class="pull">"Discipline isn't a slide in my deck. <span>It's the operating system.</span>"</p>
       </div>
     </div>
   </section>
 
-  <!-- ======= STORY ======= -->
-  <section class="section story on-dark" id="story">
-    <div class="wrap story-grid">
-      <div class="story-copy reveal">
-        <p class="microlabel"><span class="tick">03 /</span> The Story</p>
-        <h2>From the 75th Ranger Regiment<br /><em>to the boardroom.</em></h2>
-        <p>Before the budgets and the boardrooms, there was Fort Benning. Selected for one of the U.S. military&rsquo;s most elite special operations units, I learned what most executives never do: how to plan a mission when the cost of being wrong is absolute.</p>
-        <p class="pull">A parachute accident ended my military career. It didn&rsquo;t end the standard it set.</p>
-        <p>That standard built two companies from zero to acquisition. It stood on a statewide PBS debate stage against a sitting congressman. It finished a bachelor&rsquo;s degree twenty years after it started — <strong>summa cum laude, 3.97</strong> — while running a $25M growth engine, and it&rsquo;s currently completing a dual MBA and M.S. in Information Systems at Auburn University.</p>
-        <p>Discipline isn&rsquo;t a slide in my deck. It&rsquo;s the operating system.</p>
-      </div>
-      <div class="timeline reveal">
-        <div class="tl-item"><span class="yr">2005 — 2007</span><h4>U.S. Army, 75th Ranger Regiment</h4><p>Airborne Ranger. Honorably discharged after a parachute accident.</p></div>
-        <div class="tl-item"><span class="yr">2011 — 2018</span><h4>Founder ×2, Exits ×2</h4><p>Optimized — sold to a UK equity firm — and Florida Landscaping Services; both built, scaled, and sold.</p></div>
-        <div class="tl-item"><span class="yr">2018</span><h4>U.S. Congressional Candidate</h4><p>Built a full campaign organization from zero — raised funds, grew a following, and debated live on statewide PBS, with honor and integrity throughout.</p></div>
-        <div class="tl-item"><span class="yr">2019 — 2025</span><h4>Head of Marketing → CMO</h4><p>Wensco, Roofing GR, Atrium ($25M budget), Vertex — and AcreValue through its CoStar acquisition.</p></div>
-        <div class="tl-item"><span class="yr">Today</span><h4>Regional Marketing, Infinity Home Services</h4><p>The Midwest region: #1 in the company, with tens of millions in new YoY sales.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ======= SPEAKING ======= -->
-  <section class="section" id="speaking">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <div class="head-rule"><span class="idx-num">04 /</span><span class="line"></span><span class="microlabel">Speaking &amp; Thought Leadership</span></div>
-        <h2>Rooms worth <em>standing up in.</em></h2>
-      </div>
-      <div class="speaking-grid">
-        <div class="venue reveal">
-          <p class="where">Des Moines, IA — 2024</p>
-          <h3>Iowa Land Investment Expo</h3>
-          <p>Featured speaker at one of agriculture&rsquo;s premier annual events — a sell-out audience of land investors, agricultural professionals, and policy leaders. Session: &ldquo;Navigating the Land Market: Staying in Front and Outpacing Competition.&rdquo;</p>
-          <p class="quotebox">&ldquo;Buy or bury. Act quickly and buy — or delay, and get buried by a competitor.&rdquo;<br /><span class="src">— As covered by American Farmland Owner</span></p>
-        </div>
-        <div class="venue reveal">
-          <p class="where">Georgia Public Broadcasting / PBS — 2018</p>
-          <h3>Atlanta Press Club Debate Series</h3>
-          <p>Selected for Georgia&rsquo;s most prominent political debate series — the $1M-endowed Loudermilk-Young Debates — broadcast statewide on GPB/PBS. Live, unscripted, opposite a sitting two-term congressman, questioned by the state&rsquo;s leading political journalists.</p>
-          <p class="quotebox">Composure isn&rsquo;t taught in a greenroom.<br /><span class="src">— Watch the full debate</span></p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ======= TESTIMONIALS ======= -->
-  <section class="section">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <div class="head-rule"><span class="idx-num">05 /</span><span class="line"></span><span class="microlabel">What Partners Say</span></div>
-        <h2>Trusted by the people <em>in the room.</em></h2>
-      </div>
-      <div class="quotes">
-        <div class="quote reveal">
-          <span class="qmark">&ldquo;</span>
-          <p>He trusted our team, gave us the freedom to restructure campaigns, and always focused on outcomes rather than micromanagement… Bradley also pushed us to raise our own standards. Any agency would value a client like him.</p>
-          <div class="who"><div class="nm">Ashish Roy</div><div class="rl">CEO, SenseiDigital &amp; Cibirix</div></div>
-        </div>
-        <div class="quote reveal">
-          <span class="qmark">&ldquo;</span>
-          <p>Brad excels at setting clear goals and consistently delivering results… When we had differing opinions he engaged in thoughtful discussions to explore each perspective. He is a valuable asset to any team.</p>
-          <div class="who"><div class="nm">Michael Loomus</div><div class="rl">Inside Sales &amp; Customer Service Leader — reported to Bradley</div></div>
-        </div>
-        <div class="quote reveal">
-          <span class="qmark">&ldquo;</span>
-          <p>He is an expert in SEO, web design, digital marketing, and lead generation — and a fantastic leader. I can confidently attest to his outstanding capabilities.</p>
-          <div class="who"><div class="nm">Cherie Wicks</div><div class="rl">Digital Content Marketer, Cal-Am Properties</div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ======= CREDENTIALS ======= -->
-  <section class="section" id="credentials">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <div class="head-rule"><span class="idx-num">06 /</span><span class="line"></span><span class="microlabel">Credentials</span></div>
-        <h2>Earned. <em>Every one of them.</em></h2>
-      </div>
-      <div class="creds">
-        <div class="cred-list reveal">
-          <div class="cred"><div><h4>Auburn University — MBA + M.S. Information Systems</h4><p class="sub">Dual master&rsquo;s program, Harbert College of Business</p></div><span class="yr">2027</span></div>
-          <div class="cred"><div><h4>Central Michigan University — B.A.</h4><p class="sub">Summa Cum Laude · 3.97 GPA</p></div><span class="yr">2025</span></div>
-          <div class="cred"><div><h4>United States Army — 75th Ranger Regiment</h4><p class="sub">Airborne · Fort Benning, GA · Honorable discharge</p></div><span class="yr">2005–07</span></div>
-          <div class="cred"><div><h4>Johns Hopkins University</h4><p class="sub">Business Analytics certification</p></div><span class="yr">2023</span></div>
-        </div>
-        <div class="cert-wall reveal">
-          <h3>8 professional certifications, spanning 40 accredited courses</h3>
-          <p>A standing practice of study across analytics, AI, automation, and marketing science — because the field moves, and I move first.</p>
-          <div class="chips">
-            <span class="chip">Google Data Analytics</span>
-            <span class="chip">Google Business Intelligence</span>
-            <span class="chip">Google Digital Marketing &amp; E-commerce</span>
-            <span class="chip">Google Project Management</span>
-            <span class="chip">Google UX Design</span>
-            <span class="chip">IT Automation with Python</span>
-            <span class="chip">Business Analytics · Johns Hopkins</span>
-            <span class="chip">GA4 for Local SEO</span>
-            <a class="chip more" href="/credentials">View all →</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ======= FINAL CTA ======= -->
-  <section class="finale" id="contact">
-    <div class="crosses"></div>
+  <!-- ======= CONTACT ======= -->
+  <section class="section contact" id="contact">
     <div class="wrap reveal">
-      <p class="microlabel"><span class="tick">07 /</span> Start a Conversation</p>
-      <h2>The next win is <em>a conversation away.</em></h2>
-      <p>Executive search, fractional engagement, a strategy problem worth solving, or a stage that needs a speaker — tell me what you&rsquo;re building, and I&rsquo;ll tell you how I&rsquo;d grow it.</p>
-      <a class="btn btn-solid" href="/contact">Get in Touch <span class="arr">→</span></a>
+      <span class="microlabel">Let's talk</span>
+      <h2>Tell me what you're <em>building</em>.</h2>
+      <p>Whether it's a role to fill, a growth problem worth solving, or a stage that needs a speaker — I'd love to hear about it. Tell me what you're building, and I'll tell you how I'd grow it.</p>
+      <a class="btn btn-solid" href="/contact">Start a conversation <span class="arr">→</span></a>
+      <span class="email">Or email me at <a href="mailto:hello@bradleygriffin.us">hello@bradleygriffin.us</a></span>
     </div>
   </section>
 
   <!-- ======= FOOTER ======= -->
   <footer class="footer">
     <div class="wrap">
-      <span class="fbrand">Bradley <em>Griffin</em></span>
+      <span class="fbrand">Bradley Griffin<span class="dot">.</span></span>
       <nav>
-        <a href="#work">Work With Me</a>
+        <a href="#help">Work with me</a>
         <a href="/case-studies">Results</a>
-        <a href="/story">Story</a>
+        <a href="/story">About</a>
         <a href="/speaking">Speaking</a>
         <a href="/credentials">Credentials</a>
         <a href="/contact">Contact</a>
@@ -1130,29 +568,32 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-4
   </footer>
 
   <script>
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
-    }, { threshold: 0.12 });
-    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
-  </script>
+    // Mobile menu
+    (function () {
+      var btn = document.querySelector(".menu-btn");
+      var body = document.body;
+      if (!btn) return;
+      btn.addEventListener("click", function () {
+        var open = body.classList.toggle("nav-open");
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+      document.querySelectorAll(".mobile-nav a").forEach(function (a) {
+        a.addEventListener("click", function () {
+          body.classList.remove("nav-open");
+          btn.setAttribute("aria-expanded", "false");
+        });
+      });
+    })();
 
-<script>
-(function () {
-  var nav = document.querySelector(".header .nav");
-  var wrap = document.querySelector(".header .wrap");
-  var header = document.querySelector(".header");
-  if (!nav || !wrap || !header) return;
-  var btn = document.createElement("button");
-  btn.className = "menu-btn"; btn.setAttribute("aria-label", "Menu");
-  btn.innerHTML = "<span class=\"mi\"></span><span class=\"mi\"></span><span class=\"mi\"></span>";
-  var panel = document.createElement("div");
-  panel.className = "mobile-nav";
-  nav.querySelectorAll("a").forEach(function (a) { panel.appendChild(a.cloneNode(true)); });
-  btn.addEventListener("click", function () { document.body.classList.toggle("nav-open"); });
-  panel.addEventListener("click", function (e) { if (e.target.tagName === "A") document.body.classList.remove("nav-open"); });
-  wrap.appendChild(btn);
-  header.appendChild(panel);
-})();
-</script>
+    // Reveal on scroll
+    (function () {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.12 });
+      document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+    })();
+  </script>
 </body>
 </html>
