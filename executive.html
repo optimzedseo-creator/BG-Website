@@ -6,28 +6,28 @@
   <title>Chief Marketing Officer &amp; Growth Executive for Hire - Bradley Griffin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
 /* ============================================================
-   BRADLEY GRIFFIN — Executive Leadership — "Conversational / Human"
-   Warm, first-person, one idea per screen.
-   Headings: Fraunces (soft) · Body/UI: DM Sans
-   Paper #FFFDF7 / #FBF7EF · Ink #2A2521 · Clay #C0563A
+   BRADLEY GRIFFIN — bradleygriffin.us — Executive Leadership
+   "Clarity Router" · warm editorial · instantly navigable
+   Display: Fraunces · Body/UI: Inter
+   Cream #FAF8F3 · Ink #1B1A18 · Bronze #9A6E3A (single accent)
    ============================================================ */
 
 :root {
-  --paper: #FFFDF7;
-  --paper-2: #FBF7EF;
-  --paper-3: #F4EDE0;
-  --ink: #2A2521;
-  --ink-soft: #5C544C;
-  --ink-mute: #857B70;
-  --clay: #C0563A;
-  --clay-deep: #A5462E;
-  --line: #E9DFCF;
-  --disp: "Fraunces", Georgia, serif;
-  --sans: "DM Sans", -apple-system, "Segoe UI", sans-serif;
-  --wrap: 1060px;
+  --cream: #FAF8F3;
+  --cream-2: #F3EFE6;
+  --ink: #1B1A18;
+  --ink-soft: #4A463F;
+  --mute: #6E695F;
+  --line: #E2DBCC;
+  --line-strong: #D3CABA;
+  --bronze: #9A6E3A;
+  --bronze-deep: #815A2C;
+  --serif: "Fraunces", Georgia, serif;
+  --sans: "Inter", -apple-system, "Segoe UI", sans-serif;
+  --wrap: 1120px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -35,25 +35,27 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--sans);
-  background: var(--paper);
+  background: var(--cream);
   color: var(--ink);
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 28px; }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
-h1, h2, h3, h4 { font-family: var(--disp); font-weight: 600; line-height: 1.08; letter-spacing: -0.01em; }
-::selection { background: var(--clay); color: #fff; }
+h1, h2, h3, h4 { font-family: var(--serif); font-weight: 500; line-height: 1.08; letter-spacing: -0.01em; }
+::selection { background: var(--bronze); color: #fff; }
 
 .microlabel {
+  font-family: var(--sans);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--clay);
+  color: var(--bronze-deep);
 }
 
 /* ---------- buttons ---------- */
@@ -62,28 +64,29 @@ h1, h2, h3, h4 { font-family: var(--disp); font-weight: 600; line-height: 1.08; 
   align-items: center;
   gap: 10px;
   font-family: var(--sans);
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 600;
+  letter-spacing: 0.01em;
   padding: 16px 30px;
-  border-radius: 40px;
-  border: 1.5px solid transparent;
-  transition: transform 0.18s ease, background 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 100px;
+  border: 1px solid var(--ink);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
   cursor: pointer;
 }
-.btn-solid { background: var(--clay); color: #fff; box-shadow: 0 6px 20px rgba(192, 86, 58, 0.22); }
-.btn-solid:hover { background: var(--clay-deep); transform: translateY(-2px); box-shadow: 0 10px 26px rgba(192, 86, 58, 0.28); }
-.btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
-.btn-ghost:hover { border-color: var(--ink); transform: translateY(-2px); }
-.btn .arr { transition: transform 0.18s ease; }
-.btn:hover .arr { transform: translateX(3px); }
+.btn-solid { background: var(--ink); color: var(--cream); }
+.btn-solid:hover { background: var(--bronze-deep); border-color: var(--bronze-deep); }
+.btn-ghost { background: transparent; color: var(--ink); }
+.btn-ghost:hover { background: var(--ink); color: var(--cream); }
+.btn .arr { transition: transform 0.2s ease; }
+.btn:hover .arr { transform: translateX(4px); }
 
 /* ---------- header ---------- */
 .header {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(255, 253, 247, 0.9);
-  backdrop-filter: blur(10px);
+  background: rgba(250, 248, 243, 0.9);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
 }
 .header .wrap {
@@ -93,83 +96,82 @@ h1, h2, h3, h4 { font-family: var(--disp); font-weight: 600; line-height: 1.08; 
   height: 72px;
 }
 .brand {
-  font-family: var(--disp);
+  font-family: var(--serif);
   font-size: 21px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: -0.01em;
   color: var(--ink);
 }
-.brand .dot { color: var(--clay); }
-.nav { display: flex; align-items: center; gap: 30px; }
+.nav { display: flex; align-items: center; gap: 32px; }
 .nav a {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   color: var(--ink-soft);
   transition: color 0.18s;
 }
-.nav a:hover { color: var(--clay); }
+.nav a:hover { color: var(--bronze-deep); }
 .nav .nav-cta {
-  color: #fff;
+  color: var(--cream);
   background: var(--ink);
   padding: 10px 20px;
-  border-radius: 40px;
+  border-radius: 100px;
   transition: background 0.2s;
 }
-.nav .nav-cta:hover { background: var(--clay); }
+.nav .nav-cta:hover { background: var(--bronze-deep); color: var(--cream); }
 
 .menu-btn {
   display: none;
   background: none;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  width: 46px; height: 42px;
-  flex-direction: column; align-items: center; justify-content: center; gap: 5px;
-  cursor: pointer; padding: 0;
+  border: none;
+  width: 40px; height: 40px;
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 5px; cursor: pointer; padding: 0;
 }
-.menu-btn .mi { display: block; width: 20px; height: 2px; background: var(--ink); border-radius: 2px; transition: transform .2s, opacity .2s; }
+.menu-btn .mi { display: block; width: 22px; height: 2px; background: var(--ink); border-radius: 2px; transition: transform .22s, opacity .22s; }
 body.nav-open .menu-btn .mi:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 body.nav-open .menu-btn .mi:nth-child(2) { opacity: 0; }
 body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-.mobile-nav { display: none; border-top: 1px solid var(--line); background: var(--paper); }
-.mobile-nav a { display: block; padding: 16px 28px; font-size: 17px; font-weight: 500; color: var(--ink); border-bottom: 1px solid var(--line); }
-.mobile-nav a.nav-cta { color: var(--clay); font-weight: 600; }
+.mobile-nav { display: none; border-top: 1px solid var(--line); background: var(--cream); }
+.mobile-nav a {
+  display: block;
+  padding: 16px 28px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+.mobile-nav a.nav-cta { color: var(--bronze-deep); font-weight: 600; }
 
 /* ---------- section rhythm ---------- */
-.section { padding: 104px 0; }
-.section + .section { border-top: 1px solid var(--line); }
-
-.section-intro { max-width: 40ch; margin-bottom: 52px; }
-.section-intro h2 {
-  font-size: clamp(30px, 4.4vw, 46px);
+.section { padding: 92px 0; }
+.section-head { max-width: 640px; margin-bottom: 48px; }
+.section-head .microlabel { display: block; margin-bottom: 14px; }
+.section-head h2 {
+  font-size: clamp(28px, 3.6vw, 42px);
   color: var(--ink);
-  margin: 16px 0 18px;
+  margin-bottom: 12px;
 }
-.section-intro h2 em { font-style: italic; color: var(--clay); }
-.section-intro p { font-size: 18px; color: var(--ink-soft); }
+.section-head h2 em { font-style: italic; color: var(--bronze-deep); }
+.section-head p { font-size: 17px; color: var(--mute); }
 
 /* ---------- hero ---------- */
-.hero { padding: 84px 0 88px; }
-.hero .hi {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--clay);
-  margin-bottom: 22px;
-}
+.hero { padding: 88px 0 76px; }
+.hero .microlabel { display: block; margin-bottom: 22px; }
 .hero h1 {
-  font-size: clamp(40px, 6vw, 66px);
-  font-weight: 600;
+  font-size: clamp(40px, 5.4vw, 66px);
   color: var(--ink);
-  margin-bottom: 28px;
-  max-width: 16ch;
+  margin-bottom: 26px;
+  max-width: 18ch;
 }
-.hero h1 em { font-style: italic; color: var(--clay); }
+.hero h1 em { font-style: italic; color: var(--bronze-deep); }
 .hero .lede {
-  font-size: 20px;
+  font-size: 19px;
   line-height: 1.6;
   color: var(--ink-soft);
   max-width: 60ch;
-  margin-bottom: 32px;
+  margin-bottom: 30px;
 }
 .hero .lede strong { color: var(--ink); font-weight: 600; }
 .hero-meta {
@@ -178,113 +180,126 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
   gap: 10px 28px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--ink-mute);
+  color: var(--mute);
 }
-.hero-meta span::before { content: "· "; color: var(--clay); font-weight: 700; }
+.hero-meta span::before { content: "· "; color: var(--bronze); font-weight: 700; }
 
 /* ---------- stat band ---------- */
-.stats { background: var(--paper-2); }
+.stats {
+  padding: 76px 0;
+  background: var(--cream-2);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 40px 28px;
+  gap: 20px;
+}
+.stat {
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 28px 26px;
 }
 .stat .num {
-  font-family: var(--disp);
-  font-size: clamp(40px, 5vw, 54px);
-  font-weight: 600;
+  font-family: var(--serif);
+  font-size: clamp(36px, 4.4vw, 46px);
+  font-weight: 500;
   letter-spacing: -0.02em;
-  color: var(--clay);
+  color: var(--bronze-deep);
   line-height: 1;
 }
 .stat .lbl {
-  margin-top: 12px;
-  font-size: 15px;
-  color: var(--ink-soft);
-  line-height: 1.45;
+  margin-top: 14px;
+  font-size: 14.5px;
+  color: var(--mute);
+  line-height: 1.5;
 }
 
 /* ---------- what I own (cards) ---------- */
 .own-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 20px;
 }
 .own {
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  padding: 30px 28px;
   display: flex;
   flex-direction: column;
-  transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 32px 30px 28px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 .own:hover {
+  border-color: var(--bronze);
+  box-shadow: 0 18px 40px -28px rgba(27, 26, 24, 0.45);
   transform: translateY(-3px);
-  border-color: transparent;
-  box-shadow: 0 14px 34px rgba(42, 37, 33, 0.1);
 }
-.own .idx {
+.own .kicker {
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--clay);
-  margin-bottom: 20px;
+  color: var(--bronze-deep);
+  margin-bottom: 14px;
 }
-.own h3 { font-size: 21px; font-weight: 600; color: var(--ink); margin-bottom: 10px; }
-.own p { font-size: 16px; line-height: 1.55; color: var(--ink-soft); }
+.own h3 { font-size: 22px; color: var(--ink); margin-bottom: 10px; }
+.own p { font-size: 15.5px; line-height: 1.6; color: var(--mute); flex: 1; }
 .own .stack {
+  flex: 0 0 auto;
   margin-top: 20px;
   font-size: 13px;
   font-weight: 500;
-  color: var(--ink-mute);
+  color: var(--mute);
   border-top: 1px solid var(--line);
   padding-top: 14px;
   line-height: 1.7;
 }
 
 /* ---------- the record (rows) ---------- */
-.record { display: flex; flex-direction: column; gap: 16px; }
+.record { display: flex; flex-direction: column; gap: 20px; }
 .rec {
   display: grid;
-  grid-template-columns: 220px 1fr 170px;
+  grid-template-columns: 220px 1fr 180px;
   gap: 32px;
   align-items: start;
-  background: var(--paper);
+  background: #fff;
   border: 1px solid var(--line);
-  border-radius: 20px;
-  padding: 30px 32px;
-  transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  border-radius: 14px;
+  padding: 32px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 .rec:hover {
+  border-color: var(--bronze);
+  box-shadow: 0 18px 40px -28px rgba(27, 26, 24, 0.45);
   transform: translateY(-3px);
-  border-color: transparent;
-  box-shadow: 0 14px 34px rgba(42, 37, 33, 0.1);
 }
-.rec .co-name { font-family: var(--disp); font-size: 20px; font-weight: 600; color: var(--ink); line-height: 1.15; }
+.rec .co-name { font-family: var(--serif); font-size: 21px; font-weight: 500; color: var(--ink); line-height: 1.15; }
 .rec .co-role {
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink-mute);
+  color: var(--mute);
   margin-top: 8px;
+  line-height: 1.5;
 }
 .rec .co-when {
   font-size: 13px;
   font-weight: 600;
-  color: var(--clay);
+  color: var(--bronze-deep);
   margin-top: 10px;
 }
-.rec p { font-size: 16px; line-height: 1.6; color: var(--ink-soft); }
+.rec p { font-size: 15.5px; line-height: 1.6; color: var(--ink-soft); }
 .rec p strong { color: var(--ink); font-weight: 600; }
 .rec .headline {
-  font-family: var(--disp);
+  font-family: var(--serif);
   font-size: 30px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: -0.02em;
-  color: var(--clay);
+  color: var(--bronze-deep);
   line-height: 1.05;
   text-align: right;
 }
@@ -294,18 +309,21 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.02em;
-  text-transform: none;
-  color: var(--ink-mute);
+  color: var(--mute);
   margin-top: 10px;
   line-height: 1.4;
 }
 
 /* ---------- how I operate (dark) ---------- */
-.operate { background: var(--ink); color: var(--paper); }
-.operate .microlabel { color: #E8A38F; }
-.operate .section-intro h2 { color: var(--paper); }
-.operate .section-intro h2 em { color: #E8A38F; }
-.operate .section-intro p { color: #D8CFC4; }
+.operate {
+  padding: 100px 0;
+  background: var(--ink);
+  color: var(--cream);
+}
+.operate .section-head .microlabel { color: #C79A5E; }
+.operate .section-head h2 { color: var(--cream); }
+.operate .section-head h2 em { color: #C79A5E; }
+.operate .section-head p { color: #C8C2B6; }
 .principles {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -316,101 +334,100 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #E8A38F;
+  color: #C79A5E;
   margin-bottom: 16px;
 }
-.principle h3 { font-size: 24px; font-weight: 600; color: var(--paper); margin-bottom: 12px; }
-.principle p { font-size: 17px; line-height: 1.7; color: #D8CFC4; }
-.principle p strong { color: var(--paper); font-weight: 600; }
+.principle h3 { font-size: 24px; color: var(--cream); margin-bottom: 12px; }
+.principle p { font-size: 16px; line-height: 1.7; color: #C8C2B6; }
+.principle p strong { color: var(--cream); font-weight: 600; }
 
 /* ---------- education strip ---------- */
-.edu-strip { display: flex; flex-direction: column; gap: 16px; }
+.edu-strip { display: flex; flex-direction: column; gap: 20px; }
 .edu {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 24px;
   align-items: center;
-  background: var(--paper);
+  background: #fff;
   border: 1px solid var(--line);
-  border-radius: 20px;
-  padding: 26px 30px;
+  border-radius: 14px;
+  padding: 28px 30px;
+  transition: border-color 0.2s ease;
 }
-.edu h4 { font-size: 20px; font-weight: 600; color: var(--ink); }
-.edu .sub { font-size: 15px; color: var(--ink-soft); margin-top: 6px; }
+.edu:hover { border-color: var(--bronze); }
+.edu h4 { font-size: 20px; color: var(--ink); }
+.edu .sub { font-size: 15px; color: var(--mute); margin-top: 6px; }
 .edu .yr {
-  font-family: var(--disp);
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--clay);
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--bronze-deep);
   white-space: nowrap;
 }
 
 /* ---------- testimonial ---------- */
-.testimonial { background: var(--paper-2); }
-.quote-card {
-  background: var(--paper);
+.reference {
+  padding: 92px 0;
+  background: var(--cream-2);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.testimonial {
+  background: #fff;
   border: 1px solid var(--line);
-  border-radius: 24px;
-  padding: 48px 52px;
+  border-radius: 16px;
+  padding: 44px 42px;
   max-width: 820px;
 }
-.quote-card .qmark {
-  font-family: var(--disp);
-  font-size: 68px;
-  font-weight: 600;
+.testimonial .qmark {
+  font-family: var(--serif);
+  font-size: 60px;
   line-height: 0.5;
-  color: var(--clay);
+  color: var(--bronze);
   display: block;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
-.quote-card p {
-  font-family: var(--disp);
-  font-size: clamp(20px, 2.6vw, 26px);
-  font-weight: 500;
-  font-style: italic;
+.testimonial blockquote {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 400;
   line-height: 1.45;
   color: var(--ink);
+  margin-bottom: 26px;
 }
-.quote-card .who { margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line); }
-.quote-card .who .nm { font-family: var(--disp); font-size: 18px; font-weight: 600; color: var(--ink); }
-.quote-card .who .rl { font-size: 14px; color: var(--ink-mute); margin-top: 4px; }
+.testimonial .who .nm { font-size: 15px; font-weight: 600; color: var(--ink); }
+.testimonial .who .rl { font-size: 14px; color: var(--mute); margin-top: 3px; }
 
-/* ---------- contact ---------- */
-.contact { text-align: center; background: var(--paper-2); }
-.contact h2 {
-  font-size: clamp(34px, 5vw, 56px);
+/* ---------- final cta ---------- */
+.finale {
+  text-align: center;
+  padding: 104px 0 112px;
+}
+.finale .microlabel { display: block; margin-bottom: 20px; }
+.finale h2 {
+  font-size: clamp(34px, 4.6vw, 58px);
   color: var(--ink);
-  margin: 18px auto 22px;
+  margin: 0 auto 22px;
   max-width: 18ch;
 }
-.contact h2 em { font-style: italic; color: var(--clay); }
-.contact p {
-  font-size: 19px;
-  color: var(--ink-soft);
-  max-width: 52ch;
-  margin: 0 auto 36px;
-}
-.contact .btn-solid { font-size: 18px; padding: 18px 36px; }
+.finale h2 em { font-style: italic; color: var(--bronze-deep); }
+.finale p { color: var(--mute); max-width: 52ch; margin: 0 auto 40px; font-size: 18px; }
 
 /* ---------- footer ---------- */
-.footer { padding: 44px 0; background: var(--paper); border-top: 1px solid var(--line); }
-.footer .wrap {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 20px; flex-wrap: wrap;
-}
-.footer .fbrand { font-family: var(--disp); font-size: 18px; font-weight: 600; color: var(--ink); }
-.footer .fbrand .dot { color: var(--clay); }
+.footer { padding: 40px 0; background: var(--ink); color: #A9A399; border-top: 1px solid rgba(255,255,255,0.08); }
+.footer .wrap { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.footer .fbrand { font-family: var(--serif); font-size: 18px; color: var(--cream); }
 .footer nav { display: flex; gap: 22px; flex-wrap: wrap; }
-.footer nav a { font-size: 15px; color: var(--ink-soft); }
-.footer nav a:hover { color: var(--clay); }
-.footer .fine { font-size: 14px; color: var(--ink-mute); }
+.footer nav a { font-size: 14px; color: #A9A399; transition: color 0.18s; }
+.footer nav a:hover { color: var(--cream); }
+.footer .fine { font-size: 13px; color: #7C776E; }
 
 /* ---------- reveal ---------- */
-.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
 .reveal.in { opacity: 1; transform: none; }
 
 /* ---------- responsive ---------- */
-@media (max-width: 900px) {
+@media (max-width: 940px) {
   .nav { display: none; }
   .menu-btn { display: flex; }
   body.nav-open .mobile-nav { display: block; }
@@ -419,26 +436,32 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
   .principles { grid-template-columns: 1fr; }
   .rec { grid-template-columns: 1fr; gap: 16px; }
   .rec .headline { text-align: left; }
-  .section { padding: 80px 0; }
-  .hero { padding: 56px 0 64px; }
+  .section { padding: 72px 0; }
+  .operate { padding: 80px 0; }
+  .hero { padding: 60px 0 56px; }
+  .footer .wrap { flex-direction: column; align-items: flex-start; gap: 16px; }
 }
-@media (max-width: 560px) {
-  body { font-size: 17px; }
+@media (max-width: 620px) {
+  body { font-size: 16px; }
   .wrap { padding: 0 20px; }
-  .header .wrap { height: 64px; }
-  .hero h1 { font-size: clamp(34px, 10vw, 46px); }
-  .hero .lede { font-size: 18px; }
-  .stats-grid { grid-template-columns: 1fr; gap: 28px; }
+  .hero { padding: 52px 0 48px; }
+  .hero .lede { font-size: 17px; }
+  .stats { padding: 56px 0; }
+  .stats-grid { grid-template-columns: 1fr; }
   .own-grid { grid-template-columns: 1fr; }
+  .section { padding: 60px 0; }
+  .operate { padding: 68px 0; }
+  .reference { padding: 60px 0; }
   .edu { grid-template-columns: 1fr; gap: 10px; }
-  .quote-card { padding: 34px 26px; }
-  .section { padding: 64px 0; }
+  .testimonial { padding: 34px 28px; }
+  .testimonial blockquote { font-size: 20px; }
+  .finale { padding: 72px 0 78px; }
 }
   </style>
   <meta name="description" content="Hire a CMO/CEO-level growth operator: a #1-performing region, a $25M six-brand portfolio budget, +269% booking rate. Twenty years of P&amp;L-accountable leadership." />
   <link rel="canonical" href="https://www.bradleygriffin.us/executive" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <meta name="theme-color" content="#121417" />
+  <meta name="theme-color" content="#1B1A18" />
   <meta property="og:site_name" content="Bradley Griffin" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Chief Marketing Officer &amp; Growth Executive for Hire - Bradley Griffin" />
@@ -456,34 +479,34 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
   <!-- ======= HEADER ======= -->
   <header class="header">
     <div class="wrap">
-      <a class="brand" href="/">Bradley Griffin<span class="dot">.</span></a>
+      <a class="brand" href="/">Bradley Griffin</a>
       <nav class="nav">
-        <a href="/#help">Work with me</a>
+        <a href="/#work">Work with me</a>
         <a href="/case-studies">Results</a>
         <a href="/story">About</a>
         <a href="/speaking">Speaking</a>
-        <a class="nav-cta" href="/contact">Let's talk</a>
+        <a class="nav-cta" href="/contact">Contact</a>
       </nav>
       <button class="menu-btn" aria-label="Menu" aria-expanded="false">
         <span class="mi"></span><span class="mi"></span><span class="mi"></span>
       </button>
     </div>
-    <nav class="mobile-nav">
-      <a href="/#help">Work with me</a>
+    <div class="mobile-nav">
+      <a href="/#work">Work with me</a>
       <a href="/case-studies">Results</a>
       <a href="/story">About</a>
       <a href="/speaking">Speaking</a>
-      <a class="nav-cta" href="/contact">Let's talk</a>
-    </nav>
+      <a class="nav-cta" href="/contact">Contact</a>
+    </div>
   </header>
 
   <!-- ======= PAGE HERO ======= -->
   <section class="hero" id="top">
     <div class="wrap">
-      <p class="hi">Executive leadership</p>
-      <h1>An operator for the <em>whole P&amp;L</em>.</h1>
+      <span class="microlabel">Executive leadership</span>
+      <h1>An operator for the <em>whole P&amp;L.</em></h1>
       <p class="lede">
-        I've spent twenty-plus years scaling B2C brands, SaaS platforms, and multi-location operations —
+        I've spent twenty-plus years scaling B2C brands, SaaS platforms, and multi-location operations &mdash;
         from <strong>startup to exit</strong>, from <strong>seed budgets to $25M+</strong>. I build revenue
         architecture that a board can interrogate line by line: attribution from first touch to closed
         revenue, teams that hit forecast, and <strong>systems that survive due diligence</strong>.
@@ -497,12 +520,12 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
   </section>
 
   <!-- ======= STAT BAND ======= -->
-  <section class="section stats">
+  <section class="stats">
     <div class="wrap">
       <div class="stats-grid">
-        <div class="stat reveal"><div class="num">#1</div><div class="lbl">Performing region in the company — IHS Midwest</div></div>
-        <div class="stat reveal"><div class="num">$25M+</div><div class="lbl">Portfolio budget — six brands, one owner</div></div>
-        <div class="stat reveal"><div class="num">269%</div><div class="lbl">Booking-rate lift — 16% to 59%</div></div>
+        <div class="stat reveal"><div class="num">#1</div><div class="lbl">Performing region in the company &mdash; IHS Midwest</div></div>
+        <div class="stat reveal"><div class="num">$25M+</div><div class="lbl">Portfolio budget &mdash; six brands, one owner</div></div>
+        <div class="stat reveal"><div class="num">269%</div><div class="lbl">Booking-rate lift &mdash; 16% to 59%</div></div>
         <div class="stat reveal"><div class="num">2</div><div class="lbl">Companies founded &amp; exited</div></div>
         <div class="stat reveal"><div class="num">4</div><div class="lbl">Marketing team built &amp; led at IHS</div></div>
         <div class="stat reveal"><div class="num">20+</div><div class="lbl">Years from startup to exit</div></div>
@@ -513,47 +536,47 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
   <!-- ======= WHAT I OWN ======= -->
   <section class="section" id="own">
     <div class="wrap">
-      <div class="section-intro reveal">
+      <div class="section-head reveal">
         <span class="microlabel">Scope of ownership</span>
-        <h2>What I own <em>when I take the seat</em>.</h2>
-        <p>Not a channel specialist with a title. I own the full revenue apparatus — demand through close, budget through board deck — end to end, accountable to one number.</p>
+        <h2>What I own <em>when I take the seat.</em></h2>
+        <p>Not a channel specialist with a title. I own the full revenue apparatus &mdash; demand through close, budget through board deck &mdash; end to end, accountable to one number.</p>
       </div>
       <div class="own-grid">
         <div class="own reveal">
-          <span class="idx">A / 06</span>
+          <span class="kicker">A / 06</span>
           <h3>Demand generation &amp; paid media</h3>
-          <p>Full-funnel acquisition across every channel that earns its keep — budget allocated by contribution to closed revenue, not by habit.</p>
-          <p class="stack">Google · Meta · LSA · CTV</p>
+          <p>Full-funnel acquisition across every channel that earns its keep &mdash; budget allocated by contribution to closed revenue, not by habit.</p>
+          <p class="stack">Google &middot; Meta &middot; LSA &middot; CTV</p>
         </div>
         <div class="own reveal">
-          <span class="idx">B / 06</span>
+          <span class="kicker">B / 06</span>
           <h3>CRM &amp; marketing automation</h3>
           <p>The operational backbone: pipelines, lifecycle automation, and integrations that keep sales and marketing on one source of truth. 500K-record migrations executed with zero downtime.</p>
-          <p class="stack">Builder Prime · Salesforce · HubSpot · ServiceTitan · N8N / Make / Zapier</p>
+          <p class="stack">Builder Prime &middot; Salesforce &middot; HubSpot &middot; ServiceTitan &middot; N8N / Make / Zapier</p>
         </div>
         <div class="own reveal">
-          <span class="idx">C / 06</span>
+          <span class="kicker">C / 06</span>
           <h3>Attribution &amp; business intelligence</h3>
           <p>First-touch-to-closed-revenue visibility. Dashboards a CFO trusts, incrementality over vanity metrics, and reporting that ends the &ldquo;what&rsquo;s working&rdquo; debate.</p>
-          <p class="stack">Full-funnel attribution · BI dashboards · Incrementality</p>
+          <p class="stack">Full-funnel attribution &middot; BI dashboards &middot; Incrementality</p>
         </div>
         <div class="own reveal">
-          <span class="idx">D / 06</span>
+          <span class="kicker">D / 06</span>
           <h3>Inside sales &amp; call center ops</h3>
           <p>The handoff is where revenue dies. I own the scripts, the speed-to-lead, the set rates, and the management cadence that turns marketing spend into booked appointments.</p>
-          <p class="stack">Playbooks · Speed-to-lead · Set &amp; show rates</p>
+          <p class="stack">Playbooks &middot; Speed-to-lead &middot; Set &amp; show rates</p>
         </div>
         <div class="own reveal">
-          <span class="idx">E / 06</span>
+          <span class="kicker">E / 06</span>
           <h3>Budget &amp; P&amp;L discipline</h3>
-          <p>$25M+ deployed with an operator&rsquo;s scrutiny — every dollar defends itself or gets reallocated. Founder-honed cost discipline: I've signed both sides of the check.</p>
-          <p class="stack">Forecasting · CAC / LTV · Vendor ROI</p>
+          <p>$25M+ deployed with an operator&rsquo;s scrutiny &mdash; every dollar defends itself or gets reallocated. Founder-honed cost discipline: I've signed both sides of the check.</p>
+          <p class="stack">Forecasting &middot; CAC / LTV &middot; Vendor ROI</p>
         </div>
         <div class="own reveal">
-          <span class="idx">F / 06</span>
+          <span class="kicker">F / 06</span>
           <h3>Team building &amp; vendor management</h3>
-          <p>I've hired, structured, and led in-house teams and agency benches. High standards, clear goals, no micromanagement — the people who've worked for me say so on the record.</p>
-          <p class="stack">Org design · Agency oversight · Performance cadence</p>
+          <p>I've hired, structured, and led in-house teams and agency benches. High standards, clear goals, no micromanagement &mdash; the people who've worked for me say so on the record.</p>
+          <p class="stack">Org design &middot; Agency oversight &middot; Performance cadence</p>
         </div>
       </div>
     </div>
@@ -562,36 +585,36 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
   <!-- ======= THE RECORD ======= -->
   <section class="section" id="record">
     <div class="wrap">
-      <div class="section-intro reveal">
+      <div class="section-head reveal">
         <span class="microlabel">The record</span>
-        <h2>Roles held. <em>Numbers delivered</em>.</h2>
+        <h2>Roles held. <em>Numbers delivered.</em></h2>
         <p>Every line verifiable, every result tied to a system I built and a team I led. This is the diligence file, in the open.</p>
       </div>
       <div class="record">
         <div class="rec reveal">
           <div>
             <div class="co-name">Infinity Home Services</div>
-            <div class="co-role">Regional marketing — Midwest</div>
-            <div class="co-when">Feb 2026 — Present</div>
+            <div class="co-role">Regional marketing &mdash; Midwest</div>
+            <div class="co-when">Feb 2026 &mdash; Present</div>
           </div>
-          <p>I own Midwest marketing across a national home-services platform — building a team of four on trust, agile, and change management. Deep audits built on data augmentation and quantitative analytics cut dead line items, and I align marketing goals to operational goals with the call center, HR, operations, and Brand Presidents. The region now <strong>outperforms every other region in the company</strong> — double-digit YoY growth in qualified leads and appointments, and tens of millions in new sales year over year.</p>
-          <div class="headline">#1<span class="sub-h">Region in the company · IHS Midwest</span></div>
+          <p>I own Midwest marketing across a national home-services platform &mdash; building a team of four on trust, agile, and change management. Deep audits built on data augmentation and quantitative analytics cut dead line items, and I align marketing goals to operational goals with the call center, HR, operations, and Brand Presidents. The region now <strong>outperforms every other region in the company</strong> &mdash; double-digit YoY growth in qualified leads and appointments, and tens of millions in new sales year over year.</p>
+          <div class="headline">#1<span class="sub-h">Region in the company &middot; IHS Midwest</span></div>
         </div>
         <div class="rec reveal">
           <div>
             <div class="co-name">Vertex Roofing</div>
             <div class="co-role">Chief Marketing Officer</div>
           </div>
-          <p>I rebuilt acquisition end to end: inbound calls <strong>+490% (108 → 637, Aug–Nov)</strong>, appointments <strong>+212%</strong>, qualified leads <strong>+20%</strong>, and booking rate <strong>16% → 59% (+269%)</strong> — on the back of a 500,000-record CRM migration executed with <strong>zero downtime</strong>.</p>
-          <div class="headline">+490%<span class="sub-h">Inbound calls · 108 → 637</span></div>
+          <p>I rebuilt acquisition end to end: inbound calls <strong>+490% (108 &rarr; 637, Aug&ndash;Nov)</strong>, appointments <strong>+212%</strong>, qualified leads <strong>+20%</strong>, and booking rate <strong>16% &rarr; 59% (+269%)</strong> &mdash; on the back of a 500,000-record CRM migration executed with <strong>zero downtime</strong>.</p>
+          <div class="headline">+490%<span class="sub-h">Inbound calls &middot; 108 &rarr; 637</span></div>
         </div>
         <div class="rec reveal">
           <div>
             <div class="co-name">Atrium Home Services</div>
             <div class="co-role">Head of Digital Marketing &amp; Acquisition</div>
           </div>
-          <p>I directed a <strong>$25M budget across a PE-owned portfolio of six HVAC, electrical, plumbing, and air-quality brands</strong> — every brand budget rolling up to one desk — standardizing the demand engine and reporting stack while driving inbound leads <strong>+20% month over month</strong>.</p>
-          <div class="headline">$25M<span class="sub-h">Budget · six brands</span></div>
+          <p>I directed a <strong>$25M budget across a PE-owned portfolio of six HVAC, electrical, plumbing, and air-quality brands</strong> &mdash; every brand budget rolling up to one desk &mdash; standardizing the demand engine and reporting stack while driving inbound leads <strong>+20% month over month</strong>.</p>
+          <div class="headline">$25M<span class="sub-h">Budget &middot; six brands</span></div>
         </div>
         <div class="rec reveal">
           <div>
@@ -599,22 +622,22 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
             <div class="co-role">Fractional CMO / Head of Sales</div>
           </div>
           <p>I repositioned a 1.5M-user platform with two straight years of declining recurring revenue, <strong>returned MRR to growth</strong>, and set the table for acquisition by <strong>CoStar Group (NASDAQ: CSGP)</strong>.</p>
-          <div class="headline">MRR ↑<span class="sub-h">Returned to growth · acquired</span></div>
+          <div class="headline">MRR &uarr;<span class="sub-h">Returned to growth &middot; acquired</span></div>
         </div>
         <div class="rec reveal">
           <div>
             <div class="co-name">Wensco Sign Supply</div>
             <div class="co-role">Head of Marketing</div>
           </div>
-          <p>I rebuilt the marketing operation on a <strong>$1M+ budget</strong> — cutting costs <strong>35%</strong> while growing revenue <strong>30%</strong>. Efficiency and growth aren't a trade-off when the system is right.</p>
-          <div class="headline">−35% / +30%<span class="sub-h">Costs down · revenue up</span></div>
+          <p>I rebuilt the marketing operation on a <strong>$1M+ budget</strong> &mdash; cutting costs <strong>35%</strong> while growing revenue <strong>30%</strong>. Efficiency and growth aren't a trade-off when the system is right.</p>
+          <div class="headline">&minus;35% / +30%<span class="sub-h">Costs down &middot; revenue up</span></div>
         </div>
         <div class="rec reveal">
           <div>
-            <div class="co-name">Founder ×2</div>
-            <div class="co-role">Optimized · Florida Landscaping Services</div>
+            <div class="co-name">Founder &times;2</div>
+            <div class="co-role">Optimized &middot; Florida Landscaping Services</div>
           </div>
-          <p>I built Optimized from a team of one into a <strong>$5M firm with 23 employees</strong> serving Fortune 500 clients, and scaled Florida Landscaping Services to <strong>$3M</strong> — <strong>both exited</strong>, Optimized to a UK equity firm expanding into the U.S.</p>
+          <p>I built Optimized from a team of one into a <strong>$5M firm with 23 employees</strong> serving Fortune 500 clients, and scaled Florida Landscaping Services to <strong>$3M</strong> &mdash; <strong>both exited</strong>, Optimized to a UK equity firm expanding into the U.S.</p>
           <div class="headline">2 exits<span class="sub-h">Founded, scaled &amp; sold</span></div>
         </div>
       </div>
@@ -624,10 +647,10 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
   <!-- ======= HOW I RUN A PORTFOLIO ======= -->
   <section class="section" id="portfolio">
     <div class="wrap">
-      <div class="section-intro reveal">
+      <div class="section-head reveal">
         <span class="microlabel">How I run a portfolio</span>
-        <h2>Six brands. <em>One operating system</em>.</h2>
-        <p>At Atrium — a PE-owned portfolio of six HVAC, electrical, plumbing, and air-quality brands — every brand budget rolled up to me, $25M in total. Here's what portfolio-level ownership looked like in practice.</p>
+        <h2>Six brands. <em>One operating system.</em></h2>
+        <p>At Atrium &mdash; a PE-owned portfolio of six HVAC, electrical, plumbing, and air-quality brands &mdash; every brand budget rolled up to me, $25M in total. Here's what portfolio-level ownership looked like in practice.</p>
       </div>
       <div class="record">
         <div class="rec reveal">
@@ -635,15 +658,15 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
             <div class="co-name">Consolidated spend</div>
             <div class="co-role">Payment &amp; platform leverage</div>
           </div>
-          <p>I unified Google Ads payments from six per-brand credit cards into <strong>consolidated ACH</strong> — qualifying the portfolio for a <strong>corporate-level Google account with a dedicated Google advisor</strong>. Scale negotiated into leverage, not just spend.</p>
-          <div class="headline">6 → 1<span class="sub-h">Payment rails · corporate Google account</span></div>
+          <p>I unified Google Ads payments from six per-brand credit cards into <strong>consolidated ACH</strong> &mdash; qualifying the portfolio for a <strong>corporate-level Google account with a dedicated Google advisor</strong>. Scale negotiated into leverage, not just spend.</p>
+          <div class="headline">6 &rarr; 1<span class="sub-h">Payment rails &middot; corporate Google account</span></div>
         </div>
         <div class="rec reveal">
           <div>
             <div class="co-name">Cradle-to-grave tracking</div>
             <div class="co-role">Attribution standard</div>
           </div>
-          <p>I implemented <strong>UTM tracking cradle-to-grave across the portfolio</strong> — every lead traceable from first click to closed job, with all six brands reporting on one standard instead of six dialects.</p>
+          <p>I implemented <strong>UTM tracking cradle-to-grave across the portfolio</strong> &mdash; every lead traceable from first click to closed job, with all six brands reporting on one standard instead of six dialects.</p>
           <div class="headline">6 / 6<span class="sub-h">Brands on one tracking standard</span></div>
         </div>
         <div class="rec reveal">
@@ -651,7 +674,7 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
             <div class="co-name">One P&amp;L conversation</div>
             <div class="co-role">Portfolio-level allocation</div>
           </div>
-          <p>With every budget rolling up to one desk, reallocation happened at <strong>portfolio level</strong> — dollars moved to the brand and channel where returns were highest, not where habit had parked them.</p>
+          <p>With every budget rolling up to one desk, reallocation happened at <strong>portfolio level</strong> &mdash; dollars moved to the brand and channel where returns were highest, not where habit had parked them.</p>
           <div class="headline">$25M<span class="sub-h">Rolling up to one owner</span></div>
         </div>
       </div>
@@ -659,18 +682,18 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
   </section>
 
   <!-- ======= HOW I OPERATE (dark) ======= -->
-  <section class="section operate" id="operate">
+  <section class="operate" id="operate">
     <div class="wrap">
-      <div class="section-intro reveal">
+      <div class="section-head reveal">
         <span class="microlabel">How I operate</span>
-        <h2>The operating <em>system</em>.</h2>
+        <h2>The operating <em>system.</em></h2>
         <p>Four principles, applied without exception. They're why the numbers repeat across industries, business models, and market cycles.</p>
       </div>
       <div class="principles reveal">
         <div class="principle">
           <div class="p-idx">01 / 04</div>
           <h3>Systems, not campaigns</h3>
-          <p>Campaigns end. Systems compound. I build the demand engine, the attribution layer, and the operating cadence as <strong>one machine</strong> — so growth persists after the launch energy fades, and after I hand over the keys.</p>
+          <p>Campaigns end. Systems compound. I build the demand engine, the attribution layer, and the operating cadence as <strong>one machine</strong> &mdash; so growth persists after the launch energy fades, and after I hand over the keys.</p>
         </div>
         <div class="principle">
           <div class="p-idx">02 / 04</div>
@@ -680,12 +703,12 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
         <div class="principle">
           <div class="p-idx">03 / 04</div>
           <h3>Data before opinion</h3>
-          <p>Attribution modeling, incrementality testing, and live dashboards settle arguments before they start. The loudest voice in the room doesn&rsquo;t set the budget — <strong>closed-revenue data does</strong>.</p>
+          <p>Attribution modeling, incrementality testing, and live dashboards settle arguments before they start. The loudest voice in the room doesn&rsquo;t set the budget &mdash; <strong>closed-revenue data does</strong>.</p>
         </div>
         <div class="principle">
           <div class="p-idx">04 / 04</div>
           <h3>AI-integrated operations</h3>
-          <p>I'm an early and active AI power user — automation built into <strong>every layer</strong> of the operation: lead routing, reporting, creative production, and workflow orchestration. Smaller teams, faster cycles, compounding output.</p>
+          <p>I'm an early and active AI power user &mdash; automation built into <strong>every layer</strong> of the operation: lead routing, reporting, creative production, and workflow orchestration. Smaller teams, faster cycles, compounding output.</p>
         </div>
       </div>
     </div>
@@ -694,22 +717,22 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
   <!-- ======= EDUCATION ======= -->
   <section class="section" id="education">
     <div class="wrap">
-      <div class="section-intro reveal">
+      <div class="section-head reveal">
         <span class="microlabel">Education</span>
-        <h2>Still <em>sharpening</em>.</h2>
+        <h2>Still <em>sharpening.</em></h2>
       </div>
       <div class="edu-strip reveal">
         <div class="edu">
           <div>
-            <h4>Auburn University — MBA + M.S. Information Systems</h4>
+            <h4>Auburn University &mdash; MBA + M.S. Information Systems</h4>
             <p class="sub">Dual master&rsquo;s program, Harbert College of Business</p>
           </div>
           <span class="yr">Exp. 2027</span>
         </div>
         <div class="edu">
           <div>
-            <h4>Central Michigan University — B.A.</h4>
-            <p class="sub">Summa Cum Laude · 3.97 GPA</p>
+            <h4>Central Michigan University &mdash; B.A.</h4>
+            <p class="sub">Summa Cum Laude &middot; 3.97 GPA</p>
           </div>
           <span class="yr">2025</span>
         </div>
@@ -718,36 +741,39 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
   </section>
 
   <!-- ======= TESTIMONIAL ======= -->
-  <section class="section testimonial" id="reference">
+  <section class="reference" id="reference">
     <div class="wrap">
-      <div class="section-intro reveal">
+      <div class="section-head reveal">
         <span class="microlabel">From the team</span>
-        <h2>Ask the people <em>who reported to me</em>.</h2>
+        <h2>Ask the people <em>who reported to me.</em></h2>
       </div>
-      <div class="quote-card reveal">
+      <figure class="testimonial reveal">
         <span class="qmark">&ldquo;</span>
-        <p>Brad excels at setting clear goals and consistently delivering results&hellip; When we had differing opinions he engaged in thoughtful discussions to explore each perspective. He is a valuable asset to any team.</p>
-        <div class="who"><div class="nm">Michael Loomus</div><div class="rl">Inside Sales &amp; Customer Service Leader — reported to Bradley</div></div>
-      </div>
+        <blockquote>Brad excels at setting clear goals and consistently delivering results&hellip; When we had differing opinions he engaged in thoughtful discussions to explore each perspective. He is a valuable asset to any team.</blockquote>
+        <div class="who">
+          <div class="nm">Michael Loomus</div>
+          <div class="rl">Inside Sales &amp; Customer Service Leader &mdash; reported to Bradley</div>
+        </div>
+      </figure>
     </div>
   </section>
 
   <!-- ======= FINAL CTA ======= -->
-  <section class="section contact" id="contact">
+  <section class="finale" id="contact">
     <div class="wrap reveal">
-      <span class="microlabel">Let's talk</span>
+      <span class="microlabel">Start a conversation</span>
       <h2>Looking for your next <em>growth executive?</em></h2>
-      <p>Board seat, C-suite search, or a portfolio company that needs an operator in the chair — send the brief. I&rsquo;ll respond with how I&rsquo;d run it, and the numbers I&rsquo;d be accountable for.</p>
-      <a class="btn btn-solid" href="/contact?type=executive">Start a conversation <span class="arr">→</span></a>
+      <p>Board seat, C-suite search, or a portfolio company that needs an operator in the chair &mdash; send the brief. I&rsquo;ll respond with how I&rsquo;d run it, and the numbers I&rsquo;d be accountable for.</p>
+      <a class="btn btn-solid" href="/contact?type=executive">Start a conversation <span class="arr">&rarr;</span></a>
     </div>
   </section>
 
   <!-- ======= FOOTER ======= -->
   <footer class="footer">
     <div class="wrap">
-      <span class="fbrand">Bradley Griffin<span class="dot">.</span></span>
+      <span class="fbrand">Bradley Griffin</span>
       <nav>
-        <a href="/#help">Work with me</a>
+        <a href="/#work">Work with me</a>
         <a href="/case-studies">Results</a>
         <a href="/story">About</a>
         <a href="/speaking">Speaking</a>
@@ -755,29 +781,28 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
         <a href="/contact">Contact</a>
         <a href="https://www.linkedin.com/in/brad-w-griffin/" target="_blank" rel="noopener">LinkedIn</a>
       </nav>
-      <span class="fine">© 2026 Bradley Griffin · bradleygriffin.us</span>
+      <span class="fine">&copy; 2026 Bradley Griffin &middot; bradleygriffin.us</span>
     </div>
   </footer>
 
   <script>
-    // Mobile menu
+    // hamburger
     (function () {
       var btn = document.querySelector(".menu-btn");
-      var body = document.body;
-      if (!btn) return;
+      var panel = document.querySelector(".mobile-nav");
+      if (!btn || !panel) return;
       btn.addEventListener("click", function () {
-        var open = body.classList.toggle("nav-open");
+        var open = document.body.classList.toggle("nav-open");
         btn.setAttribute("aria-expanded", open ? "true" : "false");
       });
-      document.querySelectorAll(".mobile-nav a").forEach(function (a) {
-        a.addEventListener("click", function () {
-          body.classList.remove("nav-open");
+      panel.addEventListener("click", function (e) {
+        if (e.target.tagName === "A") {
+          document.body.classList.remove("nav-open");
           btn.setAttribute("aria-expanded", "false");
-        });
+        }
       });
     })();
-
-    // Reveal on scroll
+    // reveal on scroll
     (function () {
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
