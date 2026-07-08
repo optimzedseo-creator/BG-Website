@@ -983,50 +983,33 @@ h1, h2, h3, h4 { font-family: var(--disp); font-weight: 700; line-height: 1.02; 
 }
 
 
-/* ---------- multi-step funnel ---------- */
-.funnel { padding-bottom: 100px; }
-.funnel-head { display: flex; flex-direction: column; gap: 22px; margin-bottom: 46px; }
-.fprogress { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line-strong); }
-.fprogress li { display: flex; align-items: center; gap: 12px; padding: 15px 20px; border-left: 1px solid var(--line); color: var(--mute); }
-.fprogress li:first-child { border-left: none; }
-.fprogress li .n { font-family: var(--disp); font-weight: 700; font-size: 14px; }
-.fprogress li .t { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
-.fprogress li.on { color: var(--ink); background: rgba(179, 58, 43, 0.05); }
-.fprogress li.on .n { color: var(--red); }
-.fprogress li.done { color: var(--ink); }
-.fprogress li.done .n::after { content: " ✓"; color: var(--red); }
-.fstep { display: none; }
-.fstep.active { display: block; animation: ffade 0.35s ease; }
-@keyframes ffade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-.fh { font-size: clamp(32px, 5vw, 58px); text-transform: uppercase; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 12px; }
-.fh em { color: var(--red); }
-.fsub { font-size: 16px; color: var(--mute); margin-bottom: 34px; }
-.fsub strong { color: var(--ink); }
-.flink { background: none; border: none; color: var(--red); font: inherit; font-weight: 600; cursor: pointer; text-decoration: underline; padding: 0; }
-.fopts { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line-strong); }
-.fopt { text-align: left; background: var(--bone); border: none; padding: 32px 30px; cursor: pointer; display: flex; flex-direction: column; gap: 8px; transition: background 0.2s; position: relative; }
-.fopt:hover, .fopt:focus-visible { background: #fff; outline: none; }
-.fopt .fo-idx { font-family: var(--disp); font-size: 13px; font-weight: 700; letter-spacing: 0.2em; color: var(--red); }
-.fopt h3 { font-size: 24px; color: var(--ink); }
-.fopt p { font-size: 14px; color: var(--mute); line-height: 1.6; }
-.fopt .fo-go { margin-top: 6px; font-family: var(--disp); font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); display: inline-flex; gap: 8px; align-items: center; }
-.fopt .fo-go .arr { transition: transform 0.25s; }
-.fopt:hover .fo-go .arr { transform: translateX(4px); }
-.fopt::after { content: ""; position: absolute; left: 0; top: 0; height: 3px; width: 0; background: var(--red); transition: width 0.35s ease; }
-.fopt:hover::after, .fopt.sel::after { width: 100%; }
-.fnav { display: flex; justify-content: space-between; gap: 16px; margin-top: 28px; flex-wrap: wrap; }
-.fdone { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.03em; color: var(--ink); border: 1px solid var(--line-strong); border-left: 4px solid var(--red); padding: 12px 18px; margin-bottom: 26px; background: rgba(18, 20, 23, 0.03); }
+/* ---------- simple contact form ---------- */
+.contactx { padding-bottom: 100px; }
+.cx-head { max-width: 640px; margin-bottom: 40px; }
+.cx-head h1 { font-size: clamp(34px, 5vw, 60px); text-transform: uppercase; letter-spacing: -0.02em; color: var(--ink); margin: 16px 0 14px; }
+.cx-head h1 em { color: var(--red); }
+.cx-form { max-width: 760px; }
+.cx-fieldset { border: none; padding: 0; margin: 0 0 32px; }
+.cx-fieldset legend { font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink); margin-bottom: 14px; padding: 0; }
+.optbtns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.optbtn { display: flex; align-items: center; gap: 14px; border: 1px solid var(--line-strong); padding: 17px 20px; cursor: pointer; transition: background 0.18s, border-color 0.18s; background: var(--bone); }
+.optbtn:hover { background: #fff; }
+.optbtn input { position: absolute; opacity: 0; width: 0; height: 0; }
+.rdot { flex: 0 0 auto; width: 18px; height: 18px; border: 2px solid var(--mute); border-radius: 50%; position: relative; transition: border-color 0.18s; }
+.rtxt { font-family: var(--disp); font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.2; }
+.optbtn.on, .optbtn:has(input:checked) { border-color: var(--red); background: rgba(179, 58, 43, 0.06); }
+.optbtn.on .rdot, .optbtn:has(input:checked) .rdot { border-color: var(--red); }
+.optbtn.on .rdot::after, .optbtn:has(input:checked) .rdot::after { content: ""; position: absolute; inset: 3px; background: var(--red); border-radius: 50%; }
+.optbtn:focus-within { outline: 2px solid var(--red); outline-offset: 2px; }
+.cx-actions { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; margin-top: 6px; }
+.cx-done { max-width: 640px; }
+.cx-done-h { font-size: clamp(28px, 4vw, 44px); text-transform: uppercase; letter-spacing: -0.02em; color: var(--ink); margin: 22px 0 12px; }
+.cx-done-h em { color: var(--red); }
+.fdone { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.03em; color: var(--ink); border: 1px solid var(--line-strong); border-left: 4px solid var(--red); padding: 12px 18px; margin-bottom: 6px; background: rgba(18, 20, 23, 0.03); }
 .fdone-mark { color: var(--red); font-weight: 800; }
-#calendly-embed { border: 1px solid var(--line-strong); background: var(--bone-2); }
-.fskip { margin-top: 20px; font-size: 13px; color: var(--mute); }
-.fskip a { color: var(--red); }
-@media (max-width: 760px) {
-  .fopts { grid-template-columns: 1fr; }
-  .fprogress li .t { display: none; }
-  .fprogress li { justify-content: center; padding: 14px 10px; }
-  .fnav { flex-direction: column-reverse; }
-  .fnav .btn { justify-content: center; }
-}
+.fskip { font-size: 13px; color: var(--mute); text-decoration: underline; }
+.fskip:hover { color: var(--red); }
+@media (max-width: 640px) { .optbtns { grid-template-columns: 1fr; } }
 
 /* ---------- honeypot + submit status ---------- */
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
@@ -1119,98 +1102,70 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-4
     </div>
   </header>
 
-  <!-- ======= FUNNEL ======= -->
-  <section class="hero page-hero funnel" id="top">
+  <!-- ======= CONTACT ======= -->
+  <section class="hero page-hero contactx" id="top">
     <div class="crosses"></div>
     <div class="wrap">
-      <div class="funnel-head">
+      <div class="cx-head">
         <p class="microlabel"><span class="tick">/</span> Start a Conversation</p>
-        <ol class="fprogress" aria-label="Progress">
-          <li data-s="1" class="on"><span class="n">01</span><span class="t">Your focus</span></li>
-          <li data-s="2"><span class="n">02</span><span class="t">Your brief</span></li>
-          <li data-s="3"><span class="n">03</span><span class="t">Book a time</span></li>
-        </ol>
+        <h1>Tell me what <em>you&rsquo;re building.</em></h1>
+        <p class="lede">Pick what you need, send the brief — you&rsquo;ll hear back from me, not an assistant.</p>
       </div>
 
-      <!-- STEP 1 — WHAT ARE YOU LOOKING FOR -->
-      <div class="fstep active" data-step="1">
-        <h1 class="fh">What are you <em>looking for?</em></h1>
-        <p class="fsub">Pick the engagement that fits. You can change it on the next step.</p>
-        <div class="fopts">
-          <button class="fopt" type="button" data-type="Executive Leadership">
-            <span class="fo-idx">A</span>
-            <h3>An Executive Leader</h3>
-            <p>A full-time CMO / CEO-level operator for the whole P&amp;L — for boards, investors, and retained search.</p>
-            <span class="fo-go">Select <span class="arr">→</span></span>
-          </button>
-          <button class="fopt" type="button" data-type="Fractional CMO">
-            <span class="fo-idx">B</span>
-            <h3>A Fractional CMO</h3>
-            <p>Senior marketing leadership installed at a fraction of the cost — for founder-led and mid-market companies.</p>
-            <span class="fo-go">Select <span class="arr">→</span></span>
-          </button>
-          <button class="fopt" type="button" data-type="Strategy &amp; AI Consulting">
-            <span class="fo-idx">C</span>
-            <h3>Strategy &amp; AI Consulting</h3>
-            <p>An outside operator on strategy, automation, AIO, and data — for owners buying outcomes.</p>
-            <span class="fo-go">Select <span class="arr">→</span></span>
-          </button>
-          <button class="fopt" type="button" data-type="Keynotes &amp; Speaking">
-            <span class="fo-idx">D</span>
-            <h3>A Speaker for an Event</h3>
-            <p>A keynote on growth, competition, and AI — delivered with the composure of a Ranger veteran.</p>
-            <span class="fo-go">Select <span class="arr">→</span></span>
-          </button>
+      <form id="contact-form" class="cx-form" novalidate>
+        <fieldset class="cx-fieldset">
+          <legend>I&rsquo;m looking for <span class="req">*</span></legend>
+          <div class="optbtns">
+            <label class="optbtn"><input type="radio" name="type" value="Executive Leadership" /><span class="rdot"></span><span class="rtxt">An Executive Leader</span></label>
+            <label class="optbtn"><input type="radio" name="type" value="Fractional CMO" /><span class="rdot"></span><span class="rtxt">A Fractional CMO</span></label>
+            <label class="optbtn"><input type="radio" name="type" value="Strategy &amp; AI Consulting" /><span class="rdot"></span><span class="rtxt">Strategy &amp; AI Consulting</span></label>
+            <label class="optbtn"><input type="radio" name="type" value="Keynotes &amp; Speaking" /><span class="rdot"></span><span class="rtxt">A Speaker for an Event</span></label>
+          </div>
+        </fieldset>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="cf-name">Full name <span class="req">*</span></label>
+            <input type="text" id="cf-name" name="name" placeholder="Your name" required autocomplete="name" />
+          </div>
+          <div class="field">
+            <label for="cf-email">Email <span class="req">*</span></label>
+            <input type="email" id="cf-email" name="email" placeholder="you@company.com" required autocomplete="email" />
+          </div>
+          <div class="field">
+            <label for="cf-phone">Phone</label>
+            <input type="tel" id="cf-phone" name="phone" placeholder="(000) 000-0000" autocomplete="tel" />
+          </div>
+          <div class="field">
+            <label for="cf-company">Company</label>
+            <input type="text" id="cf-company" name="company" placeholder="Company or organization" autocomplete="organization" />
+          </div>
+          <div class="field full">
+            <label for="cf-message">Message <span class="req">*</span></label>
+            <textarea id="cf-message" name="message" placeholder="A sentence or two on what you need." required></textarea>
+          </div>
         </div>
-      </div>
 
-      <!-- STEP 2 — YOUR BRIEF -->
-      <div class="fstep" data-step="2">
-        <h1 class="fh">Tell me <em>about it.</em></h1>
-        <p class="fsub">Selected: <strong id="f-choice">—</strong> · <button type="button" class="flink" id="f-change">change</button></p>
-        <form id="contact-form" novalidate>
-          <div class="form-grid">
-            <div class="field">
-              <label for="cf-name">Full name <span class="req">*</span></label>
-              <input type="text" id="cf-name" name="name" placeholder="Your name" required autocomplete="name" />
-            </div>
-            <div class="field">
-              <label for="cf-email">Email <span class="req">*</span></label>
-              <input type="email" id="cf-email" name="email" placeholder="you@company.com" required autocomplete="email" />
-            </div>
-            <div class="field">
-              <label for="cf-phone">Phone</label>
-              <input type="tel" id="cf-phone" name="phone" placeholder="(000) 000-0000" autocomplete="tel" />
-            </div>
-            <div class="field">
-              <label for="cf-company">Company</label>
-              <input type="text" id="cf-company" name="company" placeholder="Company or organization" autocomplete="organization" />
-            </div>
-            <div class="field full">
-              <label for="cf-message">Brief message <span class="req">*</span></label>
-              <textarea id="cf-message" name="message" placeholder="What are you building — and where does it need to go?" required></textarea>
-            </div>
-          </div>
-          <div class="hp" aria-hidden="true">
-            <label>Leave this field empty<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" /></label>
-          </div>
-          <input type="hidden" id="cf-type" name="type" value="" />
-          <div class="fnav">
-            <button class="btn btn-ghost" type="button" id="f-back"><span class="arr">←</span> Back</button>
-            <button class="btn btn-solid" type="submit" id="f-submit">Send &amp; Continue <span class="arr">→</span></button>
-          </div>
-          <p id="cf-status" class="cf-status" role="status" aria-live="polite"></p>
-          <p class="smallprint">Delivered straight to Bradley&rsquo;s inbox — you&rsquo;ll hear back from him, not an assistant.</p>
-        </form>
-      </div>
+        <div class="hp" aria-hidden="true">
+          <label>Leave this field empty<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" /></label>
+        </div>
 
-      <!-- STEP 3 — BOOK A TIME -->
-      <div class="fstep" data-step="3">
-        <div class="fdone"><span class="fdone-mark">✓</span> Your brief is in — it&rsquo;s already in Bradley&rsquo;s inbox.</div>
-        <h1 class="fh">Grab a <em>time.</em></h1>
-        <p class="fsub">Book a 30-minute intro call now, or don&rsquo;t — either way you&rsquo;ll hear back within two business days.</p>
-        <div id="calendly-embed" class="calendly-inline-widget" style="min-width:320px;height:690px;"></div>
-        <p class="fskip">Prefer not to book yet? You&rsquo;re all set — <a href="/">back to the site</a>.</p>
+        <div class="cx-actions">
+          <button class="btn btn-solid" type="submit" id="cf-submit">Send the Brief <span class="arr">→</span></button>
+          <p class="smallprint">Straight to Bradley&rsquo;s inbox — no email app needed.</p>
+        </div>
+        <p id="cf-status" class="cf-status" role="status" aria-live="polite"></p>
+      </form>
+
+      <!-- success (hidden until submit) -->
+      <div id="cx-done" class="cx-done" hidden>
+        <div class="fdone"><span class="fdone-mark">✓</span> Your brief is in — it&rsquo;s in Bradley&rsquo;s inbox.</div>
+        <h2 class="cx-done-h">Want to <em>grab a time?</em></h2>
+        <p class="lede">Optional. Book a 30-minute intro call now, or just wait — you&rsquo;ll hear back within two business days either way.</p>
+        <div class="cx-actions">
+          <button class="btn btn-solid" type="button" id="cx-book">Book a 30-Minute Call <span class="arr">→</span></button>
+          <a class="fskip" href="/">No thanks — back to the site</a>
+        </div>
       </div>
     </div>
   </section>
@@ -1238,59 +1193,33 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-4
     }, { threshold: 0.12 });
     document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
-    // ---- Multi-step funnel ----
+    // ---- Simple contact form ----
     (function () {
       const val = (id) => { const el = document.getElementById(id); return el ? el.value.trim() : ""; };
-      const steps = Array.prototype.slice.call(document.querySelectorAll(".fstep"));
-      const prog = Array.prototype.slice.call(document.querySelectorAll(".fprogress li"));
-      const typeInput = document.getElementById("cf-type");
-      const choiceEl = document.getElementById("f-choice");
-      let calendlyDone = false;
+      const form = document.getElementById("contact-form");
+      const status = document.getElementById("cf-status");
+      const done = document.getElementById("cx-done");
+      const radios = Array.prototype.slice.call(form.querySelectorAll('input[name="type"]'));
 
-      function go(n) {
-        steps.forEach((s) => s.classList.toggle("active", +s.dataset.step === n));
-        prog.forEach((li) => {
-          const s = +li.dataset.s;
-          li.classList.toggle("on", s === n);
-          li.classList.toggle("done", s < n);
-        });
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        if (n === 3) initCalendly();
-      }
+      // Highlight the chosen option (fallback for browsers without :has()).
+      radios.forEach((r) => r.addEventListener("change", () => {
+        radios.forEach((x) => x.closest(".optbtn").classList.toggle("on", x.checked));
+      }));
 
-      function choose(type) {
-        typeInput.value = type;
-        if (choiceEl) choiceEl.textContent = type;
-        go(2);
-      }
-
-      document.querySelectorAll(".fopt").forEach((b) => {
-        b.addEventListener("click", () => {
-          document.querySelectorAll(".fopt").forEach((o) => o.classList.remove("sel"));
-          b.classList.add("sel");
-          choose(b.dataset.type); // dataset auto-decodes &amp; → &
-        });
-      });
-      const back = document.getElementById("f-back");
-      if (back) back.addEventListener("click", () => go(1));
-      const change = document.getElementById("f-change");
-      if (change) change.addEventListener("click", () => go(1));
-
-      // Deep link: /contact?type=executive|fractional|consulting|speaking → skip to step 2.
+      // Deep link: /contact?type=executive|fractional|consulting|speaking → preselect.
       const map = { executive: "Executive Leadership", fractional: "Fractional CMO", consulting: "Strategy & AI Consulting", speaking: "Keynotes & Speaking" };
       const q = new URLSearchParams(location.search).get("type");
-      if (q && map[q]) { typeInput.value = map[q]; if (choiceEl) choiceEl.textContent = map[q]; go(2); }
+      if (q && map[q]) { const r = radios.find((i) => i.value === map[q]); if (r) { r.checked = true; r.dispatchEvent(new Event("change")); } }
 
-      // Submit → serverless function (Resend). Sends the lead, then advances to booking.
-      document.getElementById("contact-form").addEventListener("submit", async (e) => {
+      form.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const form = e.target;
-        const btn = document.getElementById("f-submit");
-        const status = document.getElementById("cf-status");
+        const btn = document.getElementById("cf-submit");
+        const type = (form.querySelector('input[name="type"]:checked') || {}).value || "";
+        if (!type) { status.className = "cf-status err"; status.textContent = "Please pick what you're looking for."; return; }
         const payload = {
           name: val("cf-name"), email: val("cf-email"), phone: val("cf-phone"),
-          company: val("cf-company"), type: typeInput.value || "General inquiry",
-          message: val("cf-message"), _gotcha: (form.querySelector('[name="_gotcha"]') || {}).value || "",
+          company: val("cf-company"), type: type, message: val("cf-message"),
+          _gotcha: (form.querySelector('[name="_gotcha"]') || {}).value || "",
         };
         if (!payload.name || !payload.email || !payload.message) { if (form.reportValidity) form.reportValidity(); return; }
         const original = btn.innerHTML;
@@ -1299,7 +1228,7 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-4
         try {
           const res = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
           const out = await res.json().catch(() => ({}));
-          if (res.ok && out.ok) { go(3); }
+          if (res.ok && out.ok) { form.hidden = true; done.hidden = false; window.scrollTo({ top: 0, behavior: "smooth" }); }
           else {
             status.className = "cf-status err";
             status.textContent = (out && out.error) || "Couldn’t send right now. Please try again shortly, or reach out on LinkedIn.";
@@ -1312,24 +1241,14 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-4
         }
       });
 
-      // Calendly inline embed (30-min intro), prefilled with the visitor's name/email.
-      function initCalendly() {
-        if (calendlyDone) return;
-        const el = document.getElementById("calendly-embed");
-        const url = "https://calendly.com/optimzedseo/30min?hide_gdpr_banner=1&primary_color=b33a2b";
-        let tries = 0;
-        (function attempt() {
-          if (window.Calendly && window.Calendly.initInlineWidget) {
-            el.innerHTML = "";
-            window.Calendly.initInlineWidget({ url: url, parentElement: el, prefill: { name: val("cf-name"), email: val("cf-email") } });
-            calendlyDone = true;
-          } else if (tries++ < 25) {
-            setTimeout(attempt, 150);
-          } else {
-            el.innerHTML = '<div style="padding:32px;text-align:center"><a class="btn btn-solid" href="' + url + '" target="_blank" rel="noopener">Open the scheduler ↗</a></div>';
-          }
-        })();
-      }
+      // Optional: open Calendly in a popup after submit (prefilled).
+      const bookBtn = document.getElementById("cx-book");
+      if (bookBtn) bookBtn.addEventListener("click", () => {
+        const url = "https://calendly.com/optimzedseo/30min?hide_gdpr_banner=1&primary_color=b33a2b"
+          + "&name=" + encodeURIComponent(val("cf-name")) + "&email=" + encodeURIComponent(val("cf-email"));
+        if (window.Calendly && window.Calendly.initPopupWidget) { window.Calendly.initPopupWidget({ url: url }); }
+        else { window.open(url, "_blank", "noopener"); }
+      });
     })();
   </script>
   <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
