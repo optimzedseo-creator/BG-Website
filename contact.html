@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet" />
   <style>
 /* ============================================================
    BRADLEY GRIFFIN — bradleygriffin.us — OPTION C
@@ -982,6 +983,51 @@ h1, h2, h3, h4 { font-family: var(--disp); font-weight: 700; line-height: 1.02; 
 }
 
 
+/* ---------- multi-step funnel ---------- */
+.funnel { padding-bottom: 100px; }
+.funnel-head { display: flex; flex-direction: column; gap: 22px; margin-bottom: 46px; }
+.fprogress { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line-strong); }
+.fprogress li { display: flex; align-items: center; gap: 12px; padding: 15px 20px; border-left: 1px solid var(--line); color: var(--mute); }
+.fprogress li:first-child { border-left: none; }
+.fprogress li .n { font-family: var(--disp); font-weight: 700; font-size: 14px; }
+.fprogress li .t { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+.fprogress li.on { color: var(--ink); background: rgba(179, 58, 43, 0.05); }
+.fprogress li.on .n { color: var(--red); }
+.fprogress li.done { color: var(--ink); }
+.fprogress li.done .n::after { content: " ✓"; color: var(--red); }
+.fstep { display: none; }
+.fstep.active { display: block; animation: ffade 0.35s ease; }
+@keyframes ffade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.fh { font-size: clamp(32px, 5vw, 58px); text-transform: uppercase; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 12px; }
+.fh em { color: var(--red); }
+.fsub { font-size: 16px; color: var(--mute); margin-bottom: 34px; }
+.fsub strong { color: var(--ink); }
+.flink { background: none; border: none; color: var(--red); font: inherit; font-weight: 600; cursor: pointer; text-decoration: underline; padding: 0; }
+.fopts { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line-strong); }
+.fopt { text-align: left; background: var(--bone); border: none; padding: 32px 30px; cursor: pointer; display: flex; flex-direction: column; gap: 8px; transition: background 0.2s; position: relative; }
+.fopt:hover, .fopt:focus-visible { background: #fff; outline: none; }
+.fopt .fo-idx { font-family: var(--disp); font-size: 13px; font-weight: 700; letter-spacing: 0.2em; color: var(--red); }
+.fopt h3 { font-size: 24px; color: var(--ink); }
+.fopt p { font-size: 14px; color: var(--mute); line-height: 1.6; }
+.fopt .fo-go { margin-top: 6px; font-family: var(--disp); font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); display: inline-flex; gap: 8px; align-items: center; }
+.fopt .fo-go .arr { transition: transform 0.25s; }
+.fopt:hover .fo-go .arr { transform: translateX(4px); }
+.fopt::after { content: ""; position: absolute; left: 0; top: 0; height: 3px; width: 0; background: var(--red); transition: width 0.35s ease; }
+.fopt:hover::after, .fopt.sel::after { width: 100%; }
+.fnav { display: flex; justify-content: space-between; gap: 16px; margin-top: 28px; flex-wrap: wrap; }
+.fdone { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.03em; color: var(--ink); border: 1px solid var(--line-strong); border-left: 4px solid var(--red); padding: 12px 18px; margin-bottom: 26px; background: rgba(18, 20, 23, 0.03); }
+.fdone-mark { color: var(--red); font-weight: 800; }
+#calendly-embed { border: 1px solid var(--line-strong); background: var(--bone-2); }
+.fskip { margin-top: 20px; font-size: 13px; color: var(--mute); }
+.fskip a { color: var(--red); }
+@media (max-width: 760px) {
+  .fopts { grid-template-columns: 1fr; }
+  .fprogress li .t { display: none; }
+  .fprogress li { justify-content: center; padding: 14px 10px; }
+  .fnav { flex-direction: column-reverse; }
+  .fnav .btn { justify-content: center; }
+}
+
 /* ---------- honeypot + submit status ---------- */
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .cf-status { margin-top: 18px; font-size: 14px; line-height: 1.6; padding: 0; opacity: 0; transition: opacity 0.25s; }
@@ -1073,67 +1119,59 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-4
     </div>
   </header>
 
-  <!-- ======= PAGE HERO ======= -->
-  <section class="hero page-hero" id="top">
+  <!-- ======= FUNNEL ======= -->
+  <section class="hero page-hero funnel" id="top">
     <div class="crosses"></div>
-    <div class="wrap hero-inner">
-      <p class="microlabel"><span class="tick">/</span> Start a Conversation</p>
-      <h1>Tell me what <em>you&rsquo;re building.</em></h1>
-      <p class="lede">
-        I&rsquo;ll tell you how I&rsquo;d grow it. Pick the engagement, send the brief —
-        <strong>you&rsquo;ll hear back from me, not an assistant.</strong>
-      </p>
-    </div>
-  </section>
-
-  <!-- ======= FOUR ROUTES ======= -->
-  <section class="section" id="routes">
     <div class="wrap">
-      <div class="section-head reveal">
-        <div class="head-rule"><span class="idx-num">01 /</span><span class="line"></span><span class="microlabel">Four Ways In</span></div>
-        <h2>Pick your <em>route.</em></h2>
+      <div class="funnel-head">
+        <p class="microlabel"><span class="tick">/</span> Start a Conversation</p>
+        <ol class="fprogress" aria-label="Progress">
+          <li data-s="1" class="on"><span class="n">01</span><span class="t">Your focus</span></li>
+          <li data-s="2"><span class="n">02</span><span class="t">Your brief</span></li>
+          <li data-s="3"><span class="n">03</span><span class="t">Book a time</span></li>
+        </ol>
       </div>
-      <div class="routes reveal">
-        <button class="route" type="button" data-type="Executive Leadership">
-          <span class="ridx">01</span>
-          <h3>Executive Search</h3>
-          <p>Boards, investors, and retained search — an operator for the whole P&amp;L conversation.</p>
-          <span class="sel">Select this below ↓</span>
-        </button>
-        <button class="route" type="button" data-type="Fractional CMO">
-          <span class="ridx">02</span>
-          <h3>Fractional CMO</h3>
-          <p>Founder-led companies that need the executive without the full-time cost.</p>
-          <span class="sel">Select this below ↓</span>
-        </button>
-        <button class="route" type="button" data-type="Strategy &amp; AI Consulting">
-          <span class="ridx">03</span>
-          <h3>Strategy &amp; AI Consulting</h3>
-          <p>Operators buying outcomes — automation, AIO, and data that compound.</p>
-          <span class="sel">Select this below ↓</span>
-        </button>
-        <button class="route" type="button" data-type="Keynotes &amp; Speaking">
-          <span class="ridx">04</span>
-          <h3>Speaking</h3>
-          <p>Organizers who need a keynote that commands the room.</p>
-          <span class="sel">Select this below ↓</span>
-        </button>
-      </div>
-    </div>
-  </section>
 
-  <!-- ======= CONTACT FORM ======= -->
-  <section class="section" id="form">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <div class="head-rule"><span class="idx-num">02 /</span><span class="line"></span><span class="microlabel">The Brief</span></div>
-        <h2>Send the <em>brief.</em></h2>
+      <!-- STEP 1 — WHAT ARE YOU LOOKING FOR -->
+      <div class="fstep active" data-step="1">
+        <h1 class="fh">What are you <em>looking for?</em></h1>
+        <p class="fsub">Pick the engagement that fits. You can change it on the next step.</p>
+        <div class="fopts">
+          <button class="fopt" type="button" data-type="Executive Leadership">
+            <span class="fo-idx">A</span>
+            <h3>An Executive Leader</h3>
+            <p>A full-time CMO / CEO-level operator for the whole P&amp;L — for boards, investors, and retained search.</p>
+            <span class="fo-go">Select <span class="arr">→</span></span>
+          </button>
+          <button class="fopt" type="button" data-type="Fractional CMO">
+            <span class="fo-idx">B</span>
+            <h3>A Fractional CMO</h3>
+            <p>Senior marketing leadership installed at a fraction of the cost — for founder-led and mid-market companies.</p>
+            <span class="fo-go">Select <span class="arr">→</span></span>
+          </button>
+          <button class="fopt" type="button" data-type="Strategy &amp; AI Consulting">
+            <span class="fo-idx">C</span>
+            <h3>Strategy &amp; AI Consulting</h3>
+            <p>An outside operator on strategy, automation, AIO, and data — for owners buying outcomes.</p>
+            <span class="fo-go">Select <span class="arr">→</span></span>
+          </button>
+          <button class="fopt" type="button" data-type="Keynotes &amp; Speaking">
+            <span class="fo-idx">D</span>
+            <h3>A Speaker for an Event</h3>
+            <p>A keynote on growth, competition, and AI — delivered with the composure of a Ranger veteran.</p>
+            <span class="fo-go">Select <span class="arr">→</span></span>
+          </button>
+        </div>
       </div>
-      <div class="contact-grid">
-        <form id="contact-form" class="reveal" novalidate>
+
+      <!-- STEP 2 — YOUR BRIEF -->
+      <div class="fstep" data-step="2">
+        <h1 class="fh">Tell me <em>about it.</em></h1>
+        <p class="fsub">Selected: <strong id="f-choice">—</strong> · <button type="button" class="flink" id="f-change">change</button></p>
+        <form id="contact-form" novalidate>
           <div class="form-grid">
             <div class="field">
-              <label for="cf-name">Name <span class="req">*</span></label>
+              <label for="cf-name">Full name <span class="req">*</span></label>
               <input type="text" id="cf-name" name="name" placeholder="Your name" required autocomplete="name" />
             </div>
             <div class="field">
@@ -1141,53 +1179,38 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-4
               <input type="email" id="cf-email" name="email" placeholder="you@company.com" required autocomplete="email" />
             </div>
             <div class="field">
+              <label for="cf-phone">Phone</label>
+              <input type="tel" id="cf-phone" name="phone" placeholder="(000) 000-0000" autocomplete="tel" />
+            </div>
+            <div class="field">
               <label for="cf-company">Company</label>
               <input type="text" id="cf-company" name="company" placeholder="Company or organization" autocomplete="organization" />
             </div>
-            <div class="field">
-              <label for="cf-type">Engagement Type <span class="req">*</span></label>
-              <div class="selectwrap">
-                <select id="cf-type" name="type" required>
-                  <option value="Executive Leadership">Executive Leadership</option>
-                  <option value="Fractional CMO">Fractional CMO</option>
-                  <option value="Strategy &amp; AI Consulting">Strategy &amp; AI Consulting</option>
-                  <option value="Keynotes &amp; Speaking">Keynotes &amp; Speaking</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-            </div>
             <div class="field full">
-              <label for="cf-message">Message <span class="req">*</span></label>
+              <label for="cf-message">Brief message <span class="req">*</span></label>
               <textarea id="cf-message" name="message" placeholder="What are you building — and where does it need to go?" required></textarea>
             </div>
           </div>
           <div class="hp" aria-hidden="true">
             <label>Leave this field empty<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" /></label>
           </div>
-          <div class="form-actions">
-            <button class="btn btn-solid" type="submit">Send the Brief <span class="arr">→</span></button>
-            <p class="smallprint">Delivered straight to Bradley&rsquo;s inbox — no email app required. Prefer to connect on <a href="https://www.linkedin.com/in/brad-w-griffin/" target="_blank" rel="noopener">LinkedIn</a>?</p>
+          <input type="hidden" id="cf-type" name="type" value="" />
+          <div class="fnav">
+            <button class="btn btn-ghost" type="button" id="f-back"><span class="arr">←</span> Back</button>
+            <button class="btn btn-solid" type="submit" id="f-submit">Send &amp; Continue <span class="arr">→</span></button>
           </div>
           <p id="cf-status" class="cf-status" role="status" aria-live="polite"></p>
+          <p class="smallprint">Delivered straight to Bradley&rsquo;s inbox — you&rsquo;ll hear back from him, not an assistant.</p>
         </form>
-        <aside class="reveal">
-          <div class="direct">
-            <div class="direct-row">
-              <p class="k">Email</p>
-              <p class="v"><a href="mailto:hello@bradleygriffin.us">hello@bradleygriffin.us</a></p>
-            </div>
-            <div class="direct-row">
-              <p class="k">Response</p>
-              <p class="v">Within two business days — usually faster.</p>
-            </div>
-            <div class="direct-row">
-              <p class="k">Based</p>
-              <p class="v">Midwest, U.S. — working nationally.</p>
-            </div>
-          </div>
-          <a class="btn btn-ghost" href="https://www.linkedin.com/in/brad-w-griffin/" target="_blank" rel="noopener">Connect on LinkedIn <span class="arr">→</span></a>
-          <p class="direct-note">The short version travels well on LinkedIn. The serious version belongs in the form.</p>
-        </aside>
+      </div>
+
+      <!-- STEP 3 — BOOK A TIME -->
+      <div class="fstep" data-step="3">
+        <div class="fdone"><span class="fdone-mark">✓</span> Your brief is in — it&rsquo;s already in Bradley&rsquo;s inbox.</div>
+        <h1 class="fh">Grab a <em>time.</em></h1>
+        <p class="fsub">Book a 30-minute intro call now, or don&rsquo;t — either way you&rsquo;ll hear back within two business days.</p>
+        <div id="calendly-embed" class="calendly-inline-widget" style="min-width:320px;height:690px;"></div>
+        <p class="fskip">Prefer not to book yet? You&rsquo;re all set — <a href="/">back to the site</a>.</p>
       </div>
     </div>
   </section>
@@ -1215,64 +1238,101 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-4
     }, { threshold: 0.12 });
     document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
-    // Route cells preselect the engagement type, then jump to the form.
-    document.querySelectorAll(".route").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const sel = document.getElementById("cf-type");
-        sel.value = btn.dataset.type;
-        document.getElementById("form").scrollIntoView({ behavior: "smooth" });
-      });
-    });
+    // ---- Multi-step funnel ----
+    (function () {
+      const val = (id) => { const el = document.getElementById(id); return el ? el.value.trim() : ""; };
+      const steps = Array.prototype.slice.call(document.querySelectorAll(".fstep"));
+      const prog = Array.prototype.slice.call(document.querySelectorAll(".fprogress li"));
+      const typeInput = document.getElementById("cf-type");
+      const choiceEl = document.getElementById("f-choice");
+      let calendlyDone = false;
 
-    // Submit to the serverless function, which emails the brief via Resend.
-    document.getElementById("contact-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const btn = form.querySelector('button[type="submit"]');
-      const status = document.getElementById("cf-status");
-      const payload = {
-        name: document.getElementById("cf-name").value.trim(),
-        email: document.getElementById("cf-email").value.trim(),
-        company: document.getElementById("cf-company").value.trim(),
-        type: document.getElementById("cf-type").value,
-        message: document.getElementById("cf-message").value.trim(),
-        _gotcha: (form.querySelector('[name="_gotcha"]') || {}).value || "",
-      };
-      if (!payload.name || !payload.email || !payload.message) {
-        if (form.reportValidity) form.reportValidity();
-        return;
-      }
-      const original = btn.innerHTML;
-      btn.disabled = true;
-      btn.innerHTML = "Sending…";
-      status.className = "cf-status";
-      status.textContent = "";
-      try {
-        const res = await fetch("/api/contact", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+      function go(n) {
+        steps.forEach((s) => s.classList.toggle("active", +s.dataset.step === n));
+        prog.forEach((li) => {
+          const s = +li.dataset.s;
+          li.classList.toggle("on", s === n);
+          li.classList.toggle("done", s < n);
         });
-        const out = await res.json().catch(() => ({}));
-        if (res.ok && out.ok) {
-          form.reset();
-          status.className = "cf-status ok";
-          status.textContent = "Your brief is in. Expect a reply within two business days — usually faster.";
-          btn.innerHTML = "Sent ✓";
-        } else {
-          status.className = "cf-status err";
-          status.textContent = (out && out.error) || "Couldn’t send right now. Please try again shortly, or reach out on LinkedIn.";
-          btn.disabled = false;
-          btn.innerHTML = original;
-        }
-      } catch (err) {
-        status.className = "cf-status err";
-        status.textContent = "Network hiccup — please try again, or reach out on LinkedIn.";
-        btn.disabled = false;
-        btn.innerHTML = original;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        if (n === 3) initCalendly();
       }
-    });
+
+      function choose(type) {
+        typeInput.value = type;
+        if (choiceEl) choiceEl.textContent = type;
+        go(2);
+      }
+
+      document.querySelectorAll(".fopt").forEach((b) => {
+        b.addEventListener("click", () => {
+          document.querySelectorAll(".fopt").forEach((o) => o.classList.remove("sel"));
+          b.classList.add("sel");
+          choose(b.dataset.type); // dataset auto-decodes &amp; → &
+        });
+      });
+      const back = document.getElementById("f-back");
+      if (back) back.addEventListener("click", () => go(1));
+      const change = document.getElementById("f-change");
+      if (change) change.addEventListener("click", () => go(1));
+
+      // Deep link: /contact?type=executive|fractional|consulting|speaking → skip to step 2.
+      const map = { executive: "Executive Leadership", fractional: "Fractional CMO", consulting: "Strategy & AI Consulting", speaking: "Keynotes & Speaking" };
+      const q = new URLSearchParams(location.search).get("type");
+      if (q && map[q]) { typeInput.value = map[q]; if (choiceEl) choiceEl.textContent = map[q]; go(2); }
+
+      // Submit → serverless function (Resend). Sends the lead, then advances to booking.
+      document.getElementById("contact-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const btn = document.getElementById("f-submit");
+        const status = document.getElementById("cf-status");
+        const payload = {
+          name: val("cf-name"), email: val("cf-email"), phone: val("cf-phone"),
+          company: val("cf-company"), type: typeInput.value || "General inquiry",
+          message: val("cf-message"), _gotcha: (form.querySelector('[name="_gotcha"]') || {}).value || "",
+        };
+        if (!payload.name || !payload.email || !payload.message) { if (form.reportValidity) form.reportValidity(); return; }
+        const original = btn.innerHTML;
+        btn.disabled = true; btn.innerHTML = "Sending…";
+        status.className = "cf-status"; status.textContent = "";
+        try {
+          const res = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+          const out = await res.json().catch(() => ({}));
+          if (res.ok && out.ok) { go(3); }
+          else {
+            status.className = "cf-status err";
+            status.textContent = (out && out.error) || "Couldn’t send right now. Please try again shortly, or reach out on LinkedIn.";
+            btn.disabled = false; btn.innerHTML = original;
+          }
+        } catch (err) {
+          status.className = "cf-status err";
+          status.textContent = "Network hiccup — please try again, or reach out on LinkedIn.";
+          btn.disabled = false; btn.innerHTML = original;
+        }
+      });
+
+      // Calendly inline embed (30-min intro), prefilled with the visitor's name/email.
+      function initCalendly() {
+        if (calendlyDone) return;
+        const el = document.getElementById("calendly-embed");
+        const url = "https://calendly.com/optimzedseo/30min?hide_gdpr_banner=1&primary_color=b33a2b";
+        let tries = 0;
+        (function attempt() {
+          if (window.Calendly && window.Calendly.initInlineWidget) {
+            el.innerHTML = "";
+            window.Calendly.initInlineWidget({ url: url, parentElement: el, prefill: { name: val("cf-name"), email: val("cf-email") } });
+            calendlyDone = true;
+          } else if (tries++ < 25) {
+            setTimeout(attempt, 150);
+          } else {
+            el.innerHTML = '<div style="padding:32px;text-align:center"><a class="btn btn-solid" href="' + url + '" target="_blank" rel="noopener">Open the scheduler ↗</a></div>';
+          }
+        })();
+      }
+    })();
   </script>
+  <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
 
 <script>
 (function () {

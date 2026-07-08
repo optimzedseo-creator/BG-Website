@@ -38,6 +38,7 @@ module.exports = async function handler(req, res) {
 
   const name = (data.name || "").trim();
   const email = (data.email || "").trim();
+  const phone = (data.phone || "").trim();
   const company = (data.company || "").trim();
   const type = (data.type || "General inquiry").trim();
   const message = (data.message || "").trim();
@@ -70,6 +71,7 @@ module.exports = async function handler(req, res) {
       <table style="width:100%;border-collapse:collapse;font-size:14px;margin-top:12px;">
         <tr><td style="padding:8px 0;color:#565A60;width:120px;">Name</td><td style="padding:8px 0;font-weight:600;">${esc(name)}</td></tr>
         <tr><td style="padding:8px 0;color:#565A60;">Email</td><td style="padding:8px 0;"><a href="mailto:${esc(email)}" style="color:#B33A2B;">${esc(email)}</a></td></tr>
+        <tr><td style="padding:8px 0;color:#565A60;">Phone</td><td style="padding:8px 0;">${esc(phone) || "—"}</td></tr>
         <tr><td style="padding:8px 0;color:#565A60;">Company</td><td style="padding:8px 0;">${esc(company) || "—"}</td></tr>
         <tr><td style="padding:8px 0;color:#565A60;vertical-align:top;">Message</td><td style="padding:8px 0;white-space:pre-wrap;line-height:1.6;">${esc(message)}</td></tr>
       </table>
@@ -78,7 +80,7 @@ module.exports = async function handler(req, res) {
 
   const text =
     `New inquiry — ${type}\n\n` +
-    `Name: ${name}\nEmail: ${email}\nCompany: ${company || "—"}\n\n${message}\n`;
+    `Name: ${name}\nEmail: ${email}\nPhone: ${phone || "—"}\nCompany: ${company || "—"}\n\n${message}\n`;
 
   try {
     const r = await fetch("https://api.resend.com/emails", {
