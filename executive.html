@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chief Marketing Officer &amp; Growth Executive for Hire - Bradley Griffin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+/* ============================================================
+   BRADLEY GRIFFIN — bradleygriffin.us — OPTION C
+   "Modern Executive" · Swiss grid · data-forward
+   Display: Space Grotesk · Body/UI: Inter
+   Bone #F2F1ED · Ink #121417 · Signal #B33A2B · Charcoal #16181C
+   ============================================================ */
+
+:root {
+  --bone: #F2F1ED;
+  --bone-2: #EDEBE5;
+  --ink: #121417;
+  --charcoal: #16181C;
+  --red: #B33A2B;
+  --red-soft: #C4503F;
+  --mute: #565A60;
+  --mute-d: #9A9FA6;
+  --line: #C9C6BD;
+  --line-strong: #121417;
+  --line-d: rgba(242, 241, 237, 0.14);
+  --disp: "Space Grotesk", "Inter", -apple-system, sans-serif;
+  --sans: "Inter", -apple-system, "Segoe UI", sans-serif;
+  --wrap: 1240px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bone);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 32px; }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+em, i { font-style: normal; }
+h1, h2, h3, h4 { font-family: var(--disp); font-weight: 700; line-height: 1.02; letter-spacing: -0.02em; }
+
+::selection { background: var(--red); color: var(--bone); }
+
+/* ---------- type utilities ---------- */
+.microlabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.microlabel .tick { color: var(--red); font-weight: 600; }
+.on-dark .microlabel { color: var(--bone); }
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--disp);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 18px 32px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  transition: background 0.22s ease, color 0.22s ease, border-color 0.22s ease;
+  cursor: pointer;
+}
+.btn-solid { background: var(--ink); color: var(--bone); }
+.btn-solid:hover { background: var(--red); border-color: var(--red); color: #fff; }
+.btn-ghost { background: transparent; color: var(--ink); }
+.btn-ghost:hover { background: var(--ink); color: var(--bone); }
+.btn .arr { font-family: var(--sans); transition: transform 0.22s ease; }
+.btn:hover .arr { transform: translateX(4px); }
+
+/* ---------- header ---------- */
+.header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  background: rgba(242, 241, 237, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line-strong);
+}
+.header .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+}
+.brand { display: flex; align-items: baseline; gap: 14px; white-space: nowrap; }
+.brand .mark {
+  font-family: var(--disp);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.brand .mark em { color: var(--red); }
+.brand .tag {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.nav { display: flex; align-items: center; gap: 28px; }
+.nav a {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+.nav a:hover { color: var(--red); }
+.nav .nav-cta {
+  color: var(--bone);
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  padding: 10px 18px;
+  transition: background 0.22s, border-color 0.22s;
+}
+.nav .nav-cta:hover { background: var(--red); border-color: var(--red); color: #fff; }
+@media (max-width: 1240px) { .brand .tag { display: none; } }
+
+/* ---------- hero ---------- */
+.hero {
+  position: relative;
+  padding: 168px 0 0;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(18, 20, 23, 0.0) 0, transparent 0),
+    var(--bone);
+  border-bottom: 1px solid var(--line-strong);
+  overflow: hidden;
+}
+.hero .crosses {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(18,20,23,0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18,20,23,0.12) 1px, transparent 1px);
+  background-size: 120px 120px;
+  -webkit-mask-image: radial-gradient(700px 480px at 78% 30%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(700px 480px at 78% 30%, #000 0%, transparent 72%);
+  pointer-events: none;
+}
+.hero-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.35fr 0.65fr;
+  gap: 64px;
+  align-items: end;
+  padding-bottom: 88px;
+}
+.hero .cred-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 40px;
+}
+.hero .cred-row span::before { content: "/ "; color: var(--red); font-weight: 600; }
+.hero h1 {
+  font-size: clamp(54px, 7.2vw, 104px);
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin: 0 0 34px;
+}
+.hero h1 em { color: var(--red); }
+.hero .lede {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--mute);
+  max-width: 58ch;
+  margin-bottom: 44px;
+}
+.hero .lede strong { color: var(--ink); font-weight: 600; }
+.hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
+
+/* portrait */
+.portrait {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border: 1px solid var(--line-strong);
+  background: var(--bone-2);
+}
+.portrait-inner { height: 100%; overflow: hidden; }
+.portrait-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 12%;
+  filter: grayscale(0.15) contrast(1.05);
+}
+.portrait::after {
+  content: "";
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  bottom: -7px;
+  height: 6px;
+  background: var(--red);
+}
+.portrait-caption {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  background: var(--ink);
+  color: var(--bone);
+  font-family: var(--disp);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  padding: 9px 14px;
+  z-index: 2;
+}
+
+/* ---------- stat band ---------- */
+.stats { background: var(--bone); border-bottom: 1px solid var(--line-strong); }
+.stats .wrap {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  border-left: 1px solid var(--line-strong);
+  border-right: 1px solid var(--line-strong);
+}
+.stat {
+  padding: 42px 24px 38px;
+  border-left: 1px solid var(--line);
+  position: relative;
+}
+.stat:first-child { border-left: none; }
+.stat .num {
+  font-family: var(--disp);
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  line-height: 1;
+  white-space: nowrap;
+}
+.stat .num em { color: var(--red); }
+.stat .lbl {
+  margin-top: 14px;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+  line-height: 1.6;
+}
+
+/* ---------- shared section scaffolding ---------- */
+.section { padding: 108px 0 116px; border-bottom: 1px solid var(--line-strong); }
+.section-head { margin-bottom: 64px; }
+.section-head .head-rule {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 40px;
+}
+.section-head .head-rule::before { content: none; }
+.section-head .head-rule .line { height: 1px; background: var(--line); }
+.section-head .idx-num {
+  font-family: var(--disp);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--red);
+}
+.section-head h2 {
+  font-size: clamp(38px, 4.6vw, 62px);
+  text-transform: uppercase;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  margin: 0 0 20px;
+  max-width: 20ch;
+}
+.section-head h2 em { color: var(--red); }
+.section-head p.sub { font-size: 16px; color: var(--mute); max-width: 66ch; }
+.on-dark .section-head h2 { color: var(--bone); }
+.on-dark .section-head p.sub { color: var(--mute-d); }
+.on-dark .section-head .head-rule .line { background: var(--line-d); }
+
+/* ---------- offers ---------- */
+.offers {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--line-strong);
+  background: var(--bone);
+}
+.offer {
+  padding: 40px 30px 36px;
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+  border-left: 1px solid var(--line-strong);
+  background: var(--bone);
+  transition: background 0.22s ease, color 0.22s ease;
+  position: relative;
+}
+.offer:first-child { border-left: none; }
+.offer .idx {
+  font-family: var(--disp);
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--red);
+  line-height: 1;
+  margin-bottom: 34px;
+}
+.offer h3 {
+  font-size: 23px;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 10px;
+  transition: color 0.22s ease;
+}
+.offer .for {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 18px;
+  transition: color 0.22s ease;
+}
+.offer p { font-size: 14px; line-height: 1.7; color: var(--mute); flex: 1; transition: color 0.22s ease; }
+.offer .link {
+  margin-top: 30px;
+  font-family: var(--disp);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  transition: color 0.22s ease;
+}
+.offer .link .arr { transition: transform 0.22s; }
+.offer:hover { background: var(--ink); }
+.offer:hover h3, .offer:hover .link { color: var(--bone); }
+.offer:hover .for, .offer:hover p { color: var(--mute-d); }
+.offer:hover .link { color: var(--red-soft); }
+.offer:hover .link .arr { transform: translateX(5px); }
+
+/* ---------- case studies (ruled table rows) ---------- */
+.cases { border-top: 1px solid var(--line-strong); }
+.case {
+  display: grid;
+  grid-template-columns: 170px 1.05fr 1.5fr 64px;
+  gap: 40px;
+  align-items: center;
+  border-bottom: 1px solid var(--line-strong);
+  padding: 44px 0;
+  transition: background 0.22s ease;
+  position: relative;
+}
+.case .big {
+  font-family: var(--disp);
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--red);
+  line-height: 1;
+  white-space: nowrap;
+}
+.case h3 {
+  font-size: 22px;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 10px;
+  transition: color 0.22s ease;
+}
+.case .co {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.case p { font-size: 14.5px; line-height: 1.7; color: var(--mute); }
+.case .go {
+  font-family: var(--sans);
+  font-size: 20px;
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  transition: background 0.22s, color 0.22s;
+  justify-self: end;
+}
+.case:hover { background: var(--bone-2); }
+.case:hover h3 { color: var(--red); }
+.case:hover .go { background: var(--red); border-color: var(--red); color: #fff; }
+
+/* ---------- story (dark full-bleed) ---------- */
+.story {
+  background: var(--charcoal);
+  color: var(--bone);
+}
+.story-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 88px;
+  align-items: start;
+}
+.story h2 {
+  font-size: clamp(36px, 4.2vw, 58px);
+  text-transform: uppercase;
+  letter-spacing: -0.025em;
+  color: var(--bone);
+  margin: 0 0 30px;
+}
+.story h2 em { color: var(--red-soft); }
+.story .microlabel { color: var(--bone); margin-bottom: 34px; }
+.story-copy p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--mute-d);
+  margin-bottom: 20px;
+}
+.story-copy p strong { color: var(--bone); font-weight: 600; }
+.story-copy .pull {
+  font-family: var(--disp);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--bone);
+  border-left: 3px solid var(--red);
+  padding-left: 26px;
+  margin: 36px 0;
+}
+.timeline { border-left: 1px solid var(--line-d); }
+.tl-item { position: relative; padding: 0 0 36px 34px; }
+.tl-item:last-child { padding-bottom: 0; }
+.tl-item::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: 8px;
+  width: 7px;
+  height: 7px;
+  background: var(--red);
+}
+.tl-item .yr {
+  font-family: var(--disp);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--red-soft);
+}
+.tl-item h4 {
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  color: var(--bone);
+  margin: 8px 0 6px;
+}
+.tl-item p { font-size: 13.5px; line-height: 1.65; color: var(--mute-d); }
+
+/* ---------- speaking ---------- */
+.speaking-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--line-strong);
+}
+.venue {
+  padding: 48px 44px;
+  border-left: 1px solid var(--line-strong);
+  background: var(--bone);
+}
+.venue:first-child { border-left: none; }
+.venue .where {
+  font-family: var(--disp);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 20px;
+}
+.venue h3 {
+  font-size: 26px;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.venue p { font-size: 14.5px; line-height: 1.75; color: var(--mute); }
+.venue .quotebox {
+  margin-top: 26px;
+  font-family: var(--disp);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+}
+.venue .quotebox .src {
+  display: inline-block;
+  margin-top: 12px;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+/* ---------- testimonials ---------- */
+.quotes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line-strong);
+}
+.quote {
+  padding: 44px 36px 40px;
+  border-left: 1px solid var(--line-strong);
+  display: flex;
+  flex-direction: column;
+  background: var(--bone);
+}
+.quote:first-child { border-left: none; }
+.quote .qmark {
+  font-family: var(--disp);
+  font-size: 84px;
+  font-weight: 700;
+  line-height: 0.55;
+  color: var(--red);
+  margin-bottom: 30px;
+}
+.quote p {
+  font-size: 15.5px;
+  font-weight: 500;
+  line-height: 1.7;
+  color: var(--ink);
+  flex: 1;
+}
+.quote .who { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--line); }
+.quote .who .nm {
+  font-family: var(--disp);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.quote .who .rl { font-size: 12px; color: var(--mute); margin-top: 4px; }
+
+/* ---------- credentials ---------- */
+.creds {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.cred-list { display: grid; gap: 0; }
+.cred {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: baseline;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--line);
+}
+.cred:first-child { border-top: 1px solid var(--line-strong); }
+.cred:last-child { border-bottom: 1px solid var(--line-strong); }
+.cred h4 { font-size: 18px; letter-spacing: -0.005em; color: var(--ink); }
+.cred .sub { font-size: 13px; color: var(--mute); margin-top: 5px; }
+.cred .yr {
+  font-family: var(--disp);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--red);
+  white-space: nowrap;
+}
+.cert-wall h3 {
+  font-size: 24px;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.cert-wall > p { font-size: 14px; line-height: 1.7; color: var(--mute); margin-bottom: 28px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--line);
+  padding: 9px 15px;
+}
+.chip.more {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ---------- final cta ---------- */
+.finale {
+  text-align: center;
+  padding: 130px 0 140px;
+  background: var(--bone);
+  border-bottom: 1px solid var(--line-strong);
+  position: relative;
+  overflow: hidden;
+}
+.finale .crosses {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(18,20,23,0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18,20,23,0.1) 1px, transparent 1px);
+  background-size: 120px 120px;
+  -webkit-mask-image: radial-gradient(640px 380px at 50% 55%, #000 0%, transparent 74%);
+  mask-image: radial-gradient(640px 380px at 50% 55%, #000 0%, transparent 74%);
+  pointer-events: none;
+}
+.finale .wrap { position: relative; z-index: 1; }
+.finale .microlabel { justify-content: center; }
+.finale h2 {
+  font-size: clamp(42px, 5.4vw, 76px);
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin: 28px auto 22px;
+  max-width: 16ch;
+}
+.finale h2 em { color: var(--red); }
+.finale p { color: var(--mute); max-width: 56ch; margin: 0 auto 46px; font-size: 16px; }
+
+/* ---------- footer ---------- */
+.footer { padding: 40px 0; background: var(--bone); }
+.footer .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.footer .fbrand {
+  font-family: var(--disp);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.footer .fbrand em { color: var(--red); }
+.footer nav { display: flex; gap: 24px; }
+.footer nav a {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.footer nav a:hover { color: var(--red); }
+.footer .fine { font-size: 11.5px; color: var(--mute); }
+
+/* ---------- style switcher ---------- */
+.switcher {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line-strong);
+  background: rgba(242, 241, 237, 0.95);
+  backdrop-filter: blur(10px);
+}
+.switcher .sw-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mute);
+  padding: 0 12px;
+  border-right: 1px solid var(--line);
+}
+.switcher a {
+  font-family: var(--disp);
+  font-size: 12px;
+  font-weight: 700;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mute);
+  border-left: 1px solid var(--line);
+  transition: background 0.2s, color 0.2s;
+}
+.switcher a:first-of-type { border-left: none; }
+.switcher a:hover { background: var(--ink); color: var(--bone); }
+.switcher a.active { background: var(--red); color: #fff; }
+
+/* ---------- reveal animation ---------- */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1020px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 56px; }
+  .portrait { max-width: 380px; }
+  .stats .wrap { grid-template-columns: repeat(3, 1fr); }
+  .stat:nth-child(4) { border-left: none; }
+  .stat { border-top: 1px solid var(--line); }
+  .stat:nth-child(-n + 3) { border-top: none; }
+  .offers { grid-template-columns: repeat(2, 1fr); }
+  .offer { border-top: 1px solid var(--line-strong); min-height: 0; }
+  .offer:nth-child(-n + 2) { border-top: none; }
+  .offer:nth-child(odd) { border-left: none; }
+  .offer:nth-child(even) { border-left: 1px solid var(--line-strong); }
+  .story-grid { grid-template-columns: 1fr; gap: 64px; }
+  .quotes { grid-template-columns: 1fr; }
+  .quote { border-left: none; border-top: 1px solid var(--line-strong); }
+  .quote:first-child { border-top: none; }
+  .creds { grid-template-columns: 1fr; gap: 56px; }
+  .speaking-grid { grid-template-columns: 1fr; }
+  .venue { border-left: none; border-top: 1px solid var(--line-strong); }
+  .venue:first-child { border-top: none; }
+  .case { grid-template-columns: 1fr; gap: 18px; padding: 36px 0; }
+  .case .go { display: none; }
+  .nav { display: none; }
+}
+@media (max-width: 640px) {
+  .stats .wrap { grid-template-columns: 1fr 1fr; }
+  .stat { border-left: none; border-top: 1px solid var(--line); }
+  .stat:nth-child(-n + 2) { border-top: none; }
+  .offers { grid-template-columns: 1fr; }
+  .offer { border-left: none !important; border-top: 1px solid var(--line-strong); }
+  .offer:first-child { border-top: none; }
+  .hero { padding-top: 140px; }
+  .switcher .sw-label { display: none; }
+}
+
+/* ============================================================
+   EXECUTIVE LEADERSHIP — page-specific
+   ============================================================ */
+
+/* page hero (no portrait; single column, tighter) */
+.xhero { padding: 168px 0 0; }
+.xhero .hero-grid { grid-template-columns: 1fr; align-items: start; padding-bottom: 84px; }
+.xhero .microlabel { margin-bottom: 36px; }
+.xhero .lede { max-width: 66ch; margin-bottom: 0; }
+.xhero .hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  margin-top: 44px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.xhero .hero-meta span::before { content: "/ "; color: var(--red); font-weight: 600; }
+
+/* what I own — 6-cell ruled grid */
+.own-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line-strong);
+  background: var(--bone);
+}
+.own {
+  padding: 40px 32px 38px;
+  border-left: 1px solid var(--line-strong);
+  border-top: 1px solid var(--line-strong);
+  background: var(--bone);
+  display: flex;
+  flex-direction: column;
+  transition: background 0.22s ease;
+  position: relative;
+}
+.own:nth-child(3n + 1) { border-left: none; }
+.own:nth-child(-n + 3) { border-top: none; }
+.own .idx {
+  font-family: var(--disp);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--red);
+  margin-bottom: 26px;
+  transition: color 0.22s ease;
+}
+.own h3 {
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 12px;
+  transition: color 0.22s ease;
+}
+.own p { font-size: 13.5px; line-height: 1.7; color: var(--mute); transition: color 0.22s ease; }
+.own .stack {
+  margin-top: 22px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mute);
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+  line-height: 1.9;
+  transition: color 0.22s ease, border-color 0.22s ease;
+}
+.own:hover { background: var(--ink); }
+.own:hover h3 { color: var(--bone); }
+.own:hover .idx { color: var(--red-soft); }
+.own:hover p, .own:hover .stack { color: var(--mute-d); }
+.own:hover .stack { border-color: var(--line-d); }
+
+/* the record — ruled table rows */
+.record { border-top: 1px solid var(--line-strong); }
+.rec {
+  display: grid;
+  grid-template-columns: 250px 1fr 170px;
+  gap: 40px;
+  align-items: start;
+  border-bottom: 1px solid var(--line-strong);
+  padding: 40px 0;
+  transition: background 0.22s ease;
+}
+.rec:hover { background: var(--bone-2); }
+.rec .co-name {
+  font-family: var(--disp);
+  font-size: 19px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.rec .co-role {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-top: 8px;
+}
+.rec .co-when {
+  font-family: var(--disp);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--red);
+  margin-top: 10px;
+}
+.rec p { font-size: 14.5px; line-height: 1.7; color: var(--mute); }
+.rec p strong { color: var(--ink); font-weight: 600; }
+.rec .headline {
+  font-family: var(--disp);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--red);
+  line-height: 1.05;
+  text-align: right;
+  white-space: nowrap;
+}
+.rec .headline .sub-h {
+  display: block;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-top: 10px;
+  white-space: normal;
+}
+
+/* how I operate — principles on charcoal */
+.principles {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border: 1px solid var(--line-d);
+}
+.principle {
+  padding: 46px 44px 44px;
+  border-left: 1px solid var(--line-d);
+  border-top: 1px solid var(--line-d);
+}
+.principle:nth-child(odd) { border-left: none; }
+.principle:nth-child(-n + 2) { border-top: none; }
+.principle .p-idx {
+  font-family: var(--disp);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--red-soft);
+  margin-bottom: 22px;
+}
+.principle h3 {
+  font-size: 22px;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--bone);
+  margin-bottom: 14px;
+}
+.principle p { font-size: 14.5px; line-height: 1.75; color: var(--mute-d); }
+.principle p strong { color: var(--bone); font-weight: 600; }
+
+/* education strip */
+.edu-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--line-strong);
+}
+.edu {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: baseline;
+  padding: 34px 40px;
+  border-left: 1px solid var(--line-strong);
+  background: var(--bone);
+}
+.edu:first-child { border-left: none; }
+.edu h4 { font-size: 18px; letter-spacing: -0.005em; color: var(--ink); }
+.edu .sub { font-size: 13px; color: var(--mute); margin-top: 6px; }
+.edu .yr {
+  font-family: var(--disp);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--red);
+  white-space: nowrap;
+}
+
+/* single testimonial */
+.quotes.single { grid-template-columns: 1fr; max-width: 880px; }
+.quotes.single .quote { padding: 52px 56px 48px; }
+.quotes.single .quote p { font-size: 18px; line-height: 1.75; }
+
+/* page responsive */
+@media (max-width: 1020px) {
+  .own-grid { grid-template-columns: 1fr 1fr; }
+  .own:nth-child(3n + 1) { border-left: 1px solid var(--line-strong); }
+  .own:nth-child(odd) { border-left: none; }
+  .own:nth-child(-n + 3) { border-top: 1px solid var(--line-strong); }
+  .own:nth-child(-n + 2) { border-top: none; }
+  .rec { grid-template-columns: 1fr; gap: 18px; padding: 36px 0; }
+  .rec .headline { text-align: left; }
+  .principles { grid-template-columns: 1fr; }
+  .principle { border-left: none; border-top: 1px solid var(--line-d); }
+  .principle:first-child { border-top: none; }
+  .edu-strip { grid-template-columns: 1fr; }
+  .edu { border-left: none; border-top: 1px solid var(--line-strong); }
+  .edu:first-child { border-top: none; }
+  .quotes.single .quote { padding: 44px 36px 40px; }
+}
+@media (max-width: 640px) {
+  .own-grid { grid-template-columns: 1fr; }
+  .own { border-left: none !important; border-top: 1px solid var(--line-strong); }
+  .own:first-child { border-top: none; }
+  .rec .headline { white-space: normal; }
+}
+
+
+/* ---------- MOBILE REFINEMENTS (shared pass) ---------- */
+.menu-btn { display: none; background: none; border: 1px solid var(--line-strong); width: 46px; height: 38px; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; padding: 0; }
+.menu-btn .mi { display: block; width: 16px; height: 2px; background: var(--ink); transition: transform .2s, opacity .2s; }
+body.nav-open .menu-btn .mi:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+body.nav-open .menu-btn .mi:nth-child(2) { opacity: 0; }
+body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+.mobile-nav { display: none; border-top: 1px solid var(--line-strong); background: var(--bone); max-height: calc(100vh - 68px); overflow-y: auto; }
+.mobile-nav a { display: block; padding: 16px 24px; font-family: var(--disp); font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); border-bottom: 1px solid var(--line); }
+.mobile-nav a.nav-cta { background: var(--ink); color: var(--bone); border-bottom: none; }
+@media (max-width: 1020px) {
+  .menu-btn { display: flex; }
+  body.nav-open .mobile-nav { display: block; }
+}
+@media (max-width: 640px) {
+  .wrap { padding: 0 20px; }
+  .header .wrap { height: 60px; }
+  .hero { padding-top: 118px; }
+  .hero h1 { font-size: clamp(36px, 11vw, 52px); margin-bottom: 24px; }
+  .hero .lede { font-size: 15px; line-height: 1.7; margin-bottom: 32px; }
+  .hero .cred-row { gap: 8px 18px; font-size: 10px; margin-bottom: 28px; }
+  .hero-grid { gap: 40px; padding-bottom: 56px; }
+  .hero-ctas { gap: 12px; }
+  .hero-ctas .btn { flex: 1 1 auto; justify-content: center; }
+  .btn { padding: 15px 20px; font-size: 12px; }
+  .portrait { max-width: 320px; }
+  h2 { letter-spacing: -0.01em; }
+  .section { padding: 64px 0; }
+  .section-head { margin-bottom: 40px; }
+  .section-head h2, .finale h2 { font-size: clamp(28px, 8.8vw, 42px); }
+  .section-head p.sub, .section-head p { font-size: 15px; }
+  .stat { padding: 22px 16px 20px; }
+  .stat .num { font-size: 28px; }
+  .stat .lbl { font-size: 10px; letter-spacing: .1em; }
+  .case { padding: 26px 0; gap: 12px; }
+  .case .big { font-size: 32px; }
+  .case h3 { font-size: 20px; }
+  .offer { padding: 30px 22px; }
+  .offer h3 { font-size: 22px; }
+  .quote { padding: 30px 22px; }
+  .quote p { font-size: 16px; }
+  .finale { padding: 84px 0; }
+  .finale p { font-size: 15px; }
+  .footer .wrap { flex-direction: column; align-items: flex-start; gap: 16px; padding-top: 4px; }
+  .footer nav { flex-wrap: wrap; gap: 10px 18px; }
+  img, iframe, table, pre { max-width: 100%; }
+}
+
+</style>
+  <meta name="description" content="Hire a CMO/CEO-level growth operator: a #1-performing region, a $25M six-brand portfolio budget, +269% booking rate. Twenty years of P&amp;L-accountable leadership." />
+  <link rel="canonical" href="https://www.bradleygriffin.us/executive" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#121417" />
+  <meta property="og:site_name" content="Bradley Griffin" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Chief Marketing Officer &amp; Growth Executive for Hire - Bradley Griffin" />
+  <meta property="og:description" content="Hire a CMO/CEO-level growth operator: a #1-performing region, a $25M six-brand portfolio budget, +269% booking rate. Twenty years of P&amp;L-accountable leadership." />
+  <meta property="og:url" content="https://www.bradleygriffin.us/executive" />
+  <meta property="og:image" content="https://www.bradleygriffin.us/assets/bradley-griffin-og.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Chief Marketing Officer &amp; Growth Executive for Hire - Bradley Griffin" />
+  <meta name="twitter:description" content="Hire a CMO/CEO-level growth operator: a #1-performing region, a $25M six-brand portfolio budget, +269% booking rate. Twenty years of P&amp;L-accountable leadership." />
+  <meta name="twitter:image" content="https://www.bradleygriffin.us/assets/bradley-griffin-og.jpg" />
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Service", "name": "Executive Marketing Leadership", "description": "Full-time CMO / CEO / growth-executive leadership for boards, investors, and executive search.", "url": "https://www.bradleygriffin.us/executive", "provider": {"@type": "Person", "@id": "https://www.bradleygriffin.us/#person", "name": "Bradley Griffin"}, "serviceType": "Executive Marketing Leadership", "areaServed": "United States", "audience": {"@type": "Audience", "audienceType": "Boards, investors, executive search"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.bradleygriffin.us/"}, {"@type": "ListItem", "position": 2, "name": "Executive Leadership", "item": "https://www.bradleygriffin.us/executive"}]}]}</script>
+</head>
+<body>
+
+  <!-- ======= HEADER ======= -->
+  <header class="header">
+    <div class="wrap">
+      <a class="brand" href="/">
+        <span class="mark">Bradley <em>Griffin</em></span>
+        <span class="tag">CMO · Growth Executive</span>
+      </a>
+      <nav class="nav">
+        <a href="/#work">Work With Me</a>
+        <a href="/case-studies">Results</a>
+        <a href="/story">The Story</a>
+        <a href="/speaking">Speaking</a>
+        <a href="/credentials">Credentials</a>
+        <a class="nav-cta" href="/contact">Start a Conversation</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ======= PAGE HERO ======= -->
+  <section class="hero xhero" id="top">
+    <div class="crosses"></div>
+    <div class="wrap hero-grid">
+      <div>
+        <p class="microlabel"><span class="tick">No. 01 /</span> Executive Leadership</p>
+        <h1>An operator for<br /><em>the whole P&amp;L.</em></h1>
+        <p class="lede">
+          Twenty-plus years scaling B2C brands, SaaS platforms, and multi-location operations —
+          from <strong>startup to exit</strong>, from <strong>seed budgets to $25M+</strong>. I build revenue
+          architecture that a board can interrogate line by line: attribution from first touch to closed
+          revenue, teams that hit forecast, and <strong>systems that survive due diligence</strong>.
+        </p>
+        <div class="hero-meta">
+          <span>Boards &amp; PE Operating Partners</span>
+          <span>CEOs</span>
+          <span>Retained Search</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= STAT BAND ======= -->
+  <section class="stats">
+    <div class="wrap">
+      <div class="stat reveal"><div class="num">#1</div><div class="lbl">Performing region in the company — IHS Midwest</div></div>
+      <div class="stat reveal"><div class="num">$25M<em>+</em></div><div class="lbl">Portfolio budget — six brands, one owner</div></div>
+      <div class="stat reveal"><div class="num">269<em>%</em></div><div class="lbl">Booking-rate lift — 16% to 59%</div></div>
+      <div class="stat reveal"><div class="num">2</div><div class="lbl">Companies founded &amp; exited</div></div>
+      <div class="stat reveal"><div class="num">4</div><div class="lbl">Marketing team built &amp; led at IHS</div></div>
+      <div class="stat reveal"><div class="num">20<em>+</em></div><div class="lbl">Years from startup to exit</div></div>
+    </div>
+  </section>
+
+  <!-- ======= WHAT I OWN ======= -->
+  <section class="section" id="own">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="head-rule"><span class="idx-num">01 /</span><span class="line"></span><span class="microlabel">Scope of Ownership</span></div>
+        <h2>What I own <em>when I take the seat.</em></h2>
+        <p class="sub">Not a channel specialist with a title. The full revenue apparatus — demand through close, budget through board deck — owned end to end and accountable to one number.</p>
+      </div>
+      <div class="own-grid">
+        <div class="own reveal">
+          <span class="idx">A / 06</span>
+          <h3>Demand Generation &amp; Paid Media</h3>
+          <p>Full-funnel acquisition across every channel that earns its keep — budget allocated by contribution to closed revenue, not by habit.</p>
+          <p class="stack">Google · Meta · LSA · CTV</p>
+        </div>
+        <div class="own reveal">
+          <span class="idx">B / 06</span>
+          <h3>CRM &amp; Marketing Automation</h3>
+          <p>The operational backbone: pipelines, lifecycle automation, and integrations that keep sales and marketing on one source of truth. 500K-record migrations executed with zero downtime.</p>
+          <p class="stack">Builder Prime · Salesforce · HubSpot · ServiceTitan · N8N / Make / Zapier</p>
+        </div>
+        <div class="own reveal">
+          <span class="idx">C / 06</span>
+          <h3>Attribution &amp; Business Intelligence</h3>
+          <p>First-touch-to-closed-revenue visibility. Dashboards a CFO trusts, incrementality over vanity metrics, and reporting that ends the &ldquo;what&rsquo;s working&rdquo; debate.</p>
+          <p class="stack">Full-funnel attribution · BI dashboards · Incrementality</p>
+        </div>
+        <div class="own reveal">
+          <span class="idx">D / 06</span>
+          <h3>Inside Sales &amp; Call Center Ops</h3>
+          <p>The handoff is where revenue dies. I own the scripts, the speed-to-lead, the set rates, and the management cadence that turns marketing spend into booked appointments.</p>
+          <p class="stack">Playbooks · Speed-to-lead · Set &amp; show rates</p>
+        </div>
+        <div class="own reveal">
+          <span class="idx">E / 06</span>
+          <h3>Budget &amp; P&amp;L Discipline</h3>
+          <p>$25M+ deployed with an operator&rsquo;s scrutiny — every dollar defends itself or gets reallocated. Founder-honed cost discipline: I have signed both sides of the check.</p>
+          <p class="stack">Forecasting · CAC / LTV · Vendor ROI</p>
+        </div>
+        <div class="own reveal">
+          <span class="idx">F / 06</span>
+          <h3>Team Building &amp; Vendor Management</h3>
+          <p>Hired, structured, and led in-house teams and agency benches. High standards, clear goals, no micromanagement — the people who have worked for me say so on the record.</p>
+          <p class="stack">Org design · Agency oversight · Performance cadence</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= THE RECORD ======= -->
+  <section class="section" id="record">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="head-rule"><span class="idx-num">02 /</span><span class="line"></span><span class="microlabel">The Record</span></div>
+        <h2>Roles held. <em>Numbers delivered.</em></h2>
+        <p class="sub">Every line verifiable, every result tied to a system I built and a team I led. This is the diligence file, in the open.</p>
+      </div>
+      <div class="record">
+        <div class="rec reveal">
+          <div>
+            <div class="co-name">Infinity Home Services</div>
+            <div class="co-role">Regional Marketing — Midwest</div>
+            <div class="co-when">Feb 2026 — Present</div>
+          </div>
+          <p>Full ownership of Midwest marketing across a national home-services platform — building a team of four on trust, agile, and change management. Deep audits built on data augmentation and quantitative analytics cut dead line items, and marketing goals are aligned to operational goals with the call center, HR, operations, and Brand Presidents. The region now <strong>outperforms every other region in the company</strong> — double-digit YoY growth in qualified leads and appointments, and tens of millions in new sales year over year.</p>
+          <div class="headline">#1<span class="sub-h">Region in the company · IHS Midwest</span></div>
+        </div>
+        <div class="rec reveal">
+          <div>
+            <div class="co-name">Vertex Roofing</div>
+            <div class="co-role">Chief Marketing Officer</div>
+          </div>
+          <p>Rebuilt acquisition end to end: inbound calls <strong>+490% (108 → 637, Aug–Nov)</strong>, appointments <strong>+212%</strong>, qualified leads <strong>+20%</strong>, and booking rate <strong>16% → 59% (+269%)</strong> — on the back of a 500,000-record CRM migration executed with <strong>zero downtime</strong>.</p>
+          <div class="headline">+490%<span class="sub-h">Inbound calls · 108 → 637</span></div>
+        </div>
+        <div class="rec reveal">
+          <div>
+            <div class="co-name">Atrium Home Services</div>
+            <div class="co-role">Head of Digital Marketing &amp; Acquisition</div>
+          </div>
+          <p>Directed a <strong>$25M budget across a PE-owned portfolio of six HVAC, electrical, plumbing, and air-quality brands</strong> — every brand budget rolling up to one desk — standardizing the demand engine and reporting stack while driving inbound leads <strong>+20% month over month</strong>.</p>
+          <div class="headline">$25M<span class="sub-h">Budget · six brands</span></div>
+        </div>
+        <div class="rec reveal">
+          <div>
+            <div class="co-name">AcreValue / Ag Analytics</div>
+            <div class="co-role">Fractional CMO / Head of Sales</div>
+          </div>
+          <p>Repositioned a 1.5M-user platform with two straight years of declining recurring revenue, <strong>returned MRR to growth</strong>, and set the table for acquisition by <strong>CoStar Group (NASDAQ: CSGP)</strong>.</p>
+          <div class="headline">MRR ↑<span class="sub-h">Returned to growth · acquired</span></div>
+        </div>
+        <div class="rec reveal">
+          <div>
+            <div class="co-name">Wensco Sign Supply</div>
+            <div class="co-role">Head of Marketing</div>
+          </div>
+          <p>Rebuilt the marketing operation on a <strong>$1M+ budget</strong> — cutting costs <strong>35%</strong> while growing revenue <strong>30%</strong>. Efficiency and growth are not a trade-off when the system is right.</p>
+          <div class="headline">−35% / +30%<span class="sub-h">Costs down · revenue up</span></div>
+        </div>
+        <div class="rec reveal">
+          <div>
+            <div class="co-name">Founder ×2</div>
+            <div class="co-role">Optimized · Florida Landscaping Services</div>
+          </div>
+          <p>Built Optimized from a team of one into a <strong>$5M firm with 23 employees</strong> serving Fortune 500 clients, and scaled Florida Landscaping Services to <strong>$3M</strong> — <strong>both exited</strong>, Optimized to a UK equity firm expanding into the U.S.</p>
+          <div class="headline">2 exits<span class="sub-h">Founded, scaled &amp; sold</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= HOW I RUN A PORTFOLIO ======= -->
+  <section class="section" id="portfolio">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="head-rule"><span class="idx-num">03 /</span><span class="line"></span><span class="microlabel">How I Run a Portfolio</span></div>
+        <h2>Six brands. <em>One operating system.</em></h2>
+        <p class="sub">At Atrium, a PE-owned portfolio of six HVAC, electrical, plumbing, and air-quality brands, every brand budget rolled up to me — $25M in total. This is what portfolio-level ownership looked like in practice.</p>
+      </div>
+      <div class="record">
+        <div class="rec reveal">
+          <div>
+            <div class="co-name">Consolidated Spend</div>
+            <div class="co-role">Payment &amp; platform leverage</div>
+          </div>
+          <p>Unified Google Ads payments from six per-brand credit cards into <strong>consolidated ACH</strong> — qualifying the portfolio for a <strong>corporate-level Google account with a dedicated Google advisor</strong>. Scale negotiated into leverage, not just spend.</p>
+          <div class="headline">6 → 1<span class="sub-h">Payment rails · corporate Google account</span></div>
+        </div>
+        <div class="rec reveal">
+          <div>
+            <div class="co-name">Cradle-to-Grave Tracking</div>
+            <div class="co-role">Attribution standard</div>
+          </div>
+          <p>Implemented <strong>UTM tracking cradle-to-grave across the portfolio</strong> — every lead traceable from first click to closed job, with all six brands reporting on one standard instead of six dialects.</p>
+          <div class="headline">6 / 6<span class="sub-h">Brands on one tracking standard</span></div>
+        </div>
+        <div class="rec reveal">
+          <div>
+            <div class="co-name">One P&amp;L Conversation</div>
+            <div class="co-role">Portfolio-level allocation</div>
+          </div>
+          <p>With every budget rolling up to one desk, reallocation happened at <strong>portfolio level</strong> — dollars moved to the brand and channel where returns were highest, not where habit had parked them.</p>
+          <div class="headline">$25M<span class="sub-h">Rolling up to one owner</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= HOW I OPERATE (dark) ======= -->
+  <section class="section story on-dark" id="operate">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="head-rule"><span class="idx-num">04 /</span><span class="line"></span><span class="microlabel">How I Operate</span></div>
+        <h2>The operating <em>system.</em></h2>
+        <p class="sub">Four principles, applied without exception. They are why the numbers repeat across industries, business models, and market cycles.</p>
+      </div>
+      <div class="principles reveal">
+        <div class="principle">
+          <div class="p-idx">01 / 04</div>
+          <h3>Systems, not campaigns</h3>
+          <p>Campaigns end. Systems compound. I build the demand engine, the attribution layer, and the operating cadence as <strong>one machine</strong> — so growth persists after the launch energy fades, and after I hand over the keys.</p>
+        </div>
+        <div class="principle">
+          <div class="p-idx">02 / 04</div>
+          <h3>Mission discipline</h3>
+          <p>The 75th Ranger Regiment taught me to plan when <strong>the cost of being wrong is absolute</strong>. Every initiative gets a defined objective, a resourced plan, contingencies, and a debrief. No improvisation dressed up as agility.</p>
+        </div>
+        <div class="principle">
+          <div class="p-idx">03 / 04</div>
+          <h3>Data before opinion</h3>
+          <p>Attribution modeling, incrementality testing, and live dashboards settle arguments before they start. The loudest voice in the room doesn&rsquo;t set the budget — <strong>closed-revenue data does</strong>.</p>
+        </div>
+        <div class="principle">
+          <div class="p-idx">04 / 04</div>
+          <h3>AI-integrated operations</h3>
+          <p>An early and active AI power user — automation built into <strong>every layer</strong> of the operation: lead routing, reporting, creative production, and workflow orchestration. Smaller teams, faster cycles, compounding output.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= EDUCATION ======= -->
+  <section class="section" id="education">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="head-rule"><span class="idx-num">05 /</span><span class="line"></span><span class="microlabel">Education</span></div>
+        <h2>Still <em>sharpening.</em></h2>
+      </div>
+      <div class="edu-strip reveal">
+        <div class="edu">
+          <div>
+            <h4>Auburn University — MBA + M.S. Information Systems</h4>
+            <p class="sub">Dual master&rsquo;s program, Harbert College of Business</p>
+          </div>
+          <span class="yr">Exp. 2027</span>
+        </div>
+        <div class="edu">
+          <div>
+            <h4>Central Michigan University — B.A.</h4>
+            <p class="sub">Summa Cum Laude · 3.97 GPA</p>
+          </div>
+          <span class="yr">2025</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= TESTIMONIAL ======= -->
+  <section class="section" id="reference">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="head-rule"><span class="idx-num">06 /</span><span class="line"></span><span class="microlabel">From the Team</span></div>
+        <h2>Ask the people <em>who reported to me.</em></h2>
+      </div>
+      <div class="quotes single reveal">
+        <div class="quote">
+          <span class="qmark">&ldquo;</span>
+          <p>Brad excels at setting clear goals and consistently delivering results&hellip; When we had differing opinions he engaged in thoughtful discussions to explore each perspective. He is a valuable asset to any team.</p>
+          <div class="who"><div class="nm">Michael Loomus</div><div class="rl">Inside Sales &amp; Customer Service Leader — reported to Bradley</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= FINAL CTA ======= -->
+  <section class="finale" id="contact">
+    <div class="crosses"></div>
+    <div class="wrap reveal">
+      <p class="microlabel"><span class="tick">07 /</span> Start a Conversation</p>
+      <h2>Looking for your next <em>growth executive?</em></h2>
+      <p>Board seat, C-suite search, or a portfolio company that needs an operator in the chair — send the brief. I&rsquo;ll respond with how I&rsquo;d run it, and the numbers I&rsquo;d be accountable for.</p>
+      <a class="btn btn-solid" href="/contact">Start a Conversation <span class="arr">→</span></a>
+    </div>
+  </section>
+
+  <!-- ======= FOOTER ======= -->
+  <footer class="footer">
+    <div class="wrap">
+      <span class="fbrand">Bradley <em>Griffin</em></span>
+      <nav>
+        <a href="/#work">Work With Me</a>
+        <a href="/case-studies">Results</a>
+        <a href="/story">Story</a>
+        <a href="/speaking">Speaking</a>
+        <a href="/credentials">Credentials</a>
+        <a href="/contact">Contact</a>
+        <a href="https://www.linkedin.com/in/brad-w-griffin/" target="_blank" rel="noopener">LinkedIn</a>
+      </nav>
+      <span class="fine">© 2026 Bradley Griffin · bradleygriffin.us</span>
+    </div>
+  </footer>
+
+  <script>
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+  </script>
+
+<script>
+(function () {
+  var nav = document.querySelector(".header .nav");
+  var wrap = document.querySelector(".header .wrap");
+  var header = document.querySelector(".header");
+  if (!nav || !wrap || !header) return;
+  var btn = document.createElement("button");
+  btn.className = "menu-btn"; btn.setAttribute("aria-label", "Menu");
+  btn.innerHTML = "<span class=\"mi\"></span><span class=\"mi\"></span><span class=\"mi\"></span>";
+  var panel = document.createElement("div");
+  panel.className = "mobile-nav";
+  nav.querySelectorAll("a").forEach(function (a) { panel.appendChild(a.cloneNode(true)); });
+  btn.addEventListener("click", function () { document.body.classList.toggle("nav-open"); });
+  panel.addEventListener("click", function (e) { if (e.target.tagName === "A") document.body.classList.remove("nav-open"); });
+  wrap.appendChild(btn);
+  header.appendChild(panel);
+})();
+</script>
+</body>
+</html>

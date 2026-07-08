@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fractional CMO for Founder-Led Companies - Bradley Griffin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+/* ============================================================
+   BRADLEY GRIFFIN — bradleygriffin.us — OPTION C
+   "Modern Executive" · Swiss grid · data-forward
+   Display: Space Grotesk · Body/UI: Inter
+   Bone #F2F1ED · Ink #121417 · Signal #B33A2B · Charcoal #16181C
+   ============================================================ */
+
+:root {
+  --bone: #F2F1ED;
+  --bone-2: #EDEBE5;
+  --ink: #121417;
+  --charcoal: #16181C;
+  --red: #B33A2B;
+  --red-soft: #C4503F;
+  --mute: #565A60;
+  --mute-d: #9A9FA6;
+  --line: #C9C6BD;
+  --line-strong: #121417;
+  --line-d: rgba(242, 241, 237, 0.14);
+  --disp: "Space Grotesk", "Inter", -apple-system, sans-serif;
+  --sans: "Inter", -apple-system, "Segoe UI", sans-serif;
+  --wrap: 1240px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bone);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 32px; }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+em, i { font-style: normal; }
+h1, h2, h3, h4 { font-family: var(--disp); font-weight: 700; line-height: 1.02; letter-spacing: -0.02em; }
+
+::selection { background: var(--red); color: var(--bone); }
+
+/* ---------- type utilities ---------- */
+.microlabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.microlabel .tick { color: var(--red); font-weight: 600; }
+.on-dark .microlabel { color: var(--bone); }
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--disp);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 18px 32px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  transition: background 0.22s ease, color 0.22s ease, border-color 0.22s ease;
+  cursor: pointer;
+}
+.btn-solid { background: var(--ink); color: var(--bone); }
+.btn-solid:hover { background: var(--red); border-color: var(--red); color: #fff; }
+.btn-ghost { background: transparent; color: var(--ink); }
+.btn-ghost:hover { background: var(--ink); color: var(--bone); }
+.btn .arr { font-family: var(--sans); transition: transform 0.22s ease; }
+.btn:hover .arr { transform: translateX(4px); }
+
+/* ---------- header ---------- */
+.header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  background: rgba(242, 241, 237, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line-strong);
+}
+.header .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+}
+.brand { display: flex; align-items: baseline; gap: 14px; white-space: nowrap; }
+.brand .mark {
+  font-family: var(--disp);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.brand .mark em { color: var(--red); }
+.brand .tag {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.nav { display: flex; align-items: center; gap: 28px; }
+.nav a {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+.nav a:hover { color: var(--red); }
+.nav .nav-cta {
+  color: var(--bone);
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  padding: 10px 18px;
+  transition: background 0.22s, border-color 0.22s;
+}
+.nav .nav-cta:hover { background: var(--red); border-color: var(--red); color: #fff; }
+@media (max-width: 1240px) { .brand .tag { display: none; } }
+
+/* ---------- hero ---------- */
+.hero {
+  position: relative;
+  padding: 168px 0 0;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(18, 20, 23, 0.0) 0, transparent 0),
+    var(--bone);
+  border-bottom: 1px solid var(--line-strong);
+  overflow: hidden;
+}
+.hero .crosses {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(18,20,23,0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18,20,23,0.12) 1px, transparent 1px);
+  background-size: 120px 120px;
+  -webkit-mask-image: radial-gradient(700px 480px at 78% 30%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(700px 480px at 78% 30%, #000 0%, transparent 72%);
+  pointer-events: none;
+}
+.hero-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.35fr 0.65fr;
+  gap: 64px;
+  align-items: end;
+  padding-bottom: 88px;
+}
+.hero .cred-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 40px;
+}
+.hero .cred-row span::before { content: "/ "; color: var(--red); font-weight: 600; }
+.hero h1 {
+  font-size: clamp(54px, 7.2vw, 104px);
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin: 0 0 34px;
+}
+.hero h1 em { color: var(--red); }
+.hero .lede {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--mute);
+  max-width: 58ch;
+  margin-bottom: 44px;
+}
+.hero .lede strong { color: var(--ink); font-weight: 600; }
+.hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
+
+/* portrait */
+.portrait {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border: 1px solid var(--line-strong);
+  background: var(--bone-2);
+}
+.portrait-inner { height: 100%; overflow: hidden; }
+.portrait-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 12%;
+  filter: grayscale(0.15) contrast(1.05);
+}
+.portrait::after {
+  content: "";
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  bottom: -7px;
+  height: 6px;
+  background: var(--red);
+}
+.portrait-caption {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  background: var(--ink);
+  color: var(--bone);
+  font-family: var(--disp);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  padding: 9px 14px;
+  z-index: 2;
+}
+
+/* ---------- stat band ---------- */
+.stats { background: var(--bone); border-bottom: 1px solid var(--line-strong); }
+.stats .wrap {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  border-left: 1px solid var(--line-strong);
+  border-right: 1px solid var(--line-strong);
+}
+.stat {
+  padding: 42px 24px 38px;
+  border-left: 1px solid var(--line);
+  position: relative;
+}
+.stat:first-child { border-left: none; }
+.stat .num {
+  font-family: var(--disp);
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  line-height: 1;
+  white-space: nowrap;
+}
+.stat .num em { color: var(--red); }
+.stat .lbl {
+  margin-top: 14px;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+  line-height: 1.6;
+}
+
+/* ---------- shared section scaffolding ---------- */
+.section { padding: 108px 0 116px; border-bottom: 1px solid var(--line-strong); }
+.section-head { margin-bottom: 64px; }
+.section-head .head-rule {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 40px;
+}
+.section-head .head-rule::before { content: none; }
+.section-head .head-rule .line { height: 1px; background: var(--line); }
+.section-head .idx-num {
+  font-family: var(--disp);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--red);
+}
+.section-head h2 {
+  font-size: clamp(38px, 4.6vw, 62px);
+  text-transform: uppercase;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  margin: 0 0 20px;
+  max-width: 20ch;
+}
+.section-head h2 em { color: var(--red); }
+.section-head p.sub { font-size: 16px; color: var(--mute); max-width: 66ch; }
+.on-dark .section-head h2 { color: var(--bone); }
+.on-dark .section-head p.sub { color: var(--mute-d); }
+.on-dark .section-head .head-rule .line { background: var(--line-d); }
+
+/* ---------- offers ---------- */
+.offers {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--line-strong);
+  background: var(--bone);
+}
+.offer {
+  padding: 40px 30px 36px;
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+  border-left: 1px solid var(--line-strong);
+  background: var(--bone);
+  transition: background 0.22s ease, color 0.22s ease;
+  position: relative;
+}
+.offer:first-child { border-left: none; }
+.offer .idx {
+  font-family: var(--disp);
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--red);
+  line-height: 1;
+  margin-bottom: 34px;
+}
+.offer h3 {
+  font-size: 23px;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 10px;
+  transition: color 0.22s ease;
+}
+.offer .for {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 18px;
+  transition: color 0.22s ease;
+}
+.offer p { font-size: 14px; line-height: 1.7; color: var(--mute); flex: 1; transition: color 0.22s ease; }
+.offer .link {
+  margin-top: 30px;
+  font-family: var(--disp);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  transition: color 0.22s ease;
+}
+.offer .link .arr { transition: transform 0.22s; }
+.offer:hover { background: var(--ink); }
+.offer:hover h3, .offer:hover .link { color: var(--bone); }
+.offer:hover .for, .offer:hover p { color: var(--mute-d); }
+.offer:hover .link { color: var(--red-soft); }
+.offer:hover .link .arr { transform: translateX(5px); }
+
+/* ---------- case studies (ruled table rows) ---------- */
+.cases { border-top: 1px solid var(--line-strong); }
+.case {
+  display: grid;
+  grid-template-columns: 170px 1.05fr 1.5fr 64px;
+  gap: 40px;
+  align-items: center;
+  border-bottom: 1px solid var(--line-strong);
+  padding: 44px 0;
+  transition: background 0.22s ease;
+  position: relative;
+}
+.case .big {
+  font-family: var(--disp);
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--red);
+  line-height: 1;
+  white-space: nowrap;
+}
+.case h3 {
+  font-size: 22px;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 10px;
+  transition: color 0.22s ease;
+}
+.case .co {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.case p { font-size: 14.5px; line-height: 1.7; color: var(--mute); }
+.case .go {
+  font-family: var(--sans);
+  font-size: 20px;
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  transition: background 0.22s, color 0.22s;
+  justify-self: end;
+}
+.case:hover { background: var(--bone-2); }
+.case:hover h3 { color: var(--red); }
+.case:hover .go { background: var(--red); border-color: var(--red); color: #fff; }
+
+/* ---------- story (dark full-bleed) ---------- */
+.story {
+  background: var(--charcoal);
+  color: var(--bone);
+}
+.story-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 88px;
+  align-items: start;
+}
+.story h2 {
+  font-size: clamp(36px, 4.2vw, 58px);
+  text-transform: uppercase;
+  letter-spacing: -0.025em;
+  color: var(--bone);
+  margin: 0 0 30px;
+}
+.story h2 em { color: var(--red-soft); }
+.story .microlabel { color: var(--bone); margin-bottom: 34px; }
+.story-copy p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--mute-d);
+  margin-bottom: 20px;
+}
+.story-copy p strong { color: var(--bone); font-weight: 600; }
+.story-copy .pull {
+  font-family: var(--disp);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--bone);
+  border-left: 3px solid var(--red);
+  padding-left: 26px;
+  margin: 36px 0;
+}
+.timeline { border-left: 1px solid var(--line-d); }
+.tl-item { position: relative; padding: 0 0 36px 34px; }
+.tl-item:last-child { padding-bottom: 0; }
+.tl-item::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: 8px;
+  width: 7px;
+  height: 7px;
+  background: var(--red);
+}
+.tl-item .yr {
+  font-family: var(--disp);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--red-soft);
+}
+.tl-item h4 {
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  color: var(--bone);
+  margin: 8px 0 6px;
+}
+.tl-item p { font-size: 13.5px; line-height: 1.65; color: var(--mute-d); }
+
+/* ---------- speaking ---------- */
+.speaking-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--line-strong);
+}
+.venue {
+  padding: 48px 44px;
+  border-left: 1px solid var(--line-strong);
+  background: var(--bone);
+}
+.venue:first-child { border-left: none; }
+.venue .where {
+  font-family: var(--disp);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 20px;
+}
+.venue h3 {
+  font-size: 26px;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.venue p { font-size: 14.5px; line-height: 1.75; color: var(--mute); }
+.venue .quotebox {
+  margin-top: 26px;
+  font-family: var(--disp);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+}
+.venue .quotebox .src {
+  display: inline-block;
+  margin-top: 12px;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+/* ---------- testimonials ---------- */
+.quotes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line-strong);
+}
+.quote {
+  padding: 44px 36px 40px;
+  border-left: 1px solid var(--line-strong);
+  display: flex;
+  flex-direction: column;
+  background: var(--bone);
+}
+.quote:first-child { border-left: none; }
+.quote .qmark {
+  font-family: var(--disp);
+  font-size: 84px;
+  font-weight: 700;
+  line-height: 0.55;
+  color: var(--red);
+  margin-bottom: 30px;
+}
+.quote p {
+  font-size: 15.5px;
+  font-weight: 500;
+  line-height: 1.7;
+  color: var(--ink);
+  flex: 1;
+}
+.quote .who { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--line); }
+.quote .who .nm {
+  font-family: var(--disp);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.quote .who .rl { font-size: 12px; color: var(--mute); margin-top: 4px; }
+
+/* ---------- credentials ---------- */
+.creds {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.cred-list { display: grid; gap: 0; }
+.cred {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: baseline;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--line);
+}
+.cred:first-child { border-top: 1px solid var(--line-strong); }
+.cred:last-child { border-bottom: 1px solid var(--line-strong); }
+.cred h4 { font-size: 18px; letter-spacing: -0.005em; color: var(--ink); }
+.cred .sub { font-size: 13px; color: var(--mute); margin-top: 5px; }
+.cred .yr {
+  font-family: var(--disp);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--red);
+  white-space: nowrap;
+}
+.cert-wall h3 {
+  font-size: 24px;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.cert-wall > p { font-size: 14px; line-height: 1.7; color: var(--mute); margin-bottom: 28px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--line);
+  padding: 9px 15px;
+}
+.chip.more {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ---------- final cta ---------- */
+.finale {
+  text-align: center;
+  padding: 130px 0 140px;
+  background: var(--bone);
+  border-bottom: 1px solid var(--line-strong);
+  position: relative;
+  overflow: hidden;
+}
+.finale .crosses {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(18,20,23,0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18,20,23,0.1) 1px, transparent 1px);
+  background-size: 120px 120px;
+  -webkit-mask-image: radial-gradient(640px 380px at 50% 55%, #000 0%, transparent 74%);
+  mask-image: radial-gradient(640px 380px at 50% 55%, #000 0%, transparent 74%);
+  pointer-events: none;
+}
+.finale .wrap { position: relative; z-index: 1; }
+.finale .microlabel { justify-content: center; }
+.finale h2 {
+  font-size: clamp(42px, 5.4vw, 76px);
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin: 28px auto 22px;
+  max-width: 16ch;
+}
+.finale h2 em { color: var(--red); }
+.finale p { color: var(--mute); max-width: 56ch; margin: 0 auto 46px; font-size: 16px; }
+
+/* ---------- footer ---------- */
+.footer { padding: 40px 0; background: var(--bone); }
+.footer .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.footer .fbrand {
+  font-family: var(--disp);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.footer .fbrand em { color: var(--red); }
+.footer nav { display: flex; gap: 24px; }
+.footer nav a {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.footer nav a:hover { color: var(--red); }
+.footer .fine { font-size: 11.5px; color: var(--mute); }
+
+/* ---------- style switcher ---------- */
+.switcher {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line-strong);
+  background: rgba(242, 241, 237, 0.95);
+  backdrop-filter: blur(10px);
+}
+.switcher .sw-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mute);
+  padding: 0 12px;
+  border-right: 1px solid var(--line);
+}
+.switcher a {
+  font-family: var(--disp);
+  font-size: 12px;
+  font-weight: 700;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mute);
+  border-left: 1px solid var(--line);
+  transition: background 0.2s, color 0.2s;
+}
+.switcher a:first-of-type { border-left: none; }
+.switcher a:hover { background: var(--ink); color: var(--bone); }
+.switcher a.active { background: var(--red); color: #fff; }
+
+/* ---------- reveal animation ---------- */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1020px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 56px; }
+  .portrait { max-width: 380px; }
+  .stats .wrap { grid-template-columns: repeat(3, 1fr); }
+  .stat:nth-child(4) { border-left: none; }
+  .stat { border-top: 1px solid var(--line); }
+  .stat:nth-child(-n + 3) { border-top: none; }
+  .offers { grid-template-columns: repeat(2, 1fr); }
+  .offer { border-top: 1px solid var(--line-strong); min-height: 0; }
+  .offer:nth-child(-n + 2) { border-top: none; }
+  .offer:nth-child(odd) { border-left: none; }
+  .offer:nth-child(even) { border-left: 1px solid var(--line-strong); }
+  .story-grid { grid-template-columns: 1fr; gap: 64px; }
+  .quotes { grid-template-columns: 1fr; }
+  .quote { border-left: none; border-top: 1px solid var(--line-strong); }
+  .quote:first-child { border-top: none; }
+  .creds { grid-template-columns: 1fr; gap: 56px; }
+  .speaking-grid { grid-template-columns: 1fr; }
+  .venue { border-left: none; border-top: 1px solid var(--line-strong); }
+  .venue:first-child { border-top: none; }
+  .case { grid-template-columns: 1fr; gap: 18px; padding: 36px 0; }
+  .case .go { display: none; }
+  .nav { display: none; }
+}
+@media (max-width: 640px) {
+  .stats .wrap { grid-template-columns: 1fr 1fr; }
+  .stat { border-left: none; border-top: 1px solid var(--line); }
+  .stat:nth-child(-n + 2) { border-top: none; }
+  .offers { grid-template-columns: 1fr; }
+  .offer { border-left: none !important; border-top: 1px solid var(--line-strong); }
+  .offer:first-child { border-top: none; }
+  .hero { padding-top: 140px; }
+  .switcher .sw-label { display: none; }
+}
+
+/* ============================================================
+   PAGE-SPECIFIC — FRACTIONAL CMO
+   ============================================================ */
+
+/* page hero (single column, no portrait) */
+.page-hero { padding: 160px 0 92px; }
+.page-hero .microlabel { margin-bottom: 36px; }
+.page-hero h1 {
+  font-size: clamp(50px, 6.6vw, 96px);
+  max-width: 14ch;
+}
+.page-hero .lede { margin-bottom: 48px; }
+
+/* the problem — three ruled cells */
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line-strong);
+  background: var(--bone);
+}
+.problem {
+  padding: 44px 36px 40px;
+  border-left: 1px solid var(--line-strong);
+}
+.problem:first-child { border-left: none; }
+.problem .p-idx {
+  font-family: var(--disp);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--red);
+  display: block;
+  margin-bottom: 22px;
+}
+.problem h3 {
+  font-size: 21px;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.problem p { font-size: 14.5px; line-height: 1.7; color: var(--mute); }
+
+/* what gets installed — 6-cell ruled grid */
+.install-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line-strong);
+  background: var(--bone);
+}
+.install {
+  padding: 40px 32px 38px;
+  border-left: 1px solid var(--line-strong);
+  border-top: 1px solid var(--line-strong);
+  background: var(--bone);
+  transition: background 0.22s ease;
+}
+.install:nth-child(-n + 3) { border-top: none; }
+.install:nth-child(3n + 1) { border-left: none; }
+.install .i-num {
+  font-family: var(--disp);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--red);
+  display: block;
+  margin-bottom: 24px;
+}
+.install h3 {
+  font-size: 19px;
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  margin-bottom: 12px;
+  transition: color 0.22s ease;
+}
+.install p { font-size: 14px; line-height: 1.7; color: var(--mute); transition: color 0.22s ease; }
+.install:hover { background: var(--ink); }
+.install:hover h3 { color: var(--bone); }
+.install:hover p { color: var(--mute-d); }
+
+/* how an engagement runs — 4 numbered steps */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--line-strong);
+  background: var(--bone);
+}
+.step {
+  padding: 40px 30px 38px;
+  border-left: 1px solid var(--line-strong);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.step:first-child { border-left: none; }
+.step .s-idx {
+  font-family: var(--disp);
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--red);
+  line-height: 1;
+  margin-bottom: 30px;
+}
+.step h3 {
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.step p { font-size: 14px; line-height: 1.7; color: var(--mute); }
+.step .s-arr {
+  position: absolute;
+  top: 44px;
+  right: -13px;
+  z-index: 2;
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--bone);
+  background: var(--ink);
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.step:last-child .s-arr { display: none; }
+
+/* proof — dark charcoal */
+.proof-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--line-d);
+}
+.proof {
+  padding: 52px 46px 48px;
+  border-left: 1px solid var(--line-d);
+}
+.proof:first-child { border-left: none; }
+.proof .p-co {
+  font-family: var(--disp);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--red-soft);
+  margin-bottom: 24px;
+}
+.proof .p-big {
+  font-family: var(--disp);
+  font-size: clamp(34px, 3.4vw, 46px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--bone);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.proof .p-big em { color: var(--red-soft); }
+.proof p { font-size: 15px; line-height: 1.75; color: var(--mute-d); }
+.proof p strong { color: var(--bone); font-weight: 600; }
+.proof .p-tag {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line-d);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mute-d);
+}
+.proof .p-tag em { color: var(--red-soft); font-weight: 600; }
+
+/* why this works — statement strip */
+.why-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 80px;
+  align-items: start;
+  border-top: 1px solid var(--line-strong);
+  padding-top: 64px;
+}
+.why-grid .big-claim {
+  font-family: var(--disp);
+  font-size: clamp(30px, 3.4vw, 46px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.why-grid .big-claim em { color: var(--red); }
+.why-copy p { font-size: 15.5px; line-height: 1.8; color: var(--mute); margin-bottom: 18px; }
+.why-copy p strong { color: var(--ink); font-weight: 600; }
+.why-copy .rule-note {
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.why-copy .rule-note em { color: var(--red); font-weight: 600; }
+
+/* single testimonial */
+.quotes.solo { grid-template-columns: 1fr; max-width: 880px; margin: 0 auto; }
+.quotes.solo .quote { padding: 52px 56px 46px; }
+.quotes.solo .quote p { font-size: 18px; line-height: 1.75; }
+
+/* page responsive */
+@media (max-width: 1020px) {
+  .problem-grid { grid-template-columns: 1fr; }
+  .problem { border-left: none; border-top: 1px solid var(--line-strong); }
+  .problem:first-child { border-top: none; }
+  .install-grid { grid-template-columns: 1fr 1fr; }
+  .install { border-top: 1px solid var(--line-strong) !important; border-left: 1px solid var(--line-strong) !important; }
+  .install:nth-child(-n + 2) { border-top: none !important; }
+  .install:nth-child(odd) { border-left: none !important; }
+  .steps { grid-template-columns: 1fr 1fr; }
+  .step { border-top: 1px solid var(--line-strong); }
+  .step:nth-child(-n + 2) { border-top: none; }
+  .step:nth-child(odd) { border-left: none; }
+  .step:nth-child(even) { border-left: 1px solid var(--line-strong); }
+  .step .s-arr { display: none; }
+  .proof-grid { grid-template-columns: 1fr; }
+  .proof { border-left: none; border-top: 1px solid var(--line-d); }
+  .proof:first-child { border-top: none; }
+  .why-grid { grid-template-columns: 1fr; gap: 44px; }
+  .quotes.solo .quote { padding: 44px 36px 40px; }
+}
+@media (max-width: 640px) {
+  .page-hero { padding: 140px 0 72px; }
+  .install-grid { grid-template-columns: 1fr; }
+  .install { border-left: none !important; }
+  .install:nth-child(-n + 2) { border-top: 1px solid var(--line-strong) !important; }
+  .install:first-child { border-top: none !important; }
+  .steps { grid-template-columns: 1fr; }
+  .step { border-left: none !important; border-top: 1px solid var(--line-strong); }
+  .step:first-child { border-top: none; }
+}
+
+
+/* ---------- MOBILE REFINEMENTS (shared pass) ---------- */
+.menu-btn { display: none; background: none; border: 1px solid var(--line-strong); width: 46px; height: 38px; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; padding: 0; }
+.menu-btn .mi { display: block; width: 16px; height: 2px; background: var(--ink); transition: transform .2s, opacity .2s; }
+body.nav-open .menu-btn .mi:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+body.nav-open .menu-btn .mi:nth-child(2) { opacity: 0; }
+body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+.mobile-nav { display: none; border-top: 1px solid var(--line-strong); background: var(--bone); max-height: calc(100vh - 68px); overflow-y: auto; }
+.mobile-nav a { display: block; padding: 16px 24px; font-family: var(--disp); font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); border-bottom: 1px solid var(--line); }
+.mobile-nav a.nav-cta { background: var(--ink); color: var(--bone); border-bottom: none; }
+@media (max-width: 1020px) {
+  .menu-btn { display: flex; }
+  body.nav-open .mobile-nav { display: block; }
+}
+@media (max-width: 640px) {
+  .wrap { padding: 0 20px; }
+  .header .wrap { height: 60px; }
+  .hero { padding-top: 118px; }
+  .hero h1 { font-size: clamp(36px, 11vw, 52px); margin-bottom: 24px; }
+  .hero .lede { font-size: 15px; line-height: 1.7; margin-bottom: 32px; }
+  .hero .cred-row { gap: 8px 18px; font-size: 10px; margin-bottom: 28px; }
+  .hero-grid { gap: 40px; padding-bottom: 56px; }
+  .hero-ctas { gap: 12px; }
+  .hero-ctas .btn { flex: 1 1 auto; justify-content: center; }
+  .btn { padding: 15px 20px; font-size: 12px; }
+  .portrait { max-width: 320px; }
+  h2 { letter-spacing: -0.01em; }
+  .section { padding: 64px 0; }
+  .section-head { margin-bottom: 40px; }
+  .section-head h2, .finale h2 { font-size: clamp(28px, 8.8vw, 42px); }
+  .section-head p.sub, .section-head p { font-size: 15px; }
+  .stat { padding: 22px 16px 20px; }
+  .stat .num { font-size: 28px; }
+  .stat .lbl { font-size: 10px; letter-spacing: .1em; }
+  .case { padding: 26px 0; gap: 12px; }
+  .case .big { font-size: 32px; }
+  .case h3 { font-size: 20px; }
+  .offer { padding: 30px 22px; }
+  .offer h3 { font-size: 22px; }
+  .quote { padding: 30px 22px; }
+  .quote p { font-size: 16px; }
+  .finale { padding: 84px 0; }
+  .finale p { font-size: 15px; }
+  .footer .wrap { flex-direction: column; align-items: flex-start; gap: 16px; padding-top: 4px; }
+  .footer nav { flex-wrap: wrap; gap: 10px 18px; }
+  img, iframe, table, pre { max-width: 100%; }
+}
+
+</style>
+  <meta name="description" content="Fractional CMO for founder-led and mid-market companies. I install the demand engine, attribution, and cadence - proven by a NASDAQ exit and two founded-and-sold companies." />
+  <link rel="canonical" href="https://www.bradleygriffin.us/fractional" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#121417" />
+  <meta property="og:site_name" content="Bradley Griffin" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Fractional CMO for Founder-Led Companies - Bradley Griffin" />
+  <meta property="og:description" content="Fractional CMO for founder-led and mid-market companies. I install the demand engine, attribution, and cadence - proven by a NASDAQ exit and two founded-and-sold companies." />
+  <meta property="og:url" content="https://www.bradleygriffin.us/fractional" />
+  <meta property="og:image" content="https://www.bradleygriffin.us/assets/bradley-griffin-og.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Fractional CMO for Founder-Led Companies - Bradley Griffin" />
+  <meta name="twitter:description" content="Fractional CMO for founder-led and mid-market companies. I install the demand engine, attribution, and cadence - proven by a NASDAQ exit and two founded-and-sold companies." />
+  <meta name="twitter:image" content="https://www.bradleygriffin.us/assets/bradley-griffin-og.jpg" />
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Service", "name": "Fractional CMO Services", "description": "Senior marketing leadership on a fractional engagement: demand generation, attribution, CRM and automation, inside-sales playbooks, and operating cadence.", "url": "https://www.bradleygriffin.us/fractional", "provider": {"@type": "Person", "@id": "https://www.bradleygriffin.us/#person", "name": "Bradley Griffin"}, "serviceType": "Fractional CMO Services", "areaServed": "United States", "audience": {"@type": "Audience", "audienceType": "Founder-led and mid-market companies"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.bradleygriffin.us/"}, {"@type": "ListItem", "position": 2, "name": "Fractional CMO", "item": "https://www.bradleygriffin.us/fractional"}]}]}</script>
+</head>
+<body>
+
+  <!-- ======= HEADER ======= -->
+  <header class="header">
+    <div class="wrap">
+      <a class="brand" href="/">
+        <span class="mark">Bradley <em>Griffin</em></span>
+        <span class="tag">CMO · Growth Executive</span>
+      </a>
+      <nav class="nav">
+        <a href="/#work">Work With Me</a>
+        <a href="/case-studies">Results</a>
+        <a href="/story">The Story</a>
+        <a href="/speaking">Speaking</a>
+        <a href="/credentials">Credentials</a>
+        <a class="nav-cta" href="/contact">Start a Conversation</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ======= PAGE HERO ======= -->
+  <section class="hero page-hero" id="top">
+    <div class="crosses"></div>
+    <div class="wrap" style="position: relative; z-index: 1;">
+      <p class="microlabel"><span class="tick">No. 02 /</span> Fractional CMO</p>
+      <h1>CMO firepower.<br /><em>Fractional footprint.</em></h1>
+      <p class="lede">
+        Senior growth leadership, installed. The strategy, the systems, and the operating cadence of a
+        <strong>$25M-budget CMO</strong> — at the fraction your stage actually needs. Built for
+        <strong>founder-led and mid-market companies</strong> that have outgrown their vendors but aren&rsquo;t
+        ready to bet $300K+ on a full-time executive seat.
+      </p>
+      <div class="hero-ctas">
+        <a class="btn btn-solid" href="/contact">Start a Conversation <span class="arr">→</span></a>
+        <a class="btn btn-ghost" href="#installed">See What Gets Installed</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= THE PROBLEM ======= -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="head-rule"><span class="idx-num">01 /</span><span class="line"></span><span class="microlabel">The Problem</span></div>
+        <h2>You&rsquo;re in <em>the gap.</em></h2>
+        <p class="sub">Too big for an agency to carry. Too early for a $300K+ executive hire. It&rsquo;s the most expensive place a growth company can sit — and most sit there for years.</p>
+      </div>
+      <div class="problem-grid">
+        <div class="problem reveal">
+          <span class="p-idx">A /</span>
+          <h3>Past what an agency can do</h3>
+          <p>Agencies execute channels. Nobody hands an agency the revenue plan, the budget trade-offs, or the hard call on what to kill. You&rsquo;ve outgrown deliverables — you need direction.</p>
+        </div>
+        <div class="problem reveal">
+          <span class="p-idx">B /</span>
+          <h3>Not ready for the $300K seat</h3>
+          <p>A full-time CMO is a $300K+ bet before the first result — salary, equity, ramp time, and the risk of a bad hire. Your stage needs the firepower without the fixed cost.</p>
+        </div>
+        <div class="problem reveal">
+          <span class="p-idx">C /</span>
+          <h3>Nobody owns the number</h3>
+          <p>Marketing is a collection of vendors, not a system. Paid over here, SEO over there, a CRM half-configured — and when the pipeline misses, everyone has an explanation and no one has the number.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= WHAT GETS INSTALLED ======= -->
+  <section class="section" id="installed">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="head-rule"><span class="idx-num">02 /</span><span class="line"></span><span class="microlabel">What Gets Installed</span></div>
+        <h2>Not advice. <em>Infrastructure.</em></h2>
+        <p class="sub">A fractional engagement isn&rsquo;t a deck and a monthly call. It&rsquo;s a working growth system, built inside your company, that keeps running after I&rsquo;m gone.</p>
+      </div>
+      <div class="install-grid">
+        <div class="install reveal">
+          <span class="i-num">01 /</span>
+          <h3>Demand Engine</h3>
+          <p>Paid media, SEO/AIO, retargeting, and email/SMS lifecycle — architected as one funnel with one owner, not four vendors with four dashboards.</p>
+        </div>
+        <div class="install reveal">
+          <span class="i-num">02 /</span>
+          <h3>Attribution &amp; Reporting</h3>
+          <p>Know what every dollar returns. Full-funnel attribution from first click to closed revenue, reported in numbers a founder can act on.</p>
+        </div>
+        <div class="install reveal">
+          <span class="i-num">03 /</span>
+          <h3>CRM &amp; Automation</h3>
+          <p>Builder Prime, HubSpot, Salesforce — wired together with N8N, Make, and Zapier so leads route, follow-ups fire, and nothing leaks.</p>
+        </div>
+        <div class="install reveal">
+          <span class="i-num">04 /</span>
+          <h3>Inside Sales Playbooks</h3>
+          <p>Scripts, call coaching, and lead-handling standards that turn marketing spend into set appointments — the handoff most companies fumble.</p>
+        </div>
+        <div class="install reveal">
+          <span class="i-num">05 /</span>
+          <h3>Vendor &amp; Budget Discipline</h3>
+          <p>Every agency, tool, and contract audited against return. What performs stays, what doesn&rsquo;t goes — the same discipline that ran a $25M budget.</p>
+        </div>
+        <div class="install reveal">
+          <span class="i-num">06 /</span>
+          <h3>An Operating Cadence</h3>
+          <p>Weekly numbers, monthly reviews, quarterly plans — a rhythm your team runs on its own after I hand over the keys.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= HOW AN ENGAGEMENT RUNS ======= -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="head-rule"><span class="idx-num">03 /</span><span class="line"></span><span class="microlabel">How an Engagement Runs</span></div>
+        <h2>Four moves. <em>In order.</em></h2>
+      </div>
+      <div class="steps">
+        <div class="step reveal">
+          <span class="s-idx">01</span>
+          <h3>Diagnose</h3>
+          <p>A full audit of the funnel, the spend, the data, and the team. Where the leads die, where the dollars leak, and what the numbers actually say.</p>
+          <span class="s-arr">→</span>
+        </div>
+        <div class="step reveal">
+          <span class="s-idx">02</span>
+          <h3>Architect</h3>
+          <p>The revenue plan, the channel mix, and the stack — one blueprint that connects spend to pipeline to revenue, with a number attached to every piece.</p>
+          <span class="s-arr">→</span>
+        </div>
+        <div class="step reveal">
+          <span class="s-idx">03</span>
+          <h3>Build &amp; Operate</h3>
+          <p>I run it. Campaigns launch, systems get wired, the sales floor gets coached — and the numbers are visible to you every single week.</p>
+          <span class="s-arr">→</span>
+        </div>
+        <div class="step reveal">
+          <span class="s-idx">04</span>
+          <h3>Hand Over the Keys</h3>
+          <p>Documented systems, a trained team, and an operating cadence that doesn&rsquo;t need me in the room. The engine stays. The invoice doesn&rsquo;t.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= PROOF (DARK) ======= -->
+  <section class="section story on-dark">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="head-rule"><span class="idx-num">04 /</span><span class="line"></span><span class="microlabel">Fractional, Proven</span></div>
+        <h2>This model has already <em>ended in an acquisition.</em></h2>
+      </div>
+      <div class="proof-grid">
+        <div class="proof reveal">
+          <p class="p-co">AcreValue / Ag Analytics</p>
+          <p class="p-big">Joined fractionally. <em>Exited on NASDAQ.</em></p>
+          <p>I came in as a fractional leader when recurring revenue had <strong>declined two straight years</strong>. Repositioned the platform, returned <strong>MRR to growth</strong>, and opened entirely new market segments. The company was acquired by <strong>CoStar Group (NASDAQ: CSGP)</strong>.</p>
+          <p class="p-tag">Fractional engagement <em>→</em> NASDAQ acquisition</p>
+        </div>
+        <div class="proof reveal">
+          <p class="p-co">Roofing GR</p>
+          <p class="p-big">Lead generation <em>+1,000% YoY.</em></p>
+          <p>A demand engine built on <strong>N8N, Make, and Zapier automation</strong> drove <strong>+1,000% year-over-year lead growth</strong> — while <strong>cutting operational costs</strong>. More pipeline, less overhead: the whole point of the model.</p>
+          <p class="p-tag">Automation-built growth <em>→</em> at lower cost</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= WHY THIS WORKS WITH ME ======= -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="head-rule"><span class="idx-num">05 /</span><span class="line"></span><span class="microlabel">Why This Works With Me</span></div>
+      </div>
+      <div class="why-grid reveal">
+        <p class="big-claim">&ldquo;I build companies <em>that sell.&rdquo;</em></p>
+        <div class="why-copy">
+          <p>Optimized was founded as a team of one — <strong>the sales floor by day; SEO, PPC, social, and web development by night</strong>. It grew into a <strong>$5M firm with 23 employees, seven satellite offices, and Fortune 500 clients</strong> — then <strong>sold to a UK equity firm</strong> expanding into the U.S.</p>
+          <p>An acquirer doesn&rsquo;t purchase hustle. It purchases systems that run without the founder — documented processes, a trained team, revenue that doesn&rsquo;t depend on one person. That is exactly what a fractional engagement leaves behind in your company.</p>
+          <p>And because I&rsquo;ve personally done every job I now direct, nothing gets managed from a job description. When I review your paid accounts, coach your inside sales team, or rebuild your automations, I&rsquo;m inspecting work I&rsquo;ve done with my own hands.</p>
+          <p class="rule-note">Founder <em>×2</em> · Exits <em>×2</em></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= TESTIMONIAL ======= -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="head-rule"><span class="idx-num">06 /</span><span class="line"></span><span class="microlabel">From the People Who Worked the System</span></div>
+      </div>
+      <div class="quotes solo reveal">
+        <div class="quote">
+          <span class="qmark">&ldquo;</span>
+          <p>He trusted our team, gave us the freedom to restructure campaigns, and always focused on outcomes rather than micromanagement&hellip; Any agency would value a client like him.</p>
+          <div class="who"><div class="nm">Ashish Roy</div><div class="rl">CEO, SenseiDigital &amp; Cibirix</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= FINAL CTA ======= -->
+  <section class="finale">
+    <div class="crosses"></div>
+    <div class="wrap reveal">
+      <p class="microlabel"><span class="tick">07 /</span> Start a Conversation</p>
+      <h2>Get the executive. <em>Skip the overhead.</em></h2>
+      <p>Tell me where the pipeline stands and where it needs to be. I&rsquo;ll tell you exactly what I&rsquo;d install, in what order, and what it should return.</p>
+      <a class="btn btn-solid" href="/contact">Start a Conversation <span class="arr">→</span></a>
+    </div>
+  </section>
+
+  <!-- ======= FOOTER ======= -->
+  <footer class="footer">
+    <div class="wrap">
+      <span class="fbrand">Bradley <em>Griffin</em></span>
+      <nav>
+        <a href="/#work">Work With Me</a>
+        <a href="/case-studies">Results</a>
+        <a href="/story">Story</a>
+        <a href="/speaking">Speaking</a>
+        <a href="/credentials">Credentials</a>
+        <a href="/contact">Contact</a>
+        <a href="https://www.linkedin.com/in/brad-w-griffin/" target="_blank" rel="noopener">LinkedIn</a>
+      </nav>
+      <span class="fine">© 2026 Bradley Griffin · bradleygriffin.us</span>
+    </div>
+  </footer>
+
+  <script>
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+  </script>
+
+<script>
+(function () {
+  var nav = document.querySelector(".header .nav");
+  var wrap = document.querySelector(".header .wrap");
+  var header = document.querySelector(".header");
+  if (!nav || !wrap || !header) return;
+  var btn = document.createElement("button");
+  btn.className = "menu-btn"; btn.setAttribute("aria-label", "Menu");
+  btn.innerHTML = "<span class=\"mi\"></span><span class=\"mi\"></span><span class=\"mi\"></span>";
+  var panel = document.createElement("div");
+  panel.className = "mobile-nav";
+  nav.querySelectorAll("a").forEach(function (a) { panel.appendChild(a.cloneNode(true)); });
+  btn.addEventListener("click", function () { document.body.classList.toggle("nav-open"); });
+  panel.addEventListener("click", function (e) { if (e.target.tagName === "A") document.body.classList.remove("nav-open"); });
+  wrap.appendChild(btn);
+  header.appendChild(panel);
+})();
+</script>
+</body>
+</html>

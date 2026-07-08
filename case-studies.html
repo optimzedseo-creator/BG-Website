@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Studies - Documented Marketing Results | Bradley Griffin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+/* ============================================================
+   BRADLEY GRIFFIN — bradleygriffin.us — OPTION C
+   "Modern Executive" · Swiss grid · data-forward
+   Display: Space Grotesk · Body/UI: Inter
+   Bone #F2F1ED · Ink #121417 · Signal #B33A2B · Charcoal #16181C
+   ============================================================ */
+
+:root {
+  --bone: #F2F1ED;
+  --bone-2: #EDEBE5;
+  --ink: #121417;
+  --charcoal: #16181C;
+  --red: #B33A2B;
+  --red-soft: #C4503F;
+  --mute: #565A60;
+  --mute-d: #9A9FA6;
+  --line: #C9C6BD;
+  --line-strong: #121417;
+  --line-d: rgba(242, 241, 237, 0.14);
+  --disp: "Space Grotesk", "Inter", -apple-system, sans-serif;
+  --sans: "Inter", -apple-system, "Segoe UI", sans-serif;
+  --wrap: 1240px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bone);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 32px; }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+em, i { font-style: normal; }
+h1, h2, h3, h4 { font-family: var(--disp); font-weight: 700; line-height: 1.02; letter-spacing: -0.02em; }
+
+::selection { background: var(--red); color: var(--bone); }
+
+/* ---------- type utilities ---------- */
+.microlabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.microlabel .tick { color: var(--red); font-weight: 600; }
+.on-dark .microlabel { color: var(--bone); }
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--disp);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 18px 32px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  transition: background 0.22s ease, color 0.22s ease, border-color 0.22s ease;
+  cursor: pointer;
+}
+.btn-solid { background: var(--ink); color: var(--bone); }
+.btn-solid:hover { background: var(--red); border-color: var(--red); color: #fff; }
+.btn-ghost { background: transparent; color: var(--ink); }
+.btn-ghost:hover { background: var(--ink); color: var(--bone); }
+.btn .arr { font-family: var(--sans); transition: transform 0.22s ease; }
+.btn:hover .arr { transform: translateX(4px); }
+
+/* ---------- header ---------- */
+.header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  background: rgba(242, 241, 237, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line-strong);
+}
+.header .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+}
+.brand { display: flex; align-items: baseline; gap: 14px; white-space: nowrap; }
+.brand .mark {
+  font-family: var(--disp);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.brand .mark em { color: var(--red); }
+.brand .tag {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.nav { display: flex; align-items: center; gap: 28px; }
+.nav a {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+.nav a:hover { color: var(--red); }
+.nav .nav-cta {
+  color: var(--bone);
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  padding: 10px 18px;
+  transition: background 0.22s, border-color 0.22s;
+}
+.nav .nav-cta:hover { background: var(--red); border-color: var(--red); color: #fff; }
+@media (max-width: 1240px) { .brand .tag { display: none; } }
+
+/* ---------- hero ---------- */
+.hero {
+  position: relative;
+  padding: 168px 0 0;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(18, 20, 23, 0.0) 0, transparent 0),
+    var(--bone);
+  border-bottom: 1px solid var(--line-strong);
+  overflow: hidden;
+}
+.hero .crosses {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(18,20,23,0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18,20,23,0.12) 1px, transparent 1px);
+  background-size: 120px 120px;
+  -webkit-mask-image: radial-gradient(700px 480px at 78% 30%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(700px 480px at 78% 30%, #000 0%, transparent 72%);
+  pointer-events: none;
+}
+.hero-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.35fr 0.65fr;
+  gap: 64px;
+  align-items: end;
+  padding-bottom: 88px;
+}
+.hero .cred-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 40px;
+}
+.hero .cred-row span::before { content: "/ "; color: var(--red); font-weight: 600; }
+.hero h1 {
+  font-size: clamp(54px, 7.2vw, 104px);
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin: 0 0 34px;
+}
+.hero h1 em { color: var(--red); }
+.hero .lede {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--mute);
+  max-width: 58ch;
+  margin-bottom: 44px;
+}
+.hero .lede strong { color: var(--ink); font-weight: 600; }
+.hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
+
+/* portrait */
+.portrait {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border: 1px solid var(--line-strong);
+  background: var(--bone-2);
+}
+.portrait-inner { height: 100%; overflow: hidden; }
+.portrait-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 12%;
+  filter: grayscale(0.15) contrast(1.05);
+}
+.portrait::after {
+  content: "";
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  bottom: -7px;
+  height: 6px;
+  background: var(--red);
+}
+.portrait-caption {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  background: var(--ink);
+  color: var(--bone);
+  font-family: var(--disp);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  padding: 9px 14px;
+  z-index: 2;
+}
+
+/* ---------- stat band ---------- */
+.stats { background: var(--bone); border-bottom: 1px solid var(--line-strong); }
+.stats .wrap {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  border-left: 1px solid var(--line-strong);
+  border-right: 1px solid var(--line-strong);
+}
+.stat {
+  padding: 42px 24px 38px;
+  border-left: 1px solid var(--line);
+  position: relative;
+}
+.stat:first-child { border-left: none; }
+.stat .num {
+  font-family: var(--disp);
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  line-height: 1;
+  white-space: nowrap;
+}
+.stat .num em { color: var(--red); }
+.stat .lbl {
+  margin-top: 14px;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+  line-height: 1.6;
+}
+
+/* ---------- shared section scaffolding ---------- */
+.section { padding: 108px 0 116px; border-bottom: 1px solid var(--line-strong); }
+.section-head { margin-bottom: 64px; }
+.section-head .head-rule {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 40px;
+}
+.section-head .head-rule::before { content: none; }
+.section-head .head-rule .line { height: 1px; background: var(--line); }
+.section-head .idx-num {
+  font-family: var(--disp);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--red);
+}
+.section-head h2 {
+  font-size: clamp(38px, 4.6vw, 62px);
+  text-transform: uppercase;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  margin: 0 0 20px;
+  max-width: 20ch;
+}
+.section-head h2 em { color: var(--red); }
+.section-head p.sub { font-size: 16px; color: var(--mute); max-width: 66ch; }
+.on-dark .section-head h2 { color: var(--bone); }
+.on-dark .section-head p.sub { color: var(--mute-d); }
+.on-dark .section-head .head-rule .line { background: var(--line-d); }
+
+/* ---------- offers ---------- */
+.offers {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--line-strong);
+  background: var(--bone);
+}
+.offer {
+  padding: 40px 30px 36px;
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+  border-left: 1px solid var(--line-strong);
+  background: var(--bone);
+  transition: background 0.22s ease, color 0.22s ease;
+  position: relative;
+}
+.offer:first-child { border-left: none; }
+.offer .idx {
+  font-family: var(--disp);
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--red);
+  line-height: 1;
+  margin-bottom: 34px;
+}
+.offer h3 {
+  font-size: 23px;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 10px;
+  transition: color 0.22s ease;
+}
+.offer .for {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 18px;
+  transition: color 0.22s ease;
+}
+.offer p { font-size: 14px; line-height: 1.7; color: var(--mute); flex: 1; transition: color 0.22s ease; }
+.offer .link {
+  margin-top: 30px;
+  font-family: var(--disp);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  transition: color 0.22s ease;
+}
+.offer .link .arr { transition: transform 0.22s; }
+.offer:hover { background: var(--ink); }
+.offer:hover h3, .offer:hover .link { color: var(--bone); }
+.offer:hover .for, .offer:hover p { color: var(--mute-d); }
+.offer:hover .link { color: var(--red-soft); }
+.offer:hover .link .arr { transform: translateX(5px); }
+
+/* ---------- case studies (ruled table rows) ---------- */
+.cases { border-top: 1px solid var(--line-strong); }
+.case {
+  display: grid;
+  grid-template-columns: 170px 1.05fr 1.5fr 64px;
+  gap: 40px;
+  align-items: center;
+  border-bottom: 1px solid var(--line-strong);
+  padding: 44px 0;
+  transition: background 0.22s ease;
+  position: relative;
+}
+.case .big {
+  font-family: var(--disp);
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--red);
+  line-height: 1;
+  white-space: nowrap;
+}
+.case h3 {
+  font-size: 22px;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 10px;
+  transition: color 0.22s ease;
+}
+.case .co {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.case p { font-size: 14.5px; line-height: 1.7; color: var(--mute); }
+.case .go {
+  font-family: var(--sans);
+  font-size: 20px;
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  transition: background 0.22s, color 0.22s;
+  justify-self: end;
+}
+.case:hover { background: var(--bone-2); }
+.case:hover h3 { color: var(--red); }
+.case:hover .go { background: var(--red); border-color: var(--red); color: #fff; }
+
+/* ---------- story (dark full-bleed) ---------- */
+.story {
+  background: var(--charcoal);
+  color: var(--bone);
+}
+.story-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 88px;
+  align-items: start;
+}
+.story h2 {
+  font-size: clamp(36px, 4.2vw, 58px);
+  text-transform: uppercase;
+  letter-spacing: -0.025em;
+  color: var(--bone);
+  margin: 0 0 30px;
+}
+.story h2 em { color: var(--red-soft); }
+.story .microlabel { color: var(--bone); margin-bottom: 34px; }
+.story-copy p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--mute-d);
+  margin-bottom: 20px;
+}
+.story-copy p strong { color: var(--bone); font-weight: 600; }
+.story-copy .pull {
+  font-family: var(--disp);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--bone);
+  border-left: 3px solid var(--red);
+  padding-left: 26px;
+  margin: 36px 0;
+}
+.timeline { border-left: 1px solid var(--line-d); }
+.tl-item { position: relative; padding: 0 0 36px 34px; }
+.tl-item:last-child { padding-bottom: 0; }
+.tl-item::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: 8px;
+  width: 7px;
+  height: 7px;
+  background: var(--red);
+}
+.tl-item .yr {
+  font-family: var(--disp);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--red-soft);
+}
+.tl-item h4 {
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  color: var(--bone);
+  margin: 8px 0 6px;
+}
+.tl-item p { font-size: 13.5px; line-height: 1.65; color: var(--mute-d); }
+
+/* ---------- speaking ---------- */
+.speaking-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--line-strong);
+}
+.venue {
+  padding: 48px 44px;
+  border-left: 1px solid var(--line-strong);
+  background: var(--bone);
+}
+.venue:first-child { border-left: none; }
+.venue .where {
+  font-family: var(--disp);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 20px;
+}
+.venue h3 {
+  font-size: 26px;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.venue p { font-size: 14.5px; line-height: 1.75; color: var(--mute); }
+.venue .quotebox {
+  margin-top: 26px;
+  font-family: var(--disp);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+}
+.venue .quotebox .src {
+  display: inline-block;
+  margin-top: 12px;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+/* ---------- testimonials ---------- */
+.quotes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line-strong);
+}
+.quote {
+  padding: 44px 36px 40px;
+  border-left: 1px solid var(--line-strong);
+  display: flex;
+  flex-direction: column;
+  background: var(--bone);
+}
+.quote:first-child { border-left: none; }
+.quote .qmark {
+  font-family: var(--disp);
+  font-size: 84px;
+  font-weight: 700;
+  line-height: 0.55;
+  color: var(--red);
+  margin-bottom: 30px;
+}
+.quote p {
+  font-size: 15.5px;
+  font-weight: 500;
+  line-height: 1.7;
+  color: var(--ink);
+  flex: 1;
+}
+.quote .who { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--line); }
+.quote .who .nm {
+  font-family: var(--disp);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.quote .who .rl { font-size: 12px; color: var(--mute); margin-top: 4px; }
+
+/* ---------- credentials ---------- */
+.creds {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.cred-list { display: grid; gap: 0; }
+.cred {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: baseline;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--line);
+}
+.cred:first-child { border-top: 1px solid var(--line-strong); }
+.cred:last-child { border-bottom: 1px solid var(--line-strong); }
+.cred h4 { font-size: 18px; letter-spacing: -0.005em; color: var(--ink); }
+.cred .sub { font-size: 13px; color: var(--mute); margin-top: 5px; }
+.cred .yr {
+  font-family: var(--disp);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--red);
+  white-space: nowrap;
+}
+.cert-wall h3 {
+  font-size: 24px;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.cert-wall > p { font-size: 14px; line-height: 1.7; color: var(--mute); margin-bottom: 28px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--line);
+  padding: 9px 15px;
+}
+.chip.more {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ---------- final cta ---------- */
+.finale {
+  text-align: center;
+  padding: 130px 0 140px;
+  background: var(--bone);
+  border-bottom: 1px solid var(--line-strong);
+  position: relative;
+  overflow: hidden;
+}
+.finale .crosses {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(18,20,23,0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18,20,23,0.1) 1px, transparent 1px);
+  background-size: 120px 120px;
+  -webkit-mask-image: radial-gradient(640px 380px at 50% 55%, #000 0%, transparent 74%);
+  mask-image: radial-gradient(640px 380px at 50% 55%, #000 0%, transparent 74%);
+  pointer-events: none;
+}
+.finale .wrap { position: relative; z-index: 1; }
+.finale .microlabel { justify-content: center; }
+.finale h2 {
+  font-size: clamp(42px, 5.4vw, 76px);
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin: 28px auto 22px;
+  max-width: 16ch;
+}
+.finale h2 em { color: var(--red); }
+.finale p { color: var(--mute); max-width: 56ch; margin: 0 auto 46px; font-size: 16px; }
+
+/* ---------- footer ---------- */
+.footer { padding: 40px 0; background: var(--bone); }
+.footer .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.footer .fbrand {
+  font-family: var(--disp);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.footer .fbrand em { color: var(--red); }
+.footer nav { display: flex; gap: 24px; }
+.footer nav a {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.footer nav a:hover { color: var(--red); }
+.footer .fine { font-size: 11.5px; color: var(--mute); }
+
+/* ---------- style switcher ---------- */
+.switcher {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line-strong);
+  background: rgba(242, 241, 237, 0.95);
+  backdrop-filter: blur(10px);
+}
+.switcher .sw-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mute);
+  padding: 0 12px;
+  border-right: 1px solid var(--line);
+}
+.switcher a {
+  font-family: var(--disp);
+  font-size: 12px;
+  font-weight: 700;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mute);
+  border-left: 1px solid var(--line);
+  transition: background 0.2s, color 0.2s;
+}
+.switcher a:first-of-type { border-left: none; }
+.switcher a:hover { background: var(--ink); color: var(--bone); }
+.switcher a.active { background: var(--red); color: #fff; }
+
+/* ---------- reveal animation ---------- */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1020px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 56px; }
+  .portrait { max-width: 380px; }
+  .stats .wrap { grid-template-columns: repeat(3, 1fr); }
+  .stat:nth-child(4) { border-left: none; }
+  .stat { border-top: 1px solid var(--line); }
+  .stat:nth-child(-n + 3) { border-top: none; }
+  .offers { grid-template-columns: repeat(2, 1fr); }
+  .offer { border-top: 1px solid var(--line-strong); min-height: 0; }
+  .offer:nth-child(-n + 2) { border-top: none; }
+  .offer:nth-child(odd) { border-left: none; }
+  .offer:nth-child(even) { border-left: 1px solid var(--line-strong); }
+  .story-grid { grid-template-columns: 1fr; gap: 64px; }
+  .quotes { grid-template-columns: 1fr; }
+  .quote { border-left: none; border-top: 1px solid var(--line-strong); }
+  .quote:first-child { border-top: none; }
+  .creds { grid-template-columns: 1fr; gap: 56px; }
+  .speaking-grid { grid-template-columns: 1fr; }
+  .venue { border-left: none; border-top: 1px solid var(--line-strong); }
+  .venue:first-child { border-top: none; }
+  .case { grid-template-columns: 1fr; gap: 18px; padding: 36px 0; }
+  .case .go { display: none; }
+  .nav { display: none; }
+}
+@media (max-width: 640px) {
+  .stats .wrap { grid-template-columns: 1fr 1fr; }
+  .stat { border-left: none; border-top: 1px solid var(--line); }
+  .stat:nth-child(-n + 2) { border-top: none; }
+  .offers { grid-template-columns: 1fr; }
+  .offer { border-left: none !important; border-top: 1px solid var(--line-strong); }
+  .offer:first-child { border-top: none; }
+  .hero { padding-top: 140px; }
+  .switcher .sw-label { display: none; }
+}
+
+/* ============================================================
+   CASE STUDIES PAGE — "The Record" (appended, page-specific)
+   ============================================================ */
+
+/* ---------- page hero + index of cases ---------- */
+.page-hero {
+  position: relative;
+  padding: 160px 0 96px;
+  background: var(--bone);
+  border-bottom: 1px solid var(--line-strong);
+  overflow: hidden;
+}
+.page-hero .crosses {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(18,20,23,0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18,20,23,0.12) 1px, transparent 1px);
+  background-size: 120px 120px;
+  -webkit-mask-image: radial-gradient(700px 420px at 82% 12%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(700px 420px at 82% 12%, #000 0%, transparent 72%);
+  pointer-events: none;
+}
+.page-hero .wrap { position: relative; z-index: 1; }
+.page-hero .cred-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 36px;
+}
+.page-hero .cred-row span::before { content: "/ "; color: var(--red); font-weight: 600; }
+.page-hero h1 {
+  font-size: clamp(52px, 6.8vw, 96px);
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin: 0 0 30px;
+}
+.page-hero h1 em { color: var(--red); }
+.page-hero .lede {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--mute);
+  max-width: 62ch;
+  margin-bottom: 72px;
+}
+.page-hero .lede strong { color: var(--ink); font-weight: 600; }
+
+/* index of cases — ruled table */
+.ix-label { margin-bottom: 0; }
+.ix { border-top: 1px solid var(--line-strong); margin-top: 22px; }
+.ix-row {
+  display: grid;
+  grid-template-columns: 56px 170px 1.6fr 1fr 40px;
+  gap: 28px;
+  align-items: baseline;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+  transition: background 0.2s ease;
+}
+.ix-row:last-child { border-bottom: 1px solid var(--line-strong); }
+.ix-row .n {
+  font-family: var(--disp);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--red);
+}
+.ix-row .m {
+  font-family: var(--disp);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.ix-row .t {
+  font-family: var(--disp);
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  transition: color 0.2s ease;
+}
+.ix-row .c {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.ix-row .a { font-size: 16px; color: var(--mute); justify-self: end; transition: color 0.2s ease, transform 0.2s ease; }
+.ix-row:hover { background: var(--bone-2); }
+.ix-row:hover .t { color: var(--red); }
+.ix-row:hover .a { color: var(--red); transform: translateX(4px); }
+
+/* ---------- case file sections ---------- */
+.cs { scroll-margin-top: 92px; }
+.cs-headrow {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 56px;
+  align-items: end;
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line);
+  padding: 40px 0 44px;
+}
+.cs-metric {
+  font-family: var(--disp);
+  font-size: clamp(56px, 6.6vw, 104px);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 0.92;
+  color: var(--red);
+  white-space: nowrap;
+}
+.cs-headrow h2 {
+  font-size: clamp(26px, 3.1vw, 42px);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 0 0 16px;
+  max-width: 24ch;
+}
+.cs-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.cs-meta span::before { content: "/ "; color: var(--red); font-weight: 600; }
+.cs-dark .cs-headrow { border-top-color: rgba(242, 241, 237, 0.45); border-bottom-color: var(--line-d); }
+.cs-dark .cs-headrow h2 { color: var(--bone); }
+.cs-dark .cs-metric { color: var(--red-soft); }
+.cs-dark .cs-meta { color: var(--mute-d); }
+
+/* context / what I built columns */
+.cs-cols {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 72px;
+  margin: 56px 0 64px;
+  align-items: start;
+}
+.cs-block .microlabel { margin-bottom: 20px; }
+.cs-block p { font-size: 15px; line-height: 1.8; color: var(--mute); }
+.cs-block p + p { margin-top: 16px; }
+.cs-block p strong { color: var(--ink); font-weight: 600; }
+.cs-block ul { list-style: none; border-top: 1px solid var(--line); }
+.cs-block li {
+  position: relative;
+  padding: 14px 0 14px 28px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--mute);
+}
+.cs-block li::before { content: "/"; position: absolute; left: 2px; top: 14px; color: var(--red); font-weight: 600; }
+.cs-block li strong { color: var(--ink); font-weight: 600; }
+.cs-dark .cs-block p, .cs-dark .cs-block li { color: var(--mute-d); }
+.cs-dark .cs-block p strong, .cs-dark .cs-block li strong { color: var(--bone); }
+.cs-dark .cs-block ul, .cs-dark .cs-block li { border-color: var(--line-d); }
+
+/* results mini-grid */
+.cs-results .microlabel { margin-bottom: 22px; }
+.rgrid { display: grid; border: 1px solid var(--line-strong); background: transparent; }
+.rgrid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.rgrid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.rgrid.cols-5 { grid-template-columns: repeat(5, 1fr); }
+.rcell { padding: 34px 26px 30px; border-left: 1px solid var(--line); }
+.rcell:first-child { border-left: none; }
+.rcell .num {
+  font-family: var(--disp);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.rcell .num em { color: var(--red); }
+.rcell .lbl {
+  margin-top: 12px;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mute);
+  line-height: 1.6;
+}
+.cs-dark .rgrid { border-color: rgba(242, 241, 237, 0.45); }
+.cs-dark .rcell { border-left-color: var(--line-d); }
+.cs-dark .rcell .num { color: var(--bone); }
+.cs-dark .rcell .num em { color: var(--red-soft); }
+.cs-dark .rcell .lbl { color: var(--mute-d); }
+
+/* closing pull line */
+.cs-pull {
+  font-family: var(--disp);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  border-left: 3px solid var(--red);
+  padding-left: 26px;
+  margin-top: 56px;
+  max-width: 50ch;
+}
+.cs-dark .cs-pull { color: var(--bone); }
+
+/* evidence gallery — exhibits */
+.exhibits { margin-top: 72px; }
+.exhibits > .microlabel { margin-bottom: 26px; }
+.exgroup + .exgroup { margin-top: 44px; }
+.exgrid { display: grid; gap: 24px; }
+.exgrid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.exgrid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.exframe {
+  display: block;
+  border: 1px solid var(--line-strong);
+  background: #fff;
+  padding: 12px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.exframe img { width: 100%; }
+.exframe:hover { border-color: var(--red); }
+.excap {
+  margin-top: 16px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.excap .tick { color: var(--red); font-weight: 600; }
+.cs-dark .exframe { border-color: rgba(242, 241, 237, 0.45); background: var(--bone); }
+.cs-dark .exframe:hover { border-color: var(--red-soft); }
+.cs-dark .excap { color: var(--mute-d); }
+
+/* inline SVG exhibits (hand-coded charts) */
+.exframe svg { display: block; width: 100%; height: auto; }
+.exframe svg text { font-family: var(--disp); }
+.exnote {
+  margin-top: 12px;
+  font-size: 11.5px;
+  line-height: 1.65;
+  color: var(--mute);
+  max-width: 78ch;
+}
+.cs-dark .exnote { color: var(--mute-d); }
+
+/* attributed pull-quote */
+.cs-pull .src {
+  display: block;
+  margin-top: 14px;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+/* page-specific responsive */
+@media (max-width: 1020px) {
+  .ix-row { grid-template-columns: 40px 130px 1fr 28px; }
+  .ix-row .c { display: none; }
+  .cs-headrow { grid-template-columns: 1fr; gap: 28px; align-items: start; }
+  .cs-cols { grid-template-columns: 1fr; gap: 48px; }
+  .rgrid.cols-3, .rgrid.cols-4, .rgrid.cols-5 { grid-template-columns: repeat(2, 1fr); }
+  .rcell { border-left: none; border-top: 1px solid var(--line); }
+  .rcell:nth-child(-n + 2) { border-top: none; }
+  .rcell:nth-child(even) { border-left: 1px solid var(--line); }
+  .cs-dark .rcell { border-color: var(--line-d); }
+  .cs-dark .rcell:nth-child(-n + 2) { border-top: none; }
+  .exgrid.cols-3 { grid-template-columns: 1fr; }
+  .exgrid.cols-2 { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .page-hero { padding-top: 140px; }
+  .ix-row { grid-template-columns: 32px 1fr 24px; gap: 16px; }
+  .ix-row .m { display: none; }
+  .rgrid.cols-3, .rgrid.cols-4, .rgrid.cols-5 { grid-template-columns: 1fr; }
+  .rcell { border-left: none !important; border-top: 1px solid var(--line); }
+  .rcell:first-child { border-top: none; }
+  .cs-dark .rcell { border-top-color: var(--line-d); }
+  .cs-dark .rcell:first-child { border-top: none; }
+}
+
+/* ---------- press-release exhibit ---------- */
+.press-clip { margin-top: 30px; border: 1px solid var(--line-strong); background: #FBFAF7; padding: 26px 26px 24px; position: relative; }
+.press-clip::before { content: ""; position: absolute; top: -1px; left: -1px; right: -1px; height: 5px; background: var(--red); }
+.pc-label { font-family: var(--disp); font-size: 10px; font-weight: 700; letter-spacing: 0.26em; text-transform: uppercase; color: var(--red); margin-bottom: 14px; }
+.pc-src { font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mute); margin-bottom: 10px; }
+.pc-head { font-family: var(--disp); font-size: 19px; font-weight: 700; text-transform: uppercase; letter-spacing: -0.01em; line-height: 1.15; color: var(--ink); margin-bottom: 8px; }
+.pc-date { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute); border-bottom: 1px solid var(--line); padding-bottom: 14px; margin-bottom: 14px; }
+.pc-body { font-size: 14px; line-height: 1.7; color: var(--mute); margin-bottom: 16px; }
+.pc-link { font-family: var(--disp); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--red); }
+.pc-link:hover { color: var(--ink); }
+
+/* ---------- document exhibit (retyped email) ---------- */
+.doc-exhibit { border: 1px solid var(--line-d); background: rgba(242, 241, 237, 0.03); padding: 30px 30px 26px; position: relative; max-width: 640px; }
+.doc-exhibit::before { content: ""; position: absolute; top: -1px; left: -1px; right: -1px; height: 5px; background: var(--red); }
+.cs-dark .doc-exhibit .pc-label { color: var(--red-soft); }
+.de-meta { border-bottom: 1px solid var(--line-d); padding-bottom: 14px; margin-bottom: 16px; }
+.de-meta p { font-size: 12px; letter-spacing: 0.06em; color: var(--mute-d); margin: 3px 0; }
+.de-meta p span { display: inline-block; width: 72px; font-weight: 700; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--bone); }
+.de-line { font-size: 14px; line-height: 1.7; color: var(--mute-d); margin-bottom: 20px; }
+.de-tablehead { font-family: var(--disp); font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--bone); margin-bottom: 10px; }
+.de-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.de-table th { font-family: var(--disp); font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mute-d); text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bone); }
+.de-table th:nth-child(3), .de-table th:nth-child(4), .de-table td:nth-child(3), .de-table td:nth-child(4) { text-align: right; }
+.de-table td { font-size: 13px; color: var(--mute-d); padding: 7px 10px; border-bottom: 1px solid var(--line-d); }
+.de-table tr.hit td { color: var(--bone); font-weight: 600; }
+.de-table .tick-cell { color: var(--red-soft); font-weight: 700; width: 18px; padding-right: 0; }
+.de-verdict { margin-top: 18px; font-size: 13.5px; line-height: 1.65; color: var(--mute-d); }
+.de-verdict .tick { color: var(--red-soft); font-weight: 700; }
+.de-verdict strong { color: var(--bone); }
+@media (max-width: 640px) { .doc-exhibit { padding: 22px 16px 20px; } .de-table td, .de-table th { padding: 6px 6px; font-size: 12px; } }
+
+/* ---------- MOBILE REFINEMENTS (shared pass) ---------- */
+.menu-btn { display: none; background: none; border: 1px solid var(--line-strong); width: 46px; height: 38px; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; padding: 0; }
+.menu-btn .mi { display: block; width: 16px; height: 2px; background: var(--ink); transition: transform .2s, opacity .2s; }
+body.nav-open .menu-btn .mi:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+body.nav-open .menu-btn .mi:nth-child(2) { opacity: 0; }
+body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+.mobile-nav { display: none; border-top: 1px solid var(--line-strong); background: var(--bone); max-height: calc(100vh - 68px); overflow-y: auto; }
+.mobile-nav a { display: block; padding: 16px 24px; font-family: var(--disp); font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); border-bottom: 1px solid var(--line); }
+.mobile-nav a.nav-cta { background: var(--ink); color: var(--bone); border-bottom: none; }
+@media (max-width: 1020px) {
+  .menu-btn { display: flex; }
+  body.nav-open .mobile-nav { display: block; }
+}
+@media (max-width: 640px) {
+  .wrap { padding: 0 20px; }
+  .header .wrap { height: 60px; }
+  .hero { padding-top: 118px; }
+  .hero h1 { font-size: clamp(36px, 11vw, 52px); margin-bottom: 24px; }
+  .hero .lede { font-size: 15px; line-height: 1.7; margin-bottom: 32px; }
+  .hero .cred-row { gap: 8px 18px; font-size: 10px; margin-bottom: 28px; }
+  .hero-grid { gap: 40px; padding-bottom: 56px; }
+  .hero-ctas { gap: 12px; }
+  .hero-ctas .btn { flex: 1 1 auto; justify-content: center; }
+  .btn { padding: 15px 20px; font-size: 12px; }
+  .portrait { max-width: 320px; }
+  h2 { letter-spacing: -0.01em; }
+  .section { padding: 64px 0; }
+  .section-head { margin-bottom: 40px; }
+  .section-head h2, .finale h2 { font-size: clamp(28px, 8.8vw, 42px); }
+  .section-head p.sub, .section-head p { font-size: 15px; }
+  .stat { padding: 22px 16px 20px; }
+  .stat .num { font-size: 28px; }
+  .stat .lbl { font-size: 10px; letter-spacing: .1em; }
+  .case { padding: 26px 0; gap: 12px; }
+  .case .big { font-size: 32px; }
+  .case h3 { font-size: 20px; }
+  .offer { padding: 30px 22px; }
+  .offer h3 { font-size: 22px; }
+  .quote { padding: 30px 22px; }
+  .quote p { font-size: 16px; }
+  .finale { padding: 84px 0; }
+  .finale p { font-size: 15px; }
+  .footer .wrap { flex-direction: column; align-items: flex-start; gap: 16px; padding-top: 4px; }
+  .footer nav { flex-wrap: wrap; gap: 10px 18px; }
+  img, iframe, table, pre { max-width: 100%; }
+}
+
+</style>
+  <meta name="description" content="Six documented case studies: AcreValue&#x27;s turnaround to a CoStar (NASDAQ) acquisition, +490% inbound calls at Vertex, a #1 region at Infinity Home Services, 1,000% at Roofing GR." />
+  <link rel="canonical" href="https://www.bradleygriffin.us/case-studies" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#121417" />
+  <meta property="og:site_name" content="Bradley Griffin" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Case Studies - Documented Marketing Results | Bradley Griffin" />
+  <meta property="og:description" content="Six documented case studies: AcreValue&#x27;s turnaround to a CoStar (NASDAQ) acquisition, +490% inbound calls at Vertex, a #1 region at Infinity Home Services, 1,000% at Roofing GR." />
+  <meta property="og:url" content="https://www.bradleygriffin.us/case-studies" />
+  <meta property="og:image" content="https://www.bradleygriffin.us/assets/bradley-griffin-og.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Case Studies - Documented Marketing Results | Bradley Griffin" />
+  <meta name="twitter:description" content="Six documented case studies: AcreValue&#x27;s turnaround to a CoStar (NASDAQ) acquisition, +490% inbound calls at Vertex, a #1 region at Infinity Home Services, 1,000% at Roofing GR." />
+  <meta name="twitter:image" content="https://www.bradleygriffin.us/assets/bradley-griffin-og.jpg" />
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "url": "https://www.bradleygriffin.us/case-studies", "name": "Case Studies - Bradley Griffin", "about": {"@type": "Person", "@id": "https://www.bradleygriffin.us/#person", "name": "Bradley Griffin"}, "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "AcreValue / Ag Analytics - turnaround through a NASDAQ acquisition", "url": "https://www.bradleygriffin.us/case-studies#acrevalue"}, {"@type": "ListItem", "position": 2, "name": "Vertex Roofing - +490% inbound calls, +269% booking rate", "url": "https://www.bradleygriffin.us/case-studies#vertex"}, {"@type": "ListItem", "position": 3, "name": "Infinity Home Services - #1 performing Midwest region", "url": "https://www.bradleygriffin.us/case-studies#ihs"}, {"@type": "ListItem", "position": 4, "name": "Optimized - bootstrapped from one person to a successful exit", "url": "https://www.bradleygriffin.us/case-studies#optimized"}, {"@type": "ListItem", "position": 5, "name": "Roofing GR - 1,000% YoY lead generation", "url": "https://www.bradleygriffin.us/case-studies#roofinggr"}, {"@type": "ListItem", "position": 6, "name": "Wensco Sign Supply - +30% revenue, -35% marketing cost", "url": "https://www.bradleygriffin.us/case-studies#wensco"}]}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.bradleygriffin.us/"}, {"@type": "ListItem", "position": 2, "name": "Case Studies", "item": "https://www.bradleygriffin.us/case-studies"}]}]}</script>
+</head>
+<body>
+
+  <!-- ======= HEADER ======= -->
+  <header class="header">
+    <div class="wrap">
+      <a class="brand" href="/">
+        <span class="mark">Bradley <em>Griffin</em></span>
+        <span class="tag">CMO · Growth Executive</span>
+      </a>
+      <nav class="nav">
+        <a href="/#work">Work With Me</a>
+        <a href="/case-studies">Results</a>
+        <a href="/story">The Story</a>
+        <a href="/speaking">Speaking</a>
+        <a href="/credentials">Credentials</a>
+        <a class="nav-cta" href="/contact">Start a Conversation</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ======= PAGE HERO + INDEX OF CASES ======= -->
+  <section class="page-hero" id="top">
+    <div class="crosses"></div>
+    <div class="wrap">
+      <p class="cred-row">
+        <span>Case Studies</span>
+        <span>Six Engagements</span>
+        <span>Names · Dates · Numbers</span>
+      </p>
+      <h1>The <em>record.</em></h1>
+      <p class="lede">
+        Six engagements, documented the way a diligence team would want them: the situation as I found it,
+        the system I built, and the numbers it returned. <strong>Every company is named. Every claim is dated.</strong>
+        Where the receipts exist as screenshots, they&rsquo;re attached as exhibits.
+      </p>
+      <div class="reveal">
+        <p class="microlabel ix-label"><span class="tick">/</span> Index of Cases</p>
+        <div class="ix">
+          <a class="ix-row" href="#acrevalue">
+            <span class="n">01</span>
+            <span class="m">2yr&darr; &rarr; MRR&uarr;</span>
+            <span class="t">The turnaround behind a NASDAQ acquisition</span>
+            <span class="c">AcreValue / Ag Analytics · 2023–2024</span>
+            <span class="a">&darr;</span>
+          </a>
+          <a class="ix-row" href="#vertex">
+            <span class="n">02</span>
+            <span class="m">+490%</span>
+            <span class="t">Inbound calls up 490% in four months</span>
+            <span class="c">Vertex Roofing Inc. · 2025</span>
+            <span class="a">&darr;</span>
+          </a>
+          <a class="ix-row" href="#ihs">
+            <span class="n">03</span>
+            <span class="m">#1</span>
+            <span class="t">The Midwest machine</span>
+            <span class="c">Infinity Home Services · 2026–Present</span>
+            <span class="a">&darr;</span>
+          </a>
+          <a class="ix-row" href="#optimized">
+            <span class="n">04</span>
+            <span class="m">1 &rarr; exit</span>
+            <span class="t">Every seat, earned the hard way</span>
+            <span class="c">Optimized · 2011–2018</span>
+            <span class="a">&darr;</span>
+          </a>
+          <a class="ix-row" href="#roofinggr">
+            <span class="n">05</span>
+            <span class="m">+1,000%</span>
+            <span class="t">One thousand percent</span>
+            <span class="c">Roofing GR · 2021–2024</span>
+            <span class="a">&darr;</span>
+          </a>
+          <a class="ix-row" href="#wensco">
+            <span class="n">06</span>
+            <span class="m">+30%</span>
+            <span class="t">The record quarter</span>
+            <span class="c">Wensco Sign Supply · 2019–2021</span>
+            <span class="a">&darr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= CASE 01 — ACREVALUE ======= -->
+  <section class="section cs" id="acrevalue">
+    <div class="wrap">
+      <div class="section-head reveal" style="margin-bottom: 0;">
+        <div class="head-rule"><span class="idx-num">01 /</span><span class="line"></span><span class="microlabel">Case File — AcreValue</span></div>
+        <div class="cs-headrow">
+          <div class="cs-metric">2yr&darr;&rarr;&uarr;</div>
+          <div>
+            <h2>The turnaround behind a <em style="color:var(--red)">NASDAQ acquisition</em></h2>
+            <p class="cs-meta">
+              <span>AcreValue / Ag Analytics</span>
+              <span>Fractional CMO &amp; Head of Sales</span>
+              <span>2023–2024</span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="cs-cols">
+        <div class="cs-block reveal">
+          <p class="microlabel"><span class="tick">A /</span> Context</p>
+          <p>An ag-tech SaaS platform with <strong>1.5M+ registered users across 48 states</strong> — and recurring revenue that had declined two straight years. The product had reach; the business had no clear vision and no defensible positioning.</p>
+          <div class="press-clip">
+            <p class="pc-label">Exhibit — Press Release</p>
+            <p class="pc-src">CoStar Group, Inc. &middot; Investor Relations</p>
+            <h3 class="pc-head">CoStar Group Acquires Ag&#8209;Analytics, Augmenting Land.com Services and Capabilities</h3>
+            <p class="pc-date">February 14, 2025 &middot; NASDAQ: CSGP</p>
+            <p class="pc-body">CoStar&rsquo;s announcement cites AcreValue&rsquo;s 1.5 million registered users and data on tens of millions of parcels &mdash; in a farm real-estate asset class the company sizes at $3.4&nbsp;trillion.</p>
+            <a class="pc-link" href="https://investors.costargroup.com/news-releases/news-release-details/costar-group-acquires-ag-analytics-augmenting-landcom-services" target="_blank" rel="noopener">Read the release at investors.costargroup.com &rarr;</a>
+          </div>
+        </div>
+        <div class="cs-block reveal">
+          <p class="microlabel"><span class="tick">B /</span> What I Built</p>
+          <ul>
+            <li><strong>Relearned the market firsthand</strong> — sat on client and sales calls before touching strategy.</li>
+            <li><strong>Carried that intelligence to the development team</strong> and shipped the features the marketplace actually wanted.</li>
+            <li><strong>Rebuilt the image, the website, and the value propositions</strong> around what the calls revealed.</li>
+            <li><strong>Opened entirely new segments</strong>, including the energy sector.</li>
+          </ul>
+          <p style="margin-top: 20px;">One of the defining calls was with <strong>Duke Energy</strong>. They needed a way to evaluate greenfield and brownfield sites for energy development — proximity to transmission lines, surrounding infrastructure, overall plan viability — plus parcel-ownership records and a way to actually reach the landowners behind them.</p>
+          <p>I carried that spec back to the development team and made the case for a <strong>visual data layer built around exactly those features</strong>. That build is the move that opened the energy-sector segment in the results below.</p>
+        </div>
+      </div>
+      <div class="cs-results reveal">
+        <p class="microlabel"><span class="tick">C /</span> Results</p>
+        <div class="rgrid cols-4">
+          <div class="rcell"><div class="num">MRR <em>&uarr;</em></div><div class="lbl">Returned to growth after two years of decline</div></div>
+          <div class="rcell"><div class="num">New</div><div class="lbl">Commercial segments opened, including energy</div></div>
+          <div class="rcell"><div class="num">2024</div><div class="lbl">Featured speaker, Land Investment Expo · quoted in American Farmland Owner</div></div>
+          <div class="rcell"><div class="num">Feb <em>2025</em></div><div class="lbl">Acquired by CoStar Group (NASDAQ: CSGP)</div></div>
+        </div>
+        <p class="cs-pull">The deal doesn&rsquo;t happen without the turnaround.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= CASE 02 — VERTEX (dark) ======= -->
+  <section class="section cs on-dark cs-dark" id="vertex" style="background: var(--charcoal);">
+    <div class="wrap">
+      <div class="section-head reveal" style="margin-bottom: 0;">
+        <div class="head-rule"><span class="idx-num">02 /</span><span class="line"></span><span class="microlabel">Case File — Vertex Roofing</span></div>
+        <div class="cs-headrow">
+          <div class="cs-metric">+490%</div>
+          <div>
+            <h2>Rebuilding acquisition end-to-end</h2>
+            <p class="cs-meta">
+              <span>Vertex Roofing Inc.</span>
+              <span>Chief Marketing Officer</span>
+              <span>2025</span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="cs-cols">
+        <div class="cs-block reveal">
+          <p class="microlabel"><span class="tick">A /</span> Context</p>
+          <p>A <strong>three-state roofing operation</strong> where the call center rolled up to me as CMO. My audits told an uncomfortable story: inbound volume was thin, the booking rate sat at <strong>16%</strong>, and acquisition leaned on outbound — lead aggregators and aged lists the sales floor had to chase.</p>
+          <p>One more problem underneath all of it: <strong>the data couldn&rsquo;t be trusted enough to even report on.</strong> Before I could grow the numbers, I had to make them honest.</p>
+        </div>
+        <div class="cs-block reveal">
+          <p class="microlabel"><span class="tick">B /</span> What I Built</p>
+          <ul>
+            <li><strong>Outsourced the call center to AnswerForce</strong> — professional coverage on every ring, so demand stopped dying on hold.</li>
+            <li><strong>Flipped the acquisition model from outbound to demand-driven inbound</strong> — Google Ads, Microsoft Ads, and Google Local Services Ads replaced the aggregators and aged leads.</li>
+            <li><strong>Directed the CRM migration, Salesforce &rarr; BuilderPrime</strong> — 500,000+ records, zero data loss, zero downtime — so every number below could be trusted.</li>
+            <li><strong>Rewrote the inside sales scripts and inbound workflows</strong> around one metric: calls that become booked appointments.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cs-results reveal">
+        <p class="microlabel"><span class="tick">C /</span> Results — Aug &rarr; Nov</p>
+        <div class="rgrid cols-5">
+          <div class="rcell"><div class="num">+490<em>%</em></div><div class="lbl">Inbound calls — 108 &rarr; 637</div></div>
+          <div class="rcell"><div class="num">+269<em>%</em></div><div class="lbl">Booking rate — 16% &rarr; 59%</div></div>
+          <div class="rcell"><div class="num">+212<em>%</em></div><div class="lbl">Appointments set — 26 &rarr; 81</div></div>
+          <div class="rcell"><div class="num">+192<em>%</em></div><div class="lbl">Leads issued to sales — 26 &rarr; 76</div></div>
+          <div class="rcell"><div class="num">+20<em>%</em></div><div class="lbl">Qualified leads — 178 &rarr; 213</div></div>
+        </div>
+        <p class="cs-pull">First you make the numbers honest. Then you make them move.</p>
+      </div>
+      <div class="exhibits reveal">
+        <p class="microlabel"><span class="tick">D /</span> Exhibit — Inbound calls &amp; booking rate, Aug–Nov</p>
+        <div class="exgroup">
+          <div class="exframe">
+            <svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Combined chart: inbound calls grew from 108 in August to 637 in November; booking rate rose from 16 percent in September to 59 percent in November">
+              <!-- legend -->
+              <rect x="64" y="14" width="12" height="12" fill="var(--ink)"/>
+              <text x="84" y="25" font-size="11" font-weight="600" letter-spacing="1.5" fill="var(--ink)">INBOUND CALLS</text>
+              <line x1="224" y1="20" x2="252" y2="20" stroke="var(--red)" stroke-width="2.5"/>
+              <circle cx="238" cy="20" r="3.5" fill="var(--red)"/>
+              <text x="260" y="25" font-size="11" font-weight="600" letter-spacing="1.5" fill="var(--ink)">BOOKING RATE (%)</text>
+              <!-- gridlines -->
+              <line x1="64" y1="266.5" x2="696" y2="266.5" stroke="var(--line)" stroke-width="1"/>
+              <line x1="64" y1="193" x2="696" y2="193" stroke="var(--line)" stroke-width="1"/>
+              <line x1="64" y1="119.5" x2="696" y2="119.5" stroke="var(--line)" stroke-width="1"/>
+              <!-- left axis labels (calls) -->
+              <text x="56" y="344" font-size="11" fill="var(--mute)" text-anchor="end">0</text>
+              <text x="56" y="270.5" font-size="11" fill="var(--mute)" text-anchor="end">175</text>
+              <text x="56" y="197" font-size="11" fill="var(--mute)" text-anchor="end">350</text>
+              <text x="56" y="123.5" font-size="11" fill="var(--mute)" text-anchor="end">525</text>
+              <text x="56" y="50" font-size="11" fill="var(--mute)" text-anchor="end">700</text>
+              <!-- bars: inbound calls -->
+              <rect x="111" y="294.6" width="64" height="45.4" fill="var(--ink)" fill-opacity="0.45"/>
+              <rect x="269" y="233.7" width="64" height="106.3" fill="var(--ink)"/>
+              <rect x="427" y="163.2" width="64" height="176.8" fill="var(--ink)"/>
+              <rect x="585" y="72.5" width="64" height="267.5" fill="var(--ink)"/>
+              <!-- bar value labels -->
+              <text x="143" y="288" font-size="13" font-weight="700" fill="var(--ink)" text-anchor="middle">108*</text>
+              <text x="301" y="252" font-size="13" font-weight="700" fill="var(--bone)" text-anchor="middle">253</text>
+              <text x="459" y="181.5" font-size="13" font-weight="700" fill="var(--bone)" text-anchor="middle">421</text>
+              <text x="617" y="91" font-size="13" font-weight="700" fill="var(--bone)" text-anchor="middle">637</text>
+              <!-- booking rate line (Sep–Nov; Aug not reportable) -->
+              <polyline points="301,261.6 459,217.5 617,50.9" fill="none" stroke="var(--red)" stroke-width="2.5"/>
+              <circle cx="301" cy="261.6" r="4.5" fill="var(--red)"/>
+              <circle cx="459" cy="217.5" r="4.5" fill="var(--red)"/>
+              <circle cx="617" cy="50.9" r="4.5" fill="var(--red)"/>
+              <text x="263" y="265.5" font-size="12" font-weight="700" fill="var(--red)" text-anchor="end">16%</text>
+              <text x="421" y="221.5" font-size="12" font-weight="700" fill="var(--red)" text-anchor="end">25%</text>
+              <text x="617" y="41" font-size="12" font-weight="700" fill="var(--red)" text-anchor="middle">59%</text>
+              <!-- ruled frame -->
+              <rect x="64" y="46" width="632" height="294" fill="none" stroke="var(--ink)" stroke-width="1"/>
+              <!-- month labels -->
+              <text x="143" y="364" font-size="12" font-weight="700" letter-spacing="2" fill="var(--ink)" text-anchor="middle">AUG*</text>
+              <text x="301" y="364" font-size="12" font-weight="700" letter-spacing="2" fill="var(--ink)" text-anchor="middle">SEP&dagger;</text>
+              <text x="459" y="364" font-size="12" font-weight="700" letter-spacing="2" fill="var(--ink)" text-anchor="middle">OCT</text>
+              <text x="617" y="364" font-size="12" font-weight="700" letter-spacing="2" fill="var(--ink)" text-anchor="middle">NOV</text>
+            </svg>
+          </div>
+          <p class="excap"><span class="tick">Exhibit A —</span> Inbound calls (bars, left axis) &amp; booking rate (line), Aug &rarr; Nov</p>
+          <p class="exnote">* August is mostly missing — pre-migration tracking couldn&rsquo;t be trusted, so August volume is understated and the booking rate isn&rsquo;t reportable. &dagger; September week 4 is absent entirely; it fell during the Salesforce &rarr; BuilderPrime cutover. The gaps are reported as found — that&rsquo;s the point of the migration.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= CASE 03 — IHS ======= -->
+  <section class="section cs" id="ihs">
+    <div class="wrap">
+      <div class="section-head reveal" style="margin-bottom: 0;">
+        <div class="head-rule"><span class="idx-num">03 /</span><span class="line"></span><span class="microlabel">Case File — Infinity Home Services</span></div>
+        <div class="cs-headrow">
+          <div class="cs-metric">#1</div>
+          <div>
+            <h2>The Midwest machine</h2>
+            <p class="cs-meta">
+              <span>Infinity Home Services</span>
+              <span>Regional Marketing Manager, Midwest</span>
+              <span>Feb 2026 – Present</span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="cs-cols">
+        <div class="cs-block reveal">
+          <p class="microlabel"><span class="tick">A /</span> Context</p>
+          <p>A <strong>national home-services platform</strong>. Full ownership of Midwest marketing — budget, channels, and a team of four.</p>
+        </div>
+        <div class="cs-block reveal">
+          <p class="microlabel"><span class="tick">B /</span> The Standing Record</p>
+          <p>This is the current engagement, so the numbers below are live and year-over-year. The exact figures stay in the boardroom while the engagement is live — but the shape is public: <strong>tens of millions in new year-over-year sales</strong>, and the region now leads every other region in the company on performance.</p>
+        </div>
+      </div>
+      <div class="cs-results reveal">
+        <p class="microlabel"><span class="tick">C /</span> Results — Year over Year</p>
+        <div class="rgrid cols-4">
+          <div class="rcell"><div class="num">2<em>×</em>digit</div><div class="lbl">YoY qualified-lead growth</div></div>
+          <div class="rcell"><div class="num">2<em>×</em>digit</div><div class="lbl">YoY appointment growth</div></div>
+          <div class="rcell"><div class="num">$10M<em>s</em></div><div class="lbl">In new sales vs prior year</div></div>
+          <div class="rcell"><div class="num"><em>#</em>1</div><div class="lbl">Performing region in the company</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= CASE 04 — OPTIMIZED (dark) ======= -->
+  <section class="section cs on-dark cs-dark" id="optimized" style="background: var(--charcoal);">
+    <div class="wrap">
+      <div class="section-head reveal" style="margin-bottom: 0;">
+        <div class="head-rule"><span class="idx-num">04 /</span><span class="line"></span><span class="microlabel">Case File — Optimized</span></div>
+        <div class="cs-headrow">
+          <div class="cs-metric">1&rarr;exit</div>
+          <div>
+            <h2>Every seat, earned the hard way</h2>
+            <p class="cs-meta">
+              <span>Optimized</span>
+              <span>Founder &amp; President</span>
+              <span>2011–2018</span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="cs-cols">
+        <div class="cs-block reveal">
+          <p class="microlabel"><span class="tick">A /</span> Context</p>
+          <p>Founded as a team of <strong>one</strong>. Sales by day — cold calls, pipeline, contracts. Delivery by night — SEO, PPC, social, web builds. Every seat in the org chart, held first by me.</p>
+        </div>
+        <div class="cs-block reveal">
+          <p class="microlabel"><span class="tick">B /</span> What It Became</p>
+          <ul>
+            <li><strong>23 employees</strong> across seven satellite offices spanning the continental U.S.</li>
+            <li><strong>$5M in annual revenue</strong>, built without outside capital.</li>
+            <li><strong>A client roster spanning 10+ industries</strong> — with Fortune 500 names among them — medical and private practice, SaaS, manufacturing, aerospace, automotive, e-commerce, food &amp; beverage, travel &amp; hospitality, legal, and real estate &amp; brokerages.</li>
+            <li><strong>A successful exit</strong> — acquired by a UK-based equity firm expanding its US book of business. The breadth and caliber of the client roster were core drivers of the deal.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cs-results reveal">
+        <p class="microlabel"><span class="tick">C /</span> Results</p>
+        <div class="rgrid cols-5">
+          <div class="rcell"><div class="num">23</div><div class="lbl">Employees at peak</div></div>
+          <div class="rcell"><div class="num">$5M</div><div class="lbl">Annual revenue</div></div>
+          <div class="rcell"><div class="num">7</div><div class="lbl">Satellite offices, continental U.S.</div></div>
+          <div class="rcell"><div class="num">10<em>+</em></div><div class="lbl">Industries served</div></div>
+          <div class="rcell"><div class="num">Sold</div><div class="lbl">Acquired by a UK-based equity firm</div></div>
+        </div>
+        <p class="cs-pull">I&rsquo;ve held every role I now hire for.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= CASE 05 — ROOFING GR ======= -->
+  <section class="section cs" id="roofinggr">
+    <div class="wrap">
+      <div class="section-head reveal" style="margin-bottom: 0;">
+        <div class="head-rule"><span class="idx-num">05 /</span><span class="line"></span><span class="microlabel">Case File — Roofing GR</span></div>
+        <div class="cs-headrow">
+          <div class="cs-metric">+1,000%</div>
+          <div>
+            <h2>One thousand percent</h2>
+            <p class="cs-meta">
+              <span>Roofing GR</span>
+              <span>Marketing Director</span>
+              <span>2021–2024</span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="cs-cols">
+        <div class="cs-block reveal">
+          <p class="microlabel"><span class="tick">A /</span> Context</p>
+          <p>A <strong>West Michigan roofing company</strong>. Full ownership of demand generation and inside sales — the entire funnel, first click to signed contract.</p>
+        </div>
+        <div class="cs-block reveal">
+          <p class="microlabel"><span class="tick">B /</span> What I Built</p>
+          <ul>
+            <li><strong>Advanced geotargeting and lead generation</strong> across search and local channels.</li>
+            <li><strong>Marketing automation on N8N, Make, and Zapier</strong> — routing, enrichment, and follow-up without added headcount.</li>
+            <li><strong>Attribution and lifecycle email</strong> tied to behavioral triggers.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cs-results reveal">
+        <p class="microlabel"><span class="tick">C /</span> Results</p>
+        <div class="rgrid cols-3">
+          <div class="rcell"><div class="num">+1,000<em>%</em></div><div class="lbl">YoY lead generation</div></div>
+          <div class="rcell"><div class="num">Costs <em>&darr;</em></div><div class="lbl">Operational costs decreased while volume grew</div></div>
+          <div class="rcell"><div class="num">Cycle <em>&darr;</em></div><div class="lbl">Sales cycles shortened</div></div>
+        </div>
+        <blockquote class="cs-pull">&ldquo;Within the first quarter of his leadership, we saw a 35% increase in qualified leads and a record-setting month in terms of booked jobs.&rdquo;<span class="src">— Clint Hoppes, Owner, Roofing GR</span></blockquote>
+      </div>
+      <div class="exhibits reveal">
+        <p class="microlabel"><span class="tick">D /</span> Exhibit — Organic clicks, first 12 months of a new domain</p>
+        <div class="exgroup">
+          <div class="exframe">
+            <svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Line chart of weekly organic clicks for a new website, June 2023 to June 2024: near zero for six months, then a compounding climb to a peak of 13">
+              <!-- headline figures -->
+              <rect x="64" y="12" width="10" height="10" fill="var(--red)"/>
+              <text x="82" y="21" font-size="11" font-weight="600" letter-spacing="1.5" fill="var(--ink)">ORGANIC CLICKS / WK</text>
+              <text x="696" y="21" font-size="11" font-weight="600" letter-spacing="1.5" fill="var(--mute)" text-anchor="end">426 CLICKS &#183; 469K IMPRESSIONS &#183; 12 MONTHS</text>
+              <!-- gridlines -->
+              <line x1="64" y1="242" x2="696" y2="242" stroke="var(--line)" stroke-width="1"/>
+              <line x1="64" y1="144" x2="696" y2="144" stroke="var(--line)" stroke-width="1"/>
+              <!-- y labels -->
+              <text x="56" y="344" font-size="11" fill="var(--mute)" text-anchor="end">0</text>
+              <text x="56" y="246" font-size="11" fill="var(--mute)" text-anchor="end">5</text>
+              <text x="56" y="148" font-size="11" fill="var(--mute)" text-anchor="end">10</text>
+              <text x="56" y="50" font-size="11" fill="var(--mute)" text-anchor="end">15</text>
+              <!-- indexing period annotation -->
+              <line x1="216" y1="46" x2="216" y2="340" stroke="var(--line)" stroke-width="1" stroke-dasharray="4 5"/>
+              <text x="208" y="66" font-size="10.5" font-weight="600" letter-spacing="1" fill="var(--mute)" text-anchor="end">SITE INDEXING &#8594;</text>
+              <!-- area + line -->
+              <polygon points="70.0,340 70.0,340.0 81.9,320.4 93.8,340.0 105.8,340.0 117.7,340.0 129.6,340.0 141.5,340.0 153.5,340.0 165.4,340.0 177.3,340.0 189.2,340.0 201.2,340.0 213.1,340.0 225.0,340.0 236.9,300.8 248.8,340.0 260.8,300.8 272.7,340.0 284.6,340.0 296.5,340.0 308.5,340.0 320.4,340.0 332.3,340.0 344.2,320.4 356.2,340.0 368.1,320.4 380.0,300.8 391.9,320.4 403.8,281.2 415.8,320.4 427.7,261.6 439.6,300.8 451.5,242.0 463.5,300.8 475.4,281.2 487.3,242.0 499.2,300.8 511.2,222.4 523.1,261.6 535.0,202.8 546.9,281.2 558.8,183.2 570.8,242.0 582.7,144.0 594.6,222.4 606.5,163.6 618.5,104.8 630.4,202.8 642.3,144.0 654.2,183.2 666.2,85.2 678.1,222.4 690.0,85.2 690.0,340" fill="var(--red)" fill-opacity="0.09"/>
+              <polyline points="70.0,340.0 81.9,320.4 93.8,340.0 105.8,340.0 117.7,340.0 129.6,340.0 141.5,340.0 153.5,340.0 165.4,340.0 177.3,340.0 189.2,340.0 201.2,340.0 213.1,340.0 225.0,340.0 236.9,300.8 248.8,340.0 260.8,300.8 272.7,340.0 284.6,340.0 296.5,340.0 308.5,340.0 320.4,340.0 332.3,340.0 344.2,320.4 356.2,340.0 368.1,320.4 380.0,300.8 391.9,320.4 403.8,281.2 415.8,320.4 427.7,261.6 439.6,300.8 451.5,242.0 463.5,300.8 475.4,281.2 487.3,242.0 499.2,300.8 511.2,222.4 523.1,261.6 535.0,202.8 546.9,281.2 558.8,183.2 570.8,242.0 582.7,144.0 594.6,222.4 606.5,163.6 618.5,104.8 630.4,202.8 642.3,144.0 654.2,183.2 666.2,85.2 678.1,222.4 690.0,85.2" fill="none" stroke="var(--red)" stroke-width="2.25" stroke-linejoin="round"/>
+              <!-- peak marker -->
+              <circle cx="666.2" cy="85.2" r="4.5" fill="var(--red)"/>
+              <text x="656.2" y="75.2" font-size="12" font-weight="700" fill="var(--red)" text-anchor="end">13 / wk peak</text>
+              <!-- ruled frame -->
+              <rect x="64" y="46" width="632" height="294" fill="none" stroke="var(--ink)" stroke-width="1"/>
+              <!-- x labels -->
+              <text x="70" y="364" font-size="12" font-weight="700" letter-spacing="2" fill="var(--ink)">JUN &rsquo;23</text>
+              <text x="225" y="364" font-size="12" font-weight="700" letter-spacing="2" fill="var(--ink)" text-anchor="middle">SEP &rsquo;23</text>
+              <text x="380" y="364" font-size="12" font-weight="700" letter-spacing="2" fill="var(--ink)" text-anchor="middle">DEC &rsquo;23</text>
+              <text x="535" y="364" font-size="12" font-weight="700" letter-spacing="2" fill="var(--ink)" text-anchor="middle">MAR &rsquo;24</text>
+              <text x="690" y="364" font-size="12" font-weight="700" letter-spacing="2" fill="var(--ink)" text-anchor="end">JUN &rsquo;24</text>
+            </svg>
+          </div>
+          <p class="excap"><span class="tick">Exhibit A &mdash;</span> Weekly organic clicks, brand-new domain, June 2023 &rarr; June 2024</p>
+          <p class="exnote">Redrawn from the original Google Search Console report. The shape is the story: roughly six months of near-zero while a brand-new domain indexed and the content library was built &mdash; then a compounding climb as rankings landed, out-competing established brands for position, clicks, and organic leads. Headline totals as reported: 426 clicks on 469K impressions in the first twelve months.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======= CASE 06 — WENSCO (dark) ======= -->
+  <section class="section cs on-dark cs-dark" id="wensco" style="background: var(--charcoal);">
+    <div class="wrap">
+      <div class="section-head reveal" style="margin-bottom: 0;">
+        <div class="head-rule"><span class="idx-num">06 /</span><span class="line"></span><span class="microlabel">Case File — Wensco Sign Supply</span></div>
+        <div class="cs-headrow">
+          <div class="cs-metric">+30%</div>
+          <div>
+            <h2>The record quarter</h2>
+            <p class="cs-meta">
+              <span>Wensco Sign Supply</span>
+              <span>Head of Marketing</span>
+              <span>2019–2021</span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="cs-cols">
+        <div class="cs-block reveal">
+          <p class="microlabel"><span class="tick">A /</span> Context</p>
+          <p>An <strong>87-year-old wholesale distributor</strong> — 100+ employees, $30M+ in revenue — with a legacy digital footprint that undersold the operation behind it.</p>
+        </div>
+        <div class="cs-block reveal">
+          <p class="microlabel"><span class="tick">B /</span> What I Built</p>
+          <ul>
+            <li><strong>Managed a $1M+ marketing budget</strong> and cut marketing costs 35% while output grew.</li>
+            <li><strong>Overhauled a 20,000+ page website</strong> — the platform behind the online sales gains below.</li>
+            <li><strong>Scaled customer engagement</strong> to 10,000+ interactions per month.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cs-results reveal">
+        <p class="microlabel"><span class="tick">C /</span> Results</p>
+        <div class="rgrid cols-4">
+          <div class="rcell"><div class="num">&minus;35<em>%</em></div><div class="lbl">Marketing costs, on a $1M+ budget</div></div>
+          <div class="rcell"><div class="num">+30<em>%</em></div><div class="lbl">Total sales revenue</div></div>
+          <div class="rcell"><div class="num">+40<em>%</em></div><div class="lbl">Online sales after 20,000+ page overhaul</div></div>
+          <div class="rcell"><div class="num">10K<em>+</em></div><div class="lbl">Monthly customer engagements</div></div>
+        </div>
+      </div>
+      <div class="exhibits reveal">
+        <p class="microlabel"><span class="tick">D /</span> Exhibit — Internal email, Office of the CFO</p>
+        <div class="exgroup">
+          <div class="doc-exhibit">
+            <p class="pc-label">Exhibit — Internal Email</p>
+            <div class="de-meta">
+              <p><span>From</span>Office of the Chief Financial Officer, Wensco Sign Supply</p>
+              <p><span>Subject</span>Web Orders</p>
+            </div>
+            <p class="de-line">&ldquo;There were 256 web orders placed yesterday. These orders represented 56% of the total number of orders entered for the day, and 42.7% of the total dollar value for the day.&rdquo;</p>
+            <p class="de-tablehead">Top 10 single-day web order records &mdash; 14 years of company data (Feb 2007 &rarr; Apr 2021)</p>
+            <table class="de-table">
+              <thead><tr><th></th><th>Date</th><th>Orders</th><th>Ext. price</th></tr></thead>
+              <tbody>
+                <tr><td></td><td>Aug 13, 2019</td><td>261</td><td>$85,311</td></tr>
+                <tr class="hit"><td class="tick-cell">/</td><td>Apr 26, 2021</td><td>256</td><td>$88,071</td></tr>
+                <tr><td></td><td>Sep 4, 2018</td><td>251</td><td>$101,425</td></tr>
+                <tr class="hit"><td class="tick-cell">/</td><td>Sep 10, 2019</td><td>245</td><td>$87,177</td></tr>
+                <tr class="hit"><td class="tick-cell">/</td><td>Apr 13, 2021</td><td>243</td><td>$95,673</td></tr>
+                <tr><td></td><td>Jun 4, 2019</td><td>239</td><td>$91,357</td></tr>
+                <tr class="hit"><td class="tick-cell">/</td><td>Apr 20, 2021</td><td>238</td><td>$82,733</td></tr>
+                <tr><td></td><td>May 30, 2018</td><td>236</td><td>$77,348</td></tr>
+                <tr class="hit"><td class="tick-cell">/</td><td>Apr 19, 2021</td><td>235</td><td>$97,772</td></tr>
+                <tr class="hit"><td class="tick-cell">/</td><td>Sep 9, 2020</td><td>235</td><td>$77,961</td></tr>
+              </tbody>
+            </table>
+            <p class="de-verdict"><span class="tick">/</span> = during his tenure as Head of Marketing. <strong>Six of the ten biggest web-order days in fourteen years of company history happened in his twenty months.</strong></p>
+          </div>
+          <p class="excap"><span class="tick">Exhibit A &mdash;</span> Retyped from the CFO&rsquo;s internal email; sender identity redacted, figures as reported</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= FINAL CTA ======= -->
+  <section class="finale">
+    <div class="crosses"></div>
+    <div class="wrap reveal">
+      <p class="microlabel"><span class="tick">07 /</span> Start a Conversation</p>
+      <h2>The next case file <em>could be yours.</em></h2>
+      <p>Every engagement above started the same way: a conversation about what the numbers should look like and weren&rsquo;t. Tell me what you&rsquo;re building, and I&rsquo;ll tell you how I&rsquo;d grow it.</p>
+      <a class="btn btn-solid" href="/contact">Get in Touch <span class="arr">→</span></a>
+    </div>
+  </section>
+
+  <!-- ======= FOOTER ======= -->
+  <footer class="footer">
+    <div class="wrap">
+      <span class="fbrand">Bradley <em>Griffin</em></span>
+      <nav>
+        <a href="/#work">Work With Me</a>
+        <a href="/case-studies">Results</a>
+        <a href="/story">Story</a>
+        <a href="/speaking">Speaking</a>
+        <a href="/credentials">Credentials</a>
+        <a href="/contact">Contact</a>
+        <a href="https://www.linkedin.com/in/brad-w-griffin/" target="_blank" rel="noopener">LinkedIn</a>
+      </nav>
+      <span class="fine">© 2026 Bradley Griffin · bradleygriffin.us</span>
+    </div>
+  </footer>
+
+  <script>
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+  </script>
+
+<script>
+(function () {
+  var nav = document.querySelector(".header .nav");
+  var wrap = document.querySelector(".header .wrap");
+  var header = document.querySelector(".header");
+  if (!nav || !wrap || !header) return;
+  var btn = document.createElement("button");
+  btn.className = "menu-btn"; btn.setAttribute("aria-label", "Menu");
+  btn.innerHTML = "<span class=\"mi\"></span><span class=\"mi\"></span><span class=\"mi\"></span>";
+  var panel = document.createElement("div");
+  panel.className = "mobile-nav";
+  nav.querySelectorAll("a").forEach(function (a) { panel.appendChild(a.cloneNode(true)); });
+  btn.addEventListener("click", function () { document.body.classList.toggle("nav-open"); });
+  panel.addEventListener("click", function (e) { if (e.target.tagName === "A") document.body.classList.remove("nav-open"); });
+  wrap.appendChild(btn);
+  header.appendChild(panel);
+})();
+</script>
+</body>
+</html>

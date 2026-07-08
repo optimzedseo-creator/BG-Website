@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bradley Griffin — Chief Marketing Officer &amp; Growth Executive</title>
+  <meta name="description" content="CMO and growth executive with 20+ years, two exits, and a NASDAQ acquisition. Executive leadership, fractional CMO, strategy &amp; AI consulting, and keynote speaking." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+/* ============================================================
+   BRADLEY GRIFFIN — bradleygriffin.us
+   Executive portfolio · luxury editorial design system
+   Display: Cormorant Garamond · Body/UI: Manrope
+   ============================================================ */
+
+:root {
+  --ink: #0b0e13;          /* near-black blue — primary dark */
+  --ink-2: #11151d;        /* raised dark panel */
+  --ink-3: #171c26;        /* card on dark */
+  --ivory: #f4f1ea;        /* warm light background */
+  --ivory-2: #faf8f3;      /* light card */
+  --gold: #c1a15f;         /* champagne gold accent */
+  --gold-bright: #d8bc7f;  /* gold on dark hover */
+  --text-dark: #1d2129;    /* body text on light */
+  --text-mute-l: #5c6270;  /* muted on light */
+  --text-light: #e8e3d6;   /* warm body text on dark */
+  --text-mute-d: #98a0af;  /* muted on dark */
+  --line-d: rgba(255, 255, 255, 0.09);
+  --line-l: #e0d9c9;
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: "Manrope", -apple-system, "Segoe UI", sans-serif;
+  --wrap: 1180px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--ink);
+  color: var(--text-light);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 32px; }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+::selection { background: var(--gold); color: var(--ink); }
+
+/* ---------- type ---------- */
+.eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.eyebrow::before {
+  content: "";
+  width: 34px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.8;
+}
+h1, h2, h3 { font-family: var(--serif); font-weight: 500; line-height: 1.08; }
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 17px 34px;
+  border: 1px solid var(--gold);
+  transition: all 0.35s ease;
+  cursor: pointer;
+}
+.btn-solid { background: var(--gold); color: var(--ink); }
+.btn-solid:hover { background: var(--gold-bright); border-color: var(--gold-bright); }
+.btn-ghost { background: transparent; color: var(--gold); }
+.btn-ghost:hover { background: rgba(193, 161, 95, 0.12); color: var(--gold-bright); }
+.btn-ghost.on-light { color: #8a6f37; border-color: #b39a63; }
+.btn-ghost.on-light:hover { background: rgba(193, 161, 95, 0.14); }
+.btn .arr { font-size: 15px; transition: transform 0.35s ease; }
+.btn:hover .arr { transform: translateX(4px); }
+
+/* ---------- header ---------- */
+.header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  background: linear-gradient(to bottom, rgba(11, 14, 19, 0.92), rgba(11, 14, 19, 0.75));
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line-d);
+}
+.header .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 76px;
+}
+.brand { display: flex; align-items: baseline; gap: 12px; white-space: nowrap; }
+.brand .mark {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ivory);
+}
+.brand .mark em { font-style: normal; color: var(--gold); }
+.brand .tag {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-mute-d);
+}
+.nav { display: flex; align-items: center; gap: 26px; }
+.nav a {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-mute-d);
+  transition: color 0.25s;
+  white-space: nowrap;
+}
+.nav a:hover { color: var(--gold-bright); }
+.nav .nav-cta {
+  color: var(--gold);
+  border: 1px solid rgba(193, 161, 95, 0.5);
+  padding: 9px 18px;
+  transition: all 0.3s;
+}
+@media (max-width: 1240px) { .brand .tag { display: none; } }
+.nav .nav-cta:hover { background: var(--gold); color: var(--ink); }
+
+/* ---------- hero ---------- */
+.hero {
+  position: relative;
+  padding: 210px 0 120px;
+  overflow: hidden;
+  background:
+    radial-gradient(1100px 520px at 82% -10%, rgba(193, 161, 95, 0.14), transparent 62%),
+    radial-gradient(900px 600px at -12% 110%, rgba(193, 161, 95, 0.07), transparent 60%),
+    var(--ink);
+}
+.hero::after {
+  /* faint oversized monogram, engraved feel */
+  content: "BG";
+  position: absolute;
+  right: -60px;
+  top: 40px;
+  font-family: var(--serif);
+  font-size: 560px;
+  font-weight: 600;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(193, 161, 95, 0.10);
+  pointer-events: none;
+  user-select: none;
+}
+.hero-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 72px;
+  align-items: center;
+}
+.hero h1 {
+  font-size: clamp(52px, 6.4vw, 88px);
+  color: var(--ivory);
+  margin: 26px 0 30px;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--gold-bright);
+}
+.hero .lede {
+  font-size: 18.5px;
+  line-height: 1.75;
+  color: var(--text-mute-d);
+  max-width: 56ch;
+  margin-bottom: 42px;
+}
+.hero .lede strong { color: var(--text-light); font-weight: 600; }
+.hero-ctas { display: flex; gap: 18px; flex-wrap: wrap; }
+
+/* portrait */
+.portrait {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border: 1px solid rgba(193, 161, 95, 0.45);
+  padding: 14px;
+}
+.portrait::before {
+  content: "";
+  position: absolute;
+  inset: -12px 12px 12px -12px;
+  border: 1px solid rgba(193, 161, 95, 0.18);
+  pointer-events: none;
+}
+.portrait-inner {
+  height: 100%;
+  background:
+    radial-gradient(420px 300px at 50% 30%, rgba(193, 161, 95, 0.16), transparent 70%),
+    var(--ink-3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  overflow: hidden;
+}
+.portrait-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 18%;
+  filter: saturate(0.92) contrast(1.04);
+}
+.portrait-inner .mono {
+  font-family: var(--serif);
+  font-size: 92px;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+}
+.portrait-inner .note {
+  font-size: 10.5px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--text-mute-d);
+}
+.portrait-caption {
+  position: absolute;
+  left: 14px;
+  bottom: -14px;
+  background: var(--gold);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 9px 16px;
+}
+
+/* ---------- stat band ---------- */
+.stats {
+  border-top: 1px solid var(--line-d);
+  border-bottom: 1px solid var(--line-d);
+  background: var(--ink-2);
+}
+.stats .wrap {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+}
+.stat {
+  padding: 40px 26px 36px;
+  border-left: 1px solid var(--line-d);
+}
+.stat:first-child { border-left: none; }
+.stat .num {
+  font-family: var(--serif);
+  font-size: 40px;
+  font-weight: 600;
+  color: var(--ivory);
+  line-height: 1;
+}
+.stat .num em { font-style: normal; color: var(--gold); }
+.stat .lbl {
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-mute-d);
+  line-height: 1.5;
+}
+
+/* ---------- shared section scaffolding ---------- */
+.section { padding: 110px 0; }
+.section.light { background: var(--ivory); color: var(--text-dark); }
+.section-head { max-width: 720px; margin-bottom: 64px; }
+.section-head h2 {
+  font-size: clamp(36px, 4vw, 54px);
+  margin: 22px 0 18px;
+}
+.section.light .section-head h2 { color: #14171d; }
+.section:not(.light) .section-head h2 { color: var(--ivory); }
+.section-head p { font-size: 17px; color: var(--text-mute-d); }
+.section.light .section-head p { color: var(--text-mute-l); }
+.section-head h2 em { font-style: italic; color: var(--gold); }
+
+/* ---------- offers ("ways to work with me") ---------- */
+.offers {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line-l);
+  border: 1px solid var(--line-l);
+}
+.offer {
+  background: var(--ivory-2);
+  padding: 44px 34px 40px;
+  display: flex;
+  flex-direction: column;
+  min-height: 380px;
+  transition: background 0.35s ease;
+  position: relative;
+}
+.offer:hover { background: #fffdf8; }
+.offer .idx {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-style: italic;
+  color: var(--gold);
+  margin-bottom: 26px;
+}
+.offer h3 { font-size: 27px; color: #14171d; margin-bottom: 6px; }
+.offer .for {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #9b7d40;
+  margin-bottom: 16px;
+}
+.offer p { font-size: 14.5px; color: var(--text-mute-l); flex: 1; }
+.offer .link {
+  margin-top: 26px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8a6f37;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+.offer .link .arr { transition: transform 0.3s; }
+.offer:hover .link .arr { transform: translateX(5px); }
+.offer::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 3px;
+  width: 0;
+  background: var(--gold);
+  transition: width 0.45s ease;
+}
+.offer:hover::after { width: 100%; }
+
+/* ---------- case studies ---------- */
+.cases { display: grid; gap: 26px; }
+.case {
+  display: grid;
+  grid-template-columns: 90px 1.1fr 1.6fr auto;
+  gap: 40px;
+  align-items: center;
+  border: 1px solid var(--line-d);
+  background: var(--ink-2);
+  padding: 44px 48px;
+  transition: border-color 0.35s ease, background 0.35s ease;
+}
+.case:hover { border-color: rgba(193, 161, 95, 0.55); background: var(--ink-3); }
+.case .big {
+  font-family: var(--serif);
+  font-size: 46px;
+  font-weight: 600;
+  color: var(--gold);
+  line-height: 1;
+  white-space: nowrap;
+}
+.case h3 { font-size: 26px; color: var(--ivory); margin-bottom: 8px; }
+.case .co {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-mute-d);
+}
+.case p { font-size: 15px; color: var(--text-mute-d); }
+.case .go {
+  font-size: 22px;
+  color: var(--gold);
+  border: 1px solid rgba(193, 161, 95, 0.4);
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+.case:hover .go { background: var(--gold); color: var(--ink); }
+
+/* ---------- story ---------- */
+.story { position: relative; overflow: hidden; }
+.story::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(900px 500px at 100% 0%, rgba(193, 161, 95, 0.08), transparent 60%);
+  pointer-events: none;
+}
+.story-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 90px;
+  align-items: start;
+}
+.story-copy p {
+  font-size: 16.5px;
+  color: var(--text-mute-d);
+  margin-bottom: 20px;
+}
+.story-copy p strong { color: var(--text-light); font-weight: 600; }
+.story-copy .pull {
+  font-family: var(--serif);
+  font-size: 27px;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--gold-bright);
+  border-left: 2px solid var(--gold);
+  padding-left: 26px;
+  margin: 34px 0;
+}
+.timeline { border-left: 1px solid var(--line-d); }
+.tl-item { position: relative; padding: 0 0 34px 34px; }
+.tl-item::before {
+  content: "";
+  position: absolute;
+  left: -4.5px;
+  top: 7px;
+  width: 8px;
+  height: 8px;
+  transform: rotate(45deg);
+  background: var(--gold);
+}
+.tl-item .yr {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+}
+.tl-item h4 {
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--ivory);
+  margin: 4px 0 4px;
+}
+.tl-item p { font-size: 13.5px; color: var(--text-mute-d); }
+
+/* ---------- speaking ---------- */
+.speaking-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--line-l);
+  border: 1px solid var(--line-l);
+}
+.venue {
+  background: var(--ivory-2);
+  padding: 48px 44px;
+}
+.venue .where {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #9b7d40;
+  margin-bottom: 18px;
+}
+.venue h3 { font-size: 28px; color: #14171d; margin-bottom: 12px; }
+.venue p { font-size: 15px; color: var(--text-mute-l); }
+.venue .quotebox {
+  margin-top: 24px;
+  font-family: var(--serif);
+  font-size: 19px;
+  font-style: italic;
+  color: #3c414c;
+  border-top: 1px solid var(--line-l);
+  padding-top: 20px;
+}
+
+/* ---------- testimonials ---------- */
+.quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+.quote {
+  background: var(--ink-2);
+  border: 1px solid var(--line-d);
+  padding: 42px 36px;
+  display: flex;
+  flex-direction: column;
+}
+.quote .qmark {
+  font-family: var(--serif);
+  font-size: 64px;
+  line-height: 0.6;
+  color: var(--gold);
+  margin-bottom: 22px;
+}
+.quote p {
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--text-light);
+  flex: 1;
+}
+.quote .who { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line-d); }
+.quote .who .nm { font-size: 14px; font-weight: 700; color: var(--ivory); }
+.quote .who .rl { font-size: 12.5px; color: var(--text-mute-d); margin-top: 2px; }
+
+/* ---------- credentials ---------- */
+.creds {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.cred-list { display: grid; gap: 0; }
+.cred {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: baseline;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line-l);
+}
+.cred:first-child { border-top: 1px solid var(--line-l); }
+.cred h4 { font-family: var(--serif); font-size: 22px; font-weight: 600; color: #14171d; }
+.cred .sub { font-size: 13.5px; color: var(--text-mute-l); margin-top: 3px; }
+.cred .yr { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; color: #9b7d40; }
+.cert-wall h3 { font-size: 26px; color: #14171d; margin-bottom: 8px; }
+.cert-wall > p { font-size: 14.5px; color: var(--text-mute-l); margin-bottom: 24px; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #4a4334;
+  background: #efe9db;
+  border: 1px solid var(--line-l);
+  padding: 9px 16px;
+}
+.chip.more { background: var(--gold); color: var(--ink); font-weight: 800; }
+
+/* ---------- final cta ---------- */
+.finale {
+  text-align: center;
+  padding: 130px 0;
+  background:
+    radial-gradient(800px 400px at 50% 120%, rgba(193, 161, 95, 0.16), transparent 65%),
+    var(--ink);
+}
+.finale .eyebrow { justify-content: center; }
+.finale .eyebrow::after {
+  content: "";
+  width: 34px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.8;
+}
+.finale h2 {
+  font-size: clamp(40px, 5vw, 64px);
+  color: var(--ivory);
+  margin: 24px auto 20px;
+  max-width: 18ch;
+}
+.finale h2 em { font-style: italic; color: var(--gold-bright); }
+.finale p { color: var(--text-mute-d); max-width: 54ch; margin: 0 auto 44px; font-size: 17px; }
+
+/* ---------- footer ---------- */
+.footer { border-top: 1px solid var(--line-d); padding: 44px 0; background: var(--ink); }
+.footer .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.footer .fbrand { font-family: var(--serif); font-size: 19px; color: var(--ivory); }
+.footer .fbrand em { font-style: normal; color: var(--gold); }
+.footer nav { display: flex; gap: 26px; }
+.footer nav a {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-mute-d);
+}
+.footer nav a:hover { color: var(--gold-bright); }
+.footer .fine { font-size: 12px; color: #5b616d; }
+
+/* ---------- reveal animation ---------- */
+.reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1020px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 56px; }
+  .portrait { max-width: 380px; }
+  .stats .wrap { grid-template-columns: repeat(3, 1fr); }
+  .stat:nth-child(4) { border-left: none; }
+  .stat { border-top: 1px solid var(--line-d); }
+  .stat:nth-child(-n + 3) { border-top: none; }
+  .offers { grid-template-columns: repeat(2, 1fr); }
+  .story-grid { grid-template-columns: 1fr; gap: 60px; }
+  .quotes { grid-template-columns: 1fr; }
+  .creds { grid-template-columns: 1fr; gap: 56px; }
+  .speaking-grid { grid-template-columns: 1fr; }
+  .case { grid-template-columns: 1fr; gap: 18px; padding: 36px 30px; }
+  .case .go { display: none; }
+  .nav { display: none; }
+}
+@media (max-width: 640px) {
+  .stats .wrap { grid-template-columns: 1fr 1fr; }
+  .stat { border: none; border-top: 1px solid var(--line-d); }
+  .offers { grid-template-columns: 1fr; }
+  .hero { padding-top: 150px; }
+}
+
+</style>
+</head>
+<body>
+
+  <!-- ======= HEADER ======= -->
+  <header class="header">
+    <div class="wrap">
+      <a class="brand" href="#top">
+        <span class="mark">Bradley <em>Griffin</em></span>
+        <span class="tag">CMO · Growth Executive</span>
+      </a>
+      <nav class="nav">
+        <a href="#work">Work With Me</a>
+        <a href="#results">Results</a>
+        <a href="#story">The Story</a>
+        <a href="#speaking">Speaking</a>
+        <a href="#credentials">Credentials</a>
+        <a class="nav-cta" href="#contact">Start a Conversation</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ======= HERO ======= -->
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Chief Marketing Officer · Growth Executive · U.S. Army Ranger Veteran</p>
+        <h1>Growth isn’t luck.<br /><em>It’s a system.</em></h1>
+        <p class="lede">
+          For twenty years I’ve built the systems behind the numbers — <strong>two companies founded and sold</strong>,
+          a turnaround that ended in a <strong>NASDAQ acquisition</strong>, <strong>$25M budgets</strong> deployed with
+          precision, and <strong>$31 million in new revenue</strong> in the last year alone. I don’t run campaigns.
+          I build machines that compound.
+        </p>
+        <div class="hero-ctas">
+          <a class="btn btn-solid" href="#work">Work With Me <span class="arr">→</span></a>
+          <a class="btn btn-ghost" href="#results">See the Record</a>
+        </div>
+      </div>
+      <figure class="portrait">
+        <div class="portrait-inner">
+          <img src="assets/bradley-griffin-headshot.png" alt="Bradley Griffin" />
+        </div>
+        <figcaption class="portrait-caption">Bradley Griffin</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ======= STAT BAND ======= -->
+  <section class="stats">
+    <div class="wrap">
+      <div class="stat reveal"><div class="num"><em>+</em>$31M</div><div class="lbl">Revenue growth YoY, Midwest region</div></div>
+      <div class="stat reveal"><div class="num">490<em>%</em></div><div class="lbl">Qualified lead growth in three quarters</div></div>
+      <div class="stat reveal"><div class="num">$25M</div><div class="lbl">Marketing budget owned across six brands</div></div>
+      <div class="stat reveal"><div class="num">2</div><div class="lbl">Companies founded &amp; successfully exited</div></div>
+      <div class="stat reveal"><div class="num">1,000<em>%</em></div><div class="lbl">YoY lead generation growth engineered</div></div>
+      <div class="stat reveal"><div class="num">20<em>+</em></div><div class="lbl">Years scaling B2C, SaaS &amp; multi-location</div></div>
+    </div>
+  </section>
+
+  <!-- ======= OFFERS ======= -->
+  <section class="section light" id="work">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Ways to Work With Me</p>
+        <h2>One operator. <em>Four ways in.</em></h2>
+        <p>Whether you need an executive in the seat, senior firepower on a fraction of the cost, an outside mind on strategy and AI, or a speaker who commands a room — the engagement changes. The standard doesn’t.</p>
+      </div>
+      <div class="offers">
+        <a class="offer reveal" href="#contact">
+          <span class="idx">No. 01</span>
+          <h3>Executive Leadership</h3>
+          <p class="for">For boards &amp; investors</p>
+          <p>A CMO/CEO-level operator for the whole P&amp;L conversation: revenue architecture, team building, budget discipline, and growth that survives due diligence. Twenty years, every seat at the table earned.</p>
+          <span class="link">Explore <span class="arr">→</span></span>
+        </a>
+        <a class="offer reveal" href="#contact">
+          <span class="idx">No. 02</span>
+          <h3>Fractional CMO</h3>
+          <p class="for">For founder-led companies</p>
+          <p>The executive your growth stage demands — without the full-time cost. I install the demand engine, the attribution, and the operating cadence, then hand you the keys. Proven at AcreValue through a NASDAQ exit.</p>
+          <span class="link">Explore <span class="arr">→</span></span>
+        </a>
+        <a class="offer reveal" href="#contact">
+          <span class="idx">No. 03</span>
+          <h3>Strategy &amp; AI Consulting</h3>
+          <p class="for">For operators buying outcomes</p>
+          <p>An early and relentless AI power user, I rebuild marketing operations around automation, AIO, and data — the systems that cut cost while compounding output. Strategy first, tools second, results always.</p>
+          <span class="link">Explore <span class="arr">→</span></span>
+        </a>
+        <a class="offer reveal" href="#contact">
+          <span class="idx">No. 04</span>
+          <h3>Keynotes &amp; Speaking</h3>
+          <p class="for">For events &amp; organizations</p>
+          <p>From a statewide-televised PBS debate stage to a sell-out session at the Land Investment Expo — market strategy, competition, and AI, delivered with the composure of a man who has briefed tougher rooms.</p>
+          <span class="link">Explore <span class="arr">→</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= CASE STUDIES ======= -->
+  <section class="section" id="results">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Selected Results</p>
+        <h2>The record <em>speaks first.</em></h2>
+        <p>Company names, real numbers, and the systems behind them. Full case studies detail exactly what was built, why it worked, and what it returned.</p>
+      </div>
+      <div class="cases">
+        <a class="case reveal" href="#contact">
+          <div class="big">2yr→↑</div>
+          <div>
+            <h3>The turnaround behind a NASDAQ acquisition</h3>
+            <p class="co">AcreValue / Ag Analytics — acquired by CoStar Group</p>
+          </div>
+          <p>A platform with 1.5M users and two straight years of declining recurring revenue. I rebuilt the go-to-market from inside sales calls out — repositioned the product, opened the energy sector, returned MRR to growth, and set the table for acquisition.</p>
+          <span class="go">→</span>
+        </a>
+        <a class="case reveal" href="#contact">
+          <div class="big">490%</div>
+          <div>
+            <h3>Rebuilding acquisition end-to-end</h3>
+            <p class="co">Vertex Roofing — Chief Marketing Officer</p>
+          </div>
+          <p>Migrated 500,000+ CRM records with zero downtime, rewrote the inside-sales playbook, and architected full-funnel attribution — driving 490% qualified lead growth and a 269% conversion improvement in three quarters.</p>
+          <span class="go">→</span>
+        </a>
+        <a class="case reveal" href="#contact">
+          <div class="big">+$31M</div>
+          <div>
+            <h3>The Midwest machine</h3>
+            <p class="co">Infinity Home Services — Regional Marketing</p>
+          </div>
+          <p>Full ownership of Midwest marketing across a national home-services platform. The region now outpaces every other in the company: +32% qualified leads, +30% appointments, and $120M in sales against $89M the year prior.</p>
+          <span class="go">→</span>
+        </a>
+        <a class="case reveal" href="#contact">
+          <div class="big">1 → exit</div>
+          <div>
+            <h3>Every seat, earned the hard way</h3>
+            <p class="co">Optimized — Founder &amp; President</p>
+          </div>
+          <p>Founded as a team of one — the sales floor by day, the SEO, PPC, social, and web development by night. Bootstrapped into a $5M firm with 23 employees and seven satellite offices across the continental U.S., then sold. I've held every role I now hire for.</p>
+          <span class="go">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= STORY ======= -->
+  <section class="section story" id="story">
+    <div class="wrap story-grid">
+      <div class="story-copy reveal">
+        <p class="eyebrow">The Story</p>
+        <h2 style="font-size:clamp(36px,4vw,54px);color:var(--ivory);margin:22px 0 26px;">From the 75th Ranger Regiment<br /><em style="color:var(--gold-bright);">to the boardroom.</em></h2>
+        <p>Before the budgets and the boardrooms, there was Fort Benning. Selected for one of the U.S. military’s most elite special operations units, I learned what most executives never do: how to plan a mission when the cost of being wrong is absolute.</p>
+        <p class="pull">A parachute accident ended my military career. It didn’t end the standard it set.</p>
+        <p>That standard built two companies from zero to acquisition. It stood on a statewide PBS debate stage against a sitting congressman. It finished a bachelor’s degree twenty years after it started — <strong>summa cum laude, 3.97</strong> — while running a $25M growth engine, and it’s currently completing a dual MBA and M.S. in Information Systems at Auburn.</p>
+        <p>Discipline isn’t a slide in my deck. It’s the operating system.</p>
+      </div>
+      <div class="timeline reveal">
+        <div class="tl-item"><span class="yr">2005 — 2007</span><h4>U.S. Army, 75th Ranger Regiment</h4><p>Airborne Ranger. Honorably discharged after a parachute accident.</p></div>
+        <div class="tl-item"><span class="yr">2011 — 2018</span><h4>Founder ×2, Exits ×2</h4><p>Optimized ($5M, 23 employees) and Florida Landscaping Services — both built, scaled, and sold.</p></div>
+        <div class="tl-item"><span class="yr">2018</span><h4>U.S. Congressional Candidate</h4><p>Built a full campaign organization from zero; debated live on statewide PBS.</p></div>
+        <div class="tl-item"><span class="yr">2019 — 2025</span><h4>Head of Marketing → CMO</h4><p>Wensco, Roofing GR, Atrium ($25M budget), Vertex — and AcreValue through its CoStar acquisition.</p></div>
+        <div class="tl-item"><span class="yr">Today</span><h4>Regional Marketing, Infinity Home Services</h4><p>The Midwest region: +$31M YoY and outperforming every region in the company.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= SPEAKING ======= -->
+  <section class="section light" id="speaking">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Speaking &amp; Thought Leadership</p>
+        <h2>Rooms worth <em>standing up in.</em></h2>
+      </div>
+      <div class="speaking-grid">
+        <div class="venue reveal">
+          <p class="where">Des Moines, IA — 2024</p>
+          <h3>Iowa Land Investment Expo</h3>
+          <p>Featured speaker at one of agriculture’s premier annual events — a sell-out audience of land investors, agricultural professionals, and policy leaders. Session: “Navigating the Land Market: Staying in Front and Outpacing Competition.”</p>
+          <p class="quotebox">“Buy or bury. Act quickly and buy — or delay, and get buried by a competitor.”<br /><span style="font-family:var(--sans);font-size:12px;font-style:normal;letter-spacing:.12em;text-transform:uppercase;color:#9b7d40;">— As covered by American Farmland Owner</span></p>
+        </div>
+        <div class="venue reveal">
+          <p class="where">Georgia Public Broadcasting / PBS — 2018</p>
+          <h3>Atlanta Press Club Debate Series</h3>
+          <p>Selected for Georgia’s most prominent political debate series — the $1M-endowed Loudermilk-Young Debates — broadcast statewide on GPB/PBS. Live, unscripted, opposite a sitting two-term congressman, questioned by the state’s leading political journalists.</p>
+          <p class="quotebox">Composure isn’t taught in a greenroom.<br /><span style="font-family:var(--sans);font-size:12px;font-style:normal;letter-spacing:.12em;text-transform:uppercase;color:#9b7d40;">— Watch the full debate</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= TESTIMONIALS ======= -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">What Partners Say</p>
+        <h2>Trusted by the people <em>in the room.</em></h2>
+      </div>
+      <div class="quotes">
+        <div class="quote reveal">
+          <span class="qmark">“</span>
+          <p>He trusted our team, gave us the freedom to restructure campaigns, and always focused on outcomes rather than micromanagement… Bradley also pushed us to raise our own standards. Any agency would value a client like him.</p>
+          <div class="who"><div class="nm">Ashish Roy</div><div class="rl">CEO, SenseiDigital &amp; Cibirix</div></div>
+        </div>
+        <div class="quote reveal">
+          <span class="qmark">“</span>
+          <p>Brad excels at setting clear goals and consistently delivering results… When we had differing opinions he engaged in thoughtful discussions to explore each perspective. He is a valuable asset to any team.</p>
+          <div class="who"><div class="nm">Michael Loomus</div><div class="rl">Inside Sales &amp; Customer Service Leader — reported to Bradley</div></div>
+        </div>
+        <div class="quote reveal">
+          <span class="qmark">“</span>
+          <p>He is an expert in SEO, web design, digital marketing, and lead generation — and a fantastic leader. I can confidently attest to his outstanding capabilities.</p>
+          <div class="who"><div class="nm">Cherie Wicks</div><div class="rl">Digital Content Marketer, Cal-Am Properties</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= CREDENTIALS ======= -->
+  <section class="section light" id="credentials">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Credentials</p>
+        <h2>Earned. <em>Every one of them.</em></h2>
+      </div>
+      <div class="creds">
+        <div class="cred-list reveal">
+          <div class="cred"><div><h4>Auburn University — MBA + M.S. Information Systems</h4><p class="sub">Dual master’s program, Harbert College of Business</p></div><span class="yr">2027</span></div>
+          <div class="cred"><div><h4>Central Michigan University — B.A.</h4><p class="sub">Summa Cum Laude · 3.97 GPA</p></div><span class="yr">2025</span></div>
+          <div class="cred"><div><h4>United States Army — 75th Ranger Regiment</h4><p class="sub">Airborne · Fort Benning, GA · Honorable discharge</p></div><span class="yr">2005–07</span></div>
+          <div class="cred"><div><h4>Johns Hopkins University</h4><p class="sub">Business Analytics certification</p></div><span class="yr">2023</span></div>
+        </div>
+        <div class="cert-wall reveal">
+          <h3>8 professional certifications, spanning 40 accredited courses</h3>
+          <p>A standing practice of study across analytics, AI, automation, and marketing science — because the field moves, and I move first.</p>
+          <div class="chips">
+            <span class="chip">Google Data Analytics</span>
+            <span class="chip">Google Business Intelligence</span>
+            <span class="chip">Google Digital Marketing &amp; E-commerce</span>
+            <span class="chip">Google Project Management</span>
+            <span class="chip">Google UX Design</span>
+            <span class="chip">IT Automation with Python</span>
+            <span class="chip">Business Analytics · Johns Hopkins</span>
+            <span class="chip">GA4 for Local SEO</span>
+            <span class="chip more">View all →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= FINAL CTA ======= -->
+  <section class="finale" id="contact">
+    <div class="wrap reveal">
+      <p class="eyebrow">Start a Conversation</p>
+      <h2>The next win is <em>a conversation away.</em></h2>
+      <p>Executive search, fractional engagement, a strategy problem worth solving, or a stage that needs a speaker — tell me what you’re building, and I’ll tell you how I’d grow it.</p>
+      <a class="btn btn-solid" href="mailto:hello@bradleygriffin.us">Get in Touch <span class="arr">→</span></a>
+    </div>
+  </section>
+
+  <!-- ======= FOOTER ======= -->
+  <footer class="footer">
+    <div class="wrap">
+      <span class="fbrand">Bradley <em>Griffin</em></span>
+      <nav>
+        <a href="#work">Work With Me</a>
+        <a href="#results">Results</a>
+        <a href="#story">Story</a>
+        <a href="#speaking">Speaking</a>
+        <a href="https://www.linkedin.com/in/brad-w-griffin/" target="_blank" rel="noopener">LinkedIn</a>
+      </nav>
+      <span class="fine">© 2026 Bradley Griffin · bradleygriffin.us</span>
+    </div>
+  </footer>
+
+  <!-- style-direction switcher (prototype only) -->
+  <div style="position:fixed;right:22px;bottom:22px;z-index:99;display:flex;gap:6px;background:rgba(17,21,29,.92);border:1px solid rgba(193,161,95,.4);padding:8px 10px;backdrop-filter:blur(8px);border-radius:999px;font-family:var(--sans);">
+    <span style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#98a0af;align-self:center;padding:0 6px;">Style</span>
+    <a href="index.html" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#c1a15f;color:#0b0e13;font-weight:800;font-size:12px;">A</a>
+    <a href="option-b.html" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid rgba(193,161,95,.4);color:#c1a15f;font-weight:800;font-size:12px;">B</a>
+    <a href="option-c.html" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid rgba(193,161,95,.4);color:#c1a15f;font-weight:800;font-size:12px;">C</a>
+    <a href="option-d.html" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid rgba(193,161,95,.4);color:#c1a15f;font-weight:800;font-size:12px;">D</a>
+  </div>
+
+  <script>
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+  </script>
+</body>
+</html>
