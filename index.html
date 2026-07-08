@@ -406,6 +406,29 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
 .fin-ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 .btn-gold { background: #C79A5E; color: var(--ink); border-color: #C79A5E; }
 .btn-gold:hover { background: var(--cream); border-color: var(--cream); color: var(--ink); }
+
+/* ---------- high-visibility read links ---------- */
+:root { --link: #1E55B8; --link-deep: #143E8F; }
+.card .go,
+.proof-more a,
+.about .plain {
+  color: var(--link);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: rgba(30, 85, 184, 0.5);
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.card:hover .go,
+.card .go:hover,
+.proof-more a:hover,
+.about .plain:hover {
+  color: var(--link-deep);
+  text-decoration-color: var(--link-deep);
+  border-bottom: none;
+}
 </style>
   <link rel="canonical" href="https://www.bradleygriffin.us/" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
