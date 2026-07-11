@@ -303,6 +303,7 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
         <a href="/story">About</a>
         <a href="/speaking">Speaking</a>
         <a href="/credentials">Credentials</a>
+        <a href="/rates">Rates</a>
         <a class="nav-cta" href="/contact">Contact</a>
         <a class="nav-cal cal-link" href="https://calendly.com/optimzedseo/30min" target="_blank" rel="noopener">Schedule a call</a>
       </nav>
@@ -315,6 +316,7 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
       <a href="/story">About</a>
       <a href="/speaking">Speaking</a>
       <a href="/credentials">Credentials</a>
+      <a href="/rates">Rates</a>
       <a class="nav-cta" href="/contact">Contact</a>
         <a class="nav-cal cal-link" href="https://calendly.com/optimzedseo/30min" target="_blank" rel="noopener">Schedule a call</a>
     </div>
@@ -369,7 +371,6 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
 
         <div class="cx-actions">
           <button class="btn btn-solid" type="submit" id="cf-submit">Send the brief <span class="arr">→</span></button>
-          <p class="smallprint">Straight to Bradley's inbox — no email app needed.</p>
         </div>
         <p id="cf-status" class="cf-status" role="status" aria-live="polite"></p>
       </form>
@@ -396,6 +397,8 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
         <a href="/story">About</a>
         <a href="/speaking">Speaking</a>
         <a href="/credentials">Credentials</a>
+        <a href="/rates">Rates</a>
+        <a href="/faq">FAQ</a>
         <a href="/contact">Contact</a>
         <a href="https://www.linkedin.com/in/brad-w-griffin/" target="_blank" rel="noopener">LinkedIn</a>
       </nav>
@@ -463,7 +466,7 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
       // Optional: open Calendly in a popup after submit (prefilled).
       const bookBtn = document.getElementById("cx-book");
       if (bookBtn) bookBtn.addEventListener("click", () => {
-        const url = "https://calendly.com/optimzedseo/30min?hide_gdpr_banner=1&primary_color=9a6e3a"
+        const url = "https://calendly.com/optimzedseo/30min?hide_gdpr_banner=1&primary_color=1b1a18"
           + "&name=" + encodeURIComponent(val("cf-name")) + "&email=" + encodeURIComponent(val("cf-email"));
         if (window.Calendly && window.Calendly.initPopupWidget) { window.Calendly.initPopupWidget({ url: url }); }
         else { window.open(url, "_blank", "noopener"); }
@@ -489,7 +492,7 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
 <script>
 /* Schedule-a-call: lazy-load Calendly popup on first click; falls back to the link itself. */
 (function () {
-  var CAL_URL = "https://calendly.com/optimzedseo/30min?hide_gdpr_banner=1&primary_color=9a6e3a";
+  var CAL_URL = "https://calendly.com/optimzedseo/30min?hide_gdpr_banner=1&primary_color=1b1a18";
   function popup() { window.Calendly.initPopupWidget({ url: CAL_URL }); }
   document.addEventListener("click", function (e) {
     var a = e.target && e.target.closest ? e.target.closest(".cal-link") : null;
