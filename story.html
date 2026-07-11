@@ -749,7 +749,7 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
 <script>
 /* Schedule-a-call: lazy-load Calendly popup on first click; falls back to the link itself. */
 (function () {
-  var CAL_URL = "https://calendly.com/optimzedseo/30min?hide_gdpr_banner=1&primary_color=1b1a18";
+  var CAL_URL = "https://calendly.com/optimzedseo/30min?hide_gdpr_banner=1";
   function popup() { window.Calendly.initPopupWidget({ url: CAL_URL }); }
   document.addEventListener("click", function (e) {
     var a = e.target && e.target.closest ? e.target.closest(".cal-link") : null;
