@@ -4,6 +4,43 @@
 //   CONTACT_TO       (optional)  where leads land; default griff_brad@yahoo.com
 //   CONTACT_FROM     (optional)  verified sender; default "Bradley Griffin <leads@bradleygriffin.us>"
 
+// ---- Abuse dampening ------------------------------------------------------
+// In-instance rate limiter: Map of IP -> recent submission timestamps.
+// NOTE: Vercel serverless instances do NOT share state — each warm instance
+// keeps its own Map, and cold starts reset it. This is abuse DAMPENING
+// (slows scripted spam / Resend-quota burn), not a hard guarantee. A hard
+// limit would need shared state (KV/Upstash) — deliberately out of scope
+// for a static portfolio contact form.
+const RATE_LIMIT_MAX = 5; // max submissions...
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000; // ...per 10 minutes per IP
+const MAX_BODY_BYTES = 10 * 1024; // 10KB payload cap — far above any real inquiry
+const recentHits = new Map();
+
+function clientIp(req) {
+  const fwd = req.headers["x-forwarded-for"];
+  if (typeof fwd === "string" && fwd.length) return fwd.split(",")[0].trim();
+  return (req.socket && req.socket.remoteAddress) || "unknown";
+}
+
+function isRateLimited(ip) {
+  const now = Date.now();
+  const fresh = (recentHits.get(ip) || []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+  if (fresh.length >= RATE_LIMIT_MAX) {
+    recentHits.set(ip, fresh);
+    return true;
+  }
+  fresh.push(now);
+  recentHits.set(ip, fresh);
+  // Bound memory on long-lived instances: drop IPs whose entries all expired.
+  if (recentHits.size > 500) {
+    for (const [k, v] of recentHits) {
+      if (v.every((t) => now - t >= RATE_LIMIT_WINDOW_MS)) recentHits.delete(k);
+    }
+  }
+  return false;
+}
+// ---------------------------------------------------------------------------
+
 const esc = (s) =>
   String(s == null ? "" : s)
     .replace(/&/g, "&amp;")
@@ -17,6 +54,18 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
+  // Payload size cap (cheap check first — declared size).
+  const declaredLen = parseInt(req.headers["content-length"] || "0", 10);
+  if (declaredLen > MAX_BODY_BYTES) {
+    return res.status(413).json({ error: "Message too large. Please shorten it and try again." });
+  }
+
+  // Per-IP rate limit (see note at top: per-instance dampening, not a hard guarantee).
+  if (isRateLimited(clientIp(req))) {
+    res.setHeader("Retry-After", "600");
+    return res.status(429).json({ error: "Too many submissions. Please wait a few minutes and try again." });
+  }
+
   // Parse body (works whether Vercel pre-parsed it or not).
   let data = req.body;
   if (!data || typeof data === "string") {
@@ -26,7 +75,11 @@ module.exports = async function handler(req, res) {
           ? data
           : await new Promise((resolve, reject) => {
               let b = "";
-              req.on("data", (c) => (b += c));
+              req.on("data", (c) => {
+                b += c;
+                // Enforce the size cap while streaming too (content-length can lie).
+                if (b.length > MAX_BODY_BYTES) reject(new Error("payload too large"));
+              });
               req.on("end", () => resolve(b));
               req.on("error", reject);
             });
