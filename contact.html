@@ -335,10 +335,10 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
         <fieldset class="cx-fieldset">
           <legend>I'm looking for <span class="req">*</span></legend>
           <div class="optbtns">
-            <label class="optbtn"><input type="radio" name="type" value="Executive Leadership" /><span class="rdot"></span><span class="rtxt">An executive leader</span></label>
-            <label class="optbtn"><input type="radio" name="type" value="Fractional CMO" /><span class="rdot"></span><span class="rtxt">A fractional CMO</span></label>
-            <label class="optbtn"><input type="radio" name="type" value="Strategy &amp; AI Consulting" /><span class="rdot"></span><span class="rtxt">Strategy &amp; AI consulting</span></label>
-            <label class="optbtn"><input type="radio" name="type" value="Keynotes &amp; Speaking" /><span class="rdot"></span><span class="rtxt">A speaker for an event</span></label>
+            <label class="optbtn"><input type="radio" name="type" value="Full-Time Executive Role" /><span class="rdot"></span><span class="rtxt">A full-time executive leader</span></label>
+            <label class="optbtn"><input type="radio" name="type" value="Fractional Leadership" /><span class="rdot"></span><span class="rtxt">Fractional leadership &mdash; part-time, ongoing</span></label>
+            <label class="optbtn"><input type="radio" name="type" value="Project (Audit / AI Build)" /><span class="rdot"></span><span class="rtxt">A one-time project &mdash; audit or AI build</span></label>
+            <label class="optbtn"><input type="radio" name="type" value="Speaking Engagement" /><span class="rdot"></span><span class="rtxt">A speaker for an event</span></label>
           </div>
         </fieldset>
 
@@ -428,7 +428,7 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
       }));
 
       // Deep link: /contact?type=executive|fractional|consulting|speaking → preselect.
-      const map = { executive: "Executive Leadership", fractional: "Fractional CMO", consulting: "Strategy & AI Consulting", speaking: "Keynotes & Speaking" };
+      const map = { executive: "Full-Time Executive Role", fractional: "Fractional Leadership", consulting: "Project (Audit / AI Build)", speaking: "Speaking Engagement" };
       const q = new URLSearchParams(location.search).get("type");
       if (q && map[q]) { const r = radios.find((i) => i.value === map[q]); if (r) { r.checked = true; r.dispatchEvent(new Event("change")); } }
 
