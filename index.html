@@ -438,6 +438,39 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
 .about .plain:hover .lt {
   text-decoration-color: var(--link-deep);
 }
+
+/* ---------- book banner ---------- */
+.bookbar { background: var(--ink); color: var(--cream); padding: 72px 0; }
+.bookbar-grid { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 56px; align-items: center; }
+.bookbar .microlabel { color: #D2AC58; display: block; margin-bottom: 16px; }
+.bookbar h2 { font-size: clamp(30px, 3.8vw, 48px); color: var(--cream); margin-bottom: 10px; }
+.bookbar h2 em { font-style: italic; color: #D2AC58; }
+.bookbar .booksub { font-family: var(--serif); font-size: 19px; font-style: italic; color: #C3CBDC; margin-bottom: 18px; }
+.bookbar p.bookdesc { font-size: 16.5px; line-height: 1.7; color: #C3CBDC; max-width: 54ch; margin-bottom: 28px; }
+.bookbar .btn-gold { background: #D2AC58; color: var(--ink); border-color: #D2AC58; }
+.bookbar .btn-gold:hover { background: var(--cream); border-color: var(--cream); }
+.bookcover-wrap { display: flex; justify-content: center; perspective: 900px; }
+.bookcover {
+  width: 236px; aspect-ratio: 2 / 3;
+  background: linear-gradient(145deg, #223559 0%, #1C2B4A 55%, #16223C 100%);
+  border: 1px solid #D2AC58;
+  border-radius: 4px 10px 10px 4px;
+  box-shadow: -18px 24px 50px -20px rgba(0,0,0,0.55), inset 6px 0 12px -8px rgba(0,0,0,0.6);
+  transform: rotateY(-14deg) rotateZ(0.5deg);
+  padding: 26px 20px;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.bookcover::before { content: ""; position: absolute; left: 8px; top: 0; bottom: 0; width: 1px; background: rgba(210,172,88,0.4); }
+.bookcover .bk-label { font-size: 9px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: #D2AC58; margin-bottom: 18px; }
+.bookcover .bk-title { font-family: var(--serif); font-size: 27px; line-height: 1.12; color: var(--cream); }
+.bookcover .bk-title em { font-style: italic; color: #D2AC58; }
+.bookcover .bk-sub { font-family: var(--serif); font-style: italic; font-size: 12.5px; color: #C3CBDC; margin-top: 12px; flex: 1; }
+.bookcover .bk-author { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cream); border-top: 1px solid rgba(210,172,88,0.5); padding-top: 12px; }
+@media (max-width: 940px) {
+  .bookbar-grid { grid-template-columns: 1fr; gap: 44px; }
+  .bookcover { transform: none; }
+}
 </style>
   <link rel="canonical" href="https://www.bradleygriffin.us/" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -572,6 +605,27 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
       </div>
       <div class="proof-more reveal">
         <a href="/case-studies"><span class="lt">Read the full case studies</span> <span class="arr">&rarr;</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= BOOK BANNER ======= -->
+  <section class="bookbar" id="book">
+    <div class="wrap bookbar-grid">
+      <div class="reveal">
+        <span class="microlabel">New book &middot; Coming soon</span>
+        <h2>It&rsquo;s Not a <em>Marketing</em> Problem</h2>
+        <p class="booksub">Hard truths for companies that want to grow.</p>
+        <p class="bookdesc">Twenty years of blunt lessons from the field &mdash; why your business isn&rsquo;t as different as you think, why tactics can&rsquo;t save a bad strategy, and why the answer is in your data, not your slogan. No fluff. No platitudes. Just the conversations most consultants are too polite to have.</p>
+        <a class="btn btn-gold" href="/contact">Be first to know <span class="arr">&rarr;</span></a>
+      </div>
+      <div class="bookcover-wrap reveal">
+        <div class="bookcover">
+          <span class="bk-label">Coming soon</span>
+          <span class="bk-title">It&rsquo;s Not a <em>Marketing</em> Problem</span>
+          <span class="bk-sub">Hard truths for companies that want to grow</span>
+          <span class="bk-author">Bradley Griffin</span>
+        </div>
       </div>
     </div>
   </section>
