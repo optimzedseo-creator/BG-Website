@@ -48,7 +48,6 @@ export default function Header() {
           <Link href="/story">About</Link>
           <Link href="/speaking">Speaking</Link>
           <Link href="/credentials">Credentials</Link>
-          <Link href="/writing">Writing</Link>
           <a
             className="nav-li"
             href={LINKEDIN_URL}
@@ -76,7 +75,6 @@ export default function Header() {
         <Link href="/story">About</Link>
         <Link href="/speaking">Speaking</Link>
         <Link href="/credentials">Credentials</Link>
-        <Link href="/writing">Writing</Link>
         <a
           className="nav-li"
           href={LINKEDIN_URL}

@@ -4,13 +4,13 @@ import { useRef, useState } from "react";
 
 /**
  * NewsletterSignup — compact, on-brand email capture for the book-launch list.
- * Imported by the homepage and /writing (each passes its own copy + source).
+ * Imported by the homepage (passes its own copy + source).
  * Posts to /api/subscribe (honeypot + email regex + idempotent upsert server-side).
  *
  * Props (all optional):
  *   heading  — section heading (default: book-launch framing)
  *   blurb    — one line under the heading
- *   source   — list segment sent to the API: "site" | "book" | "writing" | "event"
+ *   source   — list segment sent to the API: "site" | "book" | "event"
  *   cta      — button label
  *
  * CAN-SPAM note: the list does not send yet. When welcome/confirm mail is wired
@@ -24,7 +24,7 @@ import { useRef, useState } from "react";
 type Props = {
   heading?: string;
   blurb?: string;
-  source?: "site" | "book" | "writing" | "event";
+  source?: "site" | "book" | "event";
   cta?: string;
 };
 
