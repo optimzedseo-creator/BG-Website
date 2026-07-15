@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 const TITLE = "Case Studies - Documented Marketing Results | Bradley Griffin";
 const DESCRIPTION =
-  "Six documented case studies: AcreValue's turnaround to a CoStar (NASDAQ) acquisition, +490% inbound calls at Vertex, a #1 region at Infinity Home Services, 1,000% at Roofing GR.";
+  "Seven documented case studies: AcreValue's turnaround to a CoStar (NASDAQ) acquisition, +490% inbound calls at Vertex, a #1 region at Infinity Home Services, 1,000% at Roofing GR, and a full e-commerce, ERP, and CRM platform built for Griffin Opus.";
 const URL = "https://www.bradleygriffin.us/case-studies";
 const OG_IMAGE = "https://www.bradleygriffin.us/assets/bradley-griffin-og.jpg";
 
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 /* JSON-LD carried over VERBATIM from the legacy page (byte-identical):
    CollectionPage + ItemList (six anchored cases) + BreadcrumbList. */
 const caseStudiesJsonLd =
-  '{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "url": "https://www.bradleygriffin.us/case-studies", "name": "Case Studies - Bradley Griffin", "about": {"@type": "Person", "@id": "https://www.bradleygriffin.us/#person", "name": "Bradley Griffin"}, "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "AcreValue / Ag Analytics - turnaround through a NASDAQ acquisition", "url": "https://www.bradleygriffin.us/case-studies#acrevalue"}, {"@type": "ListItem", "position": 2, "name": "Vertex Roofing - +490% inbound calls, +269% booking rate", "url": "https://www.bradleygriffin.us/case-studies#vertex"}, {"@type": "ListItem", "position": 3, "name": "Infinity Home Services - #1 performing Midwest region", "url": "https://www.bradleygriffin.us/case-studies#ihs"}, {"@type": "ListItem", "position": 4, "name": "Optimized - bootstrapped from one person to a successful exit", "url": "https://www.bradleygriffin.us/case-studies#optimized"}, {"@type": "ListItem", "position": 5, "name": "Roofing GR - 1,000% YoY lead generation", "url": "https://www.bradleygriffin.us/case-studies#roofinggr"}, {"@type": "ListItem", "position": 6, "name": "Wensco Sign Supply - +30% revenue, -35% marketing cost", "url": "https://www.bradleygriffin.us/case-studies#wensco"}]}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.bradleygriffin.us/"}, {"@type": "ListItem", "position": 2, "name": "Case Studies", "item": "https://www.bradleygriffin.us/case-studies"}]}]}';
+  '{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "url": "https://www.bradleygriffin.us/case-studies", "name": "Case Studies - Bradley Griffin", "about": {"@type": "Person", "@id": "https://www.bradleygriffin.us/#person", "name": "Bradley Griffin"}, "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "AcreValue / Ag Analytics - turnaround through a NASDAQ acquisition", "url": "https://www.bradleygriffin.us/case-studies#acrevalue"}, {"@type": "ListItem", "position": 2, "name": "Vertex Roofing - +490% inbound calls, +269% booking rate", "url": "https://www.bradleygriffin.us/case-studies#vertex"}, {"@type": "ListItem", "position": 3, "name": "Infinity Home Services - #1 performing Midwest region", "url": "https://www.bradleygriffin.us/case-studies#ihs"}, {"@type": "ListItem", "position": 4, "name": "Optimized - bootstrapped from one person to a successful exit", "url": "https://www.bradleygriffin.us/case-studies#optimized"}, {"@type": "ListItem", "position": 5, "name": "Roofing GR - 1,000% YoY lead generation", "url": "https://www.bradleygriffin.us/case-studies#roofinggr"}, {"@type": "ListItem", "position": 6, "name": "Wensco Sign Supply - +30% revenue, -35% marketing cost", "url": "https://www.bradleygriffin.us/case-studies#wensco"}, {"@type": "ListItem", "position": 7, "name": "Griffin Opus - a custom e-commerce, ERP, and CRM platform built end to end", "url": "https://www.bradleygriffin.us/case-studies#griffin-opus"}]}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.bradleygriffin.us/"}, {"@type": "ListItem", "position": 2, "name": "Case Studies", "item": "https://www.bradleygriffin.us/case-studies"}]}]}';
 
 export default function CaseStudiesPage() {
   return (
@@ -42,8 +42,8 @@ export default function CaseStudiesPage() {
           <span className="microlabel">The record</span>
           <h1>A few companies, and what actually <em>changed.</em></h1>
           <p className="lede">
-            Six engagements, documented the way a diligence team would want them: the situation as I found it,
-            the system I built, and the numbers it returned. <strong>Every company is named. Every claim is dated.</strong>
+            Seven engagements, documented the way a diligence team would want them: the situation as I found it,
+            the system I built, and what it returned. <strong>Every company is named. Every claim is dated.</strong>
             Where the receipts exist as screenshots, they&rsquo;re attached as exhibits.
           </p>
           <div className="reveal">
@@ -89,6 +89,13 @@ export default function CaseStudiesPage() {
                 <span className="m">+30%</span>
                 <span className="t">The record quarter</span>
                 <span className="c">Wensco Sign Supply · 2019–2021</span>
+                <span className="a">&darr;</span>
+              </a>
+              <a className="ix-row" href="#griffin-opus">
+                <span className="n">07</span>
+                <span className="m">Built</span>
+                <span className="t">Software I built, running a real business</span>
+                <span className="c">Griffin Opus · 2026–Present</span>
                 <span className="a">&darr;</span>
               </a>
             </div>
@@ -509,6 +516,52 @@ export default function CaseStudiesPage() {
               </div>
               <p className="excap"><span className="tick">Exhibit A &mdash;</span> Retyped from the CFO&rsquo;s internal email; sender identity redacted, figures as reported</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ======= CASE 07 — GRIFFIN OPUS ======= */}
+      <section className="section cs" id="griffin-opus">
+        <div className="wrap">
+          <div className="reveal">
+            <p className="microlabel cs-eyebrow">07 — Case file · Griffin Opus</p>
+            <div className="cs-headrow">
+              <div className="cs-metric">Built</div>
+              <div>
+                <h2>A whole business, on <em>software I built</em></h2>
+                <p className="cs-meta">
+                  <span>Griffin Opus</span>
+                  <span>Platform build &mdash; e-commerce, ERP &amp; CRM</span>
+                  <span>2026–Present</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="cs-cols">
+            <div className="cs-block reveal">
+              <span className="microlabel">Context</span>
+              <p>Griffin Opus is a <strong>direct-to-consumer paper-goods brand</strong> my wife founded and runs. It needed to operate on real software &mdash; not a stack of monthly subscriptions that own your data and raise the rent every year. So I built the software myself.</p>
+              <p>This is the AI-assisted build work I do for clients, proven on a business that runs on it every day. Not a demo, not a prototype &mdash; a live storefront taking real orders.</p>
+            </div>
+            <div className="cs-block reveal">
+              <span className="microlabel">What I built</span>
+              <ul>
+                <li><strong>A custom e-commerce storefront</strong> &mdash; the entire buying experience, coded and owned outright, with no platform fees skimming every sale.</li>
+                <li><strong>An admin and ERP</strong> &mdash; inventory and landed-cost model, purchasing and POs, reorder logic, shipping and returns, and a full stock audit log.</li>
+                <li><strong>A CRM</strong> &mdash; customers, orders, and lifecycle in one owned system instead of a rented tool with a per-seat bill.</li>
+                <li><strong>Shipping and label automation</strong> &mdash; rating, labels, and fulfillment wired straight into the admin, so orders move without hand-keying.</li>
+              </ul>
+            </div>
+          </div>
+          <div className="cs-results reveal">
+            <span className="microlabel">What it proves</span>
+            <div className="rgrid cols-4">
+              <div className="rcell"><div className="num">Owned</div><div className="lbl">No SaaS subscriptions, no platform lock-in</div></div>
+              <div className="rcell"><div className="num">Full&#8209;stack</div><div className="lbl">Storefront, admin, ERP, CRM, and fulfillment</div></div>
+              <div className="rcell"><div className="num">Live</div><div className="lbl">A real operating DTC business, not a demo</div></div>
+              <div className="rcell"><div className="num">AI&#8209;built</div><div className="lbl">Designed and coded end to end, AI-assisted</div></div>
+            </div>
+            <p className="cs-pull">The best proof I can build software you own is the software I already built.</p>
           </div>
         </div>
       </section>

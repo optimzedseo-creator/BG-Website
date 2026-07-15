@@ -42,8 +42,8 @@ export default function SpeakingPage() {
           <h1>Rooms change when the speaker <em>has done it.</em></h1>
           <p className="lede">
             I talk about market strategy, competition, and AI &mdash; as an operator with <strong>two exits</strong>, a
-            <strong> NASDAQ acquisition story</strong>, and the composure of a <strong>75th Ranger Regiment
-            veteran</strong>. No recycled frameworks, no motivational filler. Just real decisions, real numbers,
+            <strong> NASDAQ acquisition story</strong>, and a stage tested by <strong>live statewide broadcast</strong>.
+            No recycled frameworks, no motivational filler. Just real decisions, real numbers,
             and what they cost.
           </p>
         </div>
@@ -169,7 +169,7 @@ export default function SpeakingPage() {
             <div className="get reveal">
               <span className="kicker">B</span>
               <h3>A story arc audiences remember</h3>
-              <p>Ranger &rarr; founder &rarr; boardroom. An arc your attendees will retell at the reception &mdash; and cite in the post-event survey.</p>
+              <p>Founder to boardroom, by way of a Ranger Regiment background. An arc your attendees will retell at the reception &mdash; and cite in the post-event survey.</p>
             </div>
             <div className="get reveal">
               <span className="kicker">C</span>

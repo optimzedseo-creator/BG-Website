@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import NewsletterSignup from "@/components/NewsletterSignup";
 
 const TITLE = "Bradley Griffin - Chief Marketing Officer & Growth Executive";
 const DESCRIPTION =
@@ -50,11 +51,10 @@ export default function HomePage() {
             <span className="microlabel">Growth executive &amp; fractional CMO</span>
             <h1>I Build <em>Systems</em> That Unlock <em>Growth</em></h1>
             <p className="lede">
-              I&rsquo;m Bradley Griffin. For twenty years I&rsquo;ve helped hundreds of companies &mdash;
-              across dozens of industries, all over the world &mdash; do one thing: make growth
-              predictable. I design, build, and run AI, marketing, and automation systems, audit
-              the ones you already have, and use both to cut expenses, expose waste, and surface
-              the opportunity hiding in your business.
+              I&rsquo;m Bradley Griffin. Most companies can&rsquo;t tell what&rsquo;s actually
+              working in their marketing, so growth runs hot then cold. I read the raw source
+              data, find the waste, and build the systems that make growth predictable and keep
+              it that way.
             </p>
             <div className="hero-ctas">
               <a className="btn btn-solid" href="/contact">Get in Touch <span className="arr">&rarr;</span></a>
@@ -67,6 +67,50 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ======= PROBLEM -> METHOD SPINE ======= */}
+      <section className="spine" id="method">
+        <div className="wrap">
+          <div className="spine-head reveal">
+            <span className="microlabel">The problem I solve</span>
+            <h2>Your marketing runs <em>hot then cold</em>. You can&rsquo;t tell what&rsquo;s actually working.</h2>
+            <p>
+              Reports look busy. Leads swing month to month. The dashboard says one thing, the
+              bank says another. When you can&rsquo;t see what&rsquo;s driving results, you
+              can&rsquo;t repeat them, so good months feel like luck and bad months feel like a
+              mystery.
+            </p>
+            <p className="spine-line">Bring me the problem. I&rsquo;ll bring the math.</p>
+          </div>
+          <ol className="method reveal">
+            <li>
+              <span className="step-n">1</span>
+              <h3>Raw source data</h3>
+              <p>I start in your actual platforms, not a summary slide. The real numbers behind the reports.</p>
+            </li>
+            <li>
+              <span className="step-n">2</span>
+              <h3>Quantitative audit</h3>
+              <p>I find the waste and the leverage, and I attach the math to every finding.</p>
+            </li>
+            <li>
+              <span className="step-n">3</span>
+              <h3>Blueprint</h3>
+              <p>A clear picture of the system that fixes it: what to keep, what to cut, what to build.</p>
+            </li>
+            <li>
+              <span className="step-n">4</span>
+              <h3>Roadmap</h3>
+              <p>A ranked plan in the order that compounds, so the work builds on itself.</p>
+            </li>
+            <li>
+              <span className="step-n">5</span>
+              <h3>Predictable growth</h3>
+              <p>Systems that hold. Growth you can repeat, not chase.</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
       {/* ======= THE ROUTER ======= */}
       <section className="chooser" id="work">
         <div className="wrap">
@@ -76,12 +120,6 @@ export default function HomePage() {
             <p>Pick the path that fits. Each one goes straight to the details.</p>
           </div>
           <div className="cards">
-            <a className="card reveal" href="/executive">
-              <span className="kicker">CMO, CEO &amp; executive roles</span>
-              <h3>Hire me full-time</h3>
-              <p>Hiring a CMO, CEO, or senior growth leader? I bring twenty years of P&amp;L-accountable leadership to the whole picture &mdash; revenue, team, budget, and results that hold up under scrutiny.</p>
-              <span className="go"><span className="lt">Explore executive roles</span> <span className="arr">&rarr;</span></span>
-            </a>
             <a className="card reveal" href="/fractional">
               <span className="kicker">Part-time &amp; ongoing</span>
               <h3>Hire me fractionally</h3>
@@ -99,6 +137,12 @@ export default function HomePage() {
               <h3>Book me to speak</h3>
               <p>Bring me to your stage. Market strategy, competition, and AI &mdash; delivered with composure, from a sell-out expo session to a statewide PBS debate stage.</p>
               <span className="go"><span className="lt">Keynotes &amp; speaking</span> <span className="arr">&rarr;</span></span>
+            </a>
+            <a className="card reveal" href="/executive">
+              <span className="kicker">CMO, CEO &amp; executive roles</span>
+              <h3>Hire me full-time</h3>
+              <p>Hiring a CMO, CEO, or senior growth leader? I bring twenty years of P&amp;L-accountable leadership to the whole picture &mdash; revenue, team, budget, and results that hold up under scrutiny.</p>
+              <span className="go"><span className="lt">Explore executive roles</span> <span className="arr">&rarr;</span></span>
             </a>
           </div>
         </div>
@@ -161,12 +205,13 @@ export default function HomePage() {
         <div className="wrap about-grid">
           <div className="reveal">
             <span className="microlabel">About</span>
-            <h2>From the 75th Ranger Regiment to the boardroom</h2>
+            <h2>Twenty years of building growth that holds</h2>
             <p>
-              Before the budgets and the boardrooms, I served in one of the U.S. military&rsquo;s
-              most elite units &mdash; where I learned to plan when the cost of being wrong is
-              absolute. That same standard built two companies from zero to successful exit, and it
-              still pushes me to do my best, everyday.
+              I&rsquo;m a marketing, AI, and data-analysis operator. I&rsquo;ve built two companies
+              from zero to a successful exit and rebuilt growth for brands that had stalled. Before
+              any of that, I served in the 75th Ranger Regiment, where I learned to plan when the
+              cost of being wrong is absolute. That same standard shows up in how I work now:
+              prepared, precise, and accountable to the numbers.
             </p>
             <a className="plain" href="/story"><span className="lt">Read my story</span> <span className="arr">&rarr;</span></a>
           </div>
@@ -178,6 +223,16 @@ export default function HomePage() {
               <div className="rl">Inside Sales &amp; Customer Service Leader &mdash; reported to Bradley</div>
             </div>
           </figure>
+        </div>
+      </section>
+
+      {/* ======= NEWSLETTER ======= */}
+      <section className="newsletter" id="newsletter">
+        <div className="wrap reveal">
+          <span className="microlabel">Field notes</span>
+          <h2>Occasional notes on making marketing <em>measurable</em></h2>
+          <p>How to read your own data, cut the waste, and build growth you can repeat. No fluff, no spam.</p>
+          <NewsletterSignup heading="" blurb="" source="site" />
         </div>
       </section>
 

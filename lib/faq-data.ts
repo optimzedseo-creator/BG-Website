@@ -59,9 +59,9 @@ export const faqItems: FaqItem[] = [
     question: "What kinds of companies do you work with?",
     schemaQuestion: "What kinds of companies do you work with?",
     answerHtml:
-      "<p>I generally work with all companies. While it&rsquo;s common for business leaders to think their industry is unique, many of the practices and principles I&rsquo;m a subject matter expert in are universal. They work no matter where they are deployed.</p>",
+      "<p>The ones whose marketing runs hot then cold, and who can&rsquo;t tell what&rsquo;s actually working. That&rsquo;s the problem I solve again and again. I start with your raw source data, find out what&rsquo;s really driving results, and build the system that turns it into steady, predictable growth. The name on the door changes from one company to the next; that underlying problem rarely does. The principles that fix it hold up across industries, which is exactly why I stay focused on the problem, not the vertical.</p>",
     schemaAnswer:
-      "All kinds. While it is common for business leaders to think their industry is unique, many of the practices and principles involved are universal - they work no matter where they are deployed.",
+      "The companies whose marketing runs hot then cold and who cannot tell what is actually working. That is the problem solved again and again: it starts with your raw source data, finds what is really driving results, and builds the system that turns it into steady, predictable growth. The company changes from one engagement to the next, but that underlying problem rarely does, so the principles that fix it hold up across industries. The focus stays on the problem, not the vertical.",
   },
   {
     question: "How does an engagement begin?",

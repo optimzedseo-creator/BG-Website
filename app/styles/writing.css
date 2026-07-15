@@ -1,0 +1,201 @@
+/* ============================================================
+   PAGE: /writing  (index + article template)
+   Every selector is scoped under .page-writing so it can never
+   contaminate another route (all page CSS loads globally in this
+   app). Class names are local to this surface.
+   Uses the shared design system from globals.css:
+   .wrap .microlabel .btn .finale .reveal .fin-ctas
+   ============================================================ */
+
+/* ---------- shared hero (index + article) ---------- */
+.page-writing .w-hero {
+  padding: 84px 0 44px;
+  border-bottom: 1px solid var(--line);
+}
+.page-writing .w-hero .microlabel { display: block; margin-bottom: 18px; }
+.page-writing .w-hero h1 {
+  font-size: clamp(34px, 5vw, 58px);
+  max-width: 20ch;
+}
+.page-writing .w-hero h1 em { font-style: italic; color: var(--bronze-deep); }
+.page-writing .w-hero .lede {
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  max-width: 58ch;
+  margin-top: 22px;
+}
+
+/* ---------- index: article list ---------- */
+.page-writing .w-list { padding: 30px 0 80px; }
+.page-writing .w-item {
+  display: block;
+  padding: 34px 0;
+  border-bottom: 1px solid var(--line);
+}
+.page-writing .w-item:first-child { padding-top: 40px; }
+.page-writing .w-meta {
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 12px;
+}
+.page-writing .w-meta .dot { margin: 0 8px; color: var(--line-strong); }
+.page-writing .w-item h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(23px, 2.8vw, 30px);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  transition: color 0.2s ease;
+}
+.page-writing a.w-item:hover h2 { color: var(--bronze-deep); }
+.page-writing .w-item p {
+  color: var(--ink-soft);
+  font-size: 17px;
+  line-height: 1.6;
+  max-width: 64ch;
+  margin-top: 12px;
+}
+.page-writing .w-item .w-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bronze-deep);
+}
+.page-writing a.w-item:hover .w-more .arr { transform: translateX(4px); }
+.page-writing .w-more .arr { transition: transform 0.2s ease; }
+
+/* ---------- index: subscribe band ---------- */
+.page-writing .w-sub {
+  padding: 56px 0 72px;
+  border-top: 1px solid var(--line);
+}
+.page-writing .w-sub .microlabel { display: block; margin-bottom: 14px; }
+.page-writing .w-sub h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(26px, 3.2vw, 34px);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.page-writing .w-sub h2 em { font-style: italic; color: var(--bronze-deep); }
+.page-writing .w-sub > .wrap > p {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 60ch;
+  margin: 14px 0 24px;
+}
+
+/* ---------- article template ---------- */
+.page-writing .art-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sans);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--mute);
+  margin-bottom: 26px;
+  transition: color 0.2s ease;
+}
+.page-writing .art-back:hover { color: var(--bronze-deep); }
+.page-writing .art-hero { padding: 64px 0 40px; border-bottom: 1px solid var(--line); }
+.page-writing .art-hero .art-meta {
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 18px;
+}
+.page-writing .art-hero .art-meta .dot { margin: 0 8px; color: var(--line-strong); }
+.page-writing .art-hero h1 {
+  font-size: clamp(32px, 4.6vw, 52px);
+  line-height: 1.06;
+  max-width: 18ch;
+}
+.page-writing .art-hero .dek {
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  max-width: 58ch;
+  margin-top: 22px;
+}
+
+/* body prose */
+.page-writing .art-body { padding: 40px 0 20px; }
+.page-writing .art-body .wrap { max-width: 720px; }
+.page-writing .art-body p {
+  font-size: 19px;
+  line-height: 1.72;
+  color: var(--ink);
+  margin: 0 0 24px;
+}
+.page-writing .art-body p:last-child { margin-bottom: 0; }
+.page-writing .art-body h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 27px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 44px 0 16px;
+}
+.page-writing .art-body strong { font-weight: 600; }
+.page-writing .art-body .pull {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(24px, 3.2vw, 32px);
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  border-left: 3px solid var(--bronze);
+  padding: 6px 0 6px 28px;
+  margin: 40px 0;
+}
+.page-writing .art-body .kicker {
+  display: block;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bronze-deep);
+  margin: 48px 0 4px;
+}
+
+/* signature line above the finale */
+.page-writing .art-sign {
+  max-width: 720px;
+  margin: 40px auto 0;
+  padding: 0 28px;
+}
+.page-writing .art-sign .rule {
+  height: 1px;
+  background: var(--line);
+  margin-bottom: 22px;
+}
+.page-writing .art-sign p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--mute);
+}
+.page-writing .art-sign a { color: var(--bronze-deep); font-weight: 600; }
+
+@media (max-width: 640px) {
+  .page-writing .w-hero { padding: 60px 0 36px; }
+  .page-writing .art-hero { padding: 44px 0 32px; }
+  .page-writing .art-body p { font-size: 18px; }
+}

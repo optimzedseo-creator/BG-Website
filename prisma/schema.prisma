@@ -88,6 +88,25 @@ model Setting {
   updatedAt DateTime @updatedAt
 }
 
+// ---- Email list — book-launch capture (BOOK-PLAN.md Phase 0) --------------
+// The book-launch list, the site's owned channel. Shippable single-opt-in now
+// (a row here = subscribed); double-opt-in ready via confirmToken (a future
+// /api/subscribe/confirm route flips `confirmed` true). `source` segments the
+// list from day one (site | book | writing | event) so nurture flows can target.
+// CAN-SPAM: a working unsubscribe path is still OWED before any send goes out
+// (see /api/subscribe route TODOs) — no list mail sends until it exists.
+model Subscriber {
+  id           String   @id @default(cuid())
+  email        String   @unique // upsert key — re-subscribe is an idempotent no-op
+  source       String   @default("site") // site | book | writing | event
+  confirmed    Boolean  @default(false) // double-opt-in state; single-opt-in ignores it for now
+  confirmToken String? // random token for a future confirm/unsubscribe link
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([createdAt])
+}
+
 // Calendly bookings land here even when we can't yet enrich them: the popup's
 // postMessage carries event/invitee URIs but NOT the invitee email. Enrichment
 // via the Calendly API needs a personal access token from Brad (not built).
