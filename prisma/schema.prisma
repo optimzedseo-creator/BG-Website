@@ -1,0 +1,40 @@
+// First-party analytics — Phase 2 (BACKEND-PLAN.md §3/§6).
+// Database: bradley_site — a sibling database inside the Griffin Opus Neon
+// project (shared compute/limits). Prisma pinned at v6 (v7 removed
+// url-from-schema).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  path      String
+  visitorId String
+  referrer  String?
+  device    String? // desktop | mobile | tablet (parsed from UA)
+  browser   String? // Chrome | Safari | Firefox | Edge | ... (parsed from UA)
+  duration  Int? // seconds on page, patched by sendBeacon on pagehide
+  country   String? // from x-vercel-ip-country header (prod only) — no raw IPs stored
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([visitorId])
+  @@index([path])
+}
+
+model Event {
+  id        String   @id @default(cuid())
+  name      String // chooser_click | cta_click | booking | form_submit
+  path      String
+  visitorId String?
+  meta      Json? // lean payloads only — NEVER PII (no emails/names/form contents)
+  createdAt DateTime @default(now())
+
+  @@index([name, createdAt])
+}

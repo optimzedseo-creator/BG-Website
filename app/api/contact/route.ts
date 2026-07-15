@@ -147,6 +147,27 @@ export async function POST(req: Request) {
       console.error("Resend error", r.status, detail);
       return NextResponse.json({ error: "Couldn't send right now. Please try again shortly." }, { status: 502 });
     }
+
+    // Analytics: record the WIN server-side (survives ad-blockers). Strictly
+    // additive — any failure here is logged and swallowed so the email path
+    // is never affected. NO PII in meta: inquiry type only, never name/email/
+    // message contents (Phase 2, BACKEND-PLAN.md §6).
+    try {
+      const { prisma } = await import("@/lib/db");
+      const cookieHeader = req.headers.get("cookie") || "";
+      const vid = cookieHeader.match(/(?:^|;\s*)bg_vid=([A-Za-z0-9-]{16,64})/);
+      await prisma.event.create({
+        data: {
+          name: "form_submit",
+          path: "/contact",
+          visitorId: vid ? vid[1] : null,
+          meta: { type: type.slice(0, 100) },
+        },
+      });
+    } catch (err) {
+      console.error("form_submit analytics write failed", err);
+    }
+
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("contact handler error", err);

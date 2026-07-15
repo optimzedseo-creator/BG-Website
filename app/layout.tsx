@@ -12,6 +12,7 @@ import "./styles/consulting.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SiteEffects from "@/components/SiteEffects";
+import Analytics from "@/components/Analytics";
 
 /*
  * Fonts are self-hosted via next/font (removes the Google Fonts third-party
@@ -52,6 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <Footer />
         <SiteEffects />
+        <Analytics />
       </body>
     </html>
   );
