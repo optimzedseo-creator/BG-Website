@@ -359,7 +359,7 @@
 .page-admin .adm-ok { color: #2E5E2E; font-size: 13px; margin-top: 10px; }
 .page-admin .adm-note { color: var(--mute); font-size: 13px; margin-top: 6px; }
 .page-admin .adm-qr { margin: 14px 0 4px; border: 1px solid var(--line); border-radius: 8px; }
-.page-admin .adm-secret { user-select: all; letter-spacing: 0.06em; }
+.page-admin .adm-secret { user-select: all; letter-spacing: 0.06em; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; overflow-wrap: anywhere; }
 
 /* ---------- auth screens ---------- */
 .page-admin .adm-auth-wrap {

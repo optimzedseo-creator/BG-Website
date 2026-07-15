@@ -73,7 +73,7 @@ export function TotpSection({ enabled }: { enabled: boolean }) {
         Nothing changes until a code verifies — you cannot lock yourself out mid-enrollment.
       </p>
       {/* data: URL QR from the server action — never remote. */}
-      <img src={start.qr} alt="TOTP enrollment QR code" className="adm-qr" width={220} height={220} />
+      <img src={start.qr} alt="TOTP enrollment QR code" className="adm-qr" width={256} height={256} />
       <p className="adm-note">
         Can&rsquo;t scan? Enter this key manually: <code className="adm-secret">{start.secret}</code>
       </p>

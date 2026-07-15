@@ -39,7 +39,7 @@ export async function beginTotpEnroll(): Promise<EnrollStart> {
   const secret = generateTotpSecret();
   await setSetting(K_TOTP_PENDING, secret);
   // data: URL — img-src already allows data: in the CSP.
-  const qr = await QRCode.toDataURL(otpauthUrl(secret), { margin: 1, width: 220 });
+  const qr = await QRCode.toDataURL(otpauthUrl(secret), { margin: 4, width: 256, errorCorrectionLevel: "M" });
   return { qr, secret };
 }
 
