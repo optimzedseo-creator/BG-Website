@@ -144,6 +144,11 @@
 }
 .pg-home .newsletter h2 em { font-style: italic; color: var(--bronze-deep); }
 .pg-home .newsletter p { font-size: 17px; color: var(--mute); max-width: 52ch; margin: 0 auto 28px; }
+/* The NewsletterSignup component is self-styled (.nl-signup { max-width:520px })
+   with no auto-margins, so inside this text-align:center section it renders hard
+   left under the centered heading. Center the block; keep its form fields
+   left-aligned (standard label/input convention) rather than inheriting center. */
+.pg-home .newsletter .nl-signup { margin: 0 auto; text-align: left; }
 @media (max-width: 620px) {
   .pg-home .newsletter { padding: 60px 0; }
 }

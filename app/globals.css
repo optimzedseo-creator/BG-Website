@@ -183,10 +183,16 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
 .reveal.in { opacity: 1; transform: none; }
 
 /* ---------- responsive (shared) ---------- */
-@media (max-width: 940px) {
+/* Nav collapses to the hamburger at 1050px, not 940px: the 2026-07 rework added
+   the Writing link + LinkedIn glyph, and the fuller nav crowds against the brand
+   wordmark (gap hits 0 / wraps to two rows) in the ~941-1050px band. Below 1050
+   there isn't room for a single comfortable row, so collapse early. */
+@media (max-width: 1050px) {
   .nav { display: none; }
   .menu-btn { display: flex; }
   body.nav-open .mobile-nav { display: block; }
+}
+@media (max-width: 940px) {
   .footer .wrap { flex-direction: column; align-items: flex-start; gap: 16px; }
 }
 @media (max-width: 620px) {
