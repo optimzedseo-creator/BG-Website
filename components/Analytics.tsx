@@ -113,9 +113,25 @@ export default function Analytics() {
       const calendlyOrigin =
         e.origin === "https://calendly.com" || e.origin.endsWith(".calendly.com");
       if (!calendlyOrigin) return;
-      const data = e.data as { event?: string } | null;
+      const data = e.data as {
+        event?: string;
+        payload?: { event?: { uri?: string }; invitee?: { uri?: string } };
+      } | null;
       if (data && data.event === "calendly.event_scheduled") {
+        // Analytics event (Phase 2) — the WINS counter.
         sendEvent("booking", window.location.pathname);
+        // CRM capture (Phase 3): forward the event/invitee URIs so the
+        // Booking row can be enriched later. The payload has no PII (no
+        // invitee email) — just Calendly API URIs.
+        fetch("/api/booking", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            event: data.payload?.event?.uri,
+            invitee: data.payload?.invitee?.uri,
+          }),
+          keepalive: true,
+        }).catch(() => {});
       }
     };
 

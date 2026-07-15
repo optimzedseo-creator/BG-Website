@@ -38,3 +38,56 @@ model Event {
 
   @@index([name, createdAt])
 }
+
+// ---- CRM capture layer — Phase 3 (BACKEND-PLAN.md §3) ----------------------
+// PII (names/emails/messages) lives HERE by design — it's a CRM. The analytics
+// tables above stay PII-free; Lead.visitorId is the only bridge between them.
+
+model Lead {
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique // upsert key — repeat contacts update, never duplicate
+  phone       String?
+  company     String?
+  inquiryType String // inquiry type from the contact-form select
+  message     String // latest message text (full history lives in Activity)
+  status      String   @default("new") // new | contacted | call_booked | qualified | won | lost — NEVER client-settable
+  visitorId   String? // bg_vid cookie → stitches to PageView/Event journey
+  source      String   @default("contact_form")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  activities Activity[]
+  bookings   Booking[]
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Activity {
+  id        String   @id @default(cuid())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  type      String // brief | booking | note | status
+  body      String
+  createdAt DateTime @default(now())
+
+  @@index([leadId, createdAt])
+}
+
+// Calendly bookings land here even when we can't yet enrich them: the popup's
+// postMessage carries event/invitee URIs but NOT the invitee email. Enrichment
+// via the Calendly API needs a personal access token from Brad (not built).
+model Booking {
+  id                 String   @id @default(cuid())
+  calendlyEventUri   String?
+  calendlyInviteeUri String?
+  visitorId          String? // bg_vid at capture time
+  leadId             String?
+  lead               Lead?    @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  scheduledAt        DateTime @default(now()) // when the booking was CAPTURED (not the meeting time)
+  createdAt          DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([visitorId])
+}

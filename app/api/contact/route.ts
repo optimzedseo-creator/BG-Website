@@ -148,24 +148,54 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Couldn't send right now. Please try again shortly." }, { status: 502 });
     }
 
-    // Analytics: record the WIN server-side (survives ad-blockers). Strictly
-    // additive — any failure here is logged and swallowed so the email path
-    // is never affected. NO PII in meta: inquiry type only, never name/email/
-    // message contents (Phase 2, BACKEND-PLAN.md §6).
+    // Analytics + CRM: recorded server-side AFTER the successful send.
+    // Strictly additive — every failure here is logged and swallowed so the
+    // email path is never affected, even if the DB is down entirely.
+    const cookieHeader = req.headers.get("cookie") || "";
+    const vid = cookieHeader.match(/(?:^|;\s*)bg_vid=([A-Za-z0-9-]{16,64})/);
+    const visitorId = vid ? vid[1] : null;
+
+    // Analytics WIN event (Phase 2, BACKEND-PLAN.md §6). NO PII in meta:
+    // inquiry type only, never name/email/message contents.
     try {
       const { prisma } = await import("@/lib/db");
-      const cookieHeader = req.headers.get("cookie") || "";
-      const vid = cookieHeader.match(/(?:^|;\s*)bg_vid=([A-Za-z0-9-]{16,64})/);
       await prisma.event.create({
         data: {
           name: "form_submit",
           path: "/contact",
-          visitorId: vid ? vid[1] : null,
+          visitorId,
           meta: { type: type.slice(0, 100) },
         },
       });
     } catch (err) {
       console.error("form_submit analytics write failed", err);
+    }
+
+    // CRM capture (Phase 3, BACKEND-PLAN.md §3): upsert the Lead by email
+    // (repeat contact updates details but keeps the original createdAt and
+    // status — status is NEVER set from client input), then append the
+    // message to the lead's timeline as a "brief" Activity.
+    try {
+      const { prisma } = await import("@/lib/db");
+      const details = {
+        name: name.slice(0, 200),
+        phone: phone ? phone.slice(0, 50) : null,
+        company: company ? company.slice(0, 200) : null,
+        inquiryType: type.slice(0, 100),
+        message: message.slice(0, 8000),
+        ...(visitorId ? { visitorId } : {}),
+      };
+      const lead = await prisma.lead.upsert({
+        where: { email: email.slice(0, 320).toLowerCase() },
+        update: details,
+        create: { email: email.slice(0, 320).toLowerCase(), ...details },
+        select: { id: true },
+      });
+      await prisma.activity.create({
+        data: { leadId: lead.id, type: "brief", body: message.slice(0, 8000) },
+      });
+    } catch (err) {
+      console.error("CRM lead write failed", err);
     }
 
     return NextResponse.json({ ok: true });
