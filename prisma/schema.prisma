@@ -75,6 +75,19 @@ model Activity {
   @@index([leadId, createdAt])
 }
 
+// ---- Admin config — Phase 4 (BACKEND-PLAN.md §5) ---------------------------
+// Single-owner key/value config, mirroring the Griffin Opus pattern. Holds:
+//   admin_password_hash  scrypt (salt:hash hex) — NEVER a default password
+//   admin_totp_secret    base32 TOTP secret (2FA enabled when present;
+//                        recovery = delete this row via the Neon console)
+//   admin_totp_pending   secret awaiting a valid code before 2FA turns on
+//   admin_lockout        JSON { fails, until } — 5 fails → 15-min lock
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
 // Calendly bookings land here even when we can't yet enrich them: the popup's
 // postMessage carries event/invitee URIs but NOT the invitee email. Enrichment
 // via the Calendly API needs a personal access token from Brad (not built).

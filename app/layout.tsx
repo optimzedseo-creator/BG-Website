@@ -9,10 +9,6 @@ import "./styles/credentials.css";
 import "./styles/executive.css";
 import "./styles/fractional.css";
 import "./styles/consulting.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import SiteEffects from "@/components/SiteEffects";
-import Analytics from "@/components/Analytics";
 
 /*
  * Fonts are self-hosted via next/font (removes the Google Fonts third-party
@@ -45,16 +41,16 @@ export const viewport: Viewport = {
   themeColor: "#1C2B4A",
 };
 
+/*
+ * Root layout carries ONLY the document shell (fonts, global CSS, favicon).
+ * Site chrome (Header/Footer/SiteEffects/Analytics) lives in app/(site)/layout.tsx
+ * so /admin renders its own minimal layout with no storefront chrome and no
+ * analytics capture (Phase 4).
+ */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${fraunces.variable} ${inter.variable}`}>
-      <body>
-        <Header />
-        {children}
-        <Footer />
-        <SiteEffects />
-        <Analytics />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
