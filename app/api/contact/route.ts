@@ -1,8 +1,13 @@
-// Vercel serverless function — receives the contact form and emails it via Resend.
+// Contact endpoint — ported 1:1 from the legacy api/contact.js Vercel function.
+// Receives the contact form and emails it via Resend.
 // Env vars (set in Vercel → Project → Settings → Environment Variables):
 //   RESEND_API_KEY   (required)  your Resend API key
 //   CONTACT_TO       (optional)  where leads land; default griff_brad@yahoo.com
 //   CONTACT_FROM     (optional)  verified sender; default "Bradley Griffin <leads@bradleygriffin.us>"
+
+import { NextResponse } from "next/server";
+
+export const runtime = "nodejs";
 
 // ---- Abuse dampening ------------------------------------------------------
 // In-instance rate limiter: Map of IP -> recent submission timestamps.
@@ -10,19 +15,19 @@
 // keeps its own Map, and cold starts reset it. This is abuse DAMPENING
 // (slows scripted spam / Resend-quota burn), not a hard guarantee. A hard
 // limit would need shared state (KV/Upstash) — deliberately out of scope
-// for a static portfolio contact form.
+// for a portfolio contact form.
 const RATE_LIMIT_MAX = 5; // max submissions...
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000; // ...per 10 minutes per IP
 const MAX_BODY_BYTES = 10 * 1024; // 10KB payload cap — far above any real inquiry
-const recentHits = new Map();
+const recentHits = new Map<string, number[]>();
 
-function clientIp(req) {
-  const fwd = req.headers["x-forwarded-for"];
+function clientIp(req: Request): string {
+  const fwd = req.headers.get("x-forwarded-for");
   if (typeof fwd === "string" && fwd.length) return fwd.split(",")[0].trim();
-  return (req.socket && req.socket.remoteAddress) || "unknown";
+  return "unknown";
 }
 
-function isRateLimited(ip) {
+function isRateLimited(ip: string): boolean {
   const now = Date.now();
   const fresh = (recentHits.get(ip) || []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
   if (fresh.length >= RATE_LIMIT_MAX) {
@@ -41,74 +46,70 @@ function isRateLimited(ip) {
 }
 // ---------------------------------------------------------------------------
 
-const esc = (s) =>
+const esc = (s: unknown): string =>
   String(s == null ? "" : s)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
-module.exports = async function handler(req, res) {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
+export async function POST(req: Request) {
   // Payload size cap (cheap check first — declared size).
-  const declaredLen = parseInt(req.headers["content-length"] || "0", 10);
+  const declaredLen = parseInt(req.headers.get("content-length") || "0", 10);
   if (declaredLen > MAX_BODY_BYTES) {
-    return res.status(413).json({ error: "Message too large. Please shorten it and try again." });
+    return NextResponse.json(
+      { error: "Message too large. Please shorten it and try again." },
+      { status: 413 }
+    );
   }
 
   // Per-IP rate limit (see note at top: per-instance dampening, not a hard guarantee).
   if (isRateLimited(clientIp(req))) {
-    res.setHeader("Retry-After", "600");
-    return res.status(429).json({ error: "Too many submissions. Please wait a few minutes and try again." });
+    return NextResponse.json(
+      { error: "Too many submissions. Please wait a few minutes and try again." },
+      { status: 429, headers: { "Retry-After": "600" } }
+    );
   }
 
-  // Parse body (works whether Vercel pre-parsed it or not).
-  let data = req.body;
-  if (!data || typeof data === "string") {
-    try {
-      const raw =
-        typeof data === "string"
-          ? data
-          : await new Promise((resolve, reject) => {
-              let b = "";
-              req.on("data", (c) => {
-                b += c;
-                // Enforce the size cap while streaming too (content-length can lie).
-                if (b.length > MAX_BODY_BYTES) reject(new Error("payload too large"));
-              });
-              req.on("end", () => resolve(b));
-              req.on("error", reject);
-            });
-      data = JSON.parse(raw || "{}");
-    } catch {
-      data = {};
+  // Parse body — enforce the size cap on the ACTUAL bytes too (content-length can lie).
+  let data: Record<string, unknown> = {};
+  try {
+    const raw = await req.text();
+    if (Buffer.byteLength(raw, "utf8") > MAX_BODY_BYTES) {
+      return NextResponse.json(
+        { error: "Message too large. Please shorten it and try again." },
+        { status: 413 }
+      );
     }
+    data = JSON.parse(raw || "{}");
+  } catch {
+    data = {};
   }
 
-  const name = (data.name || "").trim();
-  const email = (data.email || "").trim();
-  const phone = (data.phone || "").trim();
-  const company = (data.company || "").trim();
-  const type = (data.type || "General inquiry").trim();
-  const message = (data.message || "").trim();
+  const str = (v: unknown) => (typeof v === "string" ? v : v == null ? "" : String(v));
+  const name = str(data.name).trim();
+  const email = str(data.email).trim();
+  const phone = str(data.phone).trim();
+  const company = str(data.company).trim();
+  const type = (str(data.type) || "General inquiry").trim();
+  const message = str(data.message).trim();
 
   // Honeypot: real people leave it empty; bots fill it. Silently accept + drop.
-  if (data._gotcha) return res.status(200).json({ ok: true });
+  if (data._gotcha) return NextResponse.json({ ok: true });
 
   if (!name || !email || !message) {
-    return res.status(400).json({ error: "Please complete name, email, and message." });
+    return NextResponse.json({ error: "Please complete name, email, and message." }, { status: 400 });
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return res.status(400).json({ error: "That email address doesn't look right." });
+    return NextResponse.json({ error: "That email address doesn't look right." }, { status: 400 });
   }
 
   const key = process.env.RESEND_API_KEY;
   if (!key) {
-    return res.status(503).json({ error: "Email isn't configured yet. Please email directly for now." });
+    return NextResponse.json(
+      { error: "Email isn't configured yet. Please email directly for now." },
+      { status: 503 }
+    );
   }
 
   const to = process.env.CONTACT_TO || "griff_brad@yahoo.com";
@@ -144,11 +145,11 @@ module.exports = async function handler(req, res) {
     if (!r.ok) {
       const detail = await r.text();
       console.error("Resend error", r.status, detail);
-      return res.status(502).json({ error: "Couldn't send right now. Please try again shortly." });
+      return NextResponse.json({ error: "Couldn't send right now. Please try again shortly." }, { status: 502 });
     }
-    return res.status(200).json({ ok: true });
+    return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("contact handler error", err);
-    return res.status(500).json({ error: "Something went wrong. Please try again." });
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
   }
-};
+}
