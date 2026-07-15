@@ -77,33 +77,78 @@ export default function HomePage() {
               Reports look busy. Leads swing month to month. The dashboard says one thing, the
               bank says another. When you can&rsquo;t see what&rsquo;s driving results, you
               can&rsquo;t repeat them, so good months feel like luck and bad months feel like a
-              mystery.
+              mystery. And that guesswork costs you: wasted spend, uneven sales, and thinner
+              margins than the business should earn.
             </p>
             <p className="spine-line">Bring me the problem. I&rsquo;ll bring the math.</p>
           </div>
           <ol className="method reveal">
             <li>
-              <span className="step-n">1</span>
+              <div className="step-head">
+                <span className="step-n">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
+                  </svg>
+                </span>
+                <span className="step-num">01</span>
+              </div>
               <h3>Raw source data</h3>
-              <p>I start in your actual platforms, not a summary slide. The real numbers behind the reports.</p>
+              <p>I start at the source, not a summary slide. The raw numbers before anyone summarized them.</p>
             </li>
             <li>
-              <span className="step-n">2</span>
+              <div className="step-head">
+                <span className="step-n">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+                    <circle cx="10.5" cy="10.5" r="6" />
+                    <path d="M15 15l5.5 5.5" />
+                    <path d="M9 12V10M11.5 12V8.5" />
+                  </svg>
+                </span>
+                <span className="step-num">02</span>
+              </div>
               <h3>Quantitative audit</h3>
-              <p>I find the waste and the leverage, and I attach the math to every finding.</p>
+              <p>I find the waste, and I find the opportunity. Then I attach the math to every finding.</p>
             </li>
             <li>
-              <span className="step-n">3</span>
+              <div className="step-head">
+                <span className="step-n">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M3.5 7.5l1.8 1.8L8.5 6" />
+                    <path d="M11.5 8h8" />
+                    <path d="M3.5 13.5l1.8 1.8L8.5 12" />
+                    <path d="M11.5 14h8" />
+                  </svg>
+                </span>
+                <span className="step-num">03</span>
+              </div>
               <h3>Blueprint</h3>
-              <p>A clear picture of the system that fixes it: what to keep, what to cut, what to build.</p>
+              <p>A clear picture of the actions that fix it: what to keep, what to cut, what to build.</p>
             </li>
             <li>
-              <span className="step-n">4</span>
+              <div className="step-head">
+                <span className="step-n">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M4.5 19c4.5 0 3.5-6 8-6s2.5-6 7-6" />
+                    <circle cx="4.5" cy="19" r="1.5" />
+                    <circle cx="19.5" cy="7" r="1.5" />
+                  </svg>
+                </span>
+                <span className="step-num">04</span>
+              </div>
               <h3>Roadmap</h3>
               <p>A ranked plan in the order that compounds, so the work builds on itself.</p>
             </li>
             <li>
-              <span className="step-n">5</span>
+              <div className="step-head">
+                <span className="step-n">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M4 17l6-5 4-2 5.5-4" />
+                    <path d="M15.5 6h4v4" />
+                  </svg>
+                </span>
+                <span className="step-num">05</span>
+              </div>
               <h3>Predictable growth</h3>
               <p>Systems that hold. Growth you can repeat, not chase.</p>
             </li>

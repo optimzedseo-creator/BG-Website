@@ -94,20 +94,31 @@
   padding: 26px 22px 24px;
   position: relative;
 }
+.pg-home .method .step-head {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 14px;
+}
 .pg-home .method .step-n {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 auto;
   width: 34px;
   height: 34px;
   border-radius: 50%;
   background: var(--cream-2);
   border: 1px solid var(--line-strong);
-  font-family: var(--serif);
-  font-size: 17px;
-  font-weight: 500;
   color: var(--bronze-deep);
-  margin-bottom: 14px;
+}
+.pg-home .method .step-n svg { width: 18px; height: 18px; display: block; }
+.pg-home .method .step-num {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--mute);
 }
 .pg-home .method h3 {
   font-size: 17px;
