@@ -33,7 +33,7 @@ const contactJsonLd =
 
 export default function ContactPage() {
   return (
-    <>
+    <div className="page-contact">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: contactJsonLd }} />
 
       {/* ======= CONTACT ======= */}
@@ -49,6 +49,6 @@ export default function ContactPage() {
           <ContactForm />
         </div>
       </section>
-    </>
+    </div>
   );
 }

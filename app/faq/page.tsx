@@ -53,7 +53,7 @@ const faqJsonLd = jsonLd({
 
 export default function FaqPage() {
   return (
-    <>
+    <div className="page-faq">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd }} />
 
       {/* ======= HERO ======= */}
@@ -92,6 +92,6 @@ export default function FaqPage() {
           <a className="btn btn-gold cal-link" href="https://calendly.com/optimzedseo/30min" target="_blank" rel="noopener">Schedule a Call <span className="arr">&rarr;</span></a></div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

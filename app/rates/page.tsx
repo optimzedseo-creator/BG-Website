@@ -35,7 +35,7 @@ const ratesJsonLd =
 
 export default function RatesPage() {
   return (
-    <>
+    <div className="page-rates">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ratesJsonLd }} />
 
       {/* ======= HERO ======= */}
@@ -130,6 +130,6 @@ export default function RatesPage() {
           <a className="btn btn-gold cal-link" href="https://calendly.com/optimzedseo/30min" target="_blank" rel="noopener">Schedule a Call <span className="arr">&rarr;</span></a></div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

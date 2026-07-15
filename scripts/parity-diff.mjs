@@ -6,16 +6,24 @@
  */
 const LIVE = "https://www.bradleygriffin.us";
 const LOCAL = process.argv[2] || "http://localhost:3199";
-const PAGES = ["/faq", "/contact", "/rates"];
+const PAGES = ["/", "/executive", "/fractional", "/consulting", "/case-studies", "/story", "/speaking", "/credentials", "/faq", "/contact", "/rates"];
 
 const ENTITIES = {
   "&mdash;": "—", "&ndash;": "–", "&rsquo;": "’", "&lsquo;": "‘",
   "&ldquo;": "“", "&rdquo;": "”", "&middot;": "·", "&copy;": "©",
   "&rarr;": "→", "&nbsp;": " ", "&hellip;": "…", "&quot;": '"',
-  "&#39;": "'", "&#x27;": "'", "&amp;": "&",
+  "&#39;": "'", "&#x27;": "'", "&#8209;": "‑", "&minus;": "−",
+  "&times;": "×", "&darr;": "↓", "&uarr;": "↑", "&dagger;": "†",
+  "&amp;": "&",
 };
 function decode(s) {
-  return s.replace(/&[#a-zA-Z0-9x]+;/g, (m) => ENTITIES[m] ?? m);
+  return s.replace(/&[#a-zA-Z0-9x]+;/g, (m) => {
+    if (ENTITIES[m] !== undefined) return ENTITIES[m];
+    // generic numeric character references: &#183; / &#x2192;
+    const num = m.match(/^&#(x?)([0-9a-fA-F]+);$/);
+    if (num) return String.fromCodePoint(parseInt(num[2], num[1] ? 16 : 10));
+    return m;
+  });
 }
 
 function getTag(html, re) {

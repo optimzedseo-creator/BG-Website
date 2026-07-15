@@ -1,6 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
+import "./styles/home.css";
+import "./styles/case-studies.css";
+import "./styles/story.css";
+import "./styles/speaking.css";
+import "./styles/credentials.css";
+import "./styles/executive.css";
+import "./styles/fractional.css";
+import "./styles/consulting.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SiteEffects from "@/components/SiteEffects";
