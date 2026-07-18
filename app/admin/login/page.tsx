@@ -14,7 +14,10 @@ export default async function AdminLoginPage() {
   return (
     <div className="adm-auth-wrap">
       <div className="adm-auth-card">
-        <p className="adm-brand">bradleygriffin.us</p>
+        {/* The doorplate (DESIGN-SPEC §5.12): mono micro-label + Syne name,
+            gold keyline via .adm-auth-card::before. */}
+        <p className="adm-auth-micro">Ops Console</p>
+        <p className="adm-auth-brand">Bradley Griffin</p>
         <LoginForm mode={hasPassword ? "login" : "setup"} />
       </div>
     </div>

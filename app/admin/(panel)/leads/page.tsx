@@ -21,7 +21,7 @@ export default async function AdminLeadsPage() {
   });
 
   return (
-    <>
+    <div data-acc="leads">
       <div className="adm-head">
         <h1>Leads</h1>
         <span className="adm-count">{leads.length} total</span>
@@ -29,10 +29,13 @@ export default async function AdminLeadsPage() {
 
       {leads.length === 0 ? (
         <section className="adm-card adm-card-wide">
-          <p className="adm-empty">No leads yet. Contact-form submissions land here automatically.</p>
+          <p className="adm-empty">📭 No leads yet. Contact-form submissions land here automatically.</p>
         </section>
       ) : (
-        <section className="adm-card adm-card-wide adm-table-wrap">
+        <section className="adm-card adm-card-wide">
+          {/* Scroll container INSIDE the card so the 3px accent keyline
+              (card ::before) stays fixed while the table pans at 375. */}
+          <div className="adm-table-wrap">
           <table className="adm-table">
             <thead>
               <tr>
@@ -42,6 +45,7 @@ export default async function AdminLeadsPage() {
                 <th>Status</th>
                 <th>Created</th>
                 <th>Last activity</th>
+                <th aria-hidden="true" />
               </tr>
             </thead>
             <tbody>
@@ -62,12 +66,14 @@ export default async function AdminLeadsPage() {
                   <td className="adm-mono">
                     {lead.activities[0] ? `${fmt(lead.activities[0].createdAt)} (${lead.activities[0].type})` : "—"}
                   </td>
+                  <td className="adm-go" aria-hidden="true">→</td>
                 </tr>
               ))}
             </tbody>
           </table>
+          </div>
         </section>
       )}
-    </>
+    </div>
   );
 }

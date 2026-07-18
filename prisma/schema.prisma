@@ -26,6 +26,7 @@ model PageView {
   @@index([createdAt])
   @@index([visitorId])
   @@index([path])
+  @@index([path, createdAt])
 }
 
 model Event {
@@ -37,6 +38,7 @@ model Event {
   createdAt DateTime @default(now())
 
   @@index([name, createdAt])
+  @@index([visitorId, createdAt])
 }
 
 // ---- CRM capture layer — Phase 3 (BACKEND-PLAN.md §3) ----------------------
@@ -135,6 +137,7 @@ model GscQuery {
   @@unique([date, query, page]) // idempotent sliding-window upsert key (also serves date-range scans)
   @@index([isBranded, date])
   @@index([intentBucket, date])
+  @@index([page, date])
 }
 
 // One row per day: property-level totals (dims=[date]). GSC anonymizes rare

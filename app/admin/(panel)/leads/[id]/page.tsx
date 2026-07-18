@@ -82,7 +82,7 @@ export default async function AdminLeadDetail({ params }: { params: Promise<{ id
   }
 
   return (
-    <>
+    <div data-acc="leads">
       <div className="adm-head">
         <h1>{lead.name}</h1>
         <Link href="/admin/leads" className="adm-back">← All leads</Link>
@@ -117,7 +117,7 @@ export default async function AdminLeadDetail({ params }: { params: Promise<{ id
         <section className="adm-card">
           <h2>Timeline</h2>
           {lead.activities.length === 0 ? (
-            <p className="adm-empty">No activity yet.</p>
+            <p className="adm-empty">🌙 No activity yet.</p>
           ) : (
             <ol className="adm-timeline">
               {lead.activities.map((a) => (
@@ -134,7 +134,7 @@ export default async function AdminLeadDetail({ params }: { params: Promise<{ id
         <section className="adm-card">
           <h2>Bookings</h2>
           {lead.bookings.length === 0 ? (
-            <p className="adm-empty">No linked bookings.</p>
+            <p className="adm-empty">📭 No linked bookings yet.</p>
           ) : (
             <ul className="adm-list">
               {lead.bookings.map((b) => (
@@ -150,9 +150,9 @@ export default async function AdminLeadDetail({ params }: { params: Promise<{ id
         <section className="adm-card adm-card-wide">
           <h2>Visitor journey</h2>
           {!lead.visitorId ? (
-            <p className="adm-empty">No visitor id on this lead (form was submitted without an analytics cookie).</p>
+            <p className="adm-empty">📭 No visitor id on this lead (form was submitted without an analytics cookie).</p>
           ) : journey.length === 0 ? (
-            <p className="adm-empty">No recorded pageviews or events for this visitor.</p>
+            <p className="adm-empty">🌙 No recorded pageviews or events for this visitor.</p>
           ) : (
             <ol className="adm-journey">
               {journey.map((j, i) => (
@@ -166,6 +166,6 @@ export default async function AdminLeadDetail({ params }: { params: Promise<{ id
           )}
         </section>
       </div>
-    </>
+    </div>
   );
 }

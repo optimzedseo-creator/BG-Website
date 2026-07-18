@@ -2,11 +2,18 @@
 
 // /admin/security server actions: TOTP enrollment (QR + code confirmation so
 // Brad can never lock himself out with an unscanned secret), 2FA disable
-// (requires a valid current code), and password change (requires the current
-// password). Every action starts with requireAdmin() — the invariant.
+// (requires a valid current code), password change (requires the current
+// password), and the WP1.5 internal-traffic list (exclude this browser /
+// remove an id). Every action starts with requireAdmin() — the invariant.
 
+import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import QRCode from "qrcode";
+import {
+  VISITOR_COOKIE,
+  addInternalVisitorId,
+  removeInternalVisitorId,
+} from "@/lib/admin/iq/internal";
 import {
   K_PASSWORD_HASH,
   K_TOTP_PENDING,
@@ -98,4 +105,30 @@ export async function changePassword(_prev: FormResult, formData: FormData): Pro
 
   await setSetting(K_PASSWORD_HASH, await hashPassword(next));
   return { ok: true };
+}
+
+// ---- WP1.5 internal-traffic exclusion (DATA-SPEC §5.3) ----------------------
+// Read-time list edits only — no analytics rows are ever written or deleted
+// here. The page renders the honest device state server-side (no cookie /
+// already excluded / excludable), so these actions stay plain form actions.
+
+/** Put THIS browser's bg_vid on the exclusion list (no-op if already listed or if no cookie exists). */
+export async function excludeThisDeviceAction(): Promise<void> {
+  if (!(await requireAdmin())) return;
+
+  const bgVid = (await cookies()).get(VISITOR_COOKIE)?.value;
+  if (!bgVid) return; // page already told the user there is no visitor id on this browser
+  await addInternalVisitorId(bgVid);
+  revalidatePath("/admin/security");
+  revalidatePath("/admin");
+}
+
+/** Take one visitor id off the exclusion list — its visits count again from the next dashboard load. */
+export async function removeInternalVisitorAction(formData: FormData): Promise<void> {
+  if (!(await requireAdmin())) return;
+
+  const id = field(formData, "id");
+  if (id) await removeInternalVisitorId(id);
+  revalidatePath("/admin/security");
+  revalidatePath("/admin");
 }

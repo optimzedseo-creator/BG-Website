@@ -6,6 +6,9 @@ node_modules
 .DS_Store
 *.log
 
+# Agent-team review tooling (session-mint helper etc. — never commit)
+.claude/
+
 # DB split (operational scripts + local backups — never deploy)
 _dbsplit/
 bradley_site_backup_*.json
