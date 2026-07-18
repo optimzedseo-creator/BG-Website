@@ -6,6 +6,17 @@ node_modules
 .DS_Store
 *.log
 
+# DB split (operational scripts + local backups — never deploy)
+_dbsplit/
+bradley_site_backup_*.json
+
+# Cloud credentials / key files (bradley-security §1 — never commit key material)
+*service-account*.json
+*-sa.json
+gsc-*.json
+*credentials*.json
+/secrets/
+
 # Next.js
 .next/
 out/

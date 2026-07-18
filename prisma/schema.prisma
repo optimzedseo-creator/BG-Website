@@ -107,6 +107,62 @@ model Subscriber {
   @@index([createdAt])
 }
 
+// ---- GSC daily pull — WP4 (ANALYTICS-BUILD-PLAN) ---------------------------
+// Search Console query rows, PRE-TAGGED at ingest (branded two-token rule,
+// intent bucket, geo string rule) — tags versioned via classifierVersion so
+// definitions can evolve without faking trends. PII-free by nature (search
+// query strings, defensively length-capped at ingest: query<=1024, page<=2048
+// — btree unique-index entries have a ~2.7KB ceiling). Never joins CRM tables.
+// Shape reviewed by bradley-database 2026-07-18 (approve-with-changes applied).
+
+model GscQuery {
+  id                String   @id @default(cuid())
+  date              DateTime @db.Date
+  query             String
+  page              String
+  impressions       Int
+  clicks            Int
+  position          Float
+  isBranded         Boolean // two-token rule: BOTH bradley AND griffin (or joined form)
+  brandedAmbiguous  Boolean // single-token bradley OR griffin only — NEVER folded into branded
+  isCollision       Boolean // possible wrong-entity (decoy tokens) — hypothesis flag, not fact
+  intentBucket      String? // hire-fractional | consulting | cost | speaking | book | informational | exec | null
+  isGeo             Boolean // explicit geo-string rule (Michigan/Indiana tokens)
+  classifierVersion String // e.g. "v1-2026-07-18"
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([date, query, page]) // idempotent sliding-window upsert key (also serves date-range scans)
+  @@index([isBranded, date])
+  @@index([intentBucket, date])
+}
+
+// One row per day: property-level totals (dims=[date]). GSC anonymizes rare
+// queries, so visible query rows undercount — these totals are the honest
+// denominator for "% classifiable".
+model GscDaily {
+  id          String   @id @default(cuid())
+  date        DateTime @unique @db.Date
+  impressions Int
+  clicks      Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Date x country (dims=[date,country]) — the honest geo cut per the keywords
+// taxonomy (GSC's own dimension, not string inference).
+model GscCountryDaily {
+  id          String   @id @default(cuid())
+  date        DateTime @db.Date
+  country     String // GSC 3-letter country code (e.g. usa)
+  impressions Int
+  clicks      Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([date, country])
+}
+
 // Calendly bookings land here even when we can't yet enrich them: the popup's
 // postMessage carries event/invitee URIs but NOT the invitee email. Enrichment
 // via the Calendly API needs a personal access token from Brad (not built).
