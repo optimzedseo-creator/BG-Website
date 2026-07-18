@@ -187,7 +187,7 @@ export default function CaseStudiesPage() {
               <ul>
                 <li><strong>Outsourced the call center to AnswerForce</strong> — professional coverage on every ring, so demand stopped dying on hold.</li>
                 <li><strong>Flipped the acquisition model from outbound to demand-driven inbound</strong> — Google Ads, Microsoft Ads, and Google Local Services Ads replaced the aggregators and aged leads.</li>
-                <li><strong>Built automated booking that sent every inbound lead straight to sales</strong> — no manual entry — and migrated the CRM from Salesforce to BuilderPrime, so every number below could be trusted.</li>
+                <li><strong>Built automated booking that sent every inbound lead straight to sales</strong> — no manual entry — and migrated the CRM from Salesforce to Builder Prime, so every number below could be trusted.</li>
                 <li><strong>Rewrote the inside sales scripts and inbound workflows</strong> around one metric: calls that become booked appointments.</li>
               </ul>
             </div>
@@ -252,7 +252,7 @@ export default function CaseStudiesPage() {
                 </svg>
               </div>
               <p className="excap"><span className="tick">Exhibit A —</span> Inbound calls (bars, left axis) &amp; booking rate (line), Aug &rarr; Nov</p>
-              <p className="exnote">* August is mostly missing — pre-migration tracking couldn&rsquo;t be trusted, so August volume is understated and the booking rate isn&rsquo;t reportable. &dagger; September week 4 is absent entirely; it fell during the Salesforce &rarr; BuilderPrime cutover. The gaps are reported as found — that&rsquo;s the point of the migration.</p>
+              <p className="exnote">* August is mostly missing — pre-migration tracking couldn&rsquo;t be trusted, so August volume is understated and the booking rate isn&rsquo;t reportable. &dagger; September week 4 is absent entirely; it fell during the Salesforce &rarr; Builder Prime cutover. The gaps are reported as found — that&rsquo;s the point of the migration.</p>
             </div>
           </div>
         </div>
