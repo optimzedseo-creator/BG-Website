@@ -91,7 +91,7 @@ export const pillars: Pillar[] = [
     h1: "Data and analytics",
     eyebrow: "Insights · Data & Analytics",
     microlabel: "Flagship",
-    dek: "Reading the raw data others can't see, and finding the real problem under the symptom.",
+    dek: "Reading the raw data, and finding the real problem under the symptom you can feel.",
     thesis:
       "Most companies measure activity, not the few numbers that actually predict growth. Read the raw data right and the real problem is almost never where the dashboard says it is.",
     diagnosis: [],
@@ -121,7 +121,7 @@ export const pillars: Pillar[] = [
     overview: [
       `Most marketing problems get blamed on the wrong thing. The ads. The agency. The channel of the month. So the fix is always to spend more, or switch platforms, and hope.`,
       `The channel is rarely the culprit. When marketing is not working, the problem is usually upstream. The offer is weak. The fit is off. Or the funnel leaks before the ad ever gets a fair shot.`,
-      `So before I touch the ad account, I check the vitals. An audit is a blood test for your business: it shows the real diagnosis under the symptom you can feel, and like any blood test it takes a good doctor to read it and prescribe the fix. You run the vitals check before you write the prescription.`,
+      `So before I touch the ad account, I check the vitals. An audit reads the numbers under the symptom you can feel and shows you where the money is actually leaking. You run the vitals before you write the prescription.`,
       `Nine times out of ten the money is not in a new channel. It is in fixing what happens before and after the click. A sharper offer. A page that converts. A follow-up that does not drop the lead.`,
       `If you are spending more and getting less, the answer is probably not another campaign. It is to [bring in a fractional CMO to fix it upstream](/fractional). Fix the upstream, and the same spend starts to work.`,
     ],
@@ -143,7 +143,7 @@ export const pillars: Pillar[] = [
     overview: [
       `AI is being sold as the answer to everything right now. Every vendor has a bot. Every deck has a slide. The pressure to buy something is real, and it is loud.`,
       `Here is the part they skip. AI is a build tool, not a strategy. It makes things faster. It does not decide what is worth doing. Automate a broken process and all you get is the wrong thing, faster and at scale.`,
-      `So I diagnose before I build. An audit is a blood test for your business: it shows the real diagnosis under the symptom you can feel, and like any blood test it takes a good doctor to read it and prescribe the fix. Diagnosis comes before treatment, every time.`,
+      `So I diagnose before I build. An audit finds the real problem under the symptom you can feel, so you automate the fix instead of the fault. Diagnosis comes before treatment, every time.`,
       `Once the process is sound, AI is genuinely useful. It clears busywork. It speeds up the work your team should be doing anyway. The point is to fix the thing first, then make the good version faster.`,
       `If you want AI to earn its keep, start with the process, not the tool. That is [the AI builds I actually do](/consulting). Get the workflow right, then let the machine run it.`,
     ],
@@ -316,7 +316,7 @@ export function indexGraph() {
         url: `${SITE}/insights`,
         name: "Insights",
         description:
-          "Field notes from an operator who finds the real problem in a company's data and builds the fix. Four topics, one point of view.",
+          "Field notes on spotting the real problem before you spend more money fixing the wrong one. Across data, marketing, AI, and sales.",
         author: personRef,
         publisher: personRef,
         inLanguage: "en-US",

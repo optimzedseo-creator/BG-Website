@@ -7,7 +7,7 @@ import { getPillars, countLabel, indexGraph } from "@/lib/insights";
 
 const TITLE = "Insights - Bradley Griffin";
 const DESCRIPTION =
-  "Field notes from an operator who finds the real problem in a company's data and builds the fix. Data and analytics, digital marketing, AI and automation, and sales and conversion.";
+  "Most companies fix the wrong thing. How to spot the real problem before you spend more money on the wrong one. Across data, marketing, AI, and sales.";
 const URL = "https://www.bradleygriffin.us/insights";
 const OG_IMAGE = "https://www.bradleygriffin.us/assets/bradley-griffin-og.jpg";
 
@@ -43,11 +43,11 @@ export default function InsightsIndexPage() {
           <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Insights" }]} />
           <span className="microlabel">Insights</span>
           <h1>
-            Proof of results, and now <em>proof of thinking.</em>
+            Most companies fix the <em>wrong thing.</em>
           </h1>
           <p className="lede">
-            Four territories, one point of view: I find the real problem in a company&rsquo;s data and
-            build the fix. Start where the pain is.
+            How to spot the real problem before you spend more money on the wrong one. Across data,
+            marketing, AI, and sales.
           </p>
         </div>
       </section>
