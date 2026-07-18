@@ -9,7 +9,10 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL") // runtime — pooled (-pooler, pgbouncer)
+  // CLI/migrations ONLY (prisma migrate dev/deploy/diff): direct endpoint,
+  // never the pooler. App runtime stays pooled via DATABASE_URL.
+  directUrl = env("DIRECT_URL")
 }
 
 model PageView {

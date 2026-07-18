@@ -31,7 +31,7 @@ const dmMono = DM_Mono({
 // (site) route group), all admin CSS scoped under .page-admin, and noindex
 // metadata on every admin page (middleware adds X-Robots-Tag on top).
 export const metadata: Metadata = {
-  title: "Admin — Bradley Griffin",
+  title: "Admin · Bradley Griffin",
   robots: { index: false, follow: false },
 };
 

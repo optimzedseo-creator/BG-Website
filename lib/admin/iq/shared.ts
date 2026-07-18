@@ -13,8 +13,11 @@
 
 import type {
   DeltaOrCounts,
+  FirstEntry,
+  InsightClass,
+  IqInsightCard,
+  IqRuleInputs,
   RateOrCounts,
-  IqSummary,
   SourceClass,
   WindowDays,
 } from "./types";
@@ -120,6 +123,88 @@ export function windowBucketKeys(window: WindowDays, now: Date = new Date()): st
   return keys;
 }
 
+/**
+ * Tolerant ?p= querystring parser (WP2.3: parse params tolerantly) — anything
+ * that isn't exactly 7/30/90 falls back to the 30-day default. ONE copy used
+ * by pages, the /api/admin/iq handler, and the client period switch.
+ */
+export function parseWindowParam(raw: string | null | undefined): WindowDays {
+  if (raw === "7") return 7;
+  if (raw === "90") return 90;
+  return 30;
+}
+
+/** Tolerant module-chip dimension parser (device/country): opaque, length-
+ * capped strings — they only ever filter in-memory rows, never SQL. Control
+ * characters are stripped before the cap (security hardening: these values
+ * echo back into payloads/URLs and must never carry \x00-\x1f/\x7f). ONE copy
+ * used by the module pages and the /admin/api/iq/* handlers. */
+export function parseDimParam(raw: string | null | undefined): string | undefined {
+  if (!raw) return undefined;
+  const v = raw.replace(/[\x00-\x1f\x7f]/g, "").slice(0, 64);
+  return v.trim() ? v : undefined;
+}
+
+const SOURCE_CLASS_VALUES: readonly SourceClass[] = [
+  "direct",
+  "search",
+  "social",
+  "ai-referrer",
+  "other",
+];
+
+/** Tolerant ?source= parser — unknown values drop to undefined (no cut). */
+export function parseSourceClassParam(raw: string | null | undefined): SourceClass | undefined {
+  return SOURCE_CLASS_VALUES.includes(raw as SourceClass) ? (raw as SourceClass) : undefined;
+}
+
+/**
+ * Period-stable href (ux U5): appends the active ?p= to a server-rendered
+ * content link (insight-card hrefs, leads "show all") so deep links never
+ * silently reset to the 30d default. 30 IS the default — omitted.
+ */
+export function withPeriod(href: string, p: WindowDays): string {
+  if (p === 30) return href;
+  return `${href}${href.includes("?") ? "&" : "?"}p=${p}`;
+}
+
+/** Module-local cuts an island puts on the wire (subset per module). */
+export interface IslandCuts {
+  device?: string | null;
+  country?: string | null;
+  source?: string | null;
+}
+
+/**
+ * ONE canonical island querystring builder (api A5): ?p= (omitted at the 30d
+ * default) + whichever module-local cuts are active. Used by the island fetch
+ * AND its success-path history.replaceState, so the URL a refetch writes is
+ * exactly the URL it fetched.
+ */
+export function buildIqQuery(p: WindowDays, cuts: IslandCuts): string {
+  const q = new URLSearchParams();
+  if (p !== 30) q.set("p", String(p));
+  if (cuts.device) q.set("device", cuts.device);
+  if (cuts.country) q.set("country", cuts.country);
+  if (cuts.source) q.set("source", cuts.source);
+  return q.toString();
+}
+
+/**
+ * The last `n` NY calendar-day keys ending today — used for fixed-length
+ * micro-sparklines (landing cards are always 14 days regardless of the global
+ * window). Same DST-safe day arithmetic as windowBucketKeys().
+ */
+export function lastNDayKeys(n: number, now: Date = new Date()): string[] {
+  const { y, m, d } = nyDateParts(now);
+  const keys: string[] = [];
+  for (let i = n - 1; i >= 0; i--) {
+    const dt = new Date(Date.UTC(y, m - 1, d - i));
+    keys.push(`${dt.getUTCFullYear()}-${pad2(dt.getUTCMonth() + 1)}-${pad2(dt.getUTCDate())}`);
+  }
+  return keys;
+}
+
 // ---------------------------------------------------------------------------
 // (b) N-guard suppression — NAMED CONSTANTS, the org's one source of truth
 //     (DATA-SPEC §1 conventions; BUILD-PLAN governance "honest-N canon")
@@ -133,6 +218,85 @@ export const DELTA_MIN_PRIOR = 10;
 
 /** GSC query-level rows below this many impressions/window are suppressed (but still counted in totals). */
 export const GSC_MIN_IMPRESSIONS = 30;
+
+// ---- §6b insight-rule constants (values stated ONCE, referenced by name) ----
+
+/** Max insight cards on the Command strip (evaluateRules returns ALL fired; the surface caps). */
+export const INSIGHTS_MAX_COMMAND = 3;
+/** IR1: a lead in status "new" older than this many days breaches SLA. Also drives the leads-list amber threshold. */
+export const RULE_LEAD_SLA_DAYS = 3;
+/** IR3: funnel-break fires when a step has at least this many distinct visitors and the next step has 0. */
+export const RULE_FUNNEL_MIN_STEP = 10;
+/** IR8: evaluator = pageviews on at least this many distinct calendar days... */
+export const RULE_EVALUATOR_MIN_DAYS = 3;
+/** IR8: ...within this trailing window (days). */
+export const RULE_EVALUATOR_WINDOW_D = 14;
+/** IR9: branded-echo needs at least this many branded clicks in the current 28d. */
+export const RULE_BRANDED_ECHO_MIN_CLICKS = 5;
+/** IR5: a GSC page needs at least this many impressions (with 0 clicks) to flag. */
+export const RULE_ZERO_CTR_MIN_IMPRESSIONS = 100;
+/** IR10: referrer-spike needs at least this many views on a path in 7d... */
+export const RULE_REFERRER_SPIKE_MIN_VIEWS = 5;
+/** IR10: ...with at least this share from one external host (trigger math only, never rendered as a %). */
+export const RULE_REFERRER_SPIKE_SHARE = 0.6;
+/** IR6 V1: data-quality flag when GSC classifiable share drops below this. */
+export const RULE_DQ_CLASSIFIABLE_LT = 0.5;
+/** IR6 V2: data-quality flag when pageview duration coverage drops below this. */
+export const RULE_DQ_DURATION_COVERAGE_LT = 0.4;
+
+/** In-fit inquiry types for the scorecard (UX §2.7: fractional, consulting/project,
+ * executive — the "right people raised a hand" number). Values are the contact
+ * form's EXACT stored strings (app/(site)/contact/ContactForm.tsx). */
+export const IN_FIT_INQUIRY_TYPES: readonly string[] = [
+  "Full-Time Executive Role",
+  "Fractional Leadership",
+  "Project (Audit / AI Build)",
+];
+
+/** ALL inquiry types the contact form can store (ContactForm.tsx TYPE_OPTIONS,
+ * exact strings) — the leads donut's slice order. Anything else in the column
+ * (legacy rows, empty strings) rolls into the "Other / unset" residue slice —
+ * never an invented category. */
+export const INQUIRY_TYPE_VALUES: readonly string[] = [
+  ...IN_FIT_INQUIRY_TYPES,
+  "Speaking Engagement",
+];
+
+/** Residue-slice label for inquiry types outside INQUIRY_TYPE_VALUES. */
+export const INQUIRY_TYPE_OTHER_LABEL = "Other / unset";
+
+/** B2 engaged-visitor duration floor (seconds). Also the Content module's
+ * duration threshold coloring boundary — one canonical number, no invented
+ * ramp values. */
+export const ENGAGED_MIN_DURATION_S = 10;
+
+/** Display-side per-view duration cap (seconds): 30 minutes. The write-time
+ * clamp (app/api/track/duration, 6h) admits parked tabs that would swamp a
+ * ~150-view window's average; every per-view duration is clamped to this cap
+ * before entering an average or a journey total, and the Traffic caption
+ * states the cap plainly (bradley-database B1). */
+export const DURATION_DISPLAY_CAP_S = 1800;
+
+/** Traffic visitor-log size (UX §4: "last ~20 visitor journeys"). */
+export const VISITOR_LOG_ROWS = 20;
+
+/** Path-chip cap per visitor-log row; the remainder renders as plain text. */
+export const VISITOR_LOG_PATHS_MAX = 8;
+
+/** Row caps for module tables (nothing unbounded goes over the wire, DATA §3). */
+export const CONTENT_PAGES_MAX = 50;
+export const GSC_QUERY_ROWS_MAX = 50;
+export const GSC_COUNTRY_ROWS_MAX = 12;
+
+// ---- Scorecard unlock gates (UX §2.7 + §7 progress meters — named here so
+//      the meter, the gate copy, and the unlock check share one number) ----
+
+/** Branded-clicks slot unlocks at this many branded impressions in trailing 90d (UX §7 example). */
+export const SCORECARD_BRANDED_GATE_IMPRESSIONS = 50;
+/** In-fit slot unlocks at the first in-fit inquiry (trailing 90d). */
+export const SCORECARD_INFIT_GATE = 1;
+/** Channel-mix slot unlocks at the first lead with a stitched visitor id. */
+export const SCORECARD_CHANNEL_GATE = 1;
 
 /**
  * Counts-before-rates: returns a rate only when the denominator clears
@@ -291,36 +455,386 @@ export function isDownGood(metricId: string): boolean {
 }
 
 // ---------------------------------------------------------------------------
-// (e) Recommendations rule engine — SKELETON ONLY (DATA-SPEC §6)
+// (e) Firsts catalog (§6b IR11 — ONE shared catalog: seeds the Command ledger
+//     AND the IR11 milestone rule; one list, two renderings)
 // ---------------------------------------------------------------------------
-// Rules R1–R8 land in Wave 2 AFTER the WP2.0 canon merge with UX's I1–I6
-// (BUILD-PLAN reconciliation #1). Do NOT implement rule copy here before that
-// merge — two competing rule sets is exactly the drift WP2.0 exists to stop.
 
-/** A fired insight. triggerMath renders on hover/expand — the honesty pattern. */
-export interface IqInsight {
-  ruleId: string;
-  /** Lower = shown first. Max 4 render at once (DATA-SPEC §6). */
-  priority: number;
-  copy: string;
-  triggerMath: string;
+export interface FirstsCatalogEntry {
+  id: string;
+  label: string;
+  /** GSC firsts deep-link to /admin/search; site firsts/records are LINKLESS in Wave 2. */
+  href: string | null;
 }
+
+export const FIRSTS_CATALOG: readonly FirstsCatalogEntry[] = [
+  { id: "first-visitor", label: "First visitor", href: null },
+  { id: "first-mobile-visitor", label: "First mobile visitor", href: null },
+  { id: "first-non-us-visitor", label: "First non-US visitor", href: null },
+  { id: "first-chooser-click", label: "First chooser click", href: null },
+  { id: "first-cta-click", label: "First CTA click", href: null },
+  { id: "first-brief", label: "First brief", href: null },
+  { id: "first-booking", label: "First booking", href: null },
+  { id: "first-subscriber", label: "First subscriber", href: null },
+  { id: "tenth-subscriber", label: "10th subscriber", href: null },
+  { id: "first-gsc-click", label: "First search click", href: "/admin/search" },
+  { id: "first-nonbranded-impression", label: "First non-branded impression", href: "/admin/search" },
+  { id: "first-non-us-impression", label: "First non-US impression", href: "/admin/search" },
+  { id: "first-cost-query", label: "First cost-intent query", href: "/admin/search" },
+  { id: "first-branded-click", label: "First branded click", href: "/admin/search" },
+  { id: "best-week", label: "Best week", href: null },
+];
+
+// ---------------------------------------------------------------------------
+// (f) Insight-rule engine — the §6b CANON (UX-SPEC §6b is the ONLY rule
+//     source). ONE copy, runs on both sources. All rules read post-internal-
+//     exclusion inputs; every copy template carries its counts; no lead name
+//     ever appears in strip copy (IR1 PII ruling, permanent).
+//
+//     Copy note: the canon templates were written with em dashes; the site's
+//     standing no-em-dash voice rule outranks punctuation, so every sentence
+//     below carries the same counts and meaning with plain punctuation.
+// ---------------------------------------------------------------------------
+
+const CLASS_RANK: Record<InsightClass, number> = { act: 0, signal: 1, milestone: 2 };
 
 export interface IqRule {
   id: string;
-  /** Returns an insight when the trigger fires, null otherwise. All rules respect internal exclusion (they read post-exclusion payloads). */
-  evaluate(summary: IqSummary): IqInsight | null;
+  cls: InsightClass;
+  /** Per-rule display priority (ascending within class). */
+  priority: number;
+  /** May emit several cards (e.g. IR1 fires once per breaching lead). */
+  evaluate(inputs: IqRuleInputs): IqInsightCard[];
 }
 
-/** Empty until WP2.0 merges the R1–R8 / I1–I6 canon (Wave 2). */
-export const IQ_RULE_REGISTRY: readonly IqRule[] = [];
+function card(
+  rule: IqRule,
+  copy: string,
+  triggerMath: string,
+  href: string | null
+): IqInsightCard {
+  return { ruleId: rule.id, cls: rule.cls, priority: rule.priority, copy, triggerMath, href };
+}
 
-/** Run the registry against a summary; priority-sorted, capped at 4 (DATA-SPEC §6). */
-export function evaluateRules(summary: IqSummary): IqInsight[] {
-  const fired: IqInsight[] = [];
+const IR1: IqRule = {
+  id: "IR1",
+  cls: "act",
+  priority: 10,
+  evaluate(inputs) {
+    // One card per breaching lead, oldest first. No lead name in strip copy,
+    // ever — the name is one click behind the re-gated lead page.
+    return inputs.slaLeads.map((l) =>
+      card(
+        IR1,
+        `A lead has waited ${l.days} day${l.days === 1 ? "" : "s"} in "new" (threshold ${RULE_LEAD_SLA_DAYS}). Follow up.`,
+        `Lead status "new" and age ${l.days}d > ${RULE_LEAD_SLA_DAYS}d`,
+        `/admin/leads/${l.id}`
+      )
+    );
+  },
+};
+
+const IR2: IqRule = {
+  id: "IR2",
+  cls: "act",
+  priority: 20,
+  evaluate(inputs) {
+    const n = inputs.unmatchedBookings;
+    if (n <= 0) return [];
+    return [
+      card(
+        IR2,
+        `${n} Calendly booking${n === 1 ? "" : "s"} in this period ${n === 1 ? "has" : "have"} no matching lead. The invitee email isn't captured without the Calendly API token (known gap). Match manually in the CRM.`,
+        `COUNT(Booking WHERE leadId IS NULL, window) = ${n} > 0`,
+        "/admin/leads"
+      ),
+    ];
+  },
+};
+
+const IR3: IqRule = {
+  id: "IR3",
+  cls: "act",
+  priority: 30,
+  evaluate(inputs) {
+    // Earliest breaking adjacent pair wins; fires at most once. LINKLESS in
+    // Wave 2 (sanctioned): the funnel sits on the same Command surface.
+    for (const p of inputs.funnelPairs) {
+      if (p.n >= RULE_FUNNEL_MIN_STEP && p.nextN === 0) {
+        return [
+          card(
+            IR3,
+            `${p.n} visitors reached ${p.step}; 0 reached ${p.next}. The break is between ${p.step} and ${p.next}.`,
+            `${p.step} distinct visitors ${p.n} >= ${RULE_FUNNEL_MIN_STEP} and ${p.next} = 0`,
+            null
+          ),
+        ];
+      }
+    }
+    return [];
+  },
+};
+
+const IR4: IqRule = {
+  id: "IR4",
+  cls: "act",
+  priority: 40,
+  evaluate(inputs) {
+    const n = inputs.costIntentImpressions28d;
+    if (n < GSC_MIN_IMPRESSIONS) return [];
+    return [
+      card(
+        IR4,
+        `Cost-intent queries reached ${n} impressions in 28 days. The rates page is unlisted; consider publishing it.`,
+        `SUM(cost-intent impressions, 28d) = ${n} >= ${GSC_MIN_IMPRESSIONS}`,
+        "/admin/search"
+      ),
+    ];
+  },
+};
+
+const IR5: IqRule = {
+  id: "IR5",
+  cls: "act",
+  priority: 50,
+  evaluate(inputs) {
+    return inputs.zeroClickPages.map((p) => {
+      const share =
+        inputs.classifiableShare28d !== null
+          ? `, from the ${Math.round(inputs.classifiableShare28d * 100)}% of impressions GSC lets us see`
+          : "";
+      return card(
+        IR5,
+        `${p.path} earned ${p.impressions} impressions but 0 clicks in 28 days (avg position ${p.avgPosition.toFixed(1)}${share}). The title and meta are worth a look.`,
+        `page impressions ${p.impressions} >= ${RULE_ZERO_CTR_MIN_IMPRESSIONS} and clicks = 0 (28d)`,
+        "/admin/search"
+      );
+    });
+  },
+};
+
+const IR6: IqRule = {
+  id: "IR6",
+  cls: "act",
+  priority: 60,
+  evaluate(inputs) {
+    // One id, three variants, worst wins, max one card. Order: a hole in the
+    // data (V3) beats partial data (V1) beats a coverage note (V2).
+    if (inputs.gscGapDates.length > 0) {
+      const dates = inputs.gscGapDates.join(", ");
+      return [
+        card(
+          IR6,
+          `GSC ingest has a gap (${dates}). Search numbers for those days are missing, not zero.`,
+          `missing GscDaily date(s) in window: ${inputs.gscGapDates.length}`,
+          "/admin/search"
+        ),
+      ];
+    }
+    if (
+      inputs.classifiableShare28d !== null &&
+      inputs.gscImpressions28d >= GSC_MIN_IMPRESSIONS &&
+      inputs.classifiableShare28d < RULE_DQ_CLASSIFIABLE_LT
+    ) {
+      const anon = Math.round((1 - inputs.classifiableShare28d) * 100);
+      return [
+        card(
+          IR6,
+          `GSC is anonymizing ${anon}% of impressions over the last 28 days. Query-level cuts are partial by design.`,
+          `classifiable share ${(inputs.classifiableShare28d * 100).toFixed(0)}% < ${RULE_DQ_CLASSIFIABLE_LT * 100}% (28d, ${inputs.gscImpressions28d} impressions)`,
+          "/admin/search"
+        ),
+      ];
+    }
+    if (
+      inputs.durationCoverage !== null &&
+      inputs.durationCoverage < RULE_DQ_DURATION_COVERAGE_LT
+    ) {
+      const c = Math.round(inputs.durationCoverage * 100);
+      return [
+        card(
+          IR6,
+          `Only ${c}% of pageviews reported time on page. Engaged-time numbers are an undercount.`,
+          `duration coverage ${c}% < ${RULE_DQ_DURATION_COVERAGE_LT * 100}% (window)`,
+          "/admin/traffic"
+        ),
+      ];
+    }
+    return [];
+  },
+};
+
+const IR7: IqRule = {
+  id: "IR7",
+  cls: "signal",
+  priority: 10,
+  evaluate(inputs) {
+    // Deliberately separate from IR1: celebrates/attributes vs nags. No name.
+    // THREE states (database B2): attributed (stitched + visible views),
+    // stitched-but-no-visible-views (likely internal-excluded — saying
+    // "no cookie" there would be false), and truly cookieless.
+    return inputs.recentLeads.map((l) => {
+      if (l.attributed) {
+        return card(
+          IR7,
+          `New lead (status: ${l.status}). First touch ${l.sourceClass ?? "direct"} → ${l.firstPath ?? "/"}, ${l.pages} page${l.pages === 1 ? "" : "s"} over ${l.visits} visit${l.visits === 1 ? "" : "s"} before the brief.`,
+          `Lead created in trailing 7d, visitorId stitched (${l.pages} distinct pages, ${l.visits} active days)`,
+          `/admin/leads/${l.id}`
+        );
+      }
+      if (l.stitched) {
+        return card(
+          IR7,
+          `New lead (status: ${l.status}). Stitched to a visitor, but no visible views; they may be excluded as internal.`,
+          "Lead created in trailing 7d, visitorId stitched but 0 visible pageviews (still fires)",
+          `/admin/leads/${l.id}`
+        );
+      }
+      return card(
+        IR7,
+        `New lead (status: ${l.status}). No analytics cookie on this one; journey unavailable.`,
+        "Lead created in trailing 7d, visitorId is null (still fires)",
+        `/admin/leads/${l.id}`
+      );
+    });
+  },
+};
+
+const IR8: IqRule = {
+  id: "IR8",
+  cls: "signal",
+  priority: 20,
+  evaluate(inputs) {
+    return inputs.evaluators.map((e) => {
+      const paths =
+        e.recentPaths.length >= 2
+          ? `${e.recentPaths[0]} and ${e.recentPaths[1]}`
+          : e.recentPaths[0] ?? "the site";
+      return card(
+        IR8,
+        `Someone is evaluating: visits on ${e.days} distinct days in the last ${RULE_EVALUATOR_WINDOW_D}, most recently on ${paths}. No brief yet; worth watching.`,
+        `visitor active on ${e.days} distinct days >= ${RULE_EVALUATOR_MIN_DAYS} in trailing ${RULE_EVALUATOR_WINDOW_D}d, no Lead`,
+        "/admin/traffic"
+      );
+    });
+  },
+};
+
+const IR9: IqRule = {
+  id: "IR9",
+  cls: "signal",
+  priority: 30,
+  evaluate(inputs) {
+    const a = inputs.brandedClicksPrior28d;
+    const b = inputs.brandedClicks28d;
+    // 0 -> n belongs to IR11 (firsts), not echo: prior >= 1 required.
+    if (a >= 1 && b >= RULE_BRANDED_ECHO_MIN_CLICKS && b >= 2 * a) {
+      return [
+        card(
+          IR9,
+          `Branded clicks rose ${a} → ${b} over 28 days. Something made people search the name; trace the cause and repeat it.`,
+          `branded clicks 28d ${b} >= 2 x prior ${a} and ${b} >= ${RULE_BRANDED_ECHO_MIN_CLICKS} and prior >= 1`,
+          "/admin/search"
+        ),
+      ];
+    }
+    return [];
+  },
+};
+
+const IR10: IqRule = {
+  id: "IR10",
+  cls: "signal",
+  priority: 40,
+  evaluate(inputs) {
+    return inputs.referrerSpikes.map((s) =>
+      card(
+        IR10,
+        `${s.path} got ${s.views} views this week; ${s.hostViews} of them came from ${s.host}. Post the follow-up while it's warm.`,
+        `path views ${s.views} >= ${RULE_REFERRER_SPIKE_MIN_VIEWS} (7d) and ${s.hostViews}/${s.views} from ${s.host} >= ${RULE_REFERRER_SPIKE_SHARE} share`,
+        "/admin/content"
+      )
+    );
+  },
+};
+
+const IR11: IqRule = {
+  id: "IR11",
+  cls: "milestone",
+  priority: 10,
+  evaluate(inputs) {
+    // Fires when a first's earliest occurrence lands in trailing 7d, or the
+    // trailing-7d visitors beat the previous best window. Max ONE card, most
+    // recent wins. GSC firsts link to /admin/search; site firsts/records are
+    // linkless (ledger sits on the same Command surface).
+    const cutoff = Date.now() - 7 * DAY_MS;
+    let bestCandidate: { at: number; c: IqInsightCard } | null = null;
+
+    for (const f of inputs.firsts) {
+      if (f.id === "best-week" || !f.achievedAt) continue;
+      const at = Date.parse(f.achievedAt);
+      if (Number.isNaN(at) || at < cutoff) continue;
+      const catalogEntry = FIRSTS_CATALOG.find((c) => c.id === f.id);
+      const c = card(
+        IR11,
+        `${f.label}: ${f.detail ? `${f.detail} · ` : ""}${f.achievedAt.slice(0, 10)}.`,
+        `earliest occurrence of "${f.label}" landed in trailing 7d`,
+        catalogEntry?.href ?? null
+      );
+      if (!bestCandidate || at > bestCandidate.at) bestCandidate = { at, c };
+    }
+
+    const rw = inputs.recordWeek;
+    if (rw && rw.prevBest >= 1 && rw.current > rw.prevBest) {
+      const c = card(
+        IR11,
+        `New record week: ${rw.current} visitors (previous best ${rw.prevBest}).`,
+        `trailing-7d visitors ${rw.current} > previous best window ${rw.prevBest}`,
+        null
+      );
+      // A record set now is the most recent thing possible.
+      bestCandidate = { at: Date.now(), c };
+    }
+
+    return bestCandidate ? [bestCandidate.c] : [];
+  },
+};
+
+/** The canonical §6b registry — 11 rules, IR1..IR11. */
+export const IQ_RULE_REGISTRY: readonly IqRule[] = [
+  IR1,
+  IR2,
+  IR3,
+  IR4,
+  IR5,
+  IR6,
+  IR7,
+  IR8,
+  IR9,
+  IR10,
+  IR11,
+];
+
+/**
+ * Run the registry. Returns ALL fired cards, display-sorted: class rank
+ * (act → signal → milestone), then per-rule priority ascending (§6b strip
+ * behavior). The SURFACE applies INSIGHTS_MAX_COMMAND — silent truncation,
+ * priority-sorted so the dropped cards are least severe.
+ */
+export function evaluateRules(inputs: IqRuleInputs): IqInsightCard[] {
+  const fired: IqInsightCard[] = [];
   for (const rule of IQ_RULE_REGISTRY) {
-    const insight = rule.evaluate(summary);
-    if (insight) fired.push(insight);
+    fired.push(...rule.evaluate(inputs));
   }
-  return fired.sort((a, b) => a.priority - b.priority).slice(0, 4);
+  return fired.sort(
+    (a, b) => CLASS_RANK[a.cls] - CLASS_RANK[b.cls] || a.priority - b.priority
+  );
+}
+
+/** Ledger rendering helper: catalog rows merged with achieved state — used by
+ * both sources so the ledger and IR11 can never disagree. */
+export function ledgerFromFirsts(firsts: readonly FirstEntry[]): FirstEntry[] {
+  return FIRSTS_CATALOG.map((c) => {
+    const hit = firsts.find((f) => f.id === c.id);
+    return hit ?? { id: c.id, label: c.label, achievedAt: null, detail: null };
+  });
 }

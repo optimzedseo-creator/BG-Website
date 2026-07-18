@@ -8,6 +8,20 @@ export const VISITOR_COOKIE = "bg_vid";
 // 13 months, per the plan's cookie spec.
 export const VISITOR_COOKIE_MAX_AGE = 396 * 24 * 60 * 60;
 
+// Visitor-id shape contract — the ONE home (Wave 2 dedupe, bradley-api
+// Change 3). Consumed by /api/track, /api/booking, /api/contact and
+// lib/admin/iq/internal.ts so the exclusion-list validation can never drift
+// from what /api/track actually sets.
+export const VISITOR_ID_RE = /^[A-Za-z0-9-]{16,64}$/;
+
+// Cookie-header matcher for the routes, DERIVED from the two constants above
+// so there is exactly one source of truth. Byte-identical to the previous
+// inline literal /(?:^|;\s*)bg_vid=([A-Za-z0-9-]{16,64})/ — proven in node:
+// VISITOR_COOKIE_RE.source === String.raw`(?:^|;\s*)bg_vid=([A-Za-z0-9-]{16,64})`.
+export const VISITOR_COOKIE_RE = new RegExp(
+  `(?:^|;\\s*)${VISITOR_COOKIE}=(${VISITOR_ID_RE.source.slice(1, -1)})`
+);
+
 // Known bots / automation / previews — dropped silently before any DB write.
 const BOT_RE =
   /bot|crawl|spider|slurp|headless|lighthouse|pagespeed|pingdom|uptime|monitor|scrape|curl|wget|python|httpx|libwww|axios|node-fetch|go-http|java\/|phantom|selenium|playwright|puppeteer|facebookexternalhit|whatsapp|telegram|slack|discord|embedly|quora link preview|bingpreview|vkshare|snapchat|pinterest|tumblr|vercel/i;

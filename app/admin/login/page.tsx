@@ -3,7 +3,7 @@ import { K_PASSWORD_HASH, getSetting } from "@/lib/admin/auth";
 import LoginForm from "./LoginForm";
 
 export const metadata: Metadata = {
-  title: "Sign in — Admin",
+  title: "Sign in · Admin",
 };
 
 // Always hit the database: the setup-vs-login decision must never be cached.

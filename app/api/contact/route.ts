@@ -6,6 +6,7 @@
 //   CONTACT_FROM     (optional)  verified sender; default "Bradley Griffin <leads@bradleygriffin.us>"
 
 import { NextResponse } from "next/server";
+import { VISITOR_COOKIE_RE } from "@/lib/track";
 
 export const runtime = "nodejs";
 
@@ -152,7 +153,7 @@ export async function POST(req: Request) {
     // Strictly additive — every failure here is logged and swallowed so the
     // email path is never affected, even if the DB is down entirely.
     const cookieHeader = req.headers.get("cookie") || "";
-    const vid = cookieHeader.match(/(?:^|;\s*)bg_vid=([A-Za-z0-9-]{16,64})/);
+    const vid = cookieHeader.match(VISITOR_COOKIE_RE);
     const visitorId = vid ? vid[1] : null;
 
     // Analytics WIN event (Phase 2, BACKEND-PLAN.md §6). NO PII in meta:

@@ -72,6 +72,13 @@
 .page-admin [data-acc="content"]  { --acc: var(--pink); }   /* Content/insights */
 .page-admin [data-acc="security"] { --acc: var(--amber); }  /* Security — vigilance, not alarm */
 
+/* D1 (design P1): the five derived accent tokens were computed ONCE at
+   .page-admin (where --acc = blue) and inherited frozen — a [data-acc] or
+   .adm-kpi--* override of --acc never re-derived them. Re-derive on every
+   element that sets --acc so chips/tints/rings/borders follow the module and
+   per-tile accents. */
+.page-admin, .page-admin [data-acc], .page-admin [class^="adm-kpi--"], .page-admin [class*=" adm-kpi--"] { --acc-chip: color-mix(in srgb, var(--acc) 9%, transparent); --acc-tint: color-mix(in srgb, var(--acc) 13%, transparent); --acc-ring: color-mix(in srgb, var(--acc) 20%, transparent); --acc-border: color-mix(in srgb, var(--acc) 27%, transparent); --acc-hover: color-mix(in srgb, var(--acc) 40%, transparent); }
+
 /* ---------- §5.2 scaffold type ---------- */
 .page-admin h1 {
   font-family: var(--disp);
@@ -132,23 +139,10 @@
   white-space: nowrap;
 }
 .page-admin .adm-brand b { color: var(--gold); font-weight: 800; }
-.page-admin .adm-top nav {
-  display: flex;
-  gap: 16px;
-  flex: 1;
-}
-.page-admin .adm-top nav a {
-  color: var(--text1);
-  font-size: 13px;
-  font-weight: 500;
-  padding: 4px 2px;
-  transition: color var(--t-fast) var(--ease);
-}
-.page-admin .adm-top nav a:hover { color: var(--text0); }
-.page-admin .adm-top nav a[aria-current="page"] {
-  color: var(--text0);
-  box-shadow: inset 0 -2px 0 var(--acc);
-}
+.page-admin .adm-top-spacer { flex: 1; }
+/* Mode-pill placeholder (WP2.1): layout space reserved for the Wave 4
+   LIVE/DEMO toggle — deliberately EMPTY until it exists (no dead controls). */
+.page-admin .adm-modeslot { width: 124px; flex: none; }
 .page-admin .adm-linkbtn {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--line-hi);
@@ -198,7 +192,8 @@
   border-radius: 10px;
   padding: 3px;
 }
-.page-admin .adm-window a {
+.page-admin .adm-window a,
+.page-admin .adm-window button {
   border: none;
   border-radius: 7px;
   padding: 4px 14px;
@@ -207,10 +202,15 @@
   font-size: 12px;
   color: var(--text1);
   background: transparent;
+  cursor: pointer;
   transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
 }
-.page-admin .adm-window a.on { background: var(--acc); color: #fff; }
-.page-admin .adm-window a:not(.on):hover { color: var(--text0); }
+/* Active segment: ink-on-accent (design D2 ruling, console-wide rule for
+   filled active segments — supersedes the earlier white-on-accent note). */
+.page-admin .adm-window a.on,
+.page-admin .adm-window button.on { background: var(--acc); color: var(--bg0); }
+.page-admin .adm-window a:not(.on):hover,
+.page-admin .adm-window button:not(.on):hover { color: var(--text0); }
 
 /* ---------- §5.4 module cards + grid ---------- */
 .page-admin .adm-card {
@@ -443,6 +443,10 @@
   content: "";
   position: absolute;
   inset: 0;
+  /* Hardening (ux Wave-1 P3): td.adm-go's opacity/transform creates a
+     stacking context that could paint the arrow cell above this overlay
+     during the transition window — z-index keeps the link on top. */
+  z-index: 1;
 }
 .page-admin .adm-lead-link:hover { color: var(--acc); }
 .page-admin .adm-sub {
@@ -494,7 +498,7 @@
   align-items: center;
   gap: 8px;
   position: relative;
-  z-index: 1;
+  z-index: 2; /* above the hardened stretched link (z-index 1) */
 }
 
 /* ---------- detail page ---------- */
@@ -701,11 +705,11 @@
 /* ---------- small screens ---------- */
 @media (max-width: 640px) {
   .page-admin .adm-top-inner { gap: 12px; padding: 0 14px; }
-  .page-admin .adm-top nav { gap: 10px; }
-  /* Hide the nav emoji so the single 52px sticky row fits a 375px viewport
-     (design P1 / ux P1-1 — labels alone carry the nav; emoji are decor). */
-  .page-admin .adm-top nav a span[aria-hidden] { display: none; }
-  .page-admin .adm-main { padding: 20px 14px 48px; }
+  /* Mode slot collapses on mobile (Wave 4's pill compresses to dot+label
+     there per UX §10 — no space to reserve at 375). */
+  .page-admin .adm-modeslot { display: none; }
+  /* Bottom tab bar needs clearance. */
+  .page-admin .adm-main { padding: 20px 14px 96px; }
   .page-admin .adm-journey li { grid-template-columns: 1fr; gap: 2px; }
   .page-admin .adm-timeline li { grid-template-columns: 62px 1fr; }
   .page-admin .adm-tl-at { grid-column: 2; }
@@ -718,14 +722,715 @@
   .page-admin .adm-brand-suffix { display: none; }
   .page-admin .adm-status,
   .page-admin .adm-linkbtn { min-height: 40px; }
-  .page-admin .adm-window a {
+  /* U1: PeriodSwitch renders BUTTONS since Wave 2 — the a-only rule was a
+     tap-target regression. Segment chips join the 40px floor. */
+  .page-admin .adm-window a,
+  .page-admin .adm-window button {
     min-height: 40px;
     display: inline-flex;
     align-items: center;
   }
+  .page-admin .adm-chip { min-height: 40px; }
   .page-admin .adm-btn,
   .page-admin .adm-btn-ghost,
   .page-admin .adm-btn-danger { min-height: 44px; }
+}
+/* U2/U7 live in a LATE ≤480 block below (§ Build B small screens) — their
+   base rules are declared later in this file, so an early media block loses
+   the cascade at equal specificity. */
+
+/* ============================================================
+   WAVE 2 — nav shell (WP2.1), landing (WP2.2a), Command (WP2.2b)
+   ============================================================ */
+
+/* ---------- shell: left rail + main ---------- */
+.page-admin .adm-shell {
+  display: flex;
+  align-items: flex-start;
+  max-width: 1380px;
+  margin: 0 auto;
+}
+.page-admin .adm-shell .adm-main { flex: 1; min-width: 0; }
+
+.page-admin .adm-rail {
+  width: 208px;
+  flex: none;
+  position: sticky;
+  top: 52px;
+  max-height: calc(100vh - 52px);
+  overflow-y: auto;
+  padding: 20px 12px 24px;
+  border-right: 1px solid var(--line);
+}
+.page-admin .adm-rail ul { list-style: none; display: grid; gap: 2px; margin: 0; padding: 0; }
+.page-admin .adm-rail-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text1);
+  transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.page-admin .adm-rail-link:hover { color: var(--text0); background: rgba(255, 255, 255, 0.04); }
+.page-admin .adm-rail-link.on {
+  color: var(--acc);
+  background: var(--acc-chip);
+  box-shadow: inset 3px 0 0 var(--acc); /* the module's own accent mark */
+}
+.page-admin .adm-rail-emoji { width: 20px; text-align: center; flex: none; }
+
+/* Leads status sub-items (Builder Prime pattern) */
+.page-admin .adm-rail-sub {
+  list-style: none;
+  display: grid;
+  gap: 1px;
+  margin: 2px 0 6px;
+  padding: 0 0 0 26px;
+}
+.page-admin .adm-rail-sublink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 7px;
+  font-size: 12px;
+  color: var(--text1);
+  transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.page-admin .adm-rail-sublink:hover { color: var(--text0); background: rgba(255, 255, 255, 0.04); }
+.page-admin .adm-rail-sublink.on { color: var(--acc); background: var(--acc-chip); }
+.page-admin .adm-rail-chip {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--acc);
+  background: var(--acc-chip);
+  border: 1px solid var(--acc-border);
+  border-radius: 7px;
+  padding: 1px 7px;
+}
+/* Zero counts still render — honest, hollow and dim (no hiding). */
+.page-admin .adm-rail-chip.zero {
+  color: var(--text2);
+  background: transparent;
+  border-color: var(--line);
+}
+
+/* Rail collapses to icons ≤1024 (labels + sub-items fold away) */
+@media (max-width: 1024px) {
+  .page-admin .adm-rail { width: 56px; padding: 20px 8px 24px; }
+  .page-admin .adm-rail-label,
+  /* .adm-rail beats the base ".adm-rail ul" (0-2-1) on specificity */
+  .page-admin .adm-rail .adm-rail-sub { display: none; }
+  .page-admin .adm-rail-link { justify-content: center; padding: 10px 0; }
+}
+
+/* ---------- mobile bottom tab bar (UX §10) ---------- */
+.page-admin .adm-tabbar { display: none; }
+@media (max-width: 640px) {
+  .page-admin .adm-rail { display: none; }
+  .page-admin .adm-tabbar {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    background: var(--bg1);
+    border-top: 1px solid var(--line);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  .page-admin .adm-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 8px 0 10px;
+    min-height: 44px;
+    border: none;
+    background: none;
+    color: var(--text1);
+    cursor: pointer;
+    font: inherit;
+    transition: color var(--t-fast) var(--ease);
+  }
+  .page-admin .adm-tab > span[aria-hidden] { font-size: 17px; line-height: 1; }
+  .page-admin .adm-tab-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+  }
+  .page-admin .adm-tab.on { color: var(--acc); }
+  .page-admin .adm-tab-more { flex: 1; display: flex; position: relative; }
+  .page-admin .adm-tab-more .adm-tab { width: 100%; }
+  .page-admin .adm-tab-sheet {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    right: 8px;
+    min-width: 160px;
+    background: var(--bg3);
+    border: 1px solid var(--line-hi);
+    border-radius: 12px;
+    padding: 8px;
+    display: grid;
+    gap: 2px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  }
+  .page-admin .adm-tab-sheet-link {
+    display: block;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text0);
+  }
+  .page-admin .adm-tab-sheet-link:hover { background: rgba(255, 255, 255, 0.05); }
+  .page-admin .adm-tab-sheet-link.on { color: var(--acc); background: var(--acc-chip); }
+}
+
+/* ---------- §5.14 module-entry landing ---------- */
+.page-admin .adm-landing-micro {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text2);
+  margin-bottom: 4px;
+}
+.page-admin .adm-landing-greeting {
+  font-size: clamp(26px, 3vw, 34px);
+  margin-bottom: 6px;
+}
+.page-admin .adm-landing-sub {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text1);
+  margin-bottom: 22px;
+}
+.page-admin .adm-landing-sub b { color: var(--text0); font-weight: 500; }
+.page-admin .adm-landing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.page-admin .adm-mod-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px 20px;
+  overflow: hidden;
+  transition: border-color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease);
+  /* entry stagger (§5.16): fade-up once per navigation, killed by reduced motion */
+  animation: adm-rise var(--t-med) var(--ease) both;
+}
+.page-admin .adm-mod-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--acc);
+}
+.page-admin .adm-landing-grid .adm-mod-card:nth-child(2) { animation-delay: 50ms; }
+.page-admin .adm-landing-grid .adm-mod-card:nth-child(3) { animation-delay: 100ms; }
+.page-admin .adm-landing-grid .adm-mod-card:nth-child(4) { animation-delay: 150ms; }
+.page-admin .adm-landing-grid .adm-mod-card:nth-child(5) { animation-delay: 200ms; }
+.page-admin .adm-landing-grid .adm-mod-card:nth-child(6) { animation-delay: 250ms; }
+@keyframes adm-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+.page-admin .adm-mod-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--acc-hover);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--acc-ring);
+}
+.page-admin .adm-mod-emoji {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--acc-chip);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+.page-admin .adm-mod-title {
+  font-family: var(--disp);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  color: var(--text0);
+}
+.page-admin .adm-mod-stat {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text1);
+}
+.page-admin .adm-spark { width: 120px; height: 26px; }
+.page-admin .adm-spark polyline { stroke: var(--acc); stroke-width: 1.5; stroke-linejoin: round; }
+.page-admin .adm-mod-latest { font-size: 12px; color: var(--text1); }
+.page-admin .adm-mod-arrow {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  color: var(--acc);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.12s var(--ease), transform 0.12s var(--ease);
+}
+.page-admin .adm-mod-card:hover .adm-mod-arrow { opacity: 1; transform: none; }
+.page-admin .adm-landing-foot { display: block; margin-top: 20px; }
+
+/* ---------- Command additions (WP2.2b) ---------- */
+.page-admin .adm-surface { transition: opacity var(--t-fast) var(--ease); }
+.page-admin .adm-surface.is-loading { opacity: 0.55; }
+.page-admin .adm-caption { font-size: 12px; color: var(--text1); margin-top: 8px; }
+
+.page-admin .adm-kpi-delta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text1);
+  margin-top: 6px;
+  white-space: nowrap;
+}
+.page-admin .adm-kpi--pink  { --acc: var(--pink); }
+.page-admin .adm-kpi--amber { --acc: var(--amber); }
+
+/* insights strip */
+.page-admin .adm-insights { display: grid; gap: 10px; }
+.page-admin .adm-insight {
+  --ic: var(--text1);
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, var(--ic) 27%, transparent);
+  border-left: 3px solid var(--ic);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--ic) 6%, transparent);
+  font-size: 13px;
+  color: var(--text0);
+  transition: border-color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+.page-admin .adm-insight--act { --ic: var(--amber); }
+.page-admin .adm-insight--signal { --ic: var(--green); }
+/* milestone treatment: non-gold per canon (gold = identity chrome only);
+   cyan chosen provisionally — design tokens this state in review. */
+.page-admin .adm-insight--milestone { --ic: var(--cyan); }
+.page-admin a.adm-insight:hover {
+  border-color: color-mix(in srgb, var(--ic) 55%, transparent);
+  transform: translateY(-1px);
+}
+.page-admin .adm-insight-class {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ic);
+  flex: none;
+}
+.page-admin .adm-insight-copy { flex: 1; line-height: 1.5; }
+.page-admin .adm-insight-arrow { color: var(--ic); flex: none; }
+/* Linkless cards (IR3, IR11 site firsts/records): visually non-interactive. */
+.page-admin .adm-insight--static { cursor: default; }
+.page-admin .adm-insight--watching { --ic: var(--text1); color: var(--text1); }
+
+/* funnel v2: visible denominators between steps */
+.page-admin .adm-funnel-v2 { row-gap: 14px; }
+.page-admin .adm-funnel-cell { display: flex; align-items: center; gap: 10px; }
+.page-admin .adm-funnel-rate {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text1);
+  max-width: 120px;
+  line-height: 1.4;
+  text-align: center;
+  padding: 4px 8px;
+  border: 1px dashed var(--line-hi);
+  border-radius: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.page-admin .adm-funnel-rate b { color: var(--text0); font-weight: 500; }
+.page-admin .adm-funnel-small { color: var(--text2); }
+.page-admin .adm-funnel-v2 .adm-funnel-step { flex-direction: column; align-items: flex-start; gap: 2px; }
+.page-admin .adm-funnel-events {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--text2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* scorecard */
+.page-admin .adm-scorecard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+.page-admin .adm-score-slot { display: flex; flex-direction: column; gap: 6px; }
+.page-admin .adm-score-label {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text1);
+}
+.page-admin .adm-score-note { font-family: var(--mono); font-size: 10.5px; color: var(--text2); }
+.page-admin .adm-score-n {
+  font-family: var(--disp);
+  font-weight: 800;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  color: var(--text0);
+  font-variant-numeric: tabular-nums;
+}
+.page-admin .adm-score-meter { display: block; height: 8px; margin-top: 6px; }
+.page-admin .adm-score-gatecopy { font-size: 12px; color: var(--text1); line-height: 1.5; }
+.page-admin .adm-score-mix { display: grid; gap: 6px; margin-top: 4px; }
+.page-admin .adm-score-mix-row {
+  display: grid;
+  grid-template-columns: minmax(70px, 38%) 1fr 30px;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+}
+.page-admin .adm-score-denom { font-family: var(--mono); font-size: 10.5px; color: var(--text2); }
+
+/* firsts ledger */
+.page-admin .adm-firsts {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 6px 24px;
+  margin: 0;
+  padding: 0;
+}
+.page-admin .adm-firsts li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12.5px;
+  min-width: 0;
+}
+.page-admin .adm-first-mark { flex: none; font-size: 10px; }
+.page-admin .adm-firsts li.done .adm-first-mark { color: var(--green); }
+.page-admin .adm-firsts li.pending .adm-first-mark { color: var(--text2); }
+.page-admin .adm-first-label { color: var(--text0); flex: none; }
+.page-admin .adm-firsts li.pending .adm-first-label { color: var(--text1); }
+.page-admin .adm-first-detail {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.page-admin .adm-firsts li.pending .adm-first-detail { color: var(--text2); }
+
+/* six-tile KPI strip goes 2-col on phones (UX §10) */
+@media (max-width: 640px) {
+  .page-admin .adm-kpis-6 { grid-template-columns: repeat(2, 1fr); }
+  .page-admin .adm-scorecard { grid-template-columns: 1fr; }
+  .page-admin .adm-firsts { grid-template-columns: 1fr; }
+  .page-admin .adm-funnel-cell { flex-wrap: wrap; }
+}
+
+/* ============================================================
+   WAVE 2 BUILD B — Traffic (WP2.4), Content (WP2.5), Search
+   (WP2.6) modules + leads donuts. Class-only selectors under
+   .page-admin (the specificity rule from Build A holds).
+   ============================================================ */
+
+/* ---------- module-local segment chips (UX §5) ---------- */
+.page-admin .adm-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-bottom: 12px;
+}
+.page-admin .adm-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.page-admin .adm-chip-groupname {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text2);
+  margin-right: 2px;
+}
+.page-admin .adm-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 3px 10px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--text1);
+  cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease),
+    background var(--t-fast) var(--ease);
+}
+.page-admin .adm-chip:hover { color: var(--text0); border-color: var(--line-hi); }
+.page-admin .adm-chip.on {
+  background: var(--acc-tint);
+  border-color: var(--acc-border);
+  color: var(--acc);
+}
+.page-admin .adm-chip:disabled { opacity: 0.55; cursor: default; }
+.page-admin .adm-chip-n {
+  font-size: 10px;
+  color: var(--text2);
+  font-variant-numeric: tabular-nums;
+}
+.page-admin .adm-chip.on .adm-chip-n { color: var(--acc); }
+.page-admin .adm-cut-note {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--acc);
+  margin-bottom: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- accent-colored chart line (Traffic visitors, GSC branded) ---------- */
+.page-admin .adm-chart-accline {
+  stroke: var(--acc);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.page-admin .adm-chart-accdot { fill: var(--acc); }
+.page-admin .adm-chart-acchalo { fill: color-mix(in srgb, var(--acc) 20%, transparent); }
+.page-admin .adm-key-acc { background: var(--acc); }
+
+/* ---------- breakdown % share (renders only when the N-guard allows) ---------- */
+.page-admin .adm-bar-share { color: var(--text2); }
+
+/* ---------- Traffic visitor log (no click affordance — Wave 3 drills) ---------- */
+.page-admin .adm-vlog {
+  list-style: none;
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+}
+.page-admin .adm-vlog li {
+  display: grid;
+  gap: 6px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.page-admin .adm-vlog li:last-child { border-bottom: 0; padding-bottom: 0; }
+.page-admin .adm-vlog-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 12.5px;
+}
+.page-admin .adm-vlog-dim { color: var(--text1); }
+.page-admin .adm-vlog-time {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--text1);
+  font-variant-numeric: tabular-nums;
+}
+.page-admin .adm-vlog-paths {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  align-items: baseline;
+}
+/* Path chips are STATIC labels, not controls — no hover, no cursor change
+   (dead-chip rule: nothing renders like a control unless it drills). */
+.page-admin .adm-pathchip {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text1);
+  background: var(--bg4);
+  border-radius: 6px;
+  padding: 2px 7px;
+  overflow-wrap: anywhere;
+}
+.page-admin .adm-vlog-more {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text2);
+}
+
+/* ---------- module tables: sticky first column + duration coloring ---------- */
+.page-admin .adm-table--stickycol th:first-child,
+.page-admin .adm-table--stickycol td:first-child {
+  position: sticky;
+  left: 0;
+  background: var(--bg2);
+  z-index: 1;
+}
+.page-admin .adm-path {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--text0);
+  overflow-wrap: anywhere;
+  white-space: normal;
+  min-width: 140px;
+  max-width: 320px;
+}
+/* Duration coloring against the ONE canonical engagement floor (10s, B2) */
+.page-admin .adm-dur-hi { color: var(--green); }
+.page-admin .adm-dur-lo { color: var(--amber); }
+
+/* ---------- Search (GSC) module ---------- */
+.page-admin .adm-lag {
+  display: block;
+  font-size: 13px;
+  color: var(--text0);
+  background: var(--acc-chip);
+  border: 1px solid var(--acc-border);
+  border-left: 3px solid var(--acc);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+.page-admin .adm-qtags { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.page-admin .adm-qchip {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--text1);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line-hi);
+  border-radius: 7px;
+  padding: 2px 7px;
+  white-space: nowrap;
+}
+.page-admin .adm-qchip--branded {
+  color: var(--acc);
+  background: color-mix(in srgb, var(--acc) 13%, transparent);
+  border-color: color-mix(in srgb, var(--acc) 27%, transparent);
+}
+.page-admin .adm-qchip--ambiguous {
+  color: var(--amber);
+  background: color-mix(in srgb, var(--amber) 13%, transparent);
+  border-color: color-mix(in srgb, var(--amber) 27%, transparent);
+}
+.page-admin .adm-row-rollup td { color: var(--text1); font-size: 12.5px; }
+
+/* ---------- leads donuts (hand-rolled SVG, markpulse look §5.11) ---------- */
+.page-admin .adm-donut-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.page-admin .adm-donut-grid .adm-card { margin-bottom: 0; }
+.page-admin .adm-donut-body {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.page-admin .adm-donut-svg { width: 148px; height: 148px; flex: none; }
+.page-admin .adm-donut-track { stroke: var(--bg4); }
+.page-admin .adm-donut-total {
+  font-family: var(--disp);
+  font-weight: 800;
+  font-size: 30px;
+  letter-spacing: -0.02em;
+  fill: var(--text0);
+}
+.page-admin .adm-donut-sub {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 10px; /* D5: 8.5px was below the readable floor */
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  fill: var(--text1); /* D5: text2 is reserved for ≥11px micro-labels */
+}
+.page-admin .adm-donut-legend {
+  list-style: none;
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  flex: 1;
+}
+.page-admin .adm-donut-legend li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12.5px;
+  min-width: 0;
+}
+/* D4: zero-count rows keep READABLE category labels (text1) — only the count
+   number dims to text2. A zero is data; its label must stay legible. */
+.page-admin .adm-donut-legend li.zero { color: var(--text1); }
+.page-admin .adm-donut-legend li.zero .adm-donut-label { color: var(--text1); }
+.page-admin .adm-donut-legend li.zero .adm-donut-n { color: var(--text2); }
+.page-admin .adm-donut-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+  align-self: center;
+}
+.page-admin .adm-donut-label {
+  color: var(--text0);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.page-admin .adm-donut-n {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text1);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Build B small screens ---------- */
+@media (max-width: 640px) {
+  .page-admin .adm-donut-grid { grid-template-columns: 1fr; }
+  .page-admin .adm-vlog-head { gap: 8px; }
+  .page-admin .adm-path { max-width: 200px; min-width: 110px; }
+}
+
+/* Phone-width wrapping (declared AFTER the base rules it overrides — cascade
+   order matters at equal specificity). */
+@media (max-width: 480px) {
+  /* U2: honest-N captions (coverage denominators) must wrap at 375, not clip. */
+  .page-admin .adm-kpi-delta { white-space: normal; }
+  /* U7: donut legend labels wrap to two lines instead of mid-word ellipsis. */
+  .page-admin .adm-donut-label {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow-wrap: anywhere;
+  }
 }
 
 /* ---------- §5.16 reduced motion: ALL of it collapses ---------- */

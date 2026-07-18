@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { K_TOTP_SECRET, getSetting, requireAdmin } from "@/lib/admin/auth";
-import { VISITOR_COOKIE, readInternalVisitorIds } from "@/lib/admin/iq/internal";
+import { MAX_INTERNAL_IDS, VISITOR_COOKIE, readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import { ChangePasswordForm, TotpSection } from "./SecurityForms";
 import { excludeThisDeviceAction, removeInternalVisitorAction } from "./actions";
 
@@ -43,6 +43,14 @@ export default async function AdminSecurityPage() {
             Visits from the browser ids on this list are left out of every dashboard number, so
             your own check-ins never count as traffic.
           </p>
+          {/* At-cap honesty (Wave 2 carried condition): say it plainly instead
+              of silently refusing new ids. */}
+          {internalIds.length >= MAX_INTERNAL_IDS && (
+            <p className="adm-note" role="status">
+              This list is full at {MAX_INTERNAL_IDS} browsers, so a new one can&apos;t be added
+              until one is removed.
+            </p>
+          )}
           {thisDeviceExcluded ? (
             <p className="adm-ok" role="status">This browser is already excluded.</p>
           ) : bgVid ? (

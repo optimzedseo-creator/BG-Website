@@ -13,6 +13,7 @@ import { prisma } from "@/lib/db";
 import {
   VISITOR_COOKIE,
   VISITOR_COOKIE_MAX_AGE,
+  VISITOR_COOKIE_RE,
   isBot,
   parseDevice,
   parseBrowser,
@@ -79,7 +80,7 @@ export async function POST(req: Request) {
 
   // Visitor id: read the cookie or mint a new one (set on the response below).
   const cookieHeader = req.headers.get("cookie") || "";
-  const match = cookieHeader.match(/(?:^|;\s*)bg_vid=([A-Za-z0-9-]{16,64})/);
+  const match = cookieHeader.match(VISITOR_COOKIE_RE);
   const visitorId = match ? match[1] : randomUUID();
 
   let res: NextResponse;

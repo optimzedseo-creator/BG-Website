@@ -2,189 +2,125 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
-import type { WindowDays } from "@/lib/admin/iq/types";
+import { parseWindowParam } from "@/lib/admin/iq/shared";
+import type { ModuleTeaser } from "@/lib/admin/iq/types";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 
 export const dynamic = "force-dynamic";
 
-// All analytics numbers now come from the shared metrics module
-// (lib/admin/iq — WP1.3): getSource("live").summary() computes KPIs, trend
-// (bucketKey, America/New_York — the UTC dayKey bug is dead), funnel, and
-// breakdowns, with the WP1.5 internal-exclusion list applied to every
-// visitor-scoped metric. No direct Prisma analytics queries in this file.
-const WINDOWS: readonly WindowDays[] = [7, 30, 90];
+/*
+ * WP2.2a — MODULE-ENTRY LANDING at /admin (Brad-directed routing ruling: the
+ * dashboard/Command lives at /admin/overview; old /admin bookmarks land here
+ * by design, no redirect). Time-of-day greeting computed in America/New_York;
+ * module cards are LIVE data through getSource("live").landing() — name,
+ * headline count for the current period, 14-day micro-sparkline, one-line
+ * latest fact, accent keyline, whole card links to the module (DESIGN §5.14).
+ */
 
-type Counted = { label: string; n: number };
+const NY = "America/New_York";
 
-/** Inline-SVG daily trend (ADMIN-IQ §5.11 static tier): visitors (blue line +
- *  area fill + endpoint "now" cursor) + wins (green line/dots). Draw-in is
- *  pure CSS via pathLength=1 (600ms, killed under reduced motion). */
-function TrendChart({ days }: { days: { key: string; visitors: number; wins: number }[] }) {
-  const W = 720;
-  const H = 150;
-  const PAD = { l: 30, r: 8, t: 10, b: 22 };
-  const iw = W - PAD.l - PAD.r;
-  const ih = H - PAD.t - PAD.b;
-  const max = Math.max(1, ...days.map((d) => Math.max(d.visitors, d.wins)));
-  const x = (i: number) => PAD.l + (days.length < 2 ? iw / 2 : (i / (days.length - 1)) * iw);
-  const y = (v: number) => PAD.t + ih - (v / max) * ih;
-  const line = (get: (d: (typeof days)[number]) => number) =>
-    days.map((d, i) => `${x(i).toFixed(1)},${y(get(d)).toFixed(1)}`).join(" ");
-  const labelEvery = Math.max(1, Math.ceil(days.length / 9));
+const MODULE_META: Record<
+  ModuleTeaser["module"],
+  { href: string; title: string; emoji: string }
+> = {
+  overview: { href: "/admin/overview", title: "Command", emoji: "📊" },
+  traffic: { href: "/admin/traffic", title: "Traffic", emoji: "📈" },
+  search: { href: "/admin/search", title: "Search", emoji: "🔍" },
+  leads: { href: "/admin/leads", title: "Leads", emoji: "🤝" },
+  content: { href: "/admin/content", title: "Content", emoji: "✍️" },
+  security: { href: "/admin/security", title: "Security", emoji: "🛡️" },
+};
 
-  // Area under the visitors line: line points + the two baseline corners.
-  const baseY = (PAD.t + ih).toFixed(1);
-  const visitorsPoints = line((d) => d.visitors);
-  const areaPoints = `${visitorsPoints} ${x(days.length - 1).toFixed(1)},${baseY} ${x(0).toFixed(1)},${baseY}`;
-  const last = days[days.length - 1];
+function greetingFor(now: Date): string {
+  const hour = Number(
+    new Intl.DateTimeFormat("en-US", { timeZone: NY, hour: "numeric", hour12: false }).format(now)
+  );
+  if (hour >= 5 && hour < 12) return "Good morning.";
+  if (hour >= 12 && hour < 18) return "Good afternoon.";
+  return "Good evening.";
+}
 
+/** 14-day micro-sparkline. Zeros are drawn — a flat line at 0 IS data (UX §7). */
+function Sparkline({ values }: { values: number[] }) {
+  if (!values.length) return null;
+  const W = 120;
+  const H = 26;
+  const max = Math.max(1, ...values);
+  const x = (i: number) => (values.length < 2 ? W / 2 : (i / (values.length - 1)) * W);
+  const y = (v: number) => H - 2 - (v / max) * (H - 4);
+  const points = values.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="adm-chart" role="img" aria-label="Daily visitors and wins trend">
-      <defs>
-        <linearGradient id="admAreaFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="var(--blue)" stopOpacity="0.22" />
-          <stop offset="1" stopColor="var(--blue)" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      {[0, 0.5, 1].map((f) => (
-        <g key={f}>
-          <line x1={PAD.l} x2={W - PAD.r} y1={y(max * f)} y2={y(max * f)} className="adm-chart-grid" />
-          <text x={PAD.l - 6} y={y(max * f) + 3.5} textAnchor="end" className="adm-chart-tick">
-            {Math.round(max * f)}
-          </text>
-        </g>
-      ))}
-      <polygon points={areaPoints} className="adm-chart-area adm-chart-late" stroke="none" />
-      <polyline points={visitorsPoints} className="adm-chart-visitors adm-chart-draw" fill="none" pathLength={1} />
-      <polyline points={line((d) => d.wins)} className="adm-chart-wins adm-chart-draw" fill="none" pathLength={1} />
-      {days.map((d, i) =>
-        d.wins > 0 ? <circle key={d.key} cx={x(i)} cy={y(d.wins)} r={3} className="adm-chart-windot adm-chart-late" /> : null
-      )}
-      {last && (
-        <g className="adm-chart-late">
-          <circle cx={x(days.length - 1)} cy={y(last.visitors)} r={10} className="adm-chart-endhalo" />
-          <circle cx={x(days.length - 1)} cy={y(last.visitors)} r={4} className="adm-chart-enddot" />
-        </g>
-      )}
-      {days.map((d, i) =>
-        i % labelEvery === 0 ? (
-          <text key={d.key} x={x(i)} y={H - 6} textAnchor="middle" className="adm-chart-tick">
-            {d.key.slice(5)}
-          </text>
-        ) : null
-      )}
+    <svg viewBox={`0 0 ${W} ${H}`} className="adm-spark" aria-hidden="true">
+      <polyline points={points} fill="none" />
     </svg>
   );
 }
 
-function BreakdownCard({ title, rows, total }: { title: string; rows: Counted[]; total: number }) {
-  return (
-    <section className="adm-card">
-      <h2>{title}</h2>
-      {rows.length === 0 ? (
-        <p className="adm-empty">📭 No data in this window.</p>
-      ) : (
-        <ul className="adm-bars">
-          {rows.map((r) => (
-            <li key={r.label}>
-              <span className="adm-bar-label" title={r.label}>{r.label}</span>
-              <span className="adm-bar-track">
-                <span className="adm-bar-fill" style={{ width: `${Math.max(3, (r.n / Math.max(1, total)) * 100)}%` }} />
-              </span>
-              <span className="adm-bar-n">{r.n}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
-  );
-}
-
-export default async function AdminDashboard({
+export default async function AdminLanding({
   searchParams,
 }: {
-  searchParams: Promise<{ w?: string }>;
+  searchParams: Promise<{ p?: string }>;
 }) {
   if (!(await requireAdmin())) redirect("/admin/login");
 
-  const { w } = await searchParams;
-  const windowDays = WINDOWS.find((d) => String(d) === w) ?? 30;
-
-  // WP1.5: the exclusion list rides into the source so every visitor-scoped
-  // number excludes internal traffic BY DEFINITION (DATA-SPEC §5.3), and the
-  // payload's internalExcluded count renders in the footer below.
+  const { p } = await searchParams;
+  const windowDays = parseWindowParam(p);
   const internalVisitorIds = await readInternalVisitorIds();
-  const summary = await getSource("live").summary({ window: windowDays }, { internalVisitorIds });
+  const landing = await getSource("live").landing({ window: windowDays }, { internalVisitorIds });
 
-  const days = summary.trend;
-  const funnel = summary.funnel;
-  const leadCounts: Counted[] = summary.leadsByStatus.map((s) => ({
-    label: s.status.replace("_", " "),
-    n: s.n,
-  }));
-
-  // Per-tile metric accents (DESIGN-SPEC §1b): Visitors=blue, Pageviews=cyan,
-  // Briefs=purple, Bookings=green.
-  const KPI_ACCENTS: Record<string, string> = {
-    Visitors: "adm-kpi--blue",
-    Pageviews: "adm-kpi--cyan",
-    Briefs: "adm-kpi--purple",
-    Bookings: "adm-kpi--green",
-  };
-  const kpis = summary.kpis.map((k) => ({ ...k, acc: KPI_ACCENTS[k.label] ?? "adm-kpi--blue" }));
+  const now = new Date();
+  const micro = new Intl.DateTimeFormat("en-US", {
+    timeZone: NY,
+    weekday: "long",
+    month: "short",
+    day: "numeric",
+  })
+    .format(now)
+    .toUpperCase();
+  const dateLine = new Intl.DateTimeFormat("en-US", {
+    timeZone: NY,
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  }).format(now);
+  const suffix = windowDays === 30 ? "" : `?p=${windowDays}`;
 
   return (
-    <div data-acc="overview">
-      <div className="adm-head">
-        <h1>Dashboard</h1>
-        <nav className="adm-window" aria-label="Time window">
-          {WINDOWS.map((d) => (
-            <Link key={d} href={`/admin?w=${d}`} className={d === windowDays ? "on" : ""} aria-current={d === windowDays ? "page" : undefined}>
-              {d}d
+    <div data-acc="overview" className="adm-landing">
+      <p className="adm-landing-micro">OPS CONSOLE · {micro}</p>
+      <h1 className="adm-landing-greeting">{greetingFor(now)}</h1>
+      <p className="adm-landing-sub">
+        {/* FC1: every number in this sentence is WINDOWED — it says "last N
+            days", so an all-time leads count here would be false. */}
+        {dateLine} · counting <b>{landing.visitors}</b> visitor{landing.visitors === 1 ? "" : "s"},{" "}
+        <b>{landing.pageviews}</b> pageview{landing.pageviews === 1 ? "" : "s"} and{" "}
+        <b>{landing.leadsWindow}</b> lead{landing.leadsWindow === 1 ? "" : "s"} · last {windowDays} days
+      </p>
+
+      <div className="adm-landing-grid">
+        {landing.teasers.map((t) => {
+          const meta = MODULE_META[t.module];
+          return (
+            <Link
+              key={t.module}
+              href={`${meta.href}${suffix}`}
+              className="adm-mod-card"
+              data-acc={t.module}
+            >
+              <span className="adm-mod-emoji" aria-hidden="true">{meta.emoji}</span>
+              <span className="adm-mod-title">{meta.title}</span>
+              <span className="adm-mod-stat">{t.stat}</span>
+              {t.spark.length > 0 && <Sparkline values={t.spark} />}
+              {t.latest && <span className="adm-mod-latest">{t.latest}</span>}
+              <span className="adm-mod-arrow" aria-hidden="true">→</span>
             </Link>
-          ))}
-        </nav>
+          );
+        })}
       </div>
 
-      <div className="adm-kpis">
-        {kpis.map((k) => (
-          <div key={k.label} className={`adm-kpi ${k.acc}`}>
-            <span className="adm-kpi-n">{k.n}</span>
-            <span className="adm-kpi-label">{k.label}</span>
-          </div>
-        ))}
-      </div>
-
-      <section className="adm-card adm-card-wide">
-        <h2>Daily trend — visitors <span className="adm-key adm-key-visitors" /> · wins <span className="adm-key adm-key-wins" /></h2>
-        <TrendChart days={days} />
-      </section>
-
-      <section className="adm-card adm-card-wide">
-        <h2>Wins funnel</h2>
-        <div className="adm-funnel">
-          {funnel.map((f, i) => (
-            <div key={f.label} className="adm-funnel-step">
-              <span className="adm-funnel-n">{f.n}</span>
-              <span className="adm-funnel-label">{f.label}</span>
-              {i < funnel.length - 1 && <span className="adm-funnel-arrow" aria-hidden="true">→</span>}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <div className="adm-grid">
-        <BreakdownCard title="Top pages" rows={summary.breakdowns.topPages} total={summary.pageviews} />
-        <BreakdownCard title="Top referrers" rows={summary.breakdowns.topReferrers} total={summary.pageviews} />
-        <BreakdownCard title="Devices" rows={summary.breakdowns.devices} total={summary.pageviews} />
-        <BreakdownCard title="Countries" rows={summary.breakdowns.countries} total={summary.pageviews} />
-        <BreakdownCard title="Leads by status (all-time)" rows={leadCounts} total={leadCounts.reduce((a, b) => a + b.n, 0)} />
-      </div>
-
-      {/* §4.5 honesty metadata — the denominator is never silently shrunk. */}
-      <p className="adm-mono" style={{ display: "block", marginTop: 18 }}>
-        {summary.meta.metricsVersion} · {summary.meta.mode} · {summary.meta.internalExcluded}{" "}
-        internal {summary.meta.internalExcluded === 1 ? "visitor" : "visitors"} excluded
+      <p className="adm-mono adm-landing-foot">
+        {landing.meta.metricsVersion} · {landing.meta.mode} · {landing.meta.internalExcluded}{" "}
+        internal {landing.meta.internalExcluded === 1 ? "visitor" : "visitors"} excluded
       </p>
     </div>
   );

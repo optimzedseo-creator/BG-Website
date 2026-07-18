@@ -18,4 +18,12 @@ export function getSource(mode: IqMode): AdminIqSource {
   );
 }
 
-export type { AdminIqSource, Filters, IqMode, IqSummary, SourceOpts } from "./types";
+export type {
+  AdminIqSource,
+  Filters,
+  IqCommand,
+  IqLanding,
+  IqMode,
+  IqSummary,
+  SourceOpts,
+} from "./types";

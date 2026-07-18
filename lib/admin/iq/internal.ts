@@ -17,12 +17,12 @@
 import "server-only";
 import { getSetting, setSetting } from "@/lib/admin/auth";
 
-// bg_vid id-shape contract. MUST stay byte-identical to the inline matcher in
-// app/api/track/route.ts (also duplicated in api/booking + api/contact routes).
-// Hoisting all four into ONE exported constant in @/lib/track is scheduled for
-// Wave 2 (bradley-api Change 3) — deferred so the Wave 1 diff stays scoped to
-// admin + lib/admin + prisma + admin.css and touches no public-site code.
-const VISITOR_ID_RE = /^[A-Za-z0-9-]{16,64}$/;
+// bg_vid id-shape contract — imported from the tracking contract's single
+// source of truth (Wave 2 dedupe, bradley-api Change 3): @/lib/track exports
+// VISITOR_ID_RE, and the three API routes derive their cookie matcher from
+// the same constant, so exclusion-list validation can never drift from what
+// /api/track actually sets.
+import { VISITOR_ID_RE } from "@/lib/track";
 
 /** The first-party visitor cookie set/read by /api/track — re-exported from the
  * tracking contract's single source of truth (@/lib/track), never re-declared. */

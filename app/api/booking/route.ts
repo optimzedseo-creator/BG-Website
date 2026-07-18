@@ -17,7 +17,7 @@
 
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { isBot, clean } from "@/lib/track";
+import { VISITOR_COOKIE_RE, isBot, clean } from "@/lib/track";
 
 export const runtime = "nodejs";
 
@@ -90,7 +90,7 @@ export async function POST(req: Request) {
   if (inviteeUri && !CALENDLY_URI_RE.test(inviteeUri)) return drop();
 
   const cookieHeader = req.headers.get("cookie") || "";
-  const match = cookieHeader.match(/(?:^|;\s*)bg_vid=([A-Za-z0-9-]{16,64})/);
+  const match = cookieHeader.match(VISITOR_COOKIE_RE);
   const visitorId = match ? match[1] : null;
 
   try {
