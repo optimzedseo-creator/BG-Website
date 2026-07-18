@@ -26,10 +26,11 @@ export const metadata: Metadata = {
   },
 };
 
-/* JSON-LD carried over VERBATIM from the legacy page (byte-identical):
-   CollectionPage + ItemList (six anchored cases) + BreadcrumbList. */
+/* JSON-LD: CollectionPage + ItemList (seven anchored cases) + BreadcrumbList.
+   Vertex entry updated 2026-07-18 — name de-branded to "Vertex" and booking
+   metric reconciled to "16% to 59%" to match visible copy and /insights. */
 const caseStudiesJsonLd =
-  '{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "url": "https://www.bradleygriffin.us/case-studies", "name": "Case Studies - Bradley Griffin", "about": {"@type": "Person", "@id": "https://www.bradleygriffin.us/#person", "name": "Bradley Griffin"}, "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "AcreValue / Ag Analytics - turnaround through a NASDAQ acquisition", "url": "https://www.bradleygriffin.us/case-studies#acrevalue"}, {"@type": "ListItem", "position": 2, "name": "Vertex Roofing - +490% inbound calls, +269% booking rate", "url": "https://www.bradleygriffin.us/case-studies#vertex"}, {"@type": "ListItem", "position": 3, "name": "Infinity Home Services - #1 performing Midwest region", "url": "https://www.bradleygriffin.us/case-studies#ihs"}, {"@type": "ListItem", "position": 4, "name": "Optimized - bootstrapped from one person to a successful exit", "url": "https://www.bradleygriffin.us/case-studies#optimized"}, {"@type": "ListItem", "position": 5, "name": "Roofing GR - 1,000% YoY lead generation", "url": "https://www.bradleygriffin.us/case-studies#roofinggr"}, {"@type": "ListItem", "position": 6, "name": "Wensco Sign Supply - +30% revenue, -35% marketing cost", "url": "https://www.bradleygriffin.us/case-studies#wensco"}, {"@type": "ListItem", "position": 7, "name": "Griffin Opus - a custom e-commerce, ERP, and CRM platform built end to end", "url": "https://www.bradleygriffin.us/case-studies#griffin-opus"}]}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.bradleygriffin.us/"}, {"@type": "ListItem", "position": 2, "name": "Case Studies", "item": "https://www.bradleygriffin.us/case-studies"}]}]}';
+  '{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "url": "https://www.bradleygriffin.us/case-studies", "name": "Case Studies - Bradley Griffin", "about": {"@type": "Person", "@id": "https://www.bradleygriffin.us/#person", "name": "Bradley Griffin"}, "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "AcreValue / Ag Analytics - turnaround through a NASDAQ acquisition", "url": "https://www.bradleygriffin.us/case-studies#acrevalue"}, {"@type": "ListItem", "position": 2, "name": "Vertex - +490% inbound calls, 16% to 59% booking rate", "url": "https://www.bradleygriffin.us/case-studies#vertex"}, {"@type": "ListItem", "position": 3, "name": "Infinity Home Services - #1 performing Midwest region", "url": "https://www.bradleygriffin.us/case-studies#ihs"}, {"@type": "ListItem", "position": 4, "name": "Optimized - bootstrapped from one person to a successful exit", "url": "https://www.bradleygriffin.us/case-studies#optimized"}, {"@type": "ListItem", "position": 5, "name": "Roofing GR - 1,000% YoY lead generation", "url": "https://www.bradleygriffin.us/case-studies#roofinggr"}, {"@type": "ListItem", "position": 6, "name": "Wensco Sign Supply - +30% revenue, -35% marketing cost", "url": "https://www.bradleygriffin.us/case-studies#wensco"}, {"@type": "ListItem", "position": 7, "name": "Griffin Opus - a custom e-commerce, ERP, and CRM platform built end to end", "url": "https://www.bradleygriffin.us/case-studies#griffin-opus"}]}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.bradleygriffin.us/"}, {"@type": "ListItem", "position": 2, "name": "Case Studies", "item": "https://www.bradleygriffin.us/case-studies"}]}]}';
 
 export default function CaseStudiesPage() {
   return (
@@ -60,7 +61,7 @@ export default function CaseStudiesPage() {
                 <span className="n">02</span>
                 <span className="m">+490%</span>
                 <span className="t">Inbound calls up 490% in four months</span>
-                <span className="c">Vertex Roofing Inc. · 2025</span>
+                <span className="c">Vertex · 2025</span>
                 <span className="a">&darr;</span>
               </a>
               <a className="ix-row" href="#ihs">
@@ -162,13 +163,13 @@ export default function CaseStudiesPage() {
       <section className="section cs cs-dark" id="vertex">
         <div className="wrap">
           <div className="reveal">
-            <p className="microlabel cs-eyebrow">02 — Case file · Vertex Roofing</p>
+            <p className="microlabel cs-eyebrow">02 — Case file · Vertex</p>
             <div className="cs-headrow">
               <div className="cs-metric">+490%</div>
               <div>
                 <h2>Rebuilding acquisition end-to-end</h2>
                 <p className="cs-meta">
-                  <span>Vertex Roofing Inc.</span>
+                  <span>Vertex</span>
                   <span>Chief Marketing Officer</span>
                   <span>2025</span>
                 </p>
@@ -178,7 +179,7 @@ export default function CaseStudiesPage() {
           <div className="cs-cols">
             <div className="cs-block reveal">
               <span className="microlabel">Context</span>
-              <p>A <strong>three-state roofing operation</strong> where the call center rolled up to me as CMO. My audits told an uncomfortable story: inbound volume was thin, the booking rate sat at <strong>16%</strong>, and acquisition leaned on outbound — lead aggregators and aged lists the sales floor had to chase.</p>
+              <p>A <strong>three-state home-services operation</strong> where the call center rolled up to me as CMO. My audits told an uncomfortable story: inbound volume was thin, the booking rate sat at <strong>16%</strong>, and acquisition leaned on outbound — lead aggregators and aged lists the sales floor had to chase.</p>
               <p>One more problem underneath all of it: <strong>the data couldn&rsquo;t be trusted enough to even report on.</strong> Before I could grow the numbers, I had to make them honest.</p>
             </div>
             <div className="cs-block reveal">
@@ -186,7 +187,7 @@ export default function CaseStudiesPage() {
               <ul>
                 <li><strong>Outsourced the call center to AnswerForce</strong> — professional coverage on every ring, so demand stopped dying on hold.</li>
                 <li><strong>Flipped the acquisition model from outbound to demand-driven inbound</strong> — Google Ads, Microsoft Ads, and Google Local Services Ads replaced the aggregators and aged leads.</li>
-                <li><strong>Directed the CRM migration, Salesforce &rarr; BuilderPrime</strong> — 500,000+ records, zero data loss, zero downtime — so every number below could be trusted.</li>
+                <li><strong>Built automated booking that sent every inbound lead straight to sales</strong> — no manual entry — and migrated the CRM from Salesforce to BuilderPrime, so every number below could be trusted.</li>
                 <li><strong>Rewrote the inside sales scripts and inbound workflows</strong> around one metric: calls that become booked appointments.</li>
               </ul>
             </div>
