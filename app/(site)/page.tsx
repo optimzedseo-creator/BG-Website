@@ -80,7 +80,7 @@ export default function HomePage() {
               mystery. And that guesswork costs you: wasted spend, uneven sales, and thinner
               margins than the business should earn.
             </p>
-            <p className="spine-line">Bring me the problem. I&rsquo;ll bring the math.</p>
+            <p className="spine-line">Bring me the problem. I&rsquo;ll provide the solution.</p>
           </div>
           <ol className="method reveal">
             <li>

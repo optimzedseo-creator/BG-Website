@@ -269,7 +269,7 @@ export default function ConsultingPage() {
       <section className="finale" id="contact">
         <div className="wrap reveal">
           <span className="microlabel">Let&rsquo;s talk</span>
-          <h2>Bring me the problem. <em>I&rsquo;ll bring the math.</em></h2>
+          <h2>Bring me the problem. <em>I&rsquo;ll provide the solution.</em></h2>
           <p>Costs too high, leads too few, a stack that fights you, or an AI opportunity you can feel slipping past &mdash; tell me what&rsquo;s broken, and I&rsquo;ll tell you exactly what I&rsquo;d build.</p>
           <div className="fin-ctas"><a className="btn btn-solid" href="/contact?type=consulting">Get in Touch <span className="arr">&rarr;</span></a>
           <a className="btn btn-gold cal-link" href="https://calendly.com/optimzedseo/30min" target="_blank" rel="noopener">Schedule a Call <span className="arr">&rarr;</span></a></div>

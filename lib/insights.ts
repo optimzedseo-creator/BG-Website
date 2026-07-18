@@ -101,7 +101,7 @@ export const pillars: Pillar[] = [
       `The real problem is almost never where the dashboard points. The dashboard shows the symptom you can feel. It rarely shows the cause. To find the cause you have to read the raw data, not the summary.`,
       `That is why I start with an audit, not a plan. An audit is a blood test for your business: it shows the real diagnosis under the symptom you can feel, and like any blood test it takes a good doctor to read it and prescribe the fix. The blood panel tells you which number actually says you are sick.`,
       `When you read it right, the fix gets simple. You stop paying for the things that do not move growth. You double down on the few that do. Good months stop feeling like luck.`,
-      `If your reports are loud but your growth is quiet, that is the place to look. It usually starts with [a data and platform audit](/consulting), or with [a fractional CMO who reads the data first](/fractional). Bring me the problem. I will bring the math.`,
+      `If your reports are loud but your growth is quiet, that is the place to look. It usually starts with [a data and platform audit](/consulting), or with [a fractional CMO who reads the data first](/fractional). Bring me the problem. I will provide the solution.`,
     ],
     cta: { label: "Get in Touch", href: "/contact" },
   },
