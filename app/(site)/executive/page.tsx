@@ -86,7 +86,7 @@ export default function ExecutivePage() {
             <div className="own reveal">
               <span className="kicker">B / 06</span>
               <h3>CRM &amp; marketing automation</h3>
-              <p>The operational backbone: pipelines, lifecycle automation, and integrations that keep sales and marketing on one source of truth. 500K-record migrations executed with zero downtime.</p>
+              <p>The operational backbone: pipelines, lifecycle automation, and integrations that keep sales and marketing on one source of truth. A full CRM migration executed so the numbers come out trustworthy.</p>
               <p className="stack">Builder Prime &middot; Salesforce &middot; HubSpot &middot; ServiceTitan &middot; N8N / Make / Zapier</p>
             </div>
             <div className="own reveal">
@@ -137,10 +137,10 @@ export default function ExecutivePage() {
             </div>
             <div className="rec reveal">
               <div>
-                <div className="co-name">Vertex Roofing</div>
+                <div className="co-name">Vertex</div>
                 <div className="co-role">Chief Marketing Officer</div>
               </div>
-              <p>I rebuilt acquisition end to end: inbound calls <strong>+490% (108 &rarr; 637, Aug&ndash;Nov)</strong>, appointments <strong>+212%</strong>, qualified leads <strong>+20%</strong>, and booking rate <strong>16% &rarr; 59% (+269%)</strong> &mdash; on the back of a 500,000-record CRM migration executed with <strong>zero downtime</strong>.</p>
+              <p>I rebuilt acquisition end to end: inbound calls <strong>+490% (108 &rarr; 637, Aug&ndash;Nov)</strong>, appointments <strong>+212%</strong>, qualified leads <strong>+20%</strong>, and booking rate <strong>16% &rarr; 59% (+269%)</strong> &mdash; on the back of a full Salesforce &rarr; Builder Prime migration and <strong>automated booking</strong> that sent every inbound lead straight to sales, no manual entry.</p>
               <div className="headline">+490%<span className="sub-h">Inbound calls &middot; 108 &rarr; 637</span></div>
             </div>
             <div className="rec reveal">

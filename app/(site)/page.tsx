@@ -210,7 +210,7 @@ export default function HomePage() {
             <div className="result reveal">
               <div className="stat">490%</div>
               <h3>Inbound calls, rebuilt</h3>
-              <p>At Vertex Roofing, drove inbound calls up 490% and lifted booking rate from 16% to 59% in three quarters.</p>
+              <p>At Vertex, drove inbound calls up 490% and lifted booking rate from 16% to 59% in four months.</p>
             </div>
             <div className="result reveal">
               <div className="stat">#1</div>

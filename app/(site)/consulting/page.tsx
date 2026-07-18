@@ -78,7 +78,7 @@ export default function ConsultingPage() {
               <div className="a-idx">A.03</div>
               <h3>MarTech &amp; CRM architecture</h3>
               <p className="a-sys">Builder Prime &middot; Salesforce &middot; HubSpot &middot; Zoho &middot; ServiceTitan</p>
-              <p>The right stack, picked for your business &mdash; then integrated, migrated, and actually adopted by the team. I&rsquo;ve moved 500K records without losing a lead; I don&rsquo;t recommend what I can&rsquo;t implement.</p>
+              <p>The right stack, picked for your business &mdash; then integrated, migrated, and actually adopted by the team. I&rsquo;ve run a full CRM migration myself, end to end; I don&rsquo;t recommend what I can&rsquo;t implement.</p>
             </div>
             <div className="area reveal">
               <div className="a-idx">A.04</div>
@@ -107,7 +107,7 @@ export default function ConsultingPage() {
         <div className="wrap">
           <div className="proof-grid">
             <div className="pstat reveal"><div className="num">1,000%</div><div className="lbl">YoY lead growth on automation &mdash; Roofing GR</div></div>
-            <div className="pstat reveal"><div className="num">500K</div><div className="lbl">CRM records migrated, zero downtime &mdash; Vertex</div></div>
+            <div className="pstat reveal"><div className="num">+269%</div><div className="lbl">Booking rate, 16% &rarr; 59% &mdash; Vertex</div></div>
             <div className="pstat reveal"><div className="num">10+</div><div className="lbl">Industry verticals served &mdash; Optimized</div></div>
             <div className="pstat reveal"><div className="num">2</div><div className="lbl">Companies built on these systems &mdash; and sold</div></div>
           </div>
