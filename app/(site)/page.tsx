@@ -122,22 +122,8 @@ export default function HomePage() {
                 </span>
                 <span className="step-num">03</span>
               </div>
-              <h3>Blueprint</h3>
-              <p>A clear picture of the actions that fix it: what to keep, what to cut, what to build.</p>
-            </li>
-            <li>
-              <div className="step-head">
-                <span className="step-n">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
-                    <path d="M4.5 19c4.5 0 3.5-6 8-6s2.5-6 7-6" />
-                    <circle cx="4.5" cy="19" r="1.5" />
-                    <circle cx="19.5" cy="7" r="1.5" />
-                  </svg>
-                </span>
-                <span className="step-num">04</span>
-              </div>
-              <h3>Roadmap</h3>
-              <p>A ranked plan in the order that compounds, so the work builds on itself.</p>
+              <h3>Blueprint &amp; roadmap</h3>
+              <p>What to keep, what to cut, what to build. Ranked in the order that compounds, so the work builds on itself.</p>
             </li>
             <li>
               <div className="step-head">
@@ -147,7 +133,7 @@ export default function HomePage() {
                     <path d="M15.5 6h4v4" />
                   </svg>
                 </span>
-                <span className="step-num">05</span>
+                <span className="step-num">04</span>
               </div>
               <h3>Predictable growth</h3>
               <p>Systems that hold. Growth you can repeat, not chase.</p>
