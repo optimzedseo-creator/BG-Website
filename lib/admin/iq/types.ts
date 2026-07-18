@@ -37,6 +37,9 @@ export interface Filters {
   sourceClass?: SourceClass;
   path?: string;
   pillar?: Pillar;
+  /** WP3.9 Activity stream only — filter the unified log by row kind. Additive
+   * optional field (contract rule 2); every other surface ignores it. */
+  kind?: string;
 }
 
 /**
@@ -360,9 +363,13 @@ export interface SeriesPoint {
 }
 
 /** One recent visitor journey row (Traffic visitor log). Behavior only —
- * shortId is a truncated anonymous analytics id, never PII. Rows carry NO
- * click affordance in Wave 2 (journeys drill in Wave 3). */
+ * shortId is a truncated anonymous analytics id, never PII. In Wave 3 rows
+ * DRILL to the Journey modal (WP3.4) via the full visitorId, which is NOT PII
+ * (EvaluatorRef already carries it to the client) — the row carries it so the
+ * Journey deep-link `#/visitor/<id>` can restore. */
 export interface VisitorLogRow {
+  /** Full anonymous analytics id (NOT PII) — the Journey drill key. */
+  visitorId: string;
   shortId: string;
   device: string | null;
   country: string | null;
@@ -531,6 +538,171 @@ export interface IqSearch {
   countriesBeyondCap: BelowThresholdRollup | null;
 }
 
+// ---- Wave 3 Depth: drill payloads (WP3.2 KPI / WP3.3 Page / WP3.4 Journey /
+//      WP3.9 Activity). All PII-free by construction — visitorId is carried
+//      (it is NOT PII: EvaluatorRef already ships it), lead NAME never is; a
+//      stitched lead surfaces only as hasLead + leadId. ISO strings on the wire.
+
+// -- WP3.2 KPI drill modal --
+
+/** One DAILY bucket of a KPI series (client re-buckets to Weekly/Monthly). */
+export interface KpiSeriesPoint {
+  /** NY calendar day "YYYY-MM-DD" (GSC KPIs use the stored GSC date). */
+  date: string;
+  n: number;
+}
+
+export interface IqKpiDetail {
+  meta: IqMeta;
+  window: WindowDays;
+  kpiId: CommandKpiId;
+  label: string;
+  /** "What counts here" plain-language definition (footer). */
+  definition: string;
+  /** ISO date the metric's data starts (footer "counting since"); null = none yet. */
+  dataStart: string | null;
+  /** Daily counts across the current window, oldest first (zero-filled). */
+  series: KpiSeriesPoint[];
+  /** Daily counts across the immediately prior window (compare overlay), aligned length. */
+  priorSeries: KpiSeriesPoint[];
+  /** search-clicks variant caption; null for site KPIs. */
+  gscThrough: string | null;
+}
+
+// -- WP3.3 Page detail modal --
+
+/** One referrer host that sent traffic to a path (Sources tab). Raw referrer
+ * kept for the row title; internal navs already excluded. */
+export interface PageSourceRow {
+  host: string;
+  n: number;
+  /** A raw referrer string (title attr); TEXT, never HTML. */
+  sampleReferrer: string | null;
+}
+
+/** GSC row for a page's Search tab (aggregated across the window). */
+export interface PageSearchRow {
+  query: string;
+  clicks: number;
+  impressions: number;
+  position: number;
+  isBranded: boolean;
+  brandedAmbiguous: boolean;
+  intentBucket: string | null;
+}
+
+export interface IqPageDetail {
+  meta: IqMeta;
+  window: WindowDays;
+  path: string;
+  since: string;
+  countingSince: string | null;
+  views: number;
+  visitors: number;
+  entrances: number;
+  avgDuration: DurationStat;
+  /** Longest single view, seconds, display-capped; null when none reported. */
+  maxDurationSeconds: number | null;
+  devices: BreakdownRow[];
+  countries: BreakdownRow[];
+  /** Daily visitors on this path, zero-filled. */
+  trend: SeriesPoint[];
+  sources: PageSourceRow[];
+  /** Last ~20 visitor journeys touching this path (drill to Journey). */
+  visitorLog: VisitorLogRow[];
+  search: PageSearchRow[];
+  searchBelowThreshold: BelowThresholdRollup | null;
+  /** "GSC data through {date}" caption on the Search tab; null before ingest. */
+  gscThrough: string | null;
+}
+
+// -- WP3.4 Visitor Journey modal (the climax) --
+
+export type JourneyKind = "view" | "chooser" | "cta" | "brief" | "booking";
+
+/** One timeline entry. All strings are attacker-supplied TEXT — the renderer
+ * MUST NOT treat any of them as HTML. */
+export interface JourneyItem {
+  at: string;
+  kind: JourneyKind;
+  label: string;
+  detail: string;
+  /** Event.meta rendered as "key: value" chips (TEXT). */
+  metaChips: string[];
+}
+
+/** A session = items within a 30-min-gap heuristic boundary. */
+export interface JourneySession {
+  startAt: string;
+  items: JourneyItem[];
+}
+
+export interface IqVisitorJourney {
+  meta: IqMeta;
+  /** Full anonymous id (NOT PII) — echoed for the header + deep-link. */
+  visitorId: string;
+  shortId: string;
+  firstSeen: string | null;
+  lastSeen: string | null;
+  device: string | null;
+  browser: string | null;
+  country: string | null;
+  /** True pageview count (COUNT query) — honest above the item cap. */
+  pageviews: number;
+  sessionCount: number;
+  /** The timeline hit the per-visitor item cap (JOURNEY_ITEM_CAP); the header
+   * counts stay true while the sessions below are the most recent, bounded set. */
+  truncated: boolean;
+  sessions: JourneySession[];
+  /** Distinct paths read (footer chip summary), TEXT. */
+  pagesRead: string[];
+  /** Total time on site, seconds, display-capped per view. */
+  totalSeconds: number;
+  /** LIVE stitch flag — the "became: a lead" banner. Lead NAME never ships. */
+  hasLead: boolean;
+  /** Re-gated CRM link target; null when no lead. */
+  leadId: string | null;
+}
+
+// -- WP3.9 Activity stream --
+
+export type ActivityKind = "pageview" | "chooser_click" | "cta_click" | "form_submit" | "booking";
+
+/** One row of the unified activity log. Form/booking rows carry {hasVisitorId}
+ * facts only — no lead name/email/message ever enters this payload. */
+export interface ActivityRow {
+  /** Stable synthetic key (table id prefixed by kind) — never PII. */
+  key: string;
+  at: string;
+  kind: ActivityKind;
+  path: string | null;
+  /** Full anonymous id when present (drill key); null when the row has none. */
+  visitorId: string | null;
+  shortId: string | null;
+  /** Source class of a pageview row; null for events/bookings. */
+  sourceClass: SourceClass | null;
+  /** Event.meta chips (TEXT); empty for pageviews. */
+  metaChips: string[];
+  hasVisitorId: boolean;
+}
+
+export interface IqActivity {
+  meta: IqMeta;
+  window: WindowDays;
+  since: string;
+  countingSince: string | null;
+  /** Newest-first, post-filter, capped at rowCap. */
+  rows: ActivityRow[];
+  rowCap: number;
+  /** More matching rows than the cap existed (honesty; capped set shown). */
+  truncated: boolean;
+  /** Kind filter options with in-window counts (pre-filter). */
+  kinds: { kind: ActivityKind; n: number }[];
+  /** Source-class filter options (pageview rows only). */
+  sources: BreakdownRow[];
+  applied: { kind: string | null; path: string | null; sourceClass: SourceClass | null };
+}
+
 // ---- DataSource boundary (DATA-SPEC §7.1) ----
 
 /**
@@ -556,4 +728,13 @@ export interface AdminIqSource {
   /** PII-free lead counts by inquiry type (leads donut — counts only; the four
    * stored form values plus an "Other / unset" residue slice). */
   leadsByInquiryType(): Promise<BreakdownRow[]>;
+  // ---- Wave 3 drill methods (each takes …args, filters?, opts) ----
+  /** WP3.2 — per-KPI daily series + prior overlay for the drill modal. */
+  kpiDetail(kpiId: CommandKpiId, filters: Filters, opts: SourceOpts): Promise<IqKpiDetail>;
+  /** WP3.3 — one path's Overview/Sources/Visitors/Search detail. */
+  pageDetail(path: string, filters: Filters, opts: SourceOpts): Promise<IqPageDetail>;
+  /** WP3.4 — one visitor's stitched all-time journey (no window; single tab). */
+  visitorJourney(visitorId: string, opts: SourceOpts): Promise<IqVisitorJourney>;
+  /** WP3.9 — the unified, windowed, capped activity log. */
+  activity(filters: Filters, opts: SourceOpts): Promise<IqActivity>;
 }

@@ -20,10 +20,15 @@ export function getSource(mode: IqMode): AdminIqSource {
 
 export type {
   AdminIqSource,
+  CommandKpiId,
   Filters,
+  IqActivity,
   IqCommand,
+  IqKpiDetail,
   IqLanding,
   IqMode,
+  IqPageDetail,
   IqSummary,
+  IqVisitorJourney,
   SourceOpts,
 } from "./types";

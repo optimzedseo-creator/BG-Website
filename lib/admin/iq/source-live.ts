@@ -18,12 +18,15 @@ import { prisma } from "@/lib/db";
 import type { Prisma } from "@prisma/client";
 import { pillars } from "@/lib/insights";
 import type {
+  ActivityKind,
+  ActivityRow,
   AdminIqSource,
   AppliedCuts,
   BelowThresholdRollup,
   BreakdownRow,
   ChipOptions,
   CommandKpi,
+  CommandKpiId,
   ContentPageRow,
   DurationStat,
   EvaluatorRef,
@@ -35,16 +38,26 @@ import type {
   GscQueryRow,
   GscTrendPoint,
   IntentBucketRow,
+  IqActivity,
   IqCommand,
   IqContent,
+  IqKpiDetail,
   IqLanding,
   IqMeta,
+  IqPageDetail,
   IqRuleInputs,
   IqSearch,
   IqSummary,
   IqTraffic,
+  IqVisitorJourney,
+  JourneyItem,
+  JourneyKind,
+  JourneySession,
+  KpiSeriesPoint,
   LeadStatusCount,
   ModuleTeaser,
+  PageSearchRow,
+  PageSourceRow,
   PillarRow,
   RecentLeadRef,
   RecordWeek,
@@ -60,6 +73,7 @@ import type {
 } from "./types";
 import { METRICS_VERSION } from "./types";
 import {
+  ACTIVITY_ROWS,
   CONTENT_PAGES_MAX,
   DAY_MS,
   DURATION_DISPLAY_CAP_S,
@@ -71,6 +85,10 @@ import {
   INQUIRY_TYPE_OTHER_LABEL,
   INQUIRY_TYPE_VALUES,
   IQ_RULE_REGISTRY,
+  JOURNEY_ITEM_CAP,
+  PAGE_SEARCH_ROWS,
+  PAGE_SOURCE_ROWS,
+  PAGE_VISITOR_ROWS,
   RATE_MIN_DENOM,
   RULE_EVALUATOR_MIN_DAYS,
   RULE_EVALUATOR_WINDOW_D,
@@ -81,6 +99,7 @@ import {
   SCORECARD_BRANDED_GATE_IMPRESSIONS,
   SCORECARD_CHANNEL_GATE,
   SCORECARD_INFIT_GATE,
+  SESSION_GAP_MINUTES,
   VISITOR_LOG_PATHS_MAX,
   VISITOR_LOG_ROWS,
   bucketKey,
@@ -1165,6 +1184,7 @@ async function liveTraffic(filters: Filters, opts: SourceOpts): Promise<IqTraffi
     .map(({ id, vs }) => {
       const reported = vs.filter((v) => v.duration !== null);
       return {
+        visitorId: id,
         shortId: id.slice(0, 8),
         device: vs[0].device,
         country: vs[0].country,
@@ -1564,6 +1584,579 @@ async function liveLeadsByInquiryType(): Promise<BreakdownRow[]> {
   return rows;
 }
 
+// ---------------------------------------------------------------------------
+// Wave 3 — drill methods (WP3.2 KPI / WP3.3 Page / WP3.4 Journey / WP3.9
+// Activity). Same discipline: windowed + row-capped queries, exclusion threaded
+// through SourceOpts, ISO strings on the wire, PII-free by type construction
+// (visitorId is carried; lead surfaces only as hasLead + leadId).
+// ---------------------------------------------------------------------------
+
+/** Prior-window DAILY NY keys (the `window` days immediately before today's window). */
+function priorDayKeys(window: Filters["window"], now: Date): string[] {
+  return lastNDayKeys(2 * window, now).slice(0, window);
+}
+
+/** Per-view display cap (B1) — one parked tab never swamps a total. */
+function cappedDuration(d: number | null | undefined): number {
+  return Math.min(d ?? 0, DURATION_DISPLAY_CAP_S);
+}
+
+/** Event.meta → "key: value" TEXT chips (never HTML; PII-free by capture rule). */
+function metaToChips(meta: unknown): string[] {
+  if (!meta || typeof meta !== "object" || Array.isArray(meta)) return [];
+  return Object.entries(meta as Record<string, unknown>).map(([k, v]) => `${k}: ${String(v)}`);
+}
+
+function seriesFrom(map: Map<string, number>, keys: string[]): KpiSeriesPoint[] {
+  return keys.map((date) => ({ date, n: map.get(date) ?? 0 }));
+}
+
+const KPI_DEFINITIONS: Record<CommandKpiId, { label: string; definition: string }> = {
+  visitors: {
+    label: "Visitors",
+    definition:
+      "Distinct visitor ids with a pageview that NY calendar day. Internal traffic excluded.",
+  },
+  pageviews: {
+    label: "Pageviews",
+    definition: "Pageviews that day. Internal traffic excluded.",
+  },
+  "search-clicks": {
+    label: "Search clicks",
+    definition:
+      "Google Search Console property-level clicks, by GSC's stored date. GSC data lags about 2 days.",
+  },
+  briefs: {
+    label: "Briefs",
+    definition: "Server-recorded contact-form submissions (form_submit). The trusted win.",
+  },
+  bookings: {
+    label: "Bookings",
+    definition: "Calendly bookings captured that day, by capture time, not meeting time.",
+  },
+  subscribers: { label: "Subscribers", definition: "New subscriber rows that day." },
+};
+
+async function liveKpiDetail(
+  kpiId: CommandKpiId,
+  filters: Filters,
+  opts: SourceOpts
+): Promise<IqKpiDetail> {
+  const { window } = filters;
+  const internal = opts.internalVisitorIds;
+  const now = new Date();
+  const priorSince = new Date(now.getTime() - 2 * window * DAY_MS);
+  const curKeys = lastNDayKeys(window, now);
+  const priKeys = priorDayKeys(window, now);
+
+  const countByDay = new Map<string, number>();
+  let dataStart: string | null = null;
+  let gscThrough: string | null = null;
+
+  if (kpiId === "visitors") {
+    const rows = await prisma.pageView.findMany({
+      where: { createdAt: { gte: priorSince }, ...excludeInternal(internal) },
+      select: { visitorId: true, createdAt: true },
+      orderBy: { createdAt: "asc" },
+      take: PAGEVIEW_ROW_CAP,
+    });
+    const setByDay = new Map<string, Set<string>>();
+    for (const v of rows) {
+      const k = nyDayKey(v.createdAt);
+      if (!setByDay.has(k)) setByDay.set(k, new Set());
+      setByDay.get(k)!.add(v.visitorId);
+    }
+    for (const [k, s] of setByDay) countByDay.set(k, s.size);
+    const first = await prisma.pageView.findFirst({
+      where: excludeInternal(internal),
+      orderBy: { createdAt: "asc" },
+      select: { createdAt: true },
+    });
+    dataStart = first ? first.createdAt.toISOString() : null;
+  } else if (kpiId === "pageviews") {
+    const rows = await prisma.pageView.findMany({
+      where: { createdAt: { gte: priorSince }, ...excludeInternal(internal) },
+      select: { createdAt: true },
+      orderBy: { createdAt: "asc" },
+      take: PAGEVIEW_ROW_CAP,
+    });
+    for (const v of rows) {
+      const k = nyDayKey(v.createdAt);
+      countByDay.set(k, (countByDay.get(k) || 0) + 1);
+    }
+    const first = await prisma.pageView.findFirst({
+      where: excludeInternal(internal),
+      orderBy: { createdAt: "asc" },
+      select: { createdAt: true },
+    });
+    dataStart = first ? first.createdAt.toISOString() : null;
+  } else if (kpiId === "briefs" || kpiId === "bookings") {
+    if (kpiId === "briefs") {
+      const rows = await prisma.event.findMany({
+        where: { name: "form_submit", createdAt: { gte: priorSince }, ...excludeInternalNullable(internal) },
+        select: { createdAt: true },
+        orderBy: { createdAt: "asc" },
+        take: EVENT_ROW_CAP,
+      });
+      for (const e of rows) {
+        const k = nyDayKey(e.createdAt);
+        countByDay.set(k, (countByDay.get(k) || 0) + 1);
+      }
+      const first = await prisma.event.findFirst({
+        where: { name: "form_submit", ...excludeInternalNullable(internal) },
+        orderBy: { createdAt: "asc" },
+        select: { createdAt: true },
+      });
+      dataStart = first ? first.createdAt.toISOString() : null;
+    } else {
+      const rows = await prisma.booking.findMany({
+        where: { createdAt: { gte: priorSince }, ...excludeInternalNullable(internal) },
+        select: { createdAt: true },
+        orderBy: { createdAt: "asc" },
+        take: BOOKING_ROW_CAP,
+      });
+      for (const b of rows) {
+        const k = nyDayKey(b.createdAt);
+        countByDay.set(k, (countByDay.get(k) || 0) + 1);
+      }
+      const first = await prisma.booking.findFirst({
+        where: { ...excludeInternalNullable(internal) },
+        orderBy: { createdAt: "asc" },
+        select: { createdAt: true },
+      });
+      dataStart = first ? first.createdAt.toISOString() : null;
+    }
+  } else if (kpiId === "subscribers") {
+    const rows = await prisma.subscriber.findMany({
+      where: { createdAt: { gte: priorSince } },
+      select: { createdAt: true },
+      orderBy: { createdAt: "asc" },
+      take: BOOKING_ROW_CAP,
+    });
+    for (const s of rows) {
+      const k = nyDayKey(s.createdAt);
+      countByDay.set(k, (countByDay.get(k) || 0) + 1);
+    }
+    const first = await prisma.subscriber.findFirst({ orderBy: { createdAt: "asc" }, select: { createdAt: true } });
+    dataStart = first ? first.createdAt.toISOString() : null;
+  } else {
+    // search-clicks — keyed by GSC's stored date (never re-bucketed, DATA §2).
+    const rows = await prisma.gscDaily.findMany({
+      where: { date: { gte: priorSince } },
+      select: { date: true, clicks: true },
+      orderBy: { date: "asc" },
+      take: GSC_DAILY_ROW_CAP,
+    });
+    for (const r of rows) countByDay.set(gscDateKey(r.date), r.clicks);
+    const [firstDaily, latestDaily] = await Promise.all([
+      prisma.gscDaily.findFirst({ orderBy: { date: "asc" }, select: { date: true } }),
+      prisma.gscDaily.findFirst({ orderBy: { date: "desc" }, select: { date: true } }),
+    ]);
+    dataStart = firstDaily ? gscDateKey(firstDaily.date) : null;
+    gscThrough = latestDaily ? gscDateKey(latestDaily.date) : null;
+  }
+
+  const meta = KPI_DEFINITIONS[kpiId];
+  return {
+    meta: liveMeta(internal.length),
+    window,
+    kpiId,
+    label: meta.label,
+    definition: meta.definition,
+    dataStart,
+    series: seriesFrom(countByDay, curKeys),
+    priorSeries: seriesFrom(countByDay, priKeys),
+    gscThrough,
+  };
+}
+
+async function livePageDetail(
+  path: string,
+  filters: Filters,
+  opts: SourceOpts
+): Promise<IqPageDetail> {
+  const { window } = filters;
+  const internal = opts.internalVisitorIds;
+  const now = new Date();
+  const since = new Date(now.getTime() - window * DAY_MS);
+
+  const [allViews, firstPathView, gscRows, latestDaily] = await Promise.all([
+    prisma.pageView.findMany({
+      where: { createdAt: { gte: since }, ...excludeInternal(internal) },
+      select: { path: true, visitorId: true, referrer: true, device: true, country: true, duration: true, createdAt: true },
+      orderBy: { createdAt: "asc" },
+      take: PAGEVIEW_ROW_CAP,
+    }),
+    prisma.pageView.findFirst({
+      where: { path, ...excludeInternal(internal) },
+      orderBy: { createdAt: "asc" },
+      select: { createdAt: true },
+    }),
+    prisma.gscQuery.findMany({
+      where: { date: { gte: since } },
+      select: { date: true, query: true, page: true, impressions: true, clicks: true, position: true, isBranded: true, brandedAmbiguous: true, intentBucket: true, classifierVersion: true },
+      take: GSC_QUERY_ROW_CAP,
+    }),
+    prisma.gscDaily.findFirst({ orderBy: { date: "desc" }, select: { date: true } }),
+  ]);
+
+  const pathViews = allViews.filter((v) => v.path === path);
+
+  // Entrances: first pageview of each visitor-day; count the ones on this path.
+  const seenVisitorDay = new Set<string>();
+  let entrances = 0;
+  for (const v of allViews) {
+    const key = `${v.visitorId}|${nyDayKey(v.createdAt)}`;
+    if (seenVisitorDay.has(key)) continue;
+    seenVisitorDay.add(key);
+    if (v.path === path) entrances += 1;
+  }
+
+  // Sources: referrer hosts that sent traffic to THIS path (internal excluded).
+  const hostAgg = new Map<string, { n: number; sample: string | null }>();
+  for (const v of pathViews) {
+    const host = referrerHost(v.referrer);
+    if (!host) continue;
+    const rec = hostAgg.get(host) ?? { n: 0, sample: v.referrer ?? null };
+    rec.n += 1;
+    hostAgg.set(host, rec);
+  }
+  const sources: PageSourceRow[] = [...hostAgg.entries()]
+    .map(([host, r]) => ({ host, n: r.n, sampleReferrer: r.sample }))
+    .sort((a, b) => b.n - a.n)
+    .slice(0, PAGE_SOURCE_ROWS);
+
+  // Visitors tab: last ~20 journeys touching this path, full window sequence.
+  const pathVisitorLast = new Map<string, number>();
+  for (const v of pathViews) {
+    pathVisitorLast.set(v.visitorId, Math.max(pathVisitorLast.get(v.visitorId) ?? 0, v.createdAt.getTime()));
+  }
+  const orderedVisitorIds = [...pathVisitorLast.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, PAGE_VISITOR_ROWS)
+    .map(([id]) => id);
+  const seqByVisitor = new Map<string, typeof allViews>();
+  for (const v of allViews) {
+    if (!pathVisitorLast.has(v.visitorId)) continue;
+    const list = seqByVisitor.get(v.visitorId) ?? [];
+    list.push(v);
+    seqByVisitor.set(v.visitorId, list);
+  }
+  const visitorLog: VisitorLogRow[] = orderedVisitorIds.map((id) => {
+    const vs = seqByVisitor.get(id) ?? [];
+    const reported = vs.filter((v) => v.duration !== null);
+    return {
+      visitorId: id,
+      shortId: id.slice(0, 8),
+      device: vs[0]?.device ?? null,
+      country: vs[0]?.country ?? null,
+      paths: vs.slice(0, VISITOR_LOG_PATHS_MAX).map((v) => v.path),
+      morePaths: Math.max(0, vs.length - VISITOR_LOG_PATHS_MAX),
+      views: vs.length,
+      totalSeconds: reported.reduce((a, v) => a + cappedDuration(v.duration), 0),
+      reported: reported.length,
+    };
+  });
+
+  // Daily visitors on this path, zero-filled.
+  const visitorsByBucket = new Map<string, Set<string>>();
+  for (const v of pathViews) {
+    const k = bucketKey(v.createdAt, window);
+    if (!visitorsByBucket.has(k)) visitorsByBucket.set(k, new Set());
+    visitorsByBucket.get(k)!.add(v.visitorId);
+  }
+  const trend: SeriesPoint[] = windowBucketKeys(window, now).map((key) => ({
+    key,
+    n: visitorsByBucket.get(key)?.size || 0,
+  }));
+
+  const reportedDurations = pathViews.filter((v) => v.duration !== null).map((v) => cappedDuration(v.duration));
+  const maxDurationSeconds = reportedDurations.length ? Math.max(...reportedDurations) : null;
+
+  // Search tab: GscQuery rows whose page resolves to this path.
+  const pageQueries = gscRows.filter((q) => gscPagePath(q.page) === path);
+  const byQuery = new Map<string, { impressions: number; clicks: number; posW: number; isBranded: boolean; brandedAmbiguous: boolean; intentBucket: string | null }>();
+  for (const q of pageQueries) {
+    const rec = byQuery.get(q.query) ?? { impressions: 0, clicks: 0, posW: 0, isBranded: false, brandedAmbiguous: false, intentBucket: null };
+    rec.impressions += q.impressions;
+    rec.clicks += q.clicks;
+    rec.posW += q.position * q.impressions;
+    rec.isBranded = rec.isBranded || q.isBranded;
+    rec.brandedAmbiguous = rec.brandedAmbiguous || q.brandedAmbiguous;
+    rec.intentBucket = rec.intentBucket ?? q.intentBucket;
+    byQuery.set(q.query, rec);
+  }
+  const allQueryRows = [...byQuery.entries()]
+    .map(([query, r]) => ({
+      query,
+      clicks: r.clicks,
+      impressions: r.impressions,
+      position: r.impressions ? r.posW / r.impressions : 0,
+      isBranded: r.isBranded,
+      brandedAmbiguous: r.brandedAmbiguous,
+      intentBucket: r.intentBucket,
+    }))
+    .sort((a, b) => b.impressions - a.impressions);
+  const above = allQueryRows.filter((r) => r.impressions >= GSC_MIN_IMPRESSIONS);
+  const search: PageSearchRow[] = above.slice(0, PAGE_SEARCH_ROWS);
+  const below = allQueryRows.filter((r) => r.impressions < GSC_MIN_IMPRESSIONS);
+  const searchBelowThreshold: BelowThresholdRollup | null = below.length
+    ? {
+        rows: below.length,
+        impressions: below.reduce((a, r) => a + r.impressions, 0),
+        clicks: below.reduce((a, r) => a + r.clicks, 0),
+      }
+    : null;
+
+  return {
+    // Honesty metadata: the classifier versions actually behind this page's
+    // Search tag output (F6 — the Search tab exposes isBranded/intent, so the
+    // footer must say what tagged it, mirroring liveSearch/liveCommand).
+    meta: liveMeta(internal.length, [...new Set(pageQueries.map((q) => q.classifierVersion))].sort()),
+    window,
+    path,
+    since: since.toISOString(),
+    countingSince: firstPathView ? firstPathView.createdAt.toISOString() : null,
+    views: pathViews.length,
+    visitors: new Set(pathViews.map((v) => v.visitorId)).size,
+    entrances,
+    avgDuration: durationStat(pathViews),
+    maxDurationSeconds,
+    devices: topCounts(pathViews.map((v) => v.device), UNKNOWN_LABEL),
+    countries: topCounts(pathViews.map((v) => v.country), UNKNOWN_LABEL),
+    trend,
+    sources,
+    visitorLog,
+    search,
+    searchBelowThreshold,
+    gscThrough: latestDaily ? gscDateKey(latestDaily.date) : null,
+  };
+}
+
+const JOURNEY_EVENT_KIND: Record<string, JourneyKind> = {
+  chooser_click: "chooser",
+  cta_click: "cta",
+  form_submit: "brief",
+};
+
+function refLabel(ref: string | null): string {
+  const host = referrerHost(ref);
+  if (host) return `via ${host}`;
+  return "direct or internal";
+}
+
+function durationDetail(s: number | null): string {
+  if (!s) return "";
+  const capped = cappedDuration(s);
+  return capped >= 60 ? ` · ${Math.floor(capped / 60)}m ${capped % 60}s` : ` · ${capped}s`;
+}
+
+async function liveVisitorJourney(visitorId: string, opts: SourceOpts): Promise<IqVisitorJourney> {
+  const [views, events, bookings, lead, pageviewCount] = await Promise.all([
+    prisma.pageView.findMany({
+      where: { visitorId },
+      orderBy: { createdAt: "asc" },
+      take: JOURNEY_ITEM_CAP,
+      select: { path: true, referrer: true, duration: true, device: true, browser: true, country: true, createdAt: true },
+    }),
+    prisma.event.findMany({
+      where: { visitorId },
+      orderBy: { createdAt: "asc" },
+      take: JOURNEY_ITEM_CAP,
+      select: { name: true, path: true, meta: true, createdAt: true },
+    }),
+    prisma.booking.findMany({
+      where: { visitorId },
+      orderBy: { createdAt: "asc" },
+      take: BOOKING_ROW_CAP,
+      select: { createdAt: true },
+    }),
+    // PII-free: id ONLY — the lead NAME never enters an analytics payload.
+    prisma.lead.findFirst({ where: { visitorId }, select: { id: true }, orderBy: { createdAt: "asc" } }),
+    // Honest header count even when the timeline is capped (F4).
+    prisma.pageView.count({ where: { visitorId } }),
+  ]);
+  // The bounded timeline hit the item cap on either stream — say so, don't lie.
+  const truncated = views.length >= JOURNEY_ITEM_CAP || events.length >= JOURNEY_ITEM_CAP;
+
+  const items: JourneyItem[] = [];
+  for (const v of views) {
+    items.push({
+      at: v.createdAt.toISOString(),
+      kind: "view",
+      label: `Read ${v.path}`,
+      detail: `${refLabel(v.referrer)}${durationDetail(v.duration)}${v.device ? ` · ${v.device}` : ""}${v.country ? ` · ${v.country}` : ""}`,
+      metaChips: [],
+    });
+  }
+  for (const e of events) {
+    // Booking events would duplicate the authoritative Booking-table entries.
+    const kind = JOURNEY_EVENT_KIND[e.name];
+    if (!kind) continue;
+    items.push({
+      at: e.createdAt.toISOString(),
+      kind,
+      label: e.name.replace(/_/g, " "),
+      detail: e.path,
+      metaChips: metaToChips(e.meta),
+    });
+  }
+  for (const b of bookings) {
+    items.push({ at: b.createdAt.toISOString(), kind: "booking", label: "Booking captured", detail: "Calendly booking", metaChips: [] });
+  }
+  items.sort((a, b) => Date.parse(a.at) - Date.parse(b.at));
+
+  // Session grouping: a gap larger than SESSION_GAP_MINUTES starts a new one.
+  const gapMs = SESSION_GAP_MINUTES * 60 * 1000;
+  const sessions: JourneySession[] = [];
+  for (const it of items) {
+    const t = Date.parse(it.at);
+    const last = sessions[sessions.length - 1];
+    if (!last || t - Date.parse(last.items[last.items.length - 1].at) > gapMs) {
+      sessions.push({ startAt: it.at, items: [it] });
+    } else {
+      last.items.push(it);
+    }
+  }
+
+  const first = views[0] ?? null;
+  const totalSeconds = views.reduce((a, v) => a + cappedDuration(v.duration), 0);
+  const firstSeen = items.length ? items[0].at : null;
+  const lastSeen = items.length ? items[items.length - 1].at : null;
+
+  return {
+    meta: liveMeta(opts.internalVisitorIds.length),
+    visitorId,
+    shortId: visitorId.slice(0, 8),
+    firstSeen,
+    lastSeen,
+    device: first?.device ?? null,
+    browser: first?.browser ?? null,
+    country: first?.country ?? null,
+    pageviews: pageviewCount,
+    sessionCount: sessions.length,
+    truncated,
+    sessions,
+    pagesRead: [...new Set(views.map((v) => v.path))],
+    totalSeconds,
+    hasLead: Boolean(lead),
+    leadId: lead?.id ?? null,
+  };
+}
+
+async function liveActivity(filters: Filters, opts: SourceOpts): Promise<IqActivity> {
+  const { window } = filters;
+  const internal = opts.internalVisitorIds;
+  const now = new Date();
+  const since = new Date(now.getTime() - window * DAY_MS);
+
+  const [views, events, bookings, firstView] = await Promise.all([
+    prisma.pageView.findMany({
+      where: { createdAt: { gte: since }, ...excludeInternal(internal) },
+      select: { id: true, path: true, visitorId: true, referrer: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+      take: PAGEVIEW_ROW_CAP,
+    }),
+    prisma.event.findMany({
+      where: { createdAt: { gte: since }, ...excludeInternalNullable(internal) },
+      select: { id: true, name: true, path: true, visitorId: true, meta: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+      take: EVENT_ROW_CAP,
+    }),
+    prisma.booking.findMany({
+      where: { createdAt: { gte: since }, ...excludeInternalNullable(internal) },
+      select: { id: true, visitorId: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+      take: BOOKING_ROW_CAP,
+    }),
+    prisma.pageView.findFirst({ where: excludeInternal(internal), orderBy: { createdAt: "asc" }, select: { createdAt: true } }),
+  ]);
+
+  const rows: ActivityRow[] = [];
+  const sourceCounts = new Map<string, number>();
+  for (const v of views) {
+    const cls = classifySource(v.referrer);
+    sourceCounts.set(cls, (sourceCounts.get(cls) || 0) + 1);
+    rows.push({
+      key: `pv-${v.id}`,
+      at: v.createdAt.toISOString(),
+      kind: "pageview",
+      path: v.path,
+      visitorId: v.visitorId,
+      shortId: v.visitorId.slice(0, 8),
+      sourceClass: cls,
+      metaChips: [],
+      hasVisitorId: true,
+    });
+  }
+  const eventKinds: ActivityKind[] = ["chooser_click", "cta_click", "form_submit"];
+  for (const e of events) {
+    if (!eventKinds.includes(e.name as ActivityKind)) continue; // 'booking' handled via Booking table
+    rows.push({
+      key: `ev-${e.id}`,
+      at: e.createdAt.toISOString(),
+      kind: e.name as ActivityKind,
+      path: e.path,
+      visitorId: e.visitorId,
+      shortId: e.visitorId ? e.visitorId.slice(0, 8) : null,
+      sourceClass: null,
+      metaChips: metaToChips(e.meta),
+      hasVisitorId: e.visitorId !== null,
+    });
+  }
+  for (const b of bookings) {
+    rows.push({
+      key: `bk-${b.id}`,
+      at: b.createdAt.toISOString(),
+      kind: "booking",
+      path: null,
+      visitorId: b.visitorId,
+      shortId: b.visitorId ? b.visitorId.slice(0, 8) : null,
+      sourceClass: null,
+      metaChips: [],
+      hasVisitorId: b.visitorId !== null,
+    });
+  }
+
+  // Pre-filter kind counts (the filter option list).
+  const kindCounts = new Map<ActivityKind, number>();
+  for (const r of rows) kindCounts.set(r.kind, (kindCounts.get(r.kind) || 0) + 1);
+  const kindOrder: ActivityKind[] = ["pageview", "chooser_click", "cta_click", "form_submit", "booking"];
+  const kinds = kindOrder
+    .filter((k) => (kindCounts.get(k) || 0) > 0)
+    .map((kind) => ({ kind, n: kindCounts.get(kind) || 0 }));
+  const sources: BreakdownRow[] = [...sourceCounts.entries()]
+    .map(([label, n]) => ({ label, n }))
+    .sort((a, b) => b.n - a.n);
+
+  // Apply filters. sourceClass keeps pageview rows only (events/bookings carry
+  // no source) — an honest, explicit narrowing.
+  const wantKind = filters.kind ?? null;
+  const wantPath = filters.path ?? null;
+  const wantSource = filters.sourceClass ?? null;
+  let filtered = rows;
+  if (wantKind) filtered = filtered.filter((r) => r.kind === wantKind);
+  if (wantPath) filtered = filtered.filter((r) => r.path === wantPath);
+  if (wantSource) filtered = filtered.filter((r) => r.sourceClass === wantSource);
+
+  filtered.sort((a, b) => Date.parse(b.at) - Date.parse(a.at));
+  const truncated = filtered.length > ACTIVITY_ROWS;
+  const capped = filtered.slice(0, ACTIVITY_ROWS);
+
+  return {
+    meta: liveMeta(internal.length),
+    window,
+    since: since.toISOString(),
+    countingSince: firstView ? firstView.createdAt.toISOString() : null,
+    rows: capped,
+    rowCap: ACTIVITY_ROWS,
+    truncated,
+    kinds,
+    sources,
+    applied: { kind: wantKind, path: wantPath, sourceClass: wantSource },
+  };
+}
+
 export const liveSource: AdminIqSource = {
   summary: liveSummary,
   command: liveCommand,
@@ -1573,4 +2166,8 @@ export const liveSource: AdminIqSource = {
   content: liveContent,
   search: liveSearch,
   leadsByInquiryType: liveLeadsByInquiryType,
+  kpiDetail: liveKpiDetail,
+  pageDetail: livePageDetail,
+  visitorJourney: liveVisitorJourney,
+  activity: liveActivity,
 };

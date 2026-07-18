@@ -6,6 +6,7 @@ import { ENGAGED_MIN_DURATION_S, buildIqQuery } from "@/lib/admin/iq/shared";
 import { subscribePeriodRefetch } from "../period-bus";
 import SegmentChips, { type ChipGroup } from "../SegmentChips";
 import { fmtDay, fmtSeconds } from "../fmt";
+import { openDrill, pageHash } from "../iq/hash-route";
 
 /*
  * WP2.5 Content module (client island) — "pages". Pages table (path sticky,
@@ -56,7 +57,8 @@ export default function ContentView({ initial }: { initial: IqContent }) {
       if (id !== seqRef.current) return; // stale response — discard (A3)
       setData(payload);
       // Success-only canonical URL (api A4 single-owner rule).
-      window.history.replaceState(null, "", `/admin/content${qs ? `?${qs}` : ""}`);
+      // Preserve any open modal's deep-link hash (F5).
+      window.history.replaceState(null, "", `/admin/content${qs ? `?${qs}` : ""}${window.location.hash}`);
     } catch {
       if (id !== seqRef.current) return;
       setError("Could not refresh. The numbers below are from the previous selection.");
@@ -119,7 +121,7 @@ export default function ContentView({ initial }: { initial: IqContent }) {
           ) : (
             <>
               <div className="adm-table-wrap">
-                <table className="adm-table adm-table--stickycol">
+                <table className="adm-table adm-table--stickycol adm-table--drill">
                   <thead>
                     <tr>
                       <th>Path</th>
@@ -130,11 +132,25 @@ export default function ContentView({ initial }: { initial: IqContent }) {
                       </th>
                       <th title="Views that reported a duration (coverage for the average)">Reported</th>
                       <th title="First pageview of a visitor-day landing on this path">Entrances</th>
+                      <th aria-label="Open"></th>
                     </tr>
                   </thead>
                   <tbody>
                     {data.pages.map((row) => (
-                      <tr key={row.path}>
+                      <tr
+                        key={row.path}
+                        className="adm-tr-drill"
+                        tabIndex={0}
+                        role="button"
+                        aria-label={`Open ${row.path} detail`}
+                        onClick={() => openDrill(pageHash(row.path))}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            openDrill(pageHash(row.path));
+                          }
+                        }}
+                      >
                         <td className="adm-path" title={row.path}>{row.path}</td>
                         <td className="adm-mono">{row.views}</td>
                         <td className="adm-mono">{row.visitors}</td>
@@ -145,13 +161,14 @@ export default function ContentView({ initial }: { initial: IqContent }) {
                           {row.avgDuration.reported} of {row.avgDuration.total}
                         </td>
                         <td className="adm-mono">{row.entrances}</td>
+                        <td className="adm-go" aria-hidden="true">→</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
               <p className="adm-caption">
-                Page drill-downs arrive in Wave 3. Avg time counts only views that reported a
+                Click a row to open its detail. Avg time counts only views that reported a
                 duration; the reported column is that coverage.
               </p>
               {/* Truncation honesty (api A2): capped rows are said, not vanished. */}

@@ -145,6 +145,18 @@ export function parseDimParam(raw: string | null | undefined): string | undefine
   return v.trim() ? v : undefined;
 }
 
+/**
+ * Site-path parser shared by the page + activity handlers AND the activity
+ * server page (security C2 — one copy so the page and its handler can't drift):
+ * strip control characters, cap at 512, require a leading "/". Returns null for
+ * anything else (it only ever becomes an exact-match filter, never SQL).
+ */
+export function parsePathParam(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  const v = raw.replace(/[\x00-\x1f\x7f]/g, "").slice(0, 512);
+  return v.startsWith("/") ? v : null;
+}
+
 const SOURCE_CLASS_VALUES: readonly SourceClass[] = [
   "direct",
   "search",
@@ -287,6 +299,20 @@ export const VISITOR_LOG_PATHS_MAX = 8;
 export const CONTENT_PAGES_MAX = 50;
 export const GSC_QUERY_ROWS_MAX = 50;
 export const GSC_COUNTRY_ROWS_MAX = 12;
+
+// ---- Wave 3 drill caps + heuristics (DATA §3 row caps; §3.2 session gap) ----
+
+/** Session boundary (UX §3.3): a gap larger than this starts a new session. */
+export const SESSION_GAP_MINUTES = 30;
+/** Per-visitor timeline item cap (DATA §3.2 caps pageviews+events at 500 each). */
+export const JOURNEY_ITEM_CAP = 500;
+/** Page-detail "Visitors" tab: last ~20 journeys touching the path (UX §3.2). */
+export const PAGE_VISITOR_ROWS = 20;
+/** Page-detail Sources / GSC row caps. */
+export const PAGE_SOURCE_ROWS = 12;
+export const PAGE_SEARCH_ROWS = 30;
+/** Activity stream row cap after windowing + filtering (DATA §3 discipline). */
+export const ACTIVITY_ROWS = 200;
 
 // ---- Scorecard unlock gates (UX §2.7 + §7 progress meters — named here so
 //      the meter, the gate copy, and the unlock check share one number) ----

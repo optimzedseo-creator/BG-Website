@@ -6,6 +6,8 @@ import type { IqCommand, IqInsightCard, WindowDays } from "@/lib/admin/iq/types"
 import { INSIGHTS_MAX_COMMAND, buildIqQuery, rateOrCounts, withPeriod } from "@/lib/admin/iq/shared";
 import { fmtDay, priorWindowPredatesData } from "../fmt";
 import { subscribePeriodRefetch } from "../period-bus";
+import AdmHoverChart from "../iq/AdmHoverChart";
+import { kpiHash, openDrill } from "../iq/hash-route";
 
 /*
  * WP2.2b Command surface (client island). Everything renders from the ONE
@@ -81,65 +83,6 @@ function CountUp({ n }: { n: number }) {
   return <>{done || shown === null ? n : shown}</>;
 }
 
-/** Inline-SVG daily trend (§5.11 static tier) — restyled home on Command.
- * Day-click is deferred to Wave 3: no click affordance. */
-function TrendChart({ days }: { days: { key: string; visitors: number; wins: number }[] }) {
-  const W = 720;
-  const H = 150;
-  const PAD = { l: 30, r: 8, t: 10, b: 22 };
-  const iw = W - PAD.l - PAD.r;
-  const ih = H - PAD.t - PAD.b;
-  const max = Math.max(1, ...days.map((d) => Math.max(d.visitors, d.wins)));
-  const x = (i: number) => PAD.l + (days.length < 2 ? iw / 2 : (i / (days.length - 1)) * iw);
-  const y = (v: number) => PAD.t + ih - (v / max) * ih;
-  const line = (get: (d: (typeof days)[number]) => number) =>
-    days.map((d, i) => `${x(i).toFixed(1)},${y(get(d)).toFixed(1)}`).join(" ");
-  const labelEvery = Math.max(1, Math.ceil(days.length / 9));
-
-  const baseY = (PAD.t + ih).toFixed(1);
-  const visitorsPoints = line((d) => d.visitors);
-  const areaPoints = `${visitorsPoints} ${x(days.length - 1).toFixed(1)},${baseY} ${x(0).toFixed(1)},${baseY}`;
-  const last = days[days.length - 1];
-
-  return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="adm-chart" role="img" aria-label="Daily visitors and wins trend">
-      <defs>
-        <linearGradient id="admAreaFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="var(--blue)" stopOpacity="0.22" />
-          <stop offset="1" stopColor="var(--blue)" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      {[0, 0.5, 1].map((f) => (
-        <g key={f}>
-          <line x1={PAD.l} x2={W - PAD.r} y1={y(max * f)} y2={y(max * f)} className="adm-chart-grid" />
-          <text x={PAD.l - 6} y={y(max * f) + 3.5} textAnchor="end" className="adm-chart-tick">
-            {Math.round(max * f)}
-          </text>
-        </g>
-      ))}
-      <polygon points={areaPoints} className="adm-chart-area adm-chart-late" stroke="none" />
-      <polyline points={visitorsPoints} className="adm-chart-visitors adm-chart-draw" fill="none" pathLength={1} />
-      <polyline points={line((d) => d.wins)} className="adm-chart-wins adm-chart-draw" fill="none" pathLength={1} />
-      {days.map((d, i) =>
-        d.wins > 0 ? <circle key={d.key} cx={x(i)} cy={y(d.wins)} r={3} className="adm-chart-windot adm-chart-late" /> : null
-      )}
-      {last && (
-        <g className="adm-chart-late">
-          <circle cx={x(days.length - 1)} cy={y(last.visitors)} r={10} className="adm-chart-endhalo" />
-          <circle cx={x(days.length - 1)} cy={y(last.visitors)} r={4} className="adm-chart-enddot" />
-        </g>
-      )}
-      {days.map((d, i) =>
-        i % labelEvery === 0 ? (
-          <text key={d.key} x={x(i)} y={H - 6} textAnchor="middle" className="adm-chart-tick">
-            {d.key.slice(5)}
-          </text>
-        ) : null
-      )}
-    </svg>
-  );
-}
-
 function InsightCard({ card, period }: { card: IqInsightCard; period: WindowDays }) {
   const meta = INSIGHT_CLASS_META[card.cls];
   const body = (
@@ -197,7 +140,8 @@ export default function CommandView({ initial }: { initial: IqCommand }) {
         // Success-only canonical URL (api A4 single-owner rule): the island
         // writes the FULL querystring; failure leaves URL and data both old.
         const qs = buildIqQuery(p, {});
-        window.history.replaceState(null, "", `/admin/overview${qs ? `?${qs}` : ""}`);
+        // Preserve any open modal's deep-link hash (F5).
+        window.history.replaceState(null, "", `/admin/overview${qs ? `?${qs}` : ""}${window.location.hash}`);
       } catch {
         if (id !== seqRef.current) return;
         setError("Could not refresh. The numbers below are from the previous selection.");
@@ -236,14 +180,21 @@ export default function CommandView({ initial }: { initial: IqCommand }) {
               ? "first period with data"
               : `${d > 0 ? "+" : d < 0 ? "" : "±"}${d} vs prior ${data.window}d`;
             return (
-              <div key={k.id} className={`adm-kpi ${KPI_ACCENTS[k.id] ?? "adm-kpi--blue"}`} title={KPI_TOOLTIPS[k.id]}>
+              <button
+                key={k.id}
+                type="button"
+                className={`adm-kpi adm-kpi--drill ${KPI_ACCENTS[k.id] ?? "adm-kpi--blue"}`}
+                title={KPI_TOOLTIPS[k.id]}
+                onClick={() => openDrill(kpiHash(k.id))}
+              >
                 <span className="adm-kpi-n"><CountUp n={k.n} /></span>
                 <span className="adm-kpi-label">
                   {k.label}
                   {k.id === "search-clicks" && data.gscThrough ? ` · through ${data.gscThrough.slice(5)}` : ""}
                 </span>
                 <span className="adm-kpi-delta">{deltaLabel}</span>
-              </div>
+                <span className="adm-go" aria-hidden="true">→</span>
+              </button>
             );
           })}
         </div>
@@ -272,7 +223,31 @@ export default function CommandView({ initial }: { initial: IqCommand }) {
             Daily trend: visitors <span className="adm-key adm-key-visitors" /> · wins{" "}
             <span className="adm-key adm-key-wins" />
           </h2>
-          <TrendChart days={data.trend} />
+          <AdmHoverChart
+            ariaLabel="Daily visitors and wins trend"
+            labels={data.trend.map((d) => d.key)}
+            series={[
+              {
+                key: "visitors",
+                label: "visitors",
+                className: "adm-chart-visitors",
+                values: data.trend.map((d) => d.visitors),
+                area: true,
+                areaFill: "admAreaFill",
+                endpointDotClass: "adm-chart-enddot",
+                endpointHaloClass: "adm-chart-endhalo",
+                swatch: "var(--blue)",
+              },
+              {
+                key: "wins",
+                label: "wins",
+                className: "adm-chart-wins",
+                values: data.trend.map((d) => d.wins),
+                dotsWhenPositive: true,
+                swatch: "var(--green)",
+              },
+            ]}
+          />
           {countingSince && <p className="adm-caption">counting since {countingSince}</p>}
         </section>
 

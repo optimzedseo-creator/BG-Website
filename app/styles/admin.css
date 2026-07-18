@@ -1433,6 +1433,385 @@
   }
 }
 
+/* ============================================================
+   WAVE 3 DEPTH — §5.9 drill modal system + drill affordances,
+   §5.11 chart hover readout, Journey timeline, Activity stream,
+   Reports catalog. Class-only selectors under .page-admin.
+   ============================================================ */
+
+/* ---------- §5.9 modal shell ---------- */
+/* Scroll-lock lives on <body> (outside .page-admin) by necessity. */
+body.adm-modal-open { overflow: hidden; }
+
+@keyframes admOverlayIn { from { opacity: 0; } }
+@keyframes admPanelIn { from { opacity: 0; transform: scale(0.98); } }
+
+.page-admin .adm-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 16px;
+  overflow-y: auto;
+  animation: admOverlayIn 200ms var(--ease);
+}
+.page-admin .adm-modal {
+  position: relative;
+  background: var(--bg1);
+  border: 1px solid var(--line-hi);
+  border-radius: 20px;
+  max-width: 720px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 22px 24px 26px;
+  animation: admPanelIn var(--t-med) var(--ease);
+}
+.page-admin .adm-modal:focus { outline: none; }
+.page-admin .adm-modal-grip { display: none; }
+
+.page-admin .adm-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.page-admin .adm-modal-titles { min-width: 0; }
+.page-admin .adm-modal-micro {
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text2);
+  margin-bottom: 6px;
+}
+.page-admin .adm-modal-title {
+  font-family: var(--disp);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  color: var(--text0);
+  border-left: 3px solid var(--acc);
+  padding-left: 14px;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.page-admin .adm-modal-sub {
+  display: block;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text1);
+  margin-top: 6px;
+  padding-left: 14px;
+}
+.page-admin .adm-modal-close {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line-hi);
+  color: var(--text1);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+.page-admin .adm-modal-close:hover { color: var(--text0); border-color: rgba(255, 255, 255, 0.25); }
+
+/* §5.8 segmented control as a tab row */
+.page-admin .adm-modal-tabs {
+  display: flex;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 3px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+}
+.page-admin .adm-modal-tab {
+  border: none;
+  border-radius: 7px;
+  padding: 5px 14px;
+  font: 500 12px var(--mono);
+  color: var(--text1);
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.page-admin .adm-modal-tab.on { background: var(--acc); color: var(--bg0); }
+.page-admin .adm-modal-tab:not(.on):hover { color: var(--text0); }
+
+.page-admin .adm-modal-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 8px;
+}
+.page-admin .adm-modal-controls .adm-modal-tabs { margin-bottom: 0; }
+.page-admin .adm-modal-compare {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--text1);
+  cursor: pointer;
+}
+.page-admin .adm-modal-section { margin-top: 4px; }
+.page-admin .adm-modal-section .adm-kpis { margin-bottom: 14px; }
+
+.page-admin .adm-modal-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 14px 0 6px;
+}
+.page-admin .adm-modal-summary > div {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: grid;
+  gap: 2px;
+}
+.page-admin .adm-modal-stat-n {
+  font-family: var(--disp);
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--text0);
+  font-variant-numeric: tabular-nums;
+}
+.page-admin .adm-modal-stat-l {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text1);
+}
+.page-admin .adm-modal-foot { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px; }
+.page-admin .adm-modal-foot-h {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text2);
+}
+.page-admin .adm-modal-foot p { font-size: 13px; color: var(--text1); margin-top: 4px; }
+
+/* ---------- §5.11 chart hover readout ---------- */
+.page-admin .adm-chart-wrap { position: relative; }
+.page-admin .adm-chart-hairline { stroke: var(--line-hi); stroke-width: 1; }
+.page-admin .adm-chart-compare { stroke: var(--text2); stroke-dasharray: 4 4; }
+.page-admin .adm-chart-tip {
+  position: absolute;
+  top: 4px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background: var(--bg3);
+  border: 1px solid var(--line-hi);
+  border-radius: 8px;
+  padding: 6px 9px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text0);
+  white-space: nowrap;
+  z-index: 2;
+}
+.page-admin .adm-chart-tip-date { display: block; color: var(--text1); margin-bottom: 3px; }
+.page-admin .adm-chart-tip-row { display: flex; align-items: center; gap: 5px; }
+.page-admin .adm-chart-tip-key { width: 8px; height: 8px; border-radius: 2px; display: inline-block; flex: none; }
+
+/* ---------- drill affordances (tiles + rows drill now) ---------- */
+.page-admin .adm-kpi--drill {
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  font: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+  color: inherit;
+}
+.page-admin .adm-kpi--drill:hover {
+  transform: translateY(-2px);
+  border-color: var(--acc-hover);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--acc-ring);
+}
+.page-admin .adm-kpi--drill .adm-go {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  color: var(--acc);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+.page-admin .adm-kpi--drill:hover .adm-go,
+.page-admin .adm-kpi--drill:focus-visible .adm-go { opacity: 1; transform: none; }
+
+.page-admin .adm-tr-drill { cursor: pointer; }
+
+.page-admin .adm-vlog-row {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 6px 8px;
+  margin: -6px -8px;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  border-radius: 8px;
+}
+.page-admin .adm-vlog-row:hover { background: rgba(255, 255, 255, 0.03); }
+.page-admin .adm-vlog-row .adm-go {
+  color: var(--acc);
+  opacity: 0;
+  margin-left: auto;
+  transition: opacity var(--t-fast) var(--ease);
+}
+.page-admin .adm-vlog-row:hover .adm-go,
+.page-admin .adm-vlog-row:focus-visible .adm-go { opacity: 1; }
+
+/* highlighted path chip (Page modal "Visitors" tab) — no layout shift */
+.page-admin .adm-pathchip.on {
+  color: var(--acc);
+  background: var(--acc-tint);
+  box-shadow: inset 0 0 0 1px var(--acc-border);
+}
+
+/* ---------- WP3.4 Journey timeline ---------- */
+.page-admin .adm-journey-head { margin-bottom: 12px; }
+.page-admin .adm-journey-facts { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: baseline; }
+.page-admin .adm-journey-id { font-size: 13px; color: var(--text0); }
+.page-admin .adm-journey-fact { font-size: 12px; color: var(--text1); }
+.page-admin .adm-journey-lead {
+  display: block;
+  background: var(--acc-chip);
+  border: 1px solid var(--acc-border);
+  border-left: 3px solid var(--acc);
+  border-radius: 10px;
+  padding: 9px 13px;
+  color: var(--acc);
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+.page-admin .adm-journey-lead:hover { border-color: var(--acc-hover); }
+.page-admin .adm-journey-sessions { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.page-admin .adm-journey-session-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+  color: var(--text1);
+  font-size: 12px;
+}
+.page-admin .adm-journey-session-time { font-family: var(--mono); font-size: 11px; color: var(--text2); }
+.page-admin .adm-journey-items {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 12px;
+  display: grid;
+  gap: 10px;
+  border-left: 1px solid var(--line);
+}
+.page-admin .adm-j2 { display: flex; gap: 10px; align-items: flex-start; }
+.page-admin .adm-j2-icon {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  background: var(--bg3);
+  border-radius: 7px;
+  font-size: 12px;
+}
+.page-admin .adm-j2-body { min-width: 0; flex: 1; }
+.page-admin .adm-j2-line { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.page-admin .adm-j2-label { font-size: 13px; color: var(--text0); overflow-wrap: anywhere; }
+.page-admin .adm-j2-at { font-family: var(--mono); font-size: 11px; color: var(--text2); flex: none; }
+.page-admin .adm-j2-detail { display: block; font-size: 12px; color: var(--text1); margin-top: 2px; overflow-wrap: anywhere; }
+.page-admin .adm-j2-chips { display: flex; flex-wrap: wrap; gap: 4px 6px; margin-top: 5px; }
+.page-admin .adm-journey-foot { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 8px; }
+.page-admin .adm-journey-foot-h {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text2);
+}
+.page-admin .adm-journey-total { font-size: 12.5px; color: var(--text1); }
+
+/* ---------- WP3.9 Activity kind badges ---------- */
+.page-admin .adm-act-form_submit {
+  color: var(--green);
+  background: color-mix(in srgb, var(--green) 13%, transparent);
+  border-color: color-mix(in srgb, var(--green) 27%, transparent);
+}
+.page-admin .adm-act-booking {
+  color: var(--purple);
+  background: color-mix(in srgb, var(--purple) 13%, transparent);
+  border-color: color-mix(in srgb, var(--purple) 27%, transparent);
+}
+
+/* ---------- WP3.10 Reports catalog ---------- */
+.page-admin .adm-reports { display: grid; gap: 16px; }
+.page-admin .adm-report-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.page-admin .adm-report-row {
+  display: grid;
+  grid-template-columns: 190px 1fr auto;
+  gap: 12px;
+  align-items: baseline;
+  padding: 11px 13px;
+  border-radius: 10px;
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.page-admin .adm-report-row:hover { border-color: var(--acc-hover); background: var(--bg3); }
+.page-admin .adm-report-label { font-family: var(--disp); font-weight: 700; font-size: 14px; color: var(--text0); }
+.page-admin .adm-report-blurb { font-size: 12.5px; color: var(--text1); }
+.page-admin .adm-report-row .adm-go { color: var(--acc); }
+
+/* ---------- rail utility group (Activity / Reports) ---------- */
+.page-admin .adm-rail-utility { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+
+/* ---------- Wave 3 small screens ---------- */
+@media (max-width: 640px) {
+  .page-admin .adm-modal-overlay { padding: 0; align-items: stretch; }
+  .page-admin .adm-modal {
+    max-width: none;
+    max-height: 100vh;
+    min-height: 100vh;
+    border-radius: 0;
+    border: none;
+    padding-top: 34px;
+  }
+  .page-admin .adm-modal-grip {
+    display: block;
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--line-hi);
+  }
+  .page-admin .adm-modal-close { position: absolute; top: 12px; left: 12px; }
+  .page-admin .adm-modal-summary { grid-template-columns: repeat(2, 1fr); }
+  .page-admin .adm-report-row { grid-template-columns: 1fr auto; }
+}
+
 /* ---------- §5.16 reduced motion: ALL of it collapses ---------- */
 @media (prefers-reduced-motion: reduce) {
   .page-admin *,

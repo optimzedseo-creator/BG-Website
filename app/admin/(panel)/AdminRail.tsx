@@ -18,17 +18,31 @@ import { parseWindowParam, watchPeriod } from "./period-bus";
  * lib/admin/iq). Statuses with 0 still render — honest, hollow chip.
  */
 
-const MODULES = [
+interface RailModule {
+  href: string;
+  acc: string;
+  label: string;
+  emoji: string;
+}
+
+const MODULES: RailModule[] = [
   { href: "/admin/overview", acc: "overview", label: "Command", emoji: "📊" },
   { href: "/admin/traffic", acc: "traffic", label: "Traffic", emoji: "📈" },
   { href: "/admin/search", acc: "search", label: "Search", emoji: "🔍" },
   { href: "/admin/leads", acc: "leads", label: "Leads", emoji: "🤝" },
   { href: "/admin/content", acc: "content", label: "Content", emoji: "✍️" },
   { href: "/admin/security", acc: "security", label: "Security", emoji: "🛡️" },
-] as const;
+];
+
+// WP3.9/3.10 utility surfaces — desktop rail (below the modules) + the mobile
+// "More" sheet. Kept out of the primary bottom tab bar so it stays at four.
+const UTILITY: RailModule[] = [
+  { href: "/admin/activity", acc: "traffic", label: "Activity", emoji: "🗒️" },
+  { href: "/admin/reports", acc: "overview", label: "Reports", emoji: "📁" },
+];
 
 const BOTTOM = MODULES.filter((m) => m.acc !== "content" && m.acc !== "security");
-const MORE = MODULES.filter((m) => m.acc === "content" || m.acc === "security");
+const MORE = [...MODULES.filter((m) => m.acc === "content" || m.acc === "security"), ...UTILITY];
 
 function isActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
@@ -130,6 +144,7 @@ export default function AdminRail({ leadCounts }: { leadCounts: LeadStatusCount[
       <aside className="adm-rail">
         <nav aria-label="Modules">
           <ul>{MODULES.map(railItem)}</ul>
+          <ul className="adm-rail-utility">{UTILITY.map(railItem)}</ul>
         </nav>
       </aside>
 

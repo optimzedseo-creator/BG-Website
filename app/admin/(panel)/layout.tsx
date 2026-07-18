@@ -7,6 +7,7 @@ import { VISITOR_COOKIE, addInternalVisitorId } from "@/lib/admin/iq/internal";
 import { logoutAction } from "./actions";
 import AdminRail from "./AdminRail";
 import AdminTopBar from "./AdminTopBar";
+import AdminDrillHost from "./iq/DrillHost";
 
 // Render-time guard for every authenticated admin page. Defense-in-depth:
 // middleware already redirects unauthenticated /admin/* requests, and every
@@ -45,6 +46,9 @@ export default async function PanelLayout({ children }: { children: React.ReactN
         </Suspense>
         <main className="adm-main">{children}</main>
       </div>
+      {/* WP3.1 — global drill host: hash-addressable modals (#/kpi, #/page,
+          #/visitor) restore on any admin route, refresh-safe. */}
+      <AdminDrillHost />
     </>
   );
 }

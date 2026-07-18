@@ -6,6 +6,7 @@ import { RATE_MIN_DENOM, buildIqQuery, rateOrCounts } from "@/lib/admin/iq/share
 import { subscribePeriodRefetch } from "../period-bus";
 import SegmentChips, { type ChipGroup } from "../SegmentChips";
 import { fmtDay, fmtSeconds } from "../fmt";
+import { openDrill, visitorHash } from "../iq/hash-route";
 
 /*
  * WP2.4 Traffic module (client island) — "people". Everything renders from the
@@ -151,7 +152,9 @@ export default function TrafficView({ initial }: { initial: IqTraffic }) {
       setData(payload);
       // Success-only canonical URL (api A4 single-owner rule): this island is
       // the ONE writer; failure leaves URL and data both old.
-      window.history.replaceState(null, "", `/admin/traffic${qs ? `?${qs}` : ""}`);
+      // Preserve any open modal's deep-link hash (F5): an in-flight refetch must
+      // not clobber #/visitor|#/page|#/kpi that the drill host is showing.
+      window.history.replaceState(null, "", `/admin/traffic${qs ? `?${qs}` : ""}${window.location.hash}`);
     } catch {
       if (id !== seqRef.current) return;
       setError("Could not refresh. The numbers below are from the previous selection.");
@@ -250,34 +253,37 @@ export default function TrafficView({ initial }: { initial: IqTraffic }) {
             <>
               <ul className="adm-vlog">
                 {data.visitorLog.map((r) => (
-                  <li key={r.shortId}>
-                    <div className="adm-vlog-head">
-                      <span className="adm-mono">{r.shortId}</span>
-                      <span className="adm-vlog-dim">
-                        {r.device ?? "unknown"} · {r.country ?? "unknown"}
-                      </span>
-                      <span className="adm-vlog-time">
-                        {r.reported > 0 ? fmtSeconds(r.totalSeconds) : "no time reported"}
-                        {r.reported > 0 && r.reported < r.views
-                          ? ` (${r.reported} of ${r.views} views reported)`
-                          : ""}
-                      </span>
-                    </div>
-                    <div className="adm-vlog-paths">
-                      {r.paths.map((p, i) => (
-                        <span key={`${p}-${i}`} className="adm-pathchip">{p}</span>
-                      ))}
-                      {r.morePaths > 0 && (
-                        <span className="adm-vlog-more">
-                          +{r.morePaths} more page{r.morePaths === 1 ? "" : "s"}
+                  <li key={r.visitorId}>
+                    <button type="button" className="adm-vlog-row" onClick={() => openDrill(visitorHash(r.visitorId))}>
+                      <div className="adm-vlog-head">
+                        <span className="adm-mono">{r.shortId}</span>
+                        <span className="adm-vlog-dim">
+                          {r.device ?? "unknown"} · {r.country ?? "unknown"}
                         </span>
-                      )}
-                    </div>
+                        <span className="adm-vlog-time">
+                          {r.reported > 0 ? fmtSeconds(r.totalSeconds) : "no time reported"}
+                          {r.reported > 0 && r.reported < r.views
+                            ? ` (${r.reported} of ${r.views} views reported)`
+                            : ""}
+                        </span>
+                        <span className="adm-go" aria-hidden="true">→</span>
+                      </div>
+                      <div className="adm-vlog-paths">
+                        {r.paths.map((p, i) => (
+                          <span key={`${p}-${i}`} className="adm-pathchip">{p}</span>
+                        ))}
+                        {r.morePaths > 0 && (
+                          <span className="adm-vlog-more">
+                            +{r.morePaths} more page{r.morePaths === 1 ? "" : "s"}
+                          </span>
+                        )}
+                      </div>
+                    </button>
                   </li>
                 ))}
               </ul>
               <p className="adm-caption">
-                Last {data.visitorLog.length} visitor journeys, newest first. Journey drill-downs arrive in Wave 3.
+                Last {data.visitorLog.length} visitor journeys, newest first. Click a row to open the full journey.
               </p>
             </>
           )}
