@@ -29,6 +29,24 @@ const nextConfig: NextConfig = {
   // Recreates vercel.json cleanUrls behavior: /page.html 308 → /page
   async redirects() {
     return [
+      // Retired /writing frame → /insights cluster (permanent 301; WP8 map).
+      // Specific article URLs first, then the section index.
+      {
+        source: "/writing/attribution-reports-are-fiction",
+        destination: "/insights/data-analytics/attribution-is-fiction",
+        permanent: true,
+      },
+      {
+        source: "/writing/its-not-a-marketing-problem",
+        destination: "/insights/data-analytics",
+        permanent: true,
+      },
+      {
+        source: "/writing/leads-run-hot-then-cold",
+        destination: "/insights/data-analytics/audit-is-a-blood-test",
+        permanent: true,
+      },
+      { source: "/writing", destination: "/insights", permanent: true },
       { source: "/index.html", destination: "/", permanent: true },
       { source: "/:page.html", destination: "/:page", permanent: true },
     ];

@@ -1,0 +1,445 @@
+/* ============================================================
+   SECTION: /insights  (index + pillar hubs + cluster posts)
+   ONE scoped stylesheet family. Every selector lives under
+   .page-insights (index), .page-pillar (the four hubs, driven
+   by [data-pillar]), or .page-post (the cluster-post template),
+   so nothing can contaminate another route (all page CSS loads
+   globally in this app).
+   Reuses the shared design system from globals.css
+   (.wrap .microlabel .btn .finale .reveal .fin-ctas) and the
+   recovered /writing article chassis for the post template.
+   No new hex: pillar differentiation is numeral + line-icon +
+   microlabel only. In-content links use the site read-link blue.
+   ============================================================ */
+
+/* ---------- shared: breadcrumbs (3-level index/hub, 4-level post) ---------- */
+.page-insights .ins-crumbs,
+.page-pillar .ins-crumbs,
+.page-post .ins-crumbs {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.page-insights .ins-crumbs ol,
+.page-pillar .ins-crumbs ol,
+.page-post .ins-crumbs ol {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.page-insights .ins-crumbs li,
+.page-pillar .ins-crumbs li,
+.page-post .ins-crumbs li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.page-insights .ins-crumbs a,
+.page-pillar .ins-crumbs a,
+.page-post .ins-crumbs a {
+  color: var(--mute);
+  transition: color 0.18s ease;
+}
+.page-insights .ins-crumbs a:hover,
+.page-pillar .ins-crumbs a:hover,
+.page-post .ins-crumbs a:hover {
+  color: var(--bronze-deep);
+}
+.page-insights .ins-crumbs [aria-current="page"],
+.page-pillar .ins-crumbs [aria-current="page"],
+.page-post .ins-crumbs [aria-current="page"] {
+  color: var(--ink);
+}
+.page-insights .ins-crumbs .sep,
+.page-pillar .ins-crumbs .sep,
+.page-post .ins-crumbs .sep {
+  color: var(--line-strong);
+  font-weight: 500;
+}
+
+/* ============================================================
+   /insights  — index (4 pillar cards)
+   ============================================================ */
+.page-insights .ix-hero {
+  padding: 78px 0 26px;
+}
+.page-insights .ix-hero .ins-crumbs { margin-bottom: 24px; }
+.page-insights .ix-hero .microlabel { display: block; margin-bottom: 18px; }
+.page-insights .ix-hero h1 {
+  font-size: clamp(34px, 5vw, 58px);
+  color: var(--ink);
+  max-width: 20ch;
+}
+.page-insights .ix-hero h1 em { font-style: italic; color: var(--bronze-deep); }
+.page-insights .ix-hero .lede {
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  max-width: 58ch;
+  margin-top: 22px;
+}
+
+.page-insights .ix-grid {
+  padding: 30px 0 96px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+/* Flagship spans the full row above the other three. */
+.page-insights .ix-card.flagship { grid-column: 1 / -1; }
+
+.page-insights .ix-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 30px 30px 26px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.page-insights a.ix-card:hover {
+  border-color: var(--bronze);
+  box-shadow: 0 18px 40px -28px rgba(27, 26, 24, 0.45);
+  transform: translateY(-3px);
+}
+.page-insights .ix-card .ix-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  color: var(--bronze-deep);
+}
+.page-insights .ix-card .ix-num {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+.page-insights .ix-card .ix-icon {
+  display: inline-flex;
+  color: var(--ink-soft);
+}
+.page-insights .ix-card .ix-micro {
+  margin-left: auto;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bronze-deep);
+}
+.page-insights .ix-card h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(23px, 2.6vw, 29px);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  transition: color 0.2s ease;
+}
+.page-insights .ix-card.flagship h2 { font-size: clamp(27px, 3.4vw, 38px); }
+.page-insights a.ix-card:hover h2 { color: var(--bronze-deep); }
+.page-insights .ix-card p {
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1.6;
+  max-width: 62ch;
+  margin-top: 12px;
+  flex: 1;
+}
+.page-insights .ix-card .ix-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 22px;
+}
+.page-insights .ix-card .ix-count {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--mute);
+}
+.page-insights .ix-card .ix-arrow {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bronze-deep);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.page-insights .ix-card .ix-arrow .arr { transition: transform 0.2s ease; }
+.page-insights a.ix-card:hover .ix-arrow .arr { transform: translateX(4px); }
+
+@media (max-width: 900px) {
+  .page-insights .ix-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   /insights/[pillar]  — hub  (.page-pillar, one sheet, all four)
+   ============================================================ */
+.page-pillar .h-hero {
+  padding: 40px 0 40px;
+  border-bottom: 1px solid var(--line);
+}
+.page-pillar .h-hero .ins-crumbs { margin-bottom: 26px; }
+.page-pillar .h-hero .h-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  color: var(--bronze-deep);
+}
+.page-pillar .h-hero .h-num {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.page-pillar .h-hero .h-icon { display: inline-flex; color: var(--ink-soft); }
+.page-pillar .h-hero .microlabel { letter-spacing: 0.16em; }
+.page-pillar .h-hero h1 {
+  font-size: clamp(34px, 5vw, 56px);
+  color: var(--ink);
+  max-width: 16ch;
+  margin-bottom: 20px;
+}
+/* thesis — the extractable answer up top, self-contained */
+.page-pillar .h-hero .h-thesis {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(21px, 2.8vw, 27px);
+  line-height: 1.34;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  max-width: 34ch;
+}
+
+/* diagnosis thread */
+.page-pillar .h-diag { padding: 40px 0 6px; }
+.page-pillar .h-diag .wrap { max-width: 720px; }
+.page-pillar .h-diag p {
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  margin: 0 0 18px;
+}
+.page-pillar .h-diag p:last-child { margin-bottom: 0; }
+
+/* overview prose (200-300w) */
+.page-pillar .h-overview { padding: 26px 0 20px; }
+.page-pillar .h-overview .wrap { max-width: 720px; }
+.page-pillar .h-overview p {
+  font-size: 18px;
+  line-height: 1.72;
+  color: var(--ink);
+  margin: 0 0 22px;
+}
+.page-pillar .h-overview p:last-child { margin-bottom: 0; }
+.page-pillar .h-overview a {
+  color: #1E55B8;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: rgba(30, 85, 184, 0.5);
+}
+.page-pillar .h-overview a:hover { color: #143E8F; text-decoration-color: #143E8F; }
+
+/* post list (editorial hairline list — reuses the /writing .w-item pattern) */
+.page-pillar .h-posts { padding: 26px 0 40px; }
+.page-pillar .h-posts .wrap { max-width: 820px; }
+.page-pillar .h-posts .h-posts-label {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bronze-deep);
+  margin-bottom: 6px;
+}
+.page-pillar .w-item {
+  display: block;
+  padding: 30px 0;
+  border-bottom: 1px solid var(--line);
+}
+.page-pillar .w-item:first-of-type { border-top: 1px solid var(--line); }
+.page-pillar .w-item h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(22px, 2.6vw, 28px);
+  line-height: 1.14;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  transition: color 0.2s ease;
+}
+.page-pillar a.w-item:hover h2 { color: var(--bronze-deep); }
+.page-pillar .w-item p {
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1.6;
+  max-width: 64ch;
+  margin-top: 10px;
+}
+.page-pillar .w-item .w-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bronze-deep);
+}
+.page-pillar a.w-item:hover .w-more .arr { transform: translateX(4px); }
+.page-pillar .w-more .arr { transition: transform 0.2s ease; }
+
+/* empty hub — honest, no fake grid, no dead "+more" chip */
+.page-pillar .h-empty {
+  border: 1px dashed var(--line-strong);
+  border-radius: 14px;
+  padding: 30px 32px;
+  background: var(--cream-2);
+}
+.page-pillar .h-empty p {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--mute);
+  margin: 0;
+}
+.page-pillar .h-empty a { color:#1E55B8; font-weight:600; text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1.5px; text-decoration-color:rgba(30,85,184,0.5); }
+.page-pillar .h-empty a:hover { color:#143E8F; text-decoration-color:#143E8F; }
+.page-pillar .h-empty .h-empty-lead {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+/* lateral pillar row */
+.page-pillar .h-lateral { padding: 40px 0 70px; border-top: 1px solid var(--line); }
+.page-pillar .h-lateral .microlabel { display: block; margin-bottom: 20px; }
+.page-pillar .h-lateral .lat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.page-pillar .h-lateral .lat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 20px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.page-pillar .h-lateral .lat:hover { border-color: var(--bronze); transform: translateY(-2px); }
+.page-pillar .h-lateral .lat .lat-num {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--bronze-deep);
+}
+.page-pillar .h-lateral .lat .lat-name {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.page-pillar .h-lateral .lat .lat-icon { display: inline-flex; color: var(--ink-soft); }
+
+@media (max-width: 760px) {
+  .page-pillar .h-lateral .lat-row { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   /insights/[pillar]/[post]  — cluster post  (.page-post)
+   Reuses the recovered /writing article chassis (art-*).
+   ============================================================ */
+.page-post .art-hero { padding: 34px 0 40px; border-bottom: 1px solid var(--line); }
+.page-post .art-hero .ins-crumbs { margin-bottom: 24px; }
+.page-post .art-hero .art-meta {
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 18px;
+}
+.page-post .art-hero .art-meta .dot { margin: 0 8px; color: var(--line-strong); }
+.page-post .art-hero h1 {
+  font-size: clamp(32px, 4.6vw, 52px);
+  line-height: 1.06;
+  color: var(--ink);
+  max-width: 18ch;
+}
+.page-post .art-hero .dek {
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  max-width: 58ch;
+  margin-top: 22px;
+}
+
+.page-post .art-body { padding: 40px 0 20px; }
+.page-post .art-body .wrap { max-width: 720px; }
+.page-post .art-body p {
+  font-size: 19px;
+  line-height: 1.72;
+  color: var(--ink);
+  margin: 0 0 24px;
+}
+.page-post .art-body p:last-child { margin-bottom: 0; }
+.page-post .art-body a {
+  color: #1E55B8;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: rgba(30, 85, 184, 0.5);
+}
+.page-post .art-body a:hover { color: #143E8F; text-decoration-color: #143E8F; }
+
+/* in-body cluster / related link block */
+.page-post .art-related {
+  max-width: 720px;
+  margin: 8px auto 0;
+  padding: 22px 26px;
+  background: var(--cream-2);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--bronze);
+  border-radius: 12px;
+}
+.page-post .art-related p {
+  font-size: 16px;
+  line-height: 1.62;
+  color: var(--ink-soft);
+  margin: 0;
+}
+.page-post .art-related a {
+  color: #1E55B8;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: rgba(30, 85, 184, 0.5);
+}
+.page-post .art-related a:hover { color: #143E8F; text-decoration-color: #143E8F; }
+
+@media (max-width: 640px) {
+  .page-insights .ix-hero { padding: 56px 0 20px; }
+  .page-pillar .h-hero { padding: 30px 0 32px; }
+  .page-post .art-hero { padding: 26px 0 30px; }
+  .page-post .art-body p { font-size: 18px; }
+  .page-post .art-related { margin-left:20px; margin-right:20px; }
+}

@@ -9,6 +9,7 @@ import "./styles/credentials.css";
 import "./styles/executive.css";
 import "./styles/fractional.css";
 import "./styles/consulting.css";
+import "./styles/insights.css";
 
 /*
  * Fonts are self-hosted via next/font (removes the Google Fonts third-party

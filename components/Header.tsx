@@ -45,6 +45,7 @@ export default function Header() {
         <Link className="brand" href="/">Bradley Griffin</Link>
         <nav className="nav">
           <Link href="/case-studies">Case studies</Link>
+          <Link href="/insights">Insights</Link>
           <Link href="/story">About</Link>
           <Link href="/speaking">Speaking</Link>
           <Link href="/credentials">Credentials</Link>
@@ -72,6 +73,7 @@ export default function Header() {
       </div>
       <div className="mobile-nav" onClick={close}>
         <Link href="/case-studies">Case studies</Link>
+        <Link href="/insights">Insights</Link>
         <Link href="/story">About</Link>
         <Link href="/speaking">Speaking</Link>
         <Link href="/credentials">Credentials</Link>
