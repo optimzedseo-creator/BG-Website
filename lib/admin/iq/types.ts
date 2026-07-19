@@ -40,6 +40,13 @@ export interface Filters {
   /** WP3.9 Activity stream only — filter the unified log by row kind. Additive
    * optional field (contract rule 2); every other surface ignores it. */
   kind?: string;
+  /** WP3.8 custom date range (additive optional fields — contract rule 2:
+   * Filters grows only by optional fields, `window` stays required and remains
+   * the default + fallback). Both must be present and valid ("YYYY-MM-DD") for
+   * a source to resolve since/until from them instead of `window`; otherwise
+   * `window` wins. GSC detail payloads echo the resolved range back as `range`. */
+  from?: string;
+  to?: string;
 }
 
 /**
@@ -612,6 +619,9 @@ export interface IqPageDetail {
   visitorLog: VisitorLogRow[];
   search: PageSearchRow[];
   searchBelowThreshold: BelowThresholdRollup | null;
+  /** ABOVE-threshold query rows sliced off past PAGE_SEARCH_ROWS — rolled up,
+   * counted, never silently vanished (parity with liveSearch.queriesBeyondCap). */
+  searchBeyondThreshold: BelowThresholdRollup | null;
   /** "GSC data through {date}" caption on the Search tab; null before ingest. */
   gscThrough: string | null;
 }
@@ -703,6 +713,198 @@ export interface IqActivity {
   applied: { kind: string | null; path: string | null; sourceClass: SourceClass | null };
 }
 
+// ---- Wave 3b-ii: GSC drill payloads (WP3.6 / UX-SPEC §3.5). Discriminated
+//      union tagged by `kind`. GSC POPULATION ONLY — no visitor data ever rides
+//      these. classifierVersions ride meta (liveMeta(internal.length, versions)).
+//      All carry the honesty envelope: window + resolved range + gscSince/Through.
+
+export type GscDetailKind = "branded" | "classifiable" | "intent" | "query";
+
+/** Envelope shared by every GSC detail payload. */
+export interface GscDetailBase {
+  meta: IqMeta;
+  window: WindowDays;
+  /** Explicit from-to when a custom range (WP3.8) is active; null on a rolling window. */
+  range: { from: string; to: string } | null;
+  gscSince: string | null;
+  gscThrough: string | null;
+}
+
+/** BRANDED modal (kind "branded"): branded vs non-branded CLICKS trend, plus an
+ * ambiguous/collision tab. brandedAmbiguous + collision never fold into branded. */
+export interface IqGscBranded extends GscDetailBase {
+  kind: "branded";
+  trend: GscTrendPoint[];
+  brandedClicks: number;
+  nonBrandedClicks: number;
+  /** Ambiguous OR collision query rows (aggregated), above threshold. */
+  ambiguous: GscQueryRow[];
+  ambiguousBelowThreshold: BelowThresholdRollup | null;
+  brandedAmbiguousClicks: number;
+  collisionClicks: number;
+}
+
+/** One day of visible vs anonymized-remainder impressions (numerator = SUM
+ * GscQuery.impressions; denominator = SUM GscDaily.impressions). */
+export interface GscClassifiablePoint {
+  date: string;
+  visible: number;
+  total: number;
+  /** total - visible, floored at 0 (GSC anonymized remainder). */
+  anonymized: number;
+}
+
+/** CLASSIFIABLE modal (kind "classifiable"): the honesty lane — how much of the
+ * property's impressions GSC actually lets us see, per day. */
+export interface IqGscClassifiable extends GscDetailBase {
+  kind: "classifiable";
+  points: GscClassifiablePoint[];
+  visibleImpressions: number;
+  totalImpressions: number;
+}
+
+/** One intent bucket with its own query list (returned inline so the row-click
+ * filter needs no extra fetch — cleanest per WP3.6 note). */
+export interface IqGscIntentBucket {
+  bucket: string;
+  impressions: number;
+  clicks: number;
+  queries: GscQueryRow[];
+}
+
+/** INTENT modal (kind "intent"): bucket bars; each bucket carries its queries. */
+export interface IqGscIntent extends GscDetailBase {
+  kind: "intent";
+  buckets: IqGscIntentBucket[];
+  belowThreshold: BelowThresholdRollup | null;
+}
+
+/** One day of a single query's clicks/impressions/position. */
+export interface GscQueryDayPoint {
+  date: string;
+  clicks: number;
+  impressions: number;
+  position: number;
+}
+
+/** One landing page a query resolves to (grouped). */
+export interface GscQueryPageRow {
+  path: string;
+  clicks: number;
+  impressions: number;
+  position: number;
+}
+
+/** QUERY-ROW modal (kind "query"): one query's daily trend + landing pages + tag
+ * flags. Suppresses nothing (a single query is already chosen); below-threshold
+ * totals keep full chrome and a "meter running" note. */
+export interface IqGscQuery extends GscDetailBase {
+  kind: "query";
+  query: string;
+  clicks: number;
+  impressions: number;
+  position: number;
+  isBranded: boolean;
+  brandedAmbiguous: boolean;
+  isCollision: boolean;
+  isGeo: boolean;
+  intentBucket: string | null;
+  daily: GscQueryDayPoint[];
+  pages: GscQueryPageRow[];
+  /** True when total impressions < GSC_MIN_IMPRESSIONS ("meter running"). */
+  belowThreshold: boolean;
+}
+
+export type IqGscDetail = IqGscBranded | IqGscClassifiable | IqGscIntent | IqGscQuery;
+
+// ---- Wave 3b-ii: Funnel-step drill (WP3.7 / UX-SPEC §3.6). Visitor-scoped —
+//      internal exclusion applies. PII-free: visitorId carried (not PII), no
+//      lead name/email/message ever.
+
+export type FunnelStepKey = FunnelStepV2["key"];
+
+/** One raw event row (Events tab). All strings are attacker-supplied TEXT. */
+export interface FunnelEventRow {
+  at: string;
+  path: string | null;
+  visitorId: string | null;
+  shortId: string | null;
+  metaChips: string[];
+}
+
+/** One person (People tab) with a per-person reached-next chip. */
+export interface FunnelPersonRow {
+  visitorId: string;
+  shortId: string;
+  /** Times this visitor did the step in-window (>= 1). */
+  count: number;
+  /** Did this visitor also do the next step? null when this is the terminal step. */
+  reachedNext: boolean | null;
+}
+
+export interface IqFunnelStep {
+  meta: IqMeta;
+  window: WindowDays;
+  range: { from: string; to: string } | null;
+  since: string;
+  stepKey: FunnelStepKey;
+  label: string;
+  /** Next step key/label; null when terminal. */
+  nextKey: FunnelStepKey | null;
+  nextLabel: string | null;
+  /** Distinct visitors who did the step (the denominator of the rate card). */
+  visitors: number;
+  /** Raw event/row count for the step. */
+  events: number;
+  /** Distinct visitors who ALSO reached the next step (rate-card numerator). */
+  reachedNext: number;
+  /** Daily step counts across the window, zero-filled. */
+  trend: SeriesPoint[];
+  /** Prior-window daily counts (compare overlay), aligned length. */
+  priorTrend: SeriesPoint[];
+  eventsList: FunnelEventRow[];
+  people: FunnelPersonRow[];
+  /** True when the raw event list was capped (honesty). */
+  eventsTruncated: boolean;
+  /** True when the People list was capped. */
+  peopleTruncated: boolean;
+}
+
+// ---- Wave 3b-ii: Day-detail drill (WP3.7 / UX-SPEC §3.7). Single NY day.
+
+export interface DayVisitorRow {
+  visitorId: string;
+  shortId: string;
+  views: number;
+  device: string | null;
+  country: string | null;
+}
+
+export interface DayEventRow {
+  at: string;
+  kind: ActivityKind;
+  path: string | null;
+  visitorId: string | null;
+  shortId: string | null;
+  metaChips: string[];
+}
+
+export interface IqDayDetail {
+  meta: IqMeta;
+  /** The NY calendar day this covers ("YYYY-MM-DD"). */
+  dayKey: string;
+  visitors: number;
+  pageviews: number;
+  visitorList: DayVisitorRow[];
+  pages: BreakdownRow[];
+  events: DayEventRow[];
+  /** GscDaily totals for the stored date matching dayKey + its top queries; null
+   * when GSC has no row for that stored date. */
+  gsc: { impressions: number; clicks: number; queries: GscQueryRow[] } | null;
+  /** True when any of the three lists (visitors/events/pages) was capped. */
+  truncated: boolean;
+}
+
 // ---- DataSource boundary (DATA-SPEC §7.1) ----
 
 /**
@@ -737,4 +939,17 @@ export interface AdminIqSource {
   visitorJourney(visitorId: string, opts: SourceOpts): Promise<IqVisitorJourney>;
   /** WP3.9 — the unified, windowed, capped activity log. */
   activity(filters: Filters, opts: SourceOpts): Promise<IqActivity>;
+  // ---- Wave 3b-ii drill methods ----
+  /** WP3.6 — GSC drill (branded/classifiable/intent/query). `query` is required
+   * for kind "query", ignored otherwise. GSC population only (footer honesty). */
+  gscDetail(
+    kind: GscDetailKind,
+    query: string | null,
+    filters: Filters,
+    opts: SourceOpts
+  ): Promise<IqGscDetail>;
+  /** WP3.7 — one funnel step's Events / Trend / People detail (visitor-scoped). */
+  funnelStep(stepKey: FunnelStepKey, filters: Filters, opts: SourceOpts): Promise<IqFunnelStep>;
+  /** WP3.7 — one NY day's visitors / pages / events / GSC row. */
+  dayDetail(dayKey: string, filters: Filters, opts: SourceOpts): Promise<IqDayDetail>;
 }

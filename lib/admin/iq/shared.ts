@@ -157,6 +157,81 @@ export function parsePathParam(raw: string | null | undefined): string | null {
   return v.startsWith("/") ? v : null;
 }
 
+/**
+ * WP3.6 — GSC query-text parser. The query is attacker-supplied TEXT used ONLY
+ * as an exact-match filter (never interpolated into SQL, same discipline as
+ * parsePathParam): strip control characters, cap at 200 chars. Returns null for
+ * empty/blank input. Mirrors liveSearch's exact-match query aggregation.
+ */
+export function parseQueryParam(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  const v = raw.replace(/[\x00-\x1f\x7f]/g, "").slice(0, 200);
+  return v.trim() ? v : null;
+}
+
+/**
+ * WP3.7 — strict NY-day-key parser ("YYYY-MM-DD"). Anything not matching the
+ * exact shape returns null (it only ever becomes an equality filter on a day
+ * bucket, never SQL).
+ */
+export function parseDayParam(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) return null;
+  // Security C1: the regex admits impossible dates (2026-13-45, 2026-02-30)
+  // which would pass the handler 400 gate then throw 500 in Prisma. Confirm the
+  // date round-trips (a real calendar day) before returning it.
+  const d = new Date(`${raw}T00:00:00Z`);
+  return d.toISOString().slice(0, 10) === raw ? raw : null;
+}
+
+/** WP3.8 — the largest custom range we will resolve, in days (guards a runaway
+ * fetch-then-aggregate window; ~1 year is far beyond any real drill need). */
+export const CUSTOM_RANGE_MAX_DAYS = 366;
+
+/**
+ * WP3.8 — validate a custom from/to range. Both must be "YYYY-MM-DD", from must
+ * be <= to (ISO dates sort lexically), and the span must not exceed
+ * CUSTOM_RANGE_MAX_DAYS. Returns the normalized pair or null (caller falls back
+ * to `window`). Additive to the wire contract — never replaces `window`.
+ */
+export function parseCustomRange(
+  from: string | null | undefined,
+  to: string | null | undefined
+): { from: string; to: string } | null {
+  const f = parseDayParam(from);
+  const t = parseDayParam(to);
+  if (!f || !t || f > t) return null;
+  const spanDays = Math.round((Date.parse(`${t}T00:00:00Z`) - Date.parse(`${f}T00:00:00Z`)) / DAY_MS) + 1;
+  // Security C2: a NaN span (impossible-but-parseable input) must fall back to
+  // window, not slip through as a bad pair (NaN > MAX is false, NaN < 1 is false).
+  if (Number.isNaN(spanDays) || spanDays < 1 || spanDays > CUSTOM_RANGE_MAX_DAYS) return null;
+  return { from: f, to: t };
+}
+
+/**
+ * WP3.8 — resolve a concrete period from Filters. A valid custom range (from+to)
+ * wins and uses UTC calendar-day boundaries (since = 00:00 of `from`, until =
+ * end of `to`); otherwise the rolling `window` period ending `now` is returned.
+ * The second value tells callers whether a custom range applied (for the `range`
+ * echo on payloads).
+ */
+export function resolvePeriod(
+  filters: { window: WindowDays; from?: string; to?: string },
+  now: Date = new Date()
+): { period: Period; range: { from: string; to: string } | null } {
+  const custom = parseCustomRange(filters.from, filters.to);
+  if (custom) {
+    return {
+      period: {
+        since: new Date(Date.parse(`${custom.from}T00:00:00Z`)),
+        until: new Date(Date.parse(`${custom.to}T00:00:00Z`) + DAY_MS),
+      },
+      range: custom,
+    };
+  }
+  return { period: currentPeriod(filters.window, now), range: null };
+}
+
 const SOURCE_CLASS_VALUES: readonly SourceClass[] = [
   "direct",
   "search",

@@ -6,9 +6,10 @@ export function fmtDay(iso: string): string {
   return iso.slice(0, 10);
 }
 
-/** Seconds → "42s" / "3m 05s". Null-safe for missing durations. */
+/** Seconds → "42s" / "3m 05s". Null-safe for missing durations: renders the
+ * honest null glyph word (DESIGN 5.17), never an en-dash. */
 export function fmtSeconds(s: number | null): string {
-  if (s === null) return "–";
+  if (s === null) return "none yet";
   if (s < 60) return `${s}s`;
   const m = Math.floor(s / 60);
   const rest = s % 60;

@@ -7,7 +7,7 @@ import { INSIGHTS_MAX_COMMAND, buildIqQuery, rateOrCounts, withPeriod } from "@/
 import { fmtDay, priorWindowPredatesData } from "../fmt";
 import { subscribePeriodRefetch } from "../period-bus";
 import AdmHoverChart from "../iq/AdmHoverChart";
-import { kpiHash, openDrill } from "../iq/hash-route";
+import { dayHash, funnelHash, kpiHash, openDrill } from "../iq/hash-route";
 
 /*
  * WP2.2b Command surface (client island). Everything renders from the ONE
@@ -37,7 +37,7 @@ const KPI_TOOLTIPS: Record<string, string> = {
   visitors: "Distinct visitor ids with a pageview in the period. Internal traffic excluded.",
   pageviews: "Pageviews in the period. Internal traffic excluded.",
   "search-clicks":
-    "Google Search Console property-level clicks, charted by GSC's stored date. GSC data lags about 2 days.",
+    "Google Search Console property-level clicks, charted by their stored date. The data lags about 2 days.",
   briefs: "Server-recorded contact-form submissions (form_submit). The trusted win.",
   bookings: "Calendly bookings captured in the period, by capture time, not meeting time.",
   subscribers: "New subscriber rows in the period.",
@@ -163,7 +163,7 @@ export default function CommandView({ initial }: { initial: IqCommand }) {
         <h1>Command</h1>
         <span className="adm-count">
           last {data.window} days · vs prior {data.window}
-          {data.gscThrough ? ` · GSC through ${data.gscThrough}` : ""}
+          {data.gscThrough ? ` · Search Console through ${data.gscThrough}` : ""}
         </span>
       </div>
 
@@ -226,6 +226,14 @@ export default function CommandView({ initial }: { initial: IqCommand }) {
           <AdmHoverChart
             ariaLabel="Daily visitors and wins trend"
             labels={data.trend.map((d) => d.key)}
+            onPointClick={
+              data.window === 90
+                ? undefined
+                : (i) => {
+                    const key = data.trend[i]?.key;
+                    if (key && /^\d{4}-\d{2}-\d{2}$/.test(key)) openDrill(dayHash(key));
+                  }
+            }
             series={[
               {
                 key: "visitors",
@@ -248,7 +256,34 @@ export default function CommandView({ initial }: { initial: IqCommand }) {
               },
             ]}
           />
+          {/* Day-clickable affordance (touch-safe fallback for the chart click):
+              a compact row of day labels, each opening the Day modal. Weekly
+              (90d) buckets are not single days, so this row shows only for
+              7d/30d day buckets. */}
+          {data.window !== 90 && (
+            <div className="adm-daypick" role="group" aria-label="Open a day">
+              {data.trend.map((d) =>
+                /^\d{4}-\d{2}-\d{2}$/.test(d.key) ? (
+                  <button
+                    key={d.key}
+                    type="button"
+                    className="adm-daypick-btn"
+                    title={`Open ${d.key}`}
+                    onClick={() => openDrill(dayHash(d.key))}
+                  >
+                    {d.key.slice(5)}
+                  </button>
+                ) : null
+              )}
+            </div>
+          )}
           {countingSince && <p className="adm-caption">counting since {countingSince}</p>}
+          {/* B6: only promise a day-click when day buckets are actually present
+              and clickable (same gate as the .adm-daypick row) — never a
+              caption for an affordance that will not respond (90d = weekly). */}
+          {data.window !== 90 && data.trend.some((d) => /^\d{4}-\d{2}-\d{2}$/.test(d.key)) && (
+            <p className="adm-caption">Click a day to open its visitors, pages, events and Search Console row.</p>
+          )}
         </section>
 
         {/* ---- Wins funnel: visible denominators, fraction under threshold ---- */}
@@ -260,9 +295,11 @@ export default function CommandView({ initial }: { initial: IqCommand }) {
               return (
                 <div key={f.key} className="adm-funnel-cell">
                   {rate && (
-                    <div
-                      className="adm-funnel-rate"
-                      title={rate.kind === "counts" ? rate.reason : undefined}
+                    <button
+                      type="button"
+                      className="adm-funnel-rate adm-funnel-rate--drill"
+                      title={rate.kind === "counts" ? rate.reason : "Open the reached-next cohort"}
+                      onClick={() => openDrill(funnelHash(data.funnel[i - 1].key, "people"))}
                     >
                       {rate.kind === "rate" ? (
                         <>
@@ -278,9 +315,13 @@ export default function CommandView({ initial }: { initial: IqCommand }) {
                           )}
                         </>
                       )}
-                    </div>
+                    </button>
                   )}
-                  <div className="adm-funnel-step">
+                  <button
+                    type="button"
+                    className="adm-funnel-step adm-funnel-step--drill"
+                    onClick={() => openDrill(funnelHash(f.key))}
+                  >
                     <span className="adm-funnel-n">{f.visitors}</span>
                     <span className="adm-funnel-label">{f.label}</span>
                     <span className="adm-funnel-events">
@@ -288,7 +329,8 @@ export default function CommandView({ initial }: { initial: IqCommand }) {
                         ? `${f.events} pageview${f.events === 1 ? "" : "s"}`
                         : `${f.events} event${f.events === 1 ? "" : "s"}`}
                     </span>
-                  </div>
+                    <span className="adm-go" aria-hidden="true">→</span>
+                  </button>
                 </div>
               );
             })}
@@ -382,7 +424,7 @@ export default function CommandView({ initial }: { initial: IqCommand }) {
         {data.meta.metricsVersion} · {data.meta.mode} · {data.meta.internalExcluded} internal{" "}
         {data.meta.internalExcluded === 1 ? "visitor" : "visitors"} excluded
         {data.meta.classifierVersions.length
-          ? ` · gsc tags ${data.meta.classifierVersions.join(", ")}`
+          ? ` · search tags ${data.meta.classifierVersions.join(", ")}`
           : ""}
       </p>
     </div>

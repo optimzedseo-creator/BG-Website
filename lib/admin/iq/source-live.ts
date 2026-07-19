@@ -28,19 +28,32 @@ import type {
   CommandKpi,
   CommandKpiId,
   ContentPageRow,
+  DayEventRow,
+  DayVisitorRow,
   DurationStat,
   EvaluatorRef,
   Filters,
   FirstEntry,
+  FunnelEventRow,
   FunnelPair,
+  FunnelPersonRow,
+  FunnelStepKey,
   FunnelStepV2,
+  GscClassifiablePoint,
   GscCountryRow,
+  GscDetailKind,
+  GscQueryDayPoint,
+  GscQueryPageRow,
   GscQueryRow,
   GscTrendPoint,
   IntentBucketRow,
   IqActivity,
   IqCommand,
   IqContent,
+  IqDayDetail,
+  IqFunnelStep,
+  IqGscDetail,
+  IqGscIntentBucket,
   IqKpiDetail,
   IqLanding,
   IqMeta,
@@ -109,9 +122,12 @@ import {
   lastNDayKeys,
   ledgerFromFirsts,
   nyDateParts,
+  priorPeriod,
   referrerHost,
+  resolvePeriod,
   windowBucketKeys,
 } from "./shared";
+import type { Period } from "./shared";
 import { K_TOTP_SECRET } from "@/lib/admin/auth";
 
 // Row caps (DATA-SPEC §5.1): fetch-then-aggregate stays acceptable to ~50k
@@ -1907,6 +1923,16 @@ async function livePageDetail(
         clicks: below.reduce((a, r) => a + r.clicks, 0),
       }
     : null;
+  // Truncation honesty (api A2) — ABOVE-threshold rows past the row cap roll up
+  // like liveSearch.queriesBeyondCap instead of silently vanishing (FLAG-5).
+  const searchOver = above.slice(PAGE_SEARCH_ROWS);
+  const searchBeyondThreshold: BelowThresholdRollup | null = searchOver.length
+    ? {
+        rows: searchOver.length,
+        impressions: searchOver.reduce((a, r) => a + r.impressions, 0),
+        clicks: searchOver.reduce((a, r) => a + r.clicks, 0),
+      }
+    : null;
 
   return {
     // Honesty metadata: the classifier versions actually behind this page's
@@ -1929,6 +1955,7 @@ async function livePageDetail(
     visitorLog,
     search,
     searchBelowThreshold,
+    searchBeyondThreshold,
     gscThrough: latestDaily ? gscDateKey(latestDaily.date) : null,
   };
 }
@@ -2157,6 +2184,472 @@ async function liveActivity(filters: Filters, opts: SourceOpts): Promise<IqActiv
   };
 }
 
+// ---------------------------------------------------------------------------
+// Wave 3b-ii drill methods (WP3.6 GSC / WP3.7 funnel-step + day). Same
+// discipline: windowed + row-capped, exclusion threaded, ISO strings on the
+// wire, PII-free by type construction. GSC methods are their own population
+// (internal exclusion is footer honesty only; classifierVersions ride meta).
+// ---------------------------------------------------------------------------
+
+/** Raw GscQuery row shape the drill aggregators consume. */
+type GscRawRow = {
+  query: string;
+  impressions: number;
+  clicks: number;
+  position: number;
+  isBranded: boolean;
+  brandedAmbiguous: boolean;
+  intentBucket: string | null;
+};
+
+/** Aggregate GscQuery rows per query into GscQueryRow[] (impression-weighted
+ * position), sorted by impressions desc — the one shared shape for every table. */
+function aggregateGscQueries(rows: GscRawRow[]): GscQueryRow[] {
+  const byQuery = new Map<
+    string,
+    { impressions: number; clicks: number; posW: number; isBranded: boolean; brandedAmbiguous: boolean; intentBucket: string | null }
+  >();
+  for (const q of rows) {
+    const rec = byQuery.get(q.query) ?? { impressions: 0, clicks: 0, posW: 0, isBranded: false, brandedAmbiguous: false, intentBucket: null };
+    rec.impressions += q.impressions;
+    rec.clicks += q.clicks;
+    rec.posW += q.position * q.impressions;
+    rec.isBranded = rec.isBranded || q.isBranded;
+    rec.brandedAmbiguous = rec.brandedAmbiguous || q.brandedAmbiguous;
+    rec.intentBucket = rec.intentBucket ?? q.intentBucket;
+    byQuery.set(q.query, rec);
+  }
+  return [...byQuery.entries()]
+    .map(([query, r]) => ({
+      query,
+      clicks: r.clicks,
+      impressions: r.impressions,
+      position: r.impressions ? r.posW / r.impressions : 0,
+      isBranded: r.isBranded,
+      brandedAmbiguous: r.brandedAmbiguous,
+      intentBucket: r.intentBucket,
+    }))
+    .sort((a, b) => b.impressions - a.impressions);
+}
+
+/** Counted rollup for a set of sub-threshold / over-cap rows (null when empty). */
+function rollupRows(rows: { impressions: number; clicks: number }[]): BelowThresholdRollup | null {
+  return rows.length
+    ? { rows: rows.length, impressions: rows.reduce((a, r) => a + r.impressions, 0), clicks: rows.reduce((a, r) => a + r.clicks, 0) }
+    : null;
+}
+
+/** Zero-filled daily keys across a concrete period (custom-range trend). NY
+ * calendar days; consecutive duplicates collapsed. */
+function nyDayKeysInPeriod(period: Period): string[] {
+  const keys: string[] = [];
+  let last: string | null = null;
+  for (let t = period.since.getTime(); t < period.until.getTime(); t += DAY_MS) {
+    const k = nyDayKey(new Date(t));
+    if (k !== last) {
+      keys.push(k);
+      last = k;
+    }
+  }
+  return keys;
+}
+
+async function liveGscDetail(
+  kind: GscDetailKind,
+  queryArg: string | null,
+  filters: Filters,
+  opts: SourceOpts
+): Promise<IqGscDetail> {
+  const { window } = filters;
+  const internal = opts.internalVisitorIds; // footer honesty only — GSC is its own population
+  const now = new Date();
+  const { period, range } = resolvePeriod(filters, now);
+  const since = period.since;
+  const until = period.until;
+
+  const [firstDaily, latestDaily] = await Promise.all([
+    prisma.gscDaily.findFirst({ orderBy: { date: "asc" }, select: { date: true } }),
+    prisma.gscDaily.findFirst({ orderBy: { date: "desc" }, select: { date: true } }),
+  ]);
+  const base = {
+    window,
+    range,
+    gscSince: firstDaily ? gscDateKey(firstDaily.date) : null,
+    gscThrough: latestDaily ? gscDateKey(latestDaily.date) : null,
+  };
+
+  // ---- QUERY-ROW modal: one query only ----
+  if (kind === "query") {
+    const q = queryArg ?? "";
+    const rows = await prisma.gscQuery.findMany({
+      where: { query: q, date: { gte: since, lt: until } },
+      select: { date: true, page: true, impressions: true, clicks: true, position: true, isBranded: true, brandedAmbiguous: true, isCollision: true, isGeo: true, intentBucket: true, classifierVersion: true },
+      take: GSC_QUERY_ROW_CAP,
+    });
+    const daily = new Map<string, { clicks: number; impressions: number; posW: number }>();
+    for (const r of rows) {
+      const key = gscDateKey(r.date);
+      const rec = daily.get(key) ?? { clicks: 0, impressions: 0, posW: 0 };
+      rec.clicks += r.clicks;
+      rec.impressions += r.impressions;
+      rec.posW += r.position * r.impressions;
+      daily.set(key, rec);
+    }
+    const dailyPoints: GscQueryDayPoint[] = [...daily.entries()]
+      .sort((a, b) => (a[0] < b[0] ? -1 : 1))
+      .map(([date, r]) => ({ date, clicks: r.clicks, impressions: r.impressions, position: r.impressions ? r.posW / r.impressions : 0 }));
+    const byPage = new Map<string, { clicks: number; impressions: number; posW: number }>();
+    for (const r of rows) {
+      const path = gscPagePath(r.page);
+      const rec = byPage.get(path) ?? { clicks: 0, impressions: 0, posW: 0 };
+      rec.clicks += r.clicks;
+      rec.impressions += r.impressions;
+      rec.posW += r.position * r.impressions;
+      byPage.set(path, rec);
+    }
+    const pages: GscQueryPageRow[] = [...byPage.entries()]
+      .map(([path, r]) => ({ path, clicks: r.clicks, impressions: r.impressions, position: r.impressions ? r.posW / r.impressions : 0 }))
+      .sort((a, b) => b.impressions - a.impressions);
+    const clicks = rows.reduce((a, r) => a + r.clicks, 0);
+    const impressions = rows.reduce((a, r) => a + r.impressions, 0);
+    const posW = rows.reduce((a, r) => a + r.position * r.impressions, 0);
+    return {
+      kind: "query",
+      meta: liveMeta(internal.length, [...new Set(rows.map((r) => r.classifierVersion))].sort()),
+      ...base,
+      query: q,
+      clicks,
+      impressions,
+      position: impressions ? posW / impressions : 0,
+      isBranded: rows.some((r) => r.isBranded),
+      brandedAmbiguous: rows.some((r) => r.brandedAmbiguous),
+      isCollision: rows.some((r) => r.isCollision),
+      isGeo: rows.some((r) => r.isGeo),
+      intentBucket: rows.find((r) => r.intentBucket)?.intentBucket ?? null,
+      daily: dailyPoints,
+      pages,
+      belowThreshold: impressions < GSC_MIN_IMPRESSIONS,
+    };
+  }
+
+  // ---- Common fetch for branded / classifiable / intent ----
+  const [queriesInWindow, dailyInWindow] = await Promise.all([
+    prisma.gscQuery.findMany({
+      where: { date: { gte: since, lt: until } },
+      select: { date: true, query: true, impressions: true, clicks: true, position: true, isBranded: true, brandedAmbiguous: true, isCollision: true, intentBucket: true, classifierVersion: true },
+      take: GSC_QUERY_ROW_CAP,
+    }),
+    prisma.gscDaily.findMany({
+      where: { date: { gte: since, lt: until } },
+      select: { date: true, impressions: true, clicks: true },
+      orderBy: { date: "asc" },
+      take: GSC_DAILY_ROW_CAP,
+    }),
+  ]);
+  const classifierVersions = [...new Set(queriesInWindow.map((q) => q.classifierVersion))].sort();
+  const meta = liveMeta(internal.length, classifierVersions);
+
+  if (kind === "branded") {
+    // Branded vs non-branded CLICKS trend, zero-filled across the daily span.
+    const byDate = new Map<string, { branded: number; nonBranded: number }>();
+    for (const q of queriesInWindow) {
+      const key = gscDateKey(q.date);
+      const rec = byDate.get(key) ?? { branded: 0, nonBranded: 0 };
+      if (q.isBranded) rec.branded += q.clicks;
+      // Non-branded is STRICTLY disjoint (F2): exclude ambiguous AND collision
+      // clicks so a possible-other-Bradley-Griffin never lands on your organic
+      // line while ALSO being reported as a collision. Only ever more conservative.
+      else if (!q.brandedAmbiguous && !q.isCollision) rec.nonBranded += q.clicks;
+      byDate.set(key, rec);
+    }
+    const trend: GscTrendPoint[] = [];
+    if (dailyInWindow.length) {
+      const start = dailyInWindow[0].date.getTime();
+      const end = dailyInWindow[dailyInWindow.length - 1].date.getTime();
+      for (let t = start; t <= end; t += DAY_MS) {
+        const key = gscDateKey(new Date(t));
+        const rec = byDate.get(key);
+        trend.push({ date: key, branded: rec?.branded ?? 0, nonBranded: rec?.nonBranded ?? 0 });
+      }
+    }
+    // Ambiguous & collisions tab (brandedAmbiguous OR isCollision).
+    const ambRaw = queriesInWindow.filter((q) => q.brandedAmbiguous || q.isCollision);
+    const ambAgg = aggregateGscQueries(ambRaw);
+    const ambAbove = ambAgg.filter((r) => r.impressions >= GSC_MIN_IMPRESSIONS).slice(0, GSC_QUERY_ROWS_MAX);
+    const ambBelow = ambAgg.filter((r) => r.impressions < GSC_MIN_IMPRESSIONS);
+    return {
+      kind: "branded",
+      meta,
+      ...base,
+      trend,
+      brandedClicks: queriesInWindow.filter((q) => q.isBranded).reduce((a, q) => a + q.clicks, 0),
+      nonBrandedClicks: queriesInWindow.filter((q) => !q.isBranded && !q.brandedAmbiguous && !q.isCollision).reduce((a, q) => a + q.clicks, 0),
+      ambiguous: ambAbove,
+      ambiguousBelowThreshold: rollupRows(ambBelow),
+      brandedAmbiguousClicks: queriesInWindow.filter((q) => q.brandedAmbiguous).reduce((a, q) => a + q.clicks, 0),
+      collisionClicks: queriesInWindow.filter((q) => q.isCollision).reduce((a, q) => a + q.clicks, 0),
+    };
+  }
+
+  if (kind === "classifiable") {
+    const visibleByDate = new Map<string, number>();
+    for (const q of queriesInWindow) {
+      const key = gscDateKey(q.date);
+      visibleByDate.set(key, (visibleByDate.get(key) ?? 0) + q.impressions);
+    }
+    const points: GscClassifiablePoint[] = dailyInWindow.map((r) => {
+      const key = gscDateKey(r.date);
+      const visible = visibleByDate.get(key) ?? 0;
+      const total = r.impressions;
+      return { date: key, visible, total, anonymized: Math.max(0, total - visible) };
+    });
+    return {
+      kind: "classifiable",
+      meta,
+      ...base,
+      points,
+      visibleImpressions: queriesInWindow.reduce((a, q) => a + q.impressions, 0),
+      totalImpressions: dailyInWindow.reduce((a, r) => a + r.impressions, 0),
+    };
+  }
+
+  // kind === "intent"
+  const byBucket = new Map<string, GscRawRow[]>();
+  for (const q of queriesInWindow) {
+    if (!q.intentBucket) continue;
+    const list = byBucket.get(q.intentBucket) ?? [];
+    list.push(q);
+    byBucket.set(q.intentBucket, list);
+  }
+  const bucketRows = [...byBucket.entries()].map(([bucket, rows]) => {
+    const impressions = rows.reduce((a, r) => a + r.impressions, 0);
+    const clicks = rows.reduce((a, r) => a + r.clicks, 0);
+    const queries = aggregateGscQueries(rows).slice(0, GSC_QUERY_ROWS_MAX);
+    return { bucket, impressions, clicks, queries };
+  });
+  bucketRows.sort((a, b) => b.impressions - a.impressions);
+  const buckets: IqGscIntentBucket[] = bucketRows.filter((b) => b.impressions >= GSC_MIN_IMPRESSIONS);
+  const belowBuckets = bucketRows.filter((b) => b.impressions < GSC_MIN_IMPRESSIONS);
+  return {
+    kind: "intent",
+    meta,
+    ...base,
+    buckets,
+    belowThreshold: rollupRows(belowBuckets),
+  };
+}
+
+// ---- WP3.7 funnel-step + day ----------------------------------------------
+
+const FUNNEL_EVENT_ROWS = 200;
+const FUNNEL_PEOPLE_ROWS = 200;
+const DAY_VISITOR_ROWS = 200;
+const DAY_EVENT_ROWS = 200;
+const DAY_PAGE_ROWS = 25;
+
+async function liveFunnelStep(stepKey: FunnelStepKey, filters: Filters, opts: SourceOpts): Promise<IqFunnelStep> {
+  const { window } = filters;
+  const internal = opts.internalVisitorIds;
+  const now = new Date();
+  const { period, range } = resolvePeriod(filters, now);
+  const prior = priorPeriod(period);
+
+  const idx = FUNNEL_STEPS.findIndex((s) => s.key === stepKey);
+  const stepDef = FUNNEL_STEPS[idx];
+  const nextDef = idx >= 0 && idx < FUNNEL_STEPS.length - 1 ? FUNNEL_STEPS[idx + 1] : null;
+
+  // Fetch prior.since .. period.until so the compare overlay has data.
+  const lo = prior.since;
+  const hi = period.until;
+  const [views, events, bookings] = await Promise.all([
+    prisma.pageView.findMany({
+      where: { createdAt: { gte: lo, lt: hi }, ...excludeInternal(internal) },
+      select: { visitorId: true, path: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+      take: PAGEVIEW_ROW_CAP,
+    }),
+    prisma.event.findMany({
+      where: { createdAt: { gte: lo, lt: hi }, name: { in: ["chooser_click", "cta_click", "form_submit"] }, ...excludeInternalNullable(internal) },
+      select: { name: true, path: true, visitorId: true, meta: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+      take: EVENT_ROW_CAP,
+    }),
+    prisma.booking.findMany({
+      where: { createdAt: { gte: lo, lt: hi }, ...excludeInternalNullable(internal) },
+      select: { visitorId: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+      take: BOOKING_ROW_CAP,
+    }),
+  ]);
+
+  type StepRow = { visitorId: string | null; path: string | null; meta: unknown; at: Date };
+  const rowsFor = (key: FunnelStepKey): StepRow[] => {
+    if (key === "visitors") return views.map((v) => ({ visitorId: v.visitorId, path: v.path, meta: null, at: v.createdAt }));
+    if (key === "booking") return bookings.map((b) => ({ visitorId: b.visitorId, path: null, meta: null, at: b.createdAt }));
+    return events.filter((e) => e.name === key).map((e) => ({ visitorId: e.visitorId, path: e.path, meta: e.meta, at: e.createdAt }));
+  };
+
+  const inCur = (d: Date) => d >= period.since && d < period.until;
+  const inPri = (d: Date) => d >= prior.since && d < period.since;
+
+  const allStepRows = rowsFor(stepKey);
+  const curStepRows = allStepRows.filter((r) => inCur(r.at));
+  const nextVisitorSet = new Set(
+    (nextDef ? rowsFor(nextDef.key).filter((r) => inCur(r.at)) : []).map((r) => r.visitorId).filter((v): v is string => v !== null)
+  );
+
+  const distinctVisitors = new Set(curStepRows.map((r) => r.visitorId).filter((v): v is string => v !== null));
+  const reachedNext = nextDef ? [...distinctVisitors].filter((id) => nextVisitorSet.has(id)).length : 0;
+
+  const perPerson = new Map<string, number>();
+  for (const r of curStepRows) if (r.visitorId) perPerson.set(r.visitorId, (perPerson.get(r.visitorId) || 0) + 1);
+  const peopleAll = [...perPerson.entries()].sort((a, b) => b[1] - a[1]);
+  const people: FunnelPersonRow[] = peopleAll.slice(0, FUNNEL_PEOPLE_ROWS).map(([id, count]) => ({
+    visitorId: id,
+    shortId: id.slice(0, 8),
+    count,
+    reachedNext: nextDef ? nextVisitorSet.has(id) : null,
+  }));
+
+  const eventsSorted = [...curStepRows].sort((a, b) => b.at.getTime() - a.at.getTime());
+  const eventsList: FunnelEventRow[] = eventsSorted.slice(0, FUNNEL_EVENT_ROWS).map((r) => ({
+    at: r.at.toISOString(),
+    path: r.path,
+    visitorId: r.visitorId,
+    shortId: r.visitorId ? r.visitorId.slice(0, 8) : null,
+    metaChips: metaToChips(r.meta),
+  }));
+
+  const curKeys = range ? nyDayKeysInPeriod(period) : lastNDayKeys(window, now);
+  const priKeys = range ? nyDayKeysInPeriod(prior) : priorDayKeys(window, now);
+  const curCount = new Map<string, number>();
+  for (const r of curStepRows) {
+    const k = nyDayKey(r.at);
+    curCount.set(k, (curCount.get(k) || 0) + 1);
+  }
+  const priCount = new Map<string, number>();
+  for (const r of allStepRows) {
+    if (!inPri(r.at)) continue;
+    const k = nyDayKey(r.at);
+    priCount.set(k, (priCount.get(k) || 0) + 1);
+  }
+
+  return {
+    meta: liveMeta(internal.length),
+    window,
+    range,
+    since: period.since.toISOString(),
+    stepKey,
+    label: stepDef.label,
+    nextKey: nextDef?.key ?? null,
+    nextLabel: nextDef?.label ?? null,
+    visitors: distinctVisitors.size,
+    events: curStepRows.length,
+    reachedNext,
+    trend: curKeys.map((k) => ({ key: k, n: curCount.get(k) || 0 })),
+    priorTrend: priKeys.map((k) => ({ key: k, n: priCount.get(k) || 0 })),
+    eventsList,
+    people,
+    eventsTruncated: eventsSorted.length > FUNNEL_EVENT_ROWS,
+    peopleTruncated: peopleAll.length > FUNNEL_PEOPLE_ROWS,
+  };
+}
+
+async function liveDayDetail(dayKey: string, filters: Filters, opts: SourceOpts): Promise<IqDayDetail> {
+  const internal = opts.internalVisitorIds;
+  // dayKey is a NY calendar day; fetch a padded instant window then filter by
+  // nyDayKey so DST offsets can't clip the day. GSC matches by the same stored
+  // YYYY-MM-DD (GscDaily.date is UTC midnight).
+  const dayStart = new Date(Date.parse(`${dayKey}T00:00:00Z`));
+  const lo = new Date(dayStart.getTime() - 2 * DAY_MS);
+  const hi = new Date(dayStart.getTime() + 2 * DAY_MS);
+  const [views, events, bookings, gscDaily] = await Promise.all([
+    prisma.pageView.findMany({
+      where: { createdAt: { gte: lo, lt: hi }, ...excludeInternal(internal) },
+      select: { path: true, visitorId: true, device: true, country: true, createdAt: true },
+      orderBy: { createdAt: "asc" },
+      take: PAGEVIEW_ROW_CAP,
+    }),
+    prisma.event.findMany({
+      where: { createdAt: { gte: lo, lt: hi }, ...excludeInternalNullable(internal) },
+      select: { name: true, path: true, visitorId: true, meta: true, createdAt: true },
+      orderBy: { createdAt: "asc" },
+      take: EVENT_ROW_CAP,
+    }),
+    prisma.booking.findMany({
+      where: { createdAt: { gte: lo, lt: hi }, ...excludeInternalNullable(internal) },
+      select: { visitorId: true, createdAt: true },
+      orderBy: { createdAt: "asc" },
+      take: BOOKING_ROW_CAP,
+    }),
+    prisma.gscDaily.findFirst({ where: { date: dayStart }, select: { impressions: true, clicks: true } }),
+  ]);
+
+  const dayViews = views.filter((v) => nyDayKey(v.createdAt) === dayKey);
+  const perVisitor = new Map<string, { views: number; device: string | null; country: string | null }>();
+  for (const v of dayViews) {
+    const rec = perVisitor.get(v.visitorId) ?? { views: 0, device: v.device, country: v.country };
+    rec.views += 1;
+    perVisitor.set(v.visitorId, rec);
+  }
+  const visitorAll = [...perVisitor.entries()].sort((a, b) => b[1].views - a[1].views);
+  const visitorList: DayVisitorRow[] = visitorAll.slice(0, DAY_VISITOR_ROWS).map(([id, r]) => ({
+    visitorId: id,
+    shortId: id.slice(0, 8),
+    views: r.views,
+    device: r.device,
+    country: r.country,
+  }));
+  const pages: BreakdownRow[] = topCounts(dayViews.map((v) => v.path), UNKNOWN_LABEL, DAY_PAGE_ROWS);
+
+  const eventKinds: ActivityKind[] = ["chooser_click", "cta_click", "form_submit"];
+  const dayEventsAll: DayEventRow[] = [];
+  for (const e of events) {
+    if (nyDayKey(e.createdAt) !== dayKey) continue;
+    if (!eventKinds.includes(e.name as ActivityKind)) continue;
+    dayEventsAll.push({
+      at: e.createdAt.toISOString(),
+      kind: e.name as ActivityKind,
+      path: e.path,
+      visitorId: e.visitorId,
+      shortId: e.visitorId ? e.visitorId.slice(0, 8) : null,
+      metaChips: metaToChips(e.meta),
+    });
+  }
+  for (const b of bookings) {
+    if (nyDayKey(b.createdAt) !== dayKey) continue;
+    dayEventsAll.push({ at: b.createdAt.toISOString(), kind: "booking", path: null, visitorId: b.visitorId, shortId: b.visitorId ? b.visitorId.slice(0, 8) : null, metaChips: [] });
+  }
+  dayEventsAll.sort((a, b) => Date.parse(a.at) - Date.parse(b.at));
+
+  let gsc: IqDayDetail["gsc"] = null;
+  if (gscDaily) {
+    const qrows = await prisma.gscQuery.findMany({
+      where: { date: dayStart },
+      select: { query: true, impressions: true, clicks: true, position: true, isBranded: true, brandedAmbiguous: true, intentBucket: true },
+      orderBy: { impressions: "desc" },
+      take: GSC_QUERY_ROWS_MAX,
+    });
+    gsc = {
+      impressions: gscDaily.impressions,
+      clicks: gscDaily.clicks,
+      queries: qrows.map((q) => ({ query: q.query, clicks: q.clicks, impressions: q.impressions, position: q.position, isBranded: q.isBranded, brandedAmbiguous: q.brandedAmbiguous, intentBucket: q.intentBucket })),
+    };
+  }
+
+  return {
+    meta: liveMeta(internal.length),
+    dayKey,
+    visitors: perVisitor.size,
+    pageviews: dayViews.length,
+    visitorList,
+    pages,
+    events: dayEventsAll.slice(0, DAY_EVENT_ROWS),
+    gsc,
+    truncated: visitorAll.length > DAY_VISITOR_ROWS || dayEventsAll.length > DAY_EVENT_ROWS,
+  };
+}
+
 export const liveSource: AdminIqSource = {
   summary: liveSummary,
   command: liveCommand,
@@ -2170,4 +2663,7 @@ export const liveSource: AdminIqSource = {
   pageDetail: livePageDetail,
   visitorJourney: liveVisitorJourney,
   activity: liveActivity,
+  gscDetail: liveGscDetail,
+  funnelStep: liveFunnelStep,
+  dayDetail: liveDayDetail,
 };

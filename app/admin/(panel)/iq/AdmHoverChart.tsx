@@ -37,10 +37,14 @@ export default function AdmHoverChart({
   labels,
   series,
   ariaLabel,
+  onPointClick,
 }: {
   labels: string[];
   series: ChartSeries[];
   ariaLabel: string;
+  /** WP3.7 — when set, clicking the plot fires with the nearest bucket index
+   * (Command's daily trend uses it to open the Day modal). */
+  onPointClick?: (index: number) => void;
 }) {
   const [hover, setHover] = useState<number | null>(null);
   const n = labels.length;
@@ -128,15 +132,17 @@ export default function AdmHoverChart({
           <line x1={x(hover)} x2={x(hover)} y1={PAD.t} y2={PAD.t + ih} className="adm-chart-hairline" />
         )}
 
-        {/* Invisible capture layer for the hover readout. */}
+        {/* Invisible capture layer for the hover readout (+ optional day click). */}
         <rect
           x={0}
           y={0}
           width={W}
           height={H}
           fill="transparent"
+          style={onPointClick ? { cursor: "pointer" } : undefined}
           onPointerMove={onMove}
           onPointerLeave={() => setHover(null)}
+          onClick={onPointClick && hover !== null ? () => onPointClick(hover) : undefined}
         />
       </svg>
 

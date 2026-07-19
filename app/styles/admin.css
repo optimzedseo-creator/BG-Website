@@ -1335,7 +1335,7 @@
   gap: 12px;
   font-size: 12.5px;
 }
-.page-admin .adm-vlog-dim { color: var(--text1); }
+.page-admin .adm-vlog-dim { color: var(--text1); min-width: 0; overflow-wrap: anywhere; }
 .page-admin .adm-vlog-time {
   font-family: var(--mono);
   font-size: 11.5px;
@@ -1897,6 +1897,173 @@ body.adm-modal-open { overflow: hidden; }
   .page-admin .adm-modal-summary { grid-template-columns: repeat(2, 1fr); }
   .page-admin .adm-report-row { grid-template-columns: 1fr auto; }
 }
+
+/* P3/B9 — tab-row edge-fade: a right-edge mask cues that the row scrolls, but
+   ONLY when it actually overflows. ModalTabs sets .is-scrollable via a JS
+   scrollWidth>clientWidth measurement (pure CSS cannot detect overflow), so a
+   short 2-3 tab row never shows a phantom fade. */
+.page-admin .adm-modal-tabs.is-scrollable {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 22px), transparent 100%);
+  mask-image: linear-gradient(to right, #000 calc(100% - 22px), transparent 100%);
+}
+
+/* ---------- Wave 3b-ii drills (GSC / funnel-step / day) ---------- */
+/* Funnel cells + rate cards are buttons now (were divs) — reset chrome. */
+.page-admin .adm-funnel-step--drill,
+.page-admin .adm-funnel-rate--drill {
+  appearance: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  color: inherit;
+}
+.page-admin .adm-funnel-step--drill { border: none; padding: 0; position: relative; border-radius: 10px; }
+.page-admin .adm-funnel-step--drill .adm-go {
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease);
+  color: var(--acc);
+  font-family: var(--mono);
+}
+.page-admin .adm-funnel-step--drill:hover .adm-go,
+.page-admin .adm-funnel-step--drill:focus-visible .adm-go { opacity: 1; }
+.page-admin .adm-funnel-step--drill:hover .adm-funnel-n { color: var(--acc); }
+.page-admin .adm-funnel-rate--drill:hover { border-color: var(--acc-hover); color: var(--text0); }
+.page-admin .adm-funnel-rate--drill:focus-visible,
+.page-admin .adm-funnel-step--drill:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+
+/* Compact day-picker row under the Command trend (touch-safe day drill). */
+.page-admin .adm-daypick { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
+.page-admin .adm-daypick-btn {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text2);
+  font: 500 10.5px var(--mono);
+  padding: 2px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+}
+.page-admin .adm-daypick-btn:hover,
+.page-admin .adm-daypick-btn:focus-visible { color: var(--acc); border-color: var(--acc-border); }
+
+/* Intent bucket bar as a button (GSC intent modal + Search page). */
+.page-admin .adm-bar-btn {
+  display: grid;
+  grid-template-columns: minmax(72px, 140px) 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  appearance: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 3px 4px;
+  border-radius: 8px;
+  color: inherit;
+  text-align: left;
+}
+.page-admin .adm-bar-btn:hover,
+.page-admin .adm-bar-btn.on { background: var(--acc-chip); }
+.page-admin .adm-bar-btn:focus-visible { outline: 2px solid var(--acc); outline-offset: 1px; }
+.page-admin .adm-bar-btn .adm-go { opacity: 0; color: var(--acc); font-family: var(--mono); }
+.page-admin .adm-bar-btn:hover .adm-go,
+.page-admin .adm-bar-btn.on .adm-go { opacity: 1; }
+
+/* Clickable data table row (Search queries table). */
+.page-admin .adm-row-drill { cursor: pointer; }
+.page-admin .adm-row-drill:hover { background: var(--acc-chip); }
+.page-admin .adm-row-drill:focus-visible { outline: 2px solid var(--acc); outline-offset: -2px; }
+
+/* Modal sub-headings + strong caption + head tag row. */
+.page-admin .adm-modal-subhead {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text2);
+  margin: 18px 0 8px;
+}
+.page-admin .adm-caption--strong { color: var(--text0); font-weight: 500; }
+.page-admin .adm-qtags--head { display: inline-flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+
+/* Reached-next chip (funnel People tab). */
+.page-admin .adm-reach-chip {
+  font: 500 10.5px var(--mono);
+  padding: 1px 7px;
+  border-radius: 100px;
+  border: 1px solid var(--line-hi);
+  color: var(--text1);
+  white-space: nowrap;
+}
+.page-admin .adm-reach-chip.on { color: var(--green); border-color: color-mix(in srgb, var(--green) 40%, transparent); background: color-mix(in srgb, var(--green) 10%, transparent); }
+
+/* Static (cookieless) event row inside a drill list. */
+.page-admin .adm-vlog-row--static { cursor: default; opacity: 0.85; }
+
+/* Day-detail event list. */
+.page-admin .adm-daylog { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.page-admin .adm-daylog-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 12px;
+}
+.page-admin .adm-daylog-time { color: var(--text2); font-size: 11px; }
+.page-admin .adm-daylog-kind { color: var(--acc); font-family: var(--mono); font-size: 11px; }
+.page-admin .adm-daylog-path { color: var(--text1); overflow-wrap: anywhere; }
+.page-admin .adm-daylog-link {
+  appearance: none;
+  background: none;
+  border: none;
+  color: var(--text2);
+  font-family: var(--mono);
+  font-size: 11px;
+  cursor: pointer;
+  margin-left: auto;
+}
+.page-admin .adm-daylog-link:hover,
+.page-admin .adm-daylog-link:focus-visible { color: var(--acc); }
+
+/* WP3.8 — custom date-range control. */
+.page-admin .adm-daterange-toggle {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text1);
+  font: 500 12px var(--mono);
+  padding: 5px 12px;
+  cursor: pointer;
+}
+.page-admin .adm-daterange-toggle:hover { color: var(--text0); border-color: var(--acc-border); }
+.page-admin .adm-daterange { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px; }
+.page-admin .adm-daterange-field { display: flex; flex-direction: column; gap: 3px; font: 500 10.5px var(--mono); color: var(--text2); text-transform: uppercase; letter-spacing: 0.08em; }
+.page-admin .adm-daterange-field input {
+  background: var(--bg0);
+  border: 1px solid var(--line-hi);
+  border-radius: 8px;
+  color: var(--text0);
+  font: 500 12px var(--mono);
+  padding: 5px 8px;
+  color-scheme: dark;
+}
+.page-admin .adm-daterange-field input:focus-visible { outline: 2px solid var(--acc); outline-offset: 1px; }
+.page-admin .adm-daterange-clear {
+  appearance: none;
+  background: none;
+  border: none;
+  color: var(--text2);
+  font: 500 11.5px var(--mono);
+  cursor: pointer;
+  text-decoration: underline;
+}
+.page-admin .adm-daterange-clear:hover { color: var(--text0); }
+.page-admin .adm-daterange-hint { font: 500 11px var(--mono); color: var(--amber); align-self: center; }
 
 /* ---------- §5.16 reduced motion: ALL of it collapses ---------- */
 @media (prefers-reduced-motion: reduce) {

@@ -85,7 +85,7 @@ export async function loginAction(_prev: AuthFormState, formData: FormData): Pro
   if (await dampened("admin-login")) return { error: "Too many attempts. Wait a few minutes." };
 
   const hash = await getSetting(K_PASSWORD_HASH);
-  if (!hash) return { error: "No admin password exists yet — complete first-time setup." };
+  if (!hash) return { error: "No admin password exists yet. Complete first-time setup." };
 
   const locked = await lockoutMessage();
   if (locked) return { error: locked };
@@ -114,7 +114,7 @@ export async function totpAction(_prev: AuthFormState, formData: FormData): Prom
   if (await dampened("admin-totp")) return { error: "Too many attempts. Wait a few minutes.", stage: "totp" };
 
   if (!(await requirePendingTotp())) {
-    return { error: "That took too long — enter your password again." };
+    return { error: "That took too long. Enter your password again." };
   }
 
   const locked = await lockoutMessage();

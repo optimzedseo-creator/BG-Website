@@ -199,7 +199,7 @@ export default function ActivityView({ initial }: { initial: IqActivity }) {
                           <td>
                             <span className={`adm-qchip adm-act-${r.kind}`}>{KIND_LABEL[r.kind]}</span>
                           </td>
-                          <td className="adm-path">{r.path ?? "-"}</td>
+                          <td className="adm-path">{r.path ?? <span className="adm-unset">no path</span>}</td>
                           <td>
                             {r.metaChips.length > 0 ? (
                               <span className="adm-qtags">
@@ -212,11 +212,11 @@ export default function ActivityView({ initial }: { initial: IqActivity }) {
                             ) : r.sourceClass ? (
                               <span className="adm-sub">{r.sourceClass}</span>
                             ) : (
-                              "-"
+                              <span className="adm-unset">none</span>
                             )}
                           </td>
                           <td className="adm-mono">
-                            {r.shortId ?? "-"}
+                            {r.shortId ?? <span className="adm-unset">no cookie</span>}
                             {drillable && <span className="adm-go" aria-hidden="true"> →</span>}
                           </td>
                         </tr>

@@ -6,7 +6,7 @@
 
 import { useState } from "react";
 import AdmHoverChart from "./AdmHoverChart";
-import { ModalHeader, ModalStatus, ModalTabs, ModalWrap } from "./ModalShell";
+import { ModalHeader, ModalStatus, ModalTabs, ModalWrap, tabPanelProps } from "./ModalShell";
 import { currentPeriod, useDrill } from "./drill-fetch";
 import { openDrill, visitorHash } from "./hash-route";
 import { fmtDay, fmtSeconds } from "../fmt";
@@ -69,7 +69,7 @@ export default function PageModal({ path, onClose }: { path: string; onClose: ()
           />
 
           {tab === "overview" && (
-            <div className="adm-modal-section">
+            <div className="adm-modal-section" {...tabPanelProps("overview")}>
               <div className="adm-kpis">
                 <div className="adm-kpi"><span className="adm-kpi-n">{data.views}</span><span className="adm-kpi-label">Views</span></div>
                 <div className="adm-kpi"><span className="adm-kpi-n">{data.visitors}</span><span className="adm-kpi-label">Visitors</span></div>
@@ -94,7 +94,7 @@ export default function PageModal({ path, onClose }: { path: string; onClose: ()
           )}
 
           {tab === "sources" && (
-            <div className="adm-modal-section">
+            <div className="adm-modal-section" {...tabPanelProps("sources")}>
               {data.sources.length === 0 ? (
                 <p className="adm-empty">📭 No external referrers to this page yet. Internal navigation is excluded.</p>
               ) : (
@@ -115,7 +115,7 @@ export default function PageModal({ path, onClose }: { path: string; onClose: ()
           )}
 
           {tab === "visitors" && (
-            <div className="adm-modal-section">
+            <div className="adm-modal-section" {...tabPanelProps("visitors")}>
               {data.visitorLog.length === 0 ? (
                 <p className="adm-empty">📭 No visitor journeys touched this page in the window yet.</p>
               ) : (
@@ -147,7 +147,7 @@ export default function PageModal({ path, onClose }: { path: string; onClose: ()
           )}
 
           {tab === "search" && (
-            <div className="adm-modal-section">
+            <div className="adm-modal-section" {...tabPanelProps("search")}>
               {data.search.length === 0 && !data.searchBelowThreshold ? (
                 <p className="adm-empty">
                   🔍 No Search Console queries for this page yet.
@@ -180,7 +180,15 @@ export default function PageModal({ path, onClose }: { path: string; onClose: ()
                           <td>{data.searchBelowThreshold.rows} quer{data.searchBelowThreshold.rows === 1 ? "y" : "ies"} below the reporting threshold (counted)</td>
                           <td className="adm-mono">{data.searchBelowThreshold.clicks}</td>
                           <td className="adm-mono">{data.searchBelowThreshold.impressions}</td>
-                          <td className="adm-mono">-</td>
+                          <td className="adm-mono">not applicable</td>
+                        </tr>
+                      )}
+                      {data.searchBeyondThreshold && (
+                        <tr className="adm-row-rollup">
+                          <td>{data.searchBeyondThreshold.rows} more quer{data.searchBeyondThreshold.rows === 1 ? "y" : "ies"} beyond this list (counted)</td>
+                          <td className="adm-mono">{data.searchBeyondThreshold.clicks}</td>
+                          <td className="adm-mono">{data.searchBeyondThreshold.impressions}</td>
+                          <td className="adm-mono">not applicable</td>
                         </tr>
                       )}
                     </tbody>

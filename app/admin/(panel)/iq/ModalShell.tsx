@@ -19,7 +19,8 @@ export function ModalWrap({
 }: {
   onClose: () => void;
   labelledBy: string;
-  /** data-acc value so the panel takes the opener's module accent. */
+  /** data-acc value so the panel takes the entity accent (Wave-3a ratification),
+   * not the opener's. */
   acc?: string;
   children: ReactNode;
 }) {
@@ -44,8 +45,12 @@ export function ModalWrap({
         return;
       }
       if (e.key !== "Tab" || !panel) return;
+      // B7: roving-tabindex sets inactive tabs to tabindex=-1, but the CSS
+      // FOCUSABLE selector's button:not([disabled]) still matches them. Exclude
+      // tabIndex < 0 at runtime so ONE Tab stop = the active tab (arrows move
+      // within) — the focus-trap and the tablist now agree.
       const items = Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
-        (el) => el.offsetParent !== null || el === document.activeElement
+        (el) => el.tabIndex >= 0 && (el.offsetParent !== null || el === document.activeElement)
       );
       if (items.length === 0) {
         e.preventDefault();
@@ -146,6 +151,17 @@ export interface ModalTab {
   label: string;
 }
 
+/** B15 — APG tab/panel pairing: modals spread this onto the active panel's
+ * section wrapper so aria-controls (on the tab) has a matching role="tabpanel"
+ * + aria-labelledby target. Generic — every tabbed modal reuses it. */
+export function tabPanelProps(tabKey: string): {
+  role: "tabpanel";
+  id: string;
+  "aria-labelledby": string;
+} {
+  return { role: "tabpanel", id: `adm-tabpanel-${tabKey}`, "aria-labelledby": `adm-tab-${tabKey}` };
+}
+
 export function ModalTabs({
   tabs,
   active,
@@ -155,14 +171,61 @@ export function ModalTabs({
   active: string;
   onSelect: (key: string) => void;
 }) {
+  const rowRef = useRef<HTMLDivElement>(null);
+  const [scrollable, setScrollable] = useState(false);
+
+  // B9 — the edge-fade mask must only show when the row actually overflows
+  // (pure CSS cannot detect overflow). Measure on mount + resize and toggle a
+  // class the mask CSS is scoped to, so a short 2-3 tab row shows no phantom fade.
+  useEffect(() => {
+    const el = rowRef.current;
+    if (!el) return;
+    const measure = () => setScrollable(el.scrollWidth > el.clientWidth + 1);
+    measure();
+    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(measure) : null;
+    ro?.observe(el);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [tabs.length]);
+
+  // P3 — APG tablist roving tabindex: only the active tab is in the Tab order
+  // (tabindex 0); ArrowLeft/Right move selection AND focus, Home/End jump to the
+  // ends. Inactive tabs carry tabindex -1 so a single Tab press lands on the row.
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const idx = tabs.findIndex((t) => t.key === active);
+    if (idx < 0) return;
+    let next = idx;
+    if (e.key === "ArrowRight") next = (idx + 1) % tabs.length;
+    else if (e.key === "ArrowLeft") next = (idx - 1 + tabs.length) % tabs.length;
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = tabs.length - 1;
+    else return;
+    e.preventDefault();
+    onSelect(tabs[next].key);
+    const btns = rowRef.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+    btns?.[next]?.focus();
+  };
+
   return (
-    <div className="adm-modal-tabs" role="tablist" aria-label="Sections">
+    <div
+      className={`adm-modal-tabs${scrollable ? " is-scrollable" : ""}`}
+      role="tablist"
+      aria-label="Sections"
+      ref={rowRef}
+      onKeyDown={onKeyDown}
+    >
       {tabs.map((t) => (
         <button
           key={t.key}
           type="button"
           role="tab"
+          id={`adm-tab-${t.key}`}
+          aria-controls={`adm-tabpanel-${t.key}`}
           aria-selected={active === t.key}
+          tabIndex={active === t.key ? 0 : -1}
           className={`adm-modal-tab${active === t.key ? " on" : ""}`}
           onClick={() => onSelect(t.key)}
         >

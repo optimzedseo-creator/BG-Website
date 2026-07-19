@@ -57,7 +57,7 @@ export async function confirmTotpEnroll(_prev: FormResult, formData: FormData): 
   if (!(await requireAdmin())) return { error: "Unauthorized" };
 
   const pending = await getSetting(K_TOTP_PENDING);
-  if (!pending) return { error: "No enrollment in progress — generate a QR code first." };
+  if (!pending) return { error: "No enrollment in progress. Generate a QR code first." };
 
   if (!verifyTotp(pending, field(formData, "code"))) {
     return { error: "That code didn't match. Check your authenticator and try again." };

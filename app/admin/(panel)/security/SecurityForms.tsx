@@ -51,7 +51,7 @@ export function TotpSection({ enabled }: { enabled: boolean }) {
       <div>
         <p className="adm-note">
           Two-factor authentication is OFF. Enroll an authenticator app (Google Authenticator, 1Password,
-          Authy…) — after enrolling, sign-in takes your password plus a 6-digit code.
+          Authy). After enrolling, sign-in takes your password plus a 6-digit code.
         </p>
         {start?.error && <p className="adm-error" role="alert">{start.error}</p>}
         <button
@@ -70,7 +70,7 @@ export function TotpSection({ enabled }: { enabled: boolean }) {
     <div>
       <p className="adm-note">
         Scan this QR code with your authenticator app, then enter the current 6-digit code to switch 2FA on.
-        Nothing changes until a code verifies — you cannot lock yourself out mid-enrollment.
+        Nothing changes until a code verifies. You cannot lock yourself out mid-enrollment.
       </p>
       {/* data: URL QR from the server action — never remote. */}
       <img src={start.qr} alt="TOTP enrollment QR code" className="adm-qr" width={256} height={256} />
