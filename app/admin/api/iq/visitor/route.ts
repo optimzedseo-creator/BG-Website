@@ -9,6 +9,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
+import { readMode } from "@/lib/admin/iq/mode";
 import { readInternalVisitorIds, isValidVisitorId } from "@/lib/admin/iq/internal";
 import type { IqVisitorJourney } from "@/lib/admin/iq/types";
 
@@ -27,7 +28,7 @@ export async function GET(req: Request): Promise<NextResponse> {
     if (!id || !isValidVisitorId(id)) {
       return NextResponse.json({ error: "A valid visitor id is required." }, { status: 400, headers: NO_STORE });
     }
-    const payload: IqVisitorJourney = await getSource("live").visitorJourney(id, {
+    const payload: IqVisitorJourney = await getSource(await readMode()).visitorJourney(id, {
       internalVisitorIds: await readInternalVisitorIds(),
     });
     return NextResponse.json(payload, { headers: NO_STORE });

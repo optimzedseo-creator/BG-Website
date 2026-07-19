@@ -9,6 +9,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
+import { readMode } from "@/lib/admin/iq/mode";
 import { parseQueryParam, parseWindowParam } from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import type { GscDetailKind, IqGscDetail } from "@/lib/admin/iq/types";
@@ -35,7 +36,7 @@ export async function GET(req: Request): Promise<NextResponse> {
     if (kind === "query" && !query) {
       return NextResponse.json({ error: "A query is required." }, { status: 400, headers: NO_STORE });
     }
-    const payload: IqGscDetail = await getSource("live").gscDetail(
+    const payload: IqGscDetail = await getSource(await readMode()).gscDetail(
       kind,
       query,
       {

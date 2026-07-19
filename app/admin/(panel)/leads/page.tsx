@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import type { Prisma } from "@prisma/client";
-import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
+import { getCrmSource } from "@/lib/admin/crm";
+import { readMode } from "@/lib/admin/iq/mode";
 import { DAY_MS, parseWindowParam, RULE_LEAD_SLA_DAYS, withPeriod } from "@/lib/admin/iq/shared";
 import StatusSelect from "./StatusSelect";
 import LeadDonuts from "./LeadDonuts";
+import DemoBadge from "../iq/DemoBadge";
 
 export const dynamic = "force-dynamic";
 
@@ -21,13 +22,6 @@ const STATUSES = new Set(["new", "contacted", "call_booked", "qualified", "won",
 // sort falls back to the default (most recently touched). Sorting only reorders
 // PII the CRM page already shows — no new data crosses any boundary.
 type SortKey = "name" | "company" | "type" | "status" | "created";
-const SORT_ORDER: Record<SortKey, (dir: "asc" | "desc") => Prisma.LeadOrderByWithRelationInput> = {
-  name: (dir) => ({ name: dir }),
-  company: (dir) => ({ company: dir }),
-  type: (dir) => ({ inquiryType: dir }),
-  status: (dir) => ({ status: dir }),
-  created: (dir) => ({ createdAt: dir }),
-};
 const SORT_KEYS = new Set<SortKey>(["name", "company", "type", "status", "created"]);
 
 // SLA threshold is interpolated from the ONE constant (factcheck/content: no
@@ -56,19 +50,15 @@ export default async function AdminLeadsPage({
 
   const sort = rawSort && SORT_KEYS.has(rawSort as SortKey) ? (rawSort as SortKey) : null;
   const dir: "asc" | "desc" = rawDir === "asc" ? "asc" : rawDir === "desc" ? "desc" : sort === "name" ? "asc" : "desc";
-  const orderBy: Prisma.LeadOrderByWithRelationInput = sort
-    ? SORT_ORDER[sort](dir)
-    : { updatedAt: "desc" };
 
-  const iq = getSource("live");
+  // Wave 4 Stage B: the leads list rides the CRM lane (live = the exact same
+  // Prisma queries, lift-and-shifted; demo = the synthetic leads). Donut counts
+  // stay on the PII-free analytics source. Both honor the session mode.
+  const mode = await readMode();
+  const iq = getSource(mode);
+  const crm = getCrmSource(mode);
   const [leads, byInquiryType, byStatus] = await Promise.all([
-    prisma.lead.findMany({
-      where: status ? { status } : undefined,
-      orderBy,
-      include: {
-        activities: { orderBy: { createdAt: "desc" }, take: 1, select: { createdAt: true, type: true } },
-      },
-    }),
+    crm.leadList({ status, sort, dir }),
     iq.leadsByInquiryType(),
     iq.leadsByStatus(),
   ]);
@@ -112,6 +102,7 @@ export default async function AdminLeadsPage({
     <div data-acc="leads">
       <div className="adm-head">
         <h1>🤝 Leads</h1>
+        <DemoBadge demo={mode === "demo"} />
         <span className="adm-count">
           {status ? (
             <>
@@ -123,6 +114,13 @@ export default async function AdminLeadsPage({
           )}
         </span>
       </div>
+
+      {/* UX §8 — leads module demo affordance: name the data plainly. */}
+      {mode === "demo" && (
+        <p className="adm-demo-note" role="note">
+          ◐ All names, emails, companies, and messages below are synthetic demo data. Not real people.
+        </p>
+      )}
 
       <LeadDonuts byInquiryType={byInquiryType} byStatus={byStatus} />
 
@@ -187,8 +185,8 @@ export default async function AdminLeadsPage({
                       {overdue ? <span className="adm-sla-flag"> · {ageDays}d</span> : null}
                     </td>
                     <td className="adm-mono">
-                      {lead.activities[0]
-                        ? `${fmt(lead.activities[0].createdAt)} (${lead.activities[0].type})`
+                      {lead.lastActivity
+                        ? `${fmt(lead.lastActivity.createdAt)} (${lead.lastActivity.type})`
                         : <span className="adm-unset">none yet</span>}
                     </td>
                     {/* Full-row click restored under the sticky first column:

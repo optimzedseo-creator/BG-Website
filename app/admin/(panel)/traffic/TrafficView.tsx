@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import DemoBadge from "../iq/DemoBadge";
 import type { BreakdownRow, IqTraffic, SeriesPoint, SourceClass, WindowDays } from "@/lib/admin/iq/types";
 import { RATE_MIN_DENOM, buildIqQuery, rateOrCounts } from "@/lib/admin/iq/shared";
 import { subscribePeriodRefetch } from "../period-bus";
@@ -191,6 +192,7 @@ export default function TrafficView({ initial }: { initial: IqTraffic }) {
     <div data-acc="traffic" aria-busy={loading}>
       <div className="adm-head">
         <h1>📈 Traffic</h1>
+        <DemoBadge demo={data.meta.mode === "demo"} />
         <span className="adm-count">last {data.window} days</span>
       </div>
 

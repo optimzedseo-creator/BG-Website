@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
+import { readMode } from "@/lib/admin/iq/mode";
 import { VISITOR_COOKIE, addInternalVisitorId } from "@/lib/admin/iq/internal";
 import { logoutAction } from "./actions";
 import AdminRail from "./AdminRail";
@@ -23,13 +24,22 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   const bgVid = (await cookies()).get(VISITOR_COOKIE)?.value;
   if (bgVid) await addInternalVisitorId(bgVid);
 
-  // Live rail chips (WP2.1 Brad addendum): PII-free lead counts by status via
-  // the shared metrics module — counts only, all six statuses, zeros included.
-  const leadCounts = await getSource("live").leadsByStatus();
+  // Wave 4 Stage B — session mode (httpOnly bg_iq_mode cookie, read AFTER the
+  // gate, fail-safe to "live"). ONE read here threads into the whole panel: it
+  // picks the data source for the rail chips AND drives the crop-proof demo
+  // chrome (data-iq-mode below → CSS cues; mode prop → the LIVE/DEMO pill).
+  const mode = await readMode();
+
+  // Rail chips (WP2.1 Brad addendum): PII-free lead counts by status via the
+  // shared metrics module — counts only, all six statuses, zeros included.
+  const leadCounts = await getSource(mode).leadsByStatus();
 
   return (
-    <>
-      <AdminTopBar>
+    // display:contents wrapper (CSS) — zero layout effect, but every demo cue
+    // keys off [data-iq-mode="demo"] on this one node. LIVE renders nothing here
+    // except the pulsing pill.
+    <div className="adm-modewrap" data-iq-mode={mode}>
+      <AdminTopBar mode={mode}>
         <form action={logoutAction}>
           <button type="submit" className="adm-linkbtn">Sign out</button>
         </form>
@@ -49,6 +59,6 @@ export default async function PanelLayout({ children }: { children: React.ReactN
       {/* WP3.1 — global drill host: hash-addressable modals (#/kpi, #/page,
           #/visitor) restore on any admin route, refresh-safe. */}
       <AdminDrillHost />
-    </>
+    </div>
   );
 }

@@ -10,6 +10,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
+import { readMode } from "@/lib/admin/iq/mode";
 import { parseDayParam, parseWindowParam } from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import type { IqDayDetail } from "@/lib/admin/iq/types";
@@ -29,7 +30,7 @@ export async function GET(req: Request): Promise<NextResponse> {
     if (!dayKey) {
       return NextResponse.json({ error: "A valid day (YYYY-MM-DD) is required." }, { status: 400, headers: NO_STORE });
     }
-    const payload: IqDayDetail = await getSource("live").dayDetail(
+    const payload: IqDayDetail = await getSource(await readMode()).dayDetail(
       dayKey,
       { window: parseWindowParam(url.searchParams.get("p")) },
       { internalVisitorIds: await readInternalVisitorIds() }

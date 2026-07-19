@@ -9,6 +9,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
+import { readMode } from "@/lib/admin/iq/mode";
 import { parseWindowParam } from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import type { FunnelStepKey, IqFunnelStep } from "@/lib/admin/iq/types";
@@ -37,7 +38,7 @@ export async function GET(req: Request): Promise<NextResponse> {
     if (!step) {
       return NextResponse.json({ error: "Unknown funnel step." }, { status: 400, headers: NO_STORE });
     }
-    const payload: IqFunnelStep = await getSource("live").funnelStep(
+    const payload: IqFunnelStep = await getSource(await readMode()).funnelStep(
       step,
       {
         window: parseWindowParam(url.searchParams.get("p")),

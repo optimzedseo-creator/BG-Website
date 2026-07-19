@@ -7,15 +7,14 @@
 
 import type { AdminIqSource, IqMode } from "./types";
 import { liveSource } from "./source-live";
+import { demoSource } from "./source-demo";
 
 export function getSource(mode: IqMode): AdminIqSource {
-  if (mode === "live") return liveSource;
-  // Wave 4 (WP4.1): source-demo.ts — deterministic in-memory dataset,
-  // zero Prisma import. Until it lands, demo mode is a loud failure,
-  // never a silent fallback to live data.
-  throw new Error(
-    'ADMIN-IQ: demo source is not implemented yet (lands Wave 4, WP4.1). Only mode "live" is available.'
-  );
+  // Wave 4 Stage A (WP4.1): "demo" → the deterministic in-memory dataset
+  // (source-demo.ts, zero Prisma import); "live" stays the Prisma source.
+  // Mode is resolved server-side AFTER requireAdmin() (see mode.ts); this
+  // factory never gates and never reads the cookie itself.
+  return mode === "demo" ? demoSource : liveSource;
 }
 
 export type {

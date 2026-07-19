@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
+import { getCrmSource } from "@/lib/admin/crm";
+import { readMode } from "@/lib/admin/iq/mode";
 import { classifySource, DAY_MS, nyDateParts } from "@/lib/admin/iq/shared";
 import type { SourceClass } from "@/lib/admin/iq/types";
 import StatusSelect from "../StatusSelect";
+import DemoBadge from "../../iq/DemoBadge";
 import JourneyTimeline from "../../iq/JourneyTimeline";
 import LeadDetailTabs from "./LeadDetailTabs";
 
@@ -46,31 +48,30 @@ export default async function AdminLeadDetail({ params }: { params: Promise<{ id
   const { id } = await params;
   if (!/^[a-z0-9]{20,40}$/i.test(id)) notFound();
 
-  const lead = await prisma.lead.findUnique({
-    where: { id },
-    include: {
-      activities: { orderBy: { createdAt: "desc" } },
-      bookings: { orderBy: { createdAt: "desc" } },
-    },
-  });
+  // Mode resolved AFTER the gate (mode.ts invariant). Both lanes honor it: the
+  // CRM lane serves the lead (PII) and its source pageviews; the analytics lane
+  // serves the journey. In demo mode all three come from the synthetic dataset,
+  // so this page never renders real lead PII behind a demo presentation.
+  const mode = await readMode();
+  const iq = getSource(mode);
+  const crm = getCrmSource(mode);
+
+  const lead = await crm.leadDetail(id);
   if (!lead) notFound();
 
   // Journey (WP3.4 shared component) + B4/B5 source facts. Both ride
   // Lead.visitorId, the CRM<->analytics bridge. The journey drill is a targeted
   // admin lookup, so it does NOT apply internal exclusion (Wave-3a manager
-  // ratification) — pass an empty list. Source facts are computed here in the
-  // CRM lane (this page already holds PII) from raw PageView rows; referrer /
+  // ratification) — pass an empty list. Source facts come from the CRM lane's
+  // leadSourceViews (analytics fields path/referrer/createdAt only, no PII), so
+  // this page imports neither Prisma nor the demo dataset directly; referrer /
   // path strings are rendered as TEXT ONLY, never HTML.
   const [journey, sourceViews] = await Promise.all([
     lead.visitorId
-      ? getSource("live").visitorJourney(lead.visitorId, { internalVisitorIds: [] })
+      ? iq.visitorJourney(lead.visitorId, { internalVisitorIds: [] })
       : Promise.resolve(null),
     lead.visitorId
-      ? prisma.pageView.findMany({
-          where: { visitorId: lead.visitorId },
-          orderBy: { createdAt: "asc" },
-          select: { path: true, referrer: true, createdAt: true },
-        })
+      ? crm.leadSourceViews(lead.visitorId)
       : Promise.resolve([]),
   ]);
 
@@ -239,6 +240,7 @@ export default async function AdminLeadDetail({ params }: { params: Promise<{ id
     <div data-acc="leads">
       <div className="adm-head">
         <h1>{lead.name}</h1>
+        <DemoBadge demo={mode === "demo"} />
         <Link href="/admin/leads" className="adm-back">← All leads</Link>
       </div>
 

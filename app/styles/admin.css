@@ -140,9 +140,140 @@
 }
 .page-admin .adm-brand b { color: var(--gold); font-weight: 800; }
 .page-admin .adm-top-spacer { flex: 1; }
-/* Mode-pill placeholder (WP2.1): layout space reserved for the Wave 4
-   LIVE/DEMO toggle — deliberately EMPTY until it exists (no dead controls). */
-.page-admin .adm-modeslot { width: 124px; flex: none; }
+/* Mode-pill slot (WP4.2): holds the LIVE/DEMO segmented toggle. */
+.page-admin .adm-modeslot { flex: none; display: flex; align-items: center; }
+
+/* ---------- §5.15 LIVE / DEMO mode system ---------- */
+/* The segmented toggle (§5.8 idiom): two states, DM Mono 11px uppercase. */
+.page-admin .adm-modepill {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line-hi);
+  border-radius: 9px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.03);
+}
+.page-admin .adm-modepill button {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text1);
+  background: transparent;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1;
+}
+.page-admin .adm-modepill button:not(.on):hover { color: var(--text0); }
+.page-admin .adm-modepill button.on { color: var(--bg0); }
+.page-admin .adm-modepill button.on.adm-mode-live { background: var(--green); }
+.page-admin .adm-modepill button.on.adm-mode-demo { background: var(--purple); }
+.page-admin .adm-modepill .adm-mode-dot { font-size: 9px; }
+/* LIVE active dot: slow 2.4s opacity pulse — the earned markpulse idiom. */
+.page-admin .adm-modepill button.on.adm-mode-live .adm-mode-dot {
+  animation: adm-live-pulse 2.4s ease-in-out infinite;
+}
+@keyframes adm-live-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+/* The DEMO badge that trails every h1 (crop-proof cue #2) + the ModalHeader
+   sub-line variant. Purple §5.6 badge formula, glyph + word (never colour-only). */
+.page-admin .adm-demo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 10px;
+  vertical-align: middle;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--purple);
+  background: color-mix(in srgb, var(--purple) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--purple) 40%, transparent);
+  border-radius: 6px;
+  padding: 2px 7px;
+  white-space: nowrap;
+}
+.page-admin .adm-modal-sub .adm-demo-badge { margin-left: 0; }
+
+/* Crop-proof cue #1: in DEMO the top bar's bottom border becomes a 2px
+   full-width purple gradient keyline — the whole chrome declares the mode. */
+.page-admin [data-iq-mode="demo"] .adm-top {
+  border-bottom-color: transparent;
+  position: sticky;
+}
+.page-admin [data-iq-mode="demo"] .adm-top::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--purple), transparent);
+  pointer-events: none;
+}
+/* Confirm mini-modal (Demo→Live), §5.9 — a compact centered dialog over a
+   full-screen backdrop; green title keyline signals the risky (→live) direction. */
+.page-admin .adm-mini-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  animation: admOverlayIn 200ms var(--ease);
+}
+.page-admin .adm-mini {
+  position: relative;
+  background: var(--bg1);
+  border: 1px solid var(--line-hi);
+  border-radius: 16px;
+  max-width: 420px;
+  width: 100%;
+  padding: 22px 24px 20px;
+  animation: admPanelIn var(--t-med) var(--ease);
+}
+.page-admin .adm-mini-title {
+  font-family: var(--disp);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+  color: var(--text0);
+  margin: 0 0 10px;
+}
+.page-admin .adm-mini--live .adm-mini-title { border-left: 3px solid var(--green); padding-left: 12px; }
+.page-admin .adm-mini-body {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text1);
+  margin: 0 0 18px;
+}
+.page-admin .adm-mini--live .adm-mini-body { padding-left: 12px; }
+.page-admin .adm-mini-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Leads-module demo affordance (UX §8): a plain block note naming the data. */
+.page-admin .adm-demo-note {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--purple);
+  margin: 0 0 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-admin .adm-modepill button.on.adm-mode-live .adm-mode-dot { animation: none; }
+}
 .page-admin .adm-linkbtn {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--line-hi);
@@ -793,7 +924,10 @@
   .page-admin .adm-top-inner { gap: 12px; padding: 0 14px; }
   /* Mode slot collapses on mobile (Wave 4's pill compresses to dot+label
      there per UX §10 — no space to reserve at 375). */
-  .page-admin .adm-modeslot { display: none; }
+  /* UX §10: the mode pill STAYS on mobile (compressed) — it is the crop-proof
+     LIVE/DEMO signal and must never disappear. */
+  .page-admin .adm-modeslot { display: flex; }
+  .page-admin .adm-modepill button { padding: 5px 8px; letter-spacing: 0.06em; }
   /* Bottom tab bar needs clearance. */
   .page-admin .adm-main { padding: 20px 14px 96px; }
   .page-admin .adm-journey li { grid-template-columns: 1fr; gap: 2px; }
@@ -819,7 +953,8 @@
   .page-admin .adm-chip { min-height: 40px; }
   .page-admin .adm-btn,
   .page-admin .adm-btn-ghost,
-  .page-admin .adm-btn-danger { min-height: 44px; }
+  .page-admin .adm-btn-danger,
+  .page-admin .adm-modepill button { min-height: 44px; }
 }
 /* U2/U7 live in a LATE ≤480 block below (§ Build B small screens) — their
    base rules are declared later in this file, so an early media block loses

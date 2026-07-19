@@ -1,10 +1,12 @@
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
+import { readMode } from "@/lib/admin/iq/mode";
 import { GSC_MIN_IMPRESSIONS, parseWindowParam } from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import type { GscTrendPoint, IqSearch } from "@/lib/admin/iq/types";
 import { GscTileButton, IntentBars, QueriesTable } from "./SearchDrills";
+import DemoBadge from "../iq/DemoBadge";
 
 export const dynamic = "force-dynamic";
 
@@ -72,7 +74,8 @@ export default async function SearchPage({
 
   const { p } = await searchParams;
   const internalVisitorIds = await readInternalVisitorIds();
-  const s = await getSource("live").search({ window: parseWindowParam(p) }, { internalVisitorIds });
+  const mode = await readMode();
+  const s = await getSource(mode).search({ window: parseWindowParam(p) }, { internalVisitorIds });
 
   const classifiablePct = s.impressions > 0 ? Math.round((s.visibleImpressions / s.impressions) * 100) : null;
   const hasGsc = s.gscThrough !== null;
@@ -82,6 +85,7 @@ export default async function SearchPage({
     <div data-acc="search">
       <div className="adm-head">
         <h1>🔍 Search</h1>
+        <DemoBadge demo={mode === "demo"} />
         <span className="adm-count">
           {hasGsc ? `data through ${s.gscThrough}` : "no Search Console data yet"} · last {s.window} days
         </span>

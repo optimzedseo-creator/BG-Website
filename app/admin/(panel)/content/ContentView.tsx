@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import DemoBadge from "../iq/DemoBadge";
 import type { IqContent, WindowDays } from "@/lib/admin/iq/types";
 import { ENGAGED_MIN_DURATION_S, buildIqQuery } from "@/lib/admin/iq/shared";
 import { subscribePeriodRefetch } from "../period-bus";
@@ -95,6 +96,7 @@ export default function ContentView({ initial }: { initial: IqContent }) {
     <div data-acc="content" aria-busy={loading}>
       <div className="adm-head">
         <h1>✍️ Content</h1>
+        <DemoBadge demo={data.meta.mode === "demo"} />
         <span className="adm-count">
           last {data.window} days · {data.pageviews} pageview{data.pageviews === 1 ? "" : "s"} ·{" "}
           {data.visitors} visitor{data.visitors === 1 ? "" : "s"}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import DemoBadge from "../iq/DemoBadge";
 import type { ActivityKind, IqActivity, SourceClass, WindowDays } from "@/lib/admin/iq/types";
 import { subscribePeriodRefetch } from "../period-bus";
 import { fmtDay } from "../fmt";
@@ -106,6 +107,7 @@ export default function ActivityView({ initial }: { initial: IqActivity }) {
     <div data-acc="traffic" aria-busy={loading}>
       <div className="adm-head">
         <h1>🗒️ Activity</h1>
+        <DemoBadge demo={data.meta.mode === "demo"} />
         <span className="adm-count">last {data.window} days</span>
       </div>
 

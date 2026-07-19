@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
+import { readMode } from "@/lib/admin/iq/mode";
 import { parseDimParam, parseWindowParam } from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import ContentView from "./ContentView";
@@ -21,7 +22,7 @@ export default async function ContentPage({
 
   const { p, device, country } = await searchParams;
   const internalVisitorIds = await readInternalVisitorIds();
-  const initial = await getSource("live").content(
+  const initial = await getSource(await readMode()).content(
     {
       window: parseWindowParam(p),
       device: parseDimParam(device),

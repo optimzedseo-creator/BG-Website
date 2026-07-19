@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
+import { readMode } from "@/lib/admin/iq/mode";
 import { parseDimParam, parsePathParam, parseSourceClassParam, parseWindowParam } from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import ActivityView from "./ActivityView";
@@ -23,7 +24,7 @@ export default async function ActivityPage({
   if (!(await requireAdmin())) redirect("/admin/login");
 
   const { p, kind, path, source } = await searchParams;
-  const initial = await getSource("live").activity(
+  const initial = await getSource(await readMode()).activity(
     {
       window: parseWindowParam(p),
       kind: parseDimParam(kind),

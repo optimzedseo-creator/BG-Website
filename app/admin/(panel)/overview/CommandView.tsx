@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import DemoBadge from "../iq/DemoBadge";
 import Link from "next/link";
 import type { IqCommand, IqInsightCard, WindowDays } from "@/lib/admin/iq/types";
 import { INSIGHTS_MAX_COMMAND, buildIqQuery, rateOrCounts, withPeriod } from "@/lib/admin/iq/shared";
@@ -161,6 +162,7 @@ export default function CommandView({ initial }: { initial: IqCommand }) {
     <div data-acc="overview" aria-busy={loading}>
       <div className="adm-head">
         <h1>Command</h1>
+        <DemoBadge demo={data.meta.mode === "demo"} />
         <span className="adm-count">
           last {data.window} days · vs prior {data.window}
           {data.gscThrough ? ` · Search Console through ${data.gscThrough}` : ""}

@@ -15,6 +15,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
+import { readMode } from "@/lib/admin/iq/mode";
 import { parseDimParam, parseSourceClassParam, parseWindowParam } from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import type { IqTraffic } from "@/lib/admin/iq/types";
@@ -30,7 +31,7 @@ export async function GET(req: Request): Promise<NextResponse> {
 
   try {
     const url = new URL(req.url);
-    const payload: IqTraffic = await getSource("live").traffic(
+    const payload: IqTraffic = await getSource(await readMode()).traffic(
       {
         window: parseWindowParam(url.searchParams.get("p")),
         device: parseDimParam(url.searchParams.get("device")),

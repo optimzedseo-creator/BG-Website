@@ -27,6 +27,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
+import { readMode } from "@/lib/admin/iq/mode";
 import { parseWindowParam } from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import type { IqCommand } from "@/lib/admin/iq/types";
@@ -44,7 +45,7 @@ export async function GET(req: Request): Promise<NextResponse> {
     const url = new URL(req.url);
     const window = parseWindowParam(url.searchParams.get("p"));
     const internalVisitorIds = await readInternalVisitorIds();
-    const payload: IqCommand = await getSource("live").command(
+    const payload: IqCommand = await getSource(await readMode()).command(
       { window },
       { internalVisitorIds }
     );

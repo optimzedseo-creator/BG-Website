@@ -3,7 +3,9 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { IqMode } from "@/lib/admin/iq/types";
 import PeriodSwitch from "./PeriodSwitch";
+import ModePill from "./ModePill";
 
 /*
  * ADMIN-IQ top bar (WP2.1 slots): brand doorplate (links home to the module
@@ -27,7 +29,13 @@ function sectionFor(pathname: string): string {
   return "overview";
 }
 
-export default function AdminTopBar({ children }: { children: React.ReactNode }) {
+export default function AdminTopBar({
+  mode,
+  children,
+}: {
+  mode: IqMode;
+  children: React.ReactNode;
+}) {
   const pathname = usePathname() ?? "/admin";
 
   return (
@@ -41,8 +49,10 @@ export default function AdminTopBar({ children }: { children: React.ReactNode })
         <Suspense fallback={null}>
           <PeriodSwitch />
         </Suspense>
-        {/* Mode pill slot — reserved for the Wave 4 LIVE/DEMO toggle. */}
-        <span className="adm-modeslot" aria-hidden="true" />
+        {/* Wave 4 LIVE/DEMO toggle (was a reserved empty slot). */}
+        <span className="adm-modeslot">
+          <ModePill mode={mode} />
+        </span>
         {children}
       </div>
     </header>

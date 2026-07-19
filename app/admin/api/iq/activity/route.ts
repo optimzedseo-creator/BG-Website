@@ -9,6 +9,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
+import { readMode } from "@/lib/admin/iq/mode";
 import { parseDimParam, parsePathParam, parseSourceClassParam, parseWindowParam } from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import type { IqActivity } from "@/lib/admin/iq/types";
@@ -24,7 +25,7 @@ export async function GET(req: Request): Promise<NextResponse> {
 
   try {
     const url = new URL(req.url);
-    const payload: IqActivity = await getSource("live").activity(
+    const payload: IqActivity = await getSource(await readMode()).activity(
       {
         window: parseWindowParam(url.searchParams.get("p")),
         kind: parseDimParam(url.searchParams.get("kind")),

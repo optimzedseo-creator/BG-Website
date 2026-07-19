@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
+import { readMode } from "@/lib/admin/iq/mode";
 import { parseDimParam, parseSourceClassParam, parseWindowParam } from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import TrafficView from "./TrafficView";
@@ -23,7 +24,7 @@ export default async function TrafficPage({
 
   const { p, device, country, source } = await searchParams;
   const internalVisitorIds = await readInternalVisitorIds();
-  const initial = await getSource("live").traffic(
+  const initial = await getSource(await readMode()).traffic(
     {
       window: parseWindowParam(p),
       device: parseDimParam(device),

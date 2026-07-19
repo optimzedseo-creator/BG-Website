@@ -9,6 +9,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
+import { readMode } from "@/lib/admin/iq/mode";
 import { parsePathParam, parseWindowParam } from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import type { IqPageDetail } from "@/lib/admin/iq/types";
@@ -28,7 +29,7 @@ export async function GET(req: Request): Promise<NextResponse> {
     if (!path) {
       return NextResponse.json({ error: "A page path is required." }, { status: 400, headers: NO_STORE });
     }
-    const payload: IqPageDetail = await getSource("live").pageDetail(
+    const payload: IqPageDetail = await getSource(await readMode()).pageDetail(
       path,
       { window: parseWindowParam(url.searchParams.get("p")) },
       { internalVisitorIds: await readInternalVisitorIds() }

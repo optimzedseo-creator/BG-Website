@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/auth";
+import { readMode } from "@/lib/admin/iq/mode";
+import DemoBadge from "../iq/DemoBadge";
 
 export const dynamic = "force-dynamic";
 
@@ -52,11 +54,13 @@ const GROUPS: { group: string; reports: Report[] }[] = [
 
 export default async function ReportsPage() {
   if (!(await requireAdmin())) redirect("/admin/login");
+  const mode = await readMode();
 
   return (
     <div data-acc="overview">
       <div className="adm-head">
         <h1>📁 Reports</h1>
+        <DemoBadge demo={mode === "demo"} />
         <span className="adm-count">jump into a saved view</span>
       </div>
 

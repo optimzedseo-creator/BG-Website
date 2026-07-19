@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
+import { readMode } from "@/lib/admin/iq/mode";
 import { parseWindowParam } from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import CommandView from "./CommandView";
@@ -23,7 +24,7 @@ export default async function CommandPage({
   const { p } = await searchParams;
   const windowDays = parseWindowParam(p);
   const internalVisitorIds = await readInternalVisitorIds();
-  const payload = await getSource("live").command({ window: windowDays }, { internalVisitorIds });
+  const payload = await getSource(await readMode()).command({ window: windowDays }, { internalVisitorIds });
 
   return <CommandView initial={payload} />;
 }

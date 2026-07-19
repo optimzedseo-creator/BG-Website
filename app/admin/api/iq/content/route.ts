@@ -8,6 +8,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
+import { readMode } from "@/lib/admin/iq/mode";
 import { parseDimParam, parseWindowParam } from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import type { IqContent } from "@/lib/admin/iq/types";
@@ -23,7 +24,7 @@ export async function GET(req: Request): Promise<NextResponse> {
 
   try {
     const url = new URL(req.url);
-    const payload: IqContent = await getSource("live").content(
+    const payload: IqContent = await getSource(await readMode()).content(
       {
         window: parseWindowParam(url.searchParams.get("p")),
         device: parseDimParam(url.searchParams.get("device")),
