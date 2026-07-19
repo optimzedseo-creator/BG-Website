@@ -18,6 +18,7 @@ const TYPE_OPTIONS = [
   { value: "Fractional Leadership", label: <>Fractional leadership &mdash; part-time, ongoing</> },
   { value: "Project (Audit / AI Build)", label: <>A one-time project &mdash; audit or AI build</> },
   { value: "Speaking Engagement", label: "A speaker for an event" },
+  { value: "Something Else", label: "Something else" },
 ] as const;
 
 const DEEP_LINK_MAP: Record<string, string> = {
@@ -129,7 +130,10 @@ export default function ContactForm() {
           <legend>I'm looking for <span className="req">*</span></legend>
           <div className="optbtns">
             {TYPE_OPTIONS.map((opt) => (
-              <label className={`optbtn${type === opt.value ? " on" : ""}`} key={opt.value}>
+              <label
+                className={`optbtn${type === opt.value ? " on" : ""}${opt.value === "Something Else" ? " full" : ""}`}
+                key={opt.value}
+              >
                 <input
                   type="radio"
                   name="type"
@@ -163,7 +167,12 @@ export default function ContactForm() {
           </div>
           <div className="field full">
             <label htmlFor="cf-message">Message <span className="req">*</span></label>
-            <textarea id="cf-message" name="message" placeholder="A sentence or two on what you need." required></textarea>
+            <textarea
+              id="cf-message"
+              name="message"
+              placeholder={type === "Something Else" ? "Tell me what you're looking for." : "A sentence or two on what you need."}
+              required
+            ></textarea>
           </div>
         </div>
 

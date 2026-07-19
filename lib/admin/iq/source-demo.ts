@@ -614,8 +614,8 @@ function generate(): DemoDataset {
   };
 
   const inquiryFor = (i: number): string => {
-    // Cycle the four stored form values; one legacy value seeds the donut's
-    // "Other / unset" residue slice.
+    // Cycle the stored form values (incl. "Something Else"); one legacy value
+    // seeds the donut's "Other / unset" residue slice.
     if (i === 5) return "General question"; // outside INQUIRY_TYPE_VALUES → residue
     return INQUIRY_TYPE_VALUES[i % INQUIRY_TYPE_VALUES.length];
   };

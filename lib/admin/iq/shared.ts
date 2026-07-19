@@ -347,6 +347,7 @@ export const IN_FIT_INQUIRY_TYPES: readonly string[] = [
 export const INQUIRY_TYPE_VALUES: readonly string[] = [
   ...IN_FIT_INQUIRY_TYPES,
   "Speaking Engagement",
+  "Something Else",
 ];
 
 /** Residue-slice label for inquiry types outside INQUIRY_TYPE_VALUES. */

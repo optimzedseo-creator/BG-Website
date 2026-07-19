@@ -39,6 +39,7 @@ const INQUIRY_COLORS: Record<string, string> = {
   "Fractional Leadership": "var(--cyan)",
   "Project (Audit / AI Build)": "var(--purple)",
   "Speaking Engagement": "var(--pink)",
+  "Something Else": "var(--amber)",
   "Other / unset": "var(--text2)",
 };
 
