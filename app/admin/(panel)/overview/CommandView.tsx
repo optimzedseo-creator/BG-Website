@@ -3,10 +3,17 @@
 import { useEffect, useRef, useState } from "react";
 import DemoBadge from "../iq/DemoBadge";
 import Link from "next/link";
-import type { IqCommand, IqInsightCard, WindowDays } from "@/lib/admin/iq/types";
+import type {
+  IqCommand,
+  IqInsightCard,
+  PeriodComparison,
+  PeriodEcho,
+  WindowDays,
+} from "@/lib/admin/iq/types";
 import { INSIGHTS_MAX_COMMAND, buildIqQuery, rateOrCounts, withPeriod } from "@/lib/admin/iq/shared";
 import { fmtDay, priorWindowPredatesData } from "../fmt";
-import { subscribePeriodRefetch } from "../period-bus";
+import { subscribePeriodRefetch, type PeriodSignal } from "../period-bus";
+import ControlStrip from "./ControlStrip";
 import AdmHoverChart from "../iq/AdmHoverChart";
 import { dayHash, funnelHash, kpiHash, openDrill } from "../iq/hash-route";
 
@@ -84,6 +91,83 @@ function CountUp({ n }: { n: number }) {
   return <>{done || shown === null ? n : shown}</>;
 }
 
+/** The noun a "new"-state card names ("first month with data"). Keyed off the
+ * payload's period echo so the words track what the source actually resolved. */
+const PERIOD_NOUN: Record<PeriodEcho["kind"], string> = {
+  window: "period",
+  today: "day",
+  week: "week",
+  month: "month",
+  quarter: "quarter",
+  year: "year",
+  custom: "period",
+};
+
+/**
+ * WP2 — the honest four-state comparison row (design delta-line spec). Every
+ * string on it comes from the payload (comparison + period echo); the client
+ * renders, never re-derives the guard:
+ *  - delta : `▲ +5 vs 9 · prior week` — ONLY the glyph+number colored (green
+ *            up / red down, goodness respects downIsGood), 500-weight mono for
+ *            AA; the earned % rides the title attr, never the card (counts are
+ *            the native language, UX §2).
+ *  - flat  : `±0 · vs 14 · prior week` — neutral, never colored (§5.17 bans a
+ *            bare dash glyph; "±0" names the zero).
+ *  - counts: `4 now · 2 before · prior week` — suppressed %, reason in title.
+ *  - new   : "first month with data" — muted, no fake delta vs an empty prior.
+ *  - n-a   : compare off → the row collapses entirely (no "±0 vs prior" noise).
+ * Partial periods append the elapsed caption ("· same 18 days").
+ */
+function CmpRow({ cmp, echoKind }: { cmp: PeriodComparison; echoKind: PeriodEcho["kind"] }) {
+  if (cmp.kind === "n-a") return null;
+  if (cmp.kind === "new") {
+    return (
+      <span className="adm-kpi-delta adm-cmp-new">first {PERIOD_NOUN[echoKind]} with data</span>
+    );
+  }
+  // Factcheck W2: "same N days" only when the slices are GENUINELY equal. When
+  // the M1 clamp fired the prior side is the full (shorter) prior unit — name
+  // that instead of asserting a false equality.
+  const elapsed =
+    cmp.partial && cmp.elapsedDays !== null
+      ? cmp.clamped
+        ? ` · vs full prior ${PERIOD_NOUN[echoKind]} (${cmp.elapsedDays} day${cmp.elapsedDays === 1 ? "" : "s"})`
+        : ` · same ${cmp.elapsedDays} day${cmp.elapsedDays === 1 ? "" : "s"}`
+      : "";
+  if (cmp.kind === "counts") {
+    return (
+      <span className="adm-kpi-delta" title={cmp.reason}>
+        {cmp.current} now · {cmp.prior} before · {cmp.priorLabel}
+        {elapsed}
+      </span>
+    );
+  }
+  // kind === "delta"
+  if (cmp.absolute === 0) {
+    return (
+      <span className="adm-kpi-delta">
+        ±0 · vs {cmp.prior} · {cmp.priorLabel}
+        {elapsed}
+      </span>
+    );
+  }
+  const up = cmp.absolute > 0;
+  const good = up !== cmp.downIsGood;
+  return (
+    <span
+      className="adm-kpi-delta"
+      title={`${cmp.pct > 0 ? "+" : ""}${Math.round(cmp.pct)}% vs ${cmp.priorLabel}`}
+    >
+      <span className={good ? "adm-cmp-good" : "adm-cmp-bad"}>
+        {up ? "▲" : "▼"} {up ? "+" : ""}
+        {cmp.absolute}
+      </span>{" "}
+      vs {cmp.prior} · {cmp.priorLabel}
+      {elapsed}
+    </span>
+  );
+}
+
 function InsightCard({ card, period }: { card: IqInsightCard; period: WindowDays }) {
   const meta = INSIGHT_CLASS_META[card.cls];
   const body = (
@@ -110,8 +194,17 @@ function InsightCard({ card, period }: { card: IqInsightCard; period: WindowDays
   );
 }
 
-export default function CommandView({ initial }: { initial: IqCommand }) {
+export default function CommandView({
+  initial,
+  initialParams,
+}: {
+  initial: IqCommand;
+  /** The page-parsed period params (WP2) — seeds the control strip so a deep
+   * link renders its own state, and the refetch grammar starts from it. */
+  initialParams: PeriodSignal;
+}) {
   const [data, setData] = useState<IqCommand>(initial);
+  const [params, setParams] = useState<PeriodSignal>(initialParams);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   // Monotonic fetch sequence (api A3): a slow older response must never
@@ -119,14 +212,20 @@ export default function CommandView({ initial }: { initial: IqCommand }) {
   const seqRef = useRef(0);
 
   useEffect(() => {
-    return subscribePeriodRefetch(async (p: WindowDays) => {
+    // WP2: the bus now carries the FULL period signal (top-bar window flips
+    // AND the control strip's calendar/compare picks — one refetch path).
+    return subscribePeriodRefetch(async (s: PeriodSignal) => {
       const id = ++seqRef.current;
+      setParams(s); // the strip reflects the pick immediately (control state)
       setLoading(true);
       setError(null);
+      // ONE canonical querystring for fetch AND replaceState (api A5): what the
+      // URL claims is exactly what was fetched. &view= stays reserved/untouched.
+      const qs = buildIqQuery(s.window, {}, s);
       try {
         // /admin/api/iq (not /api/admin/iq): the session cookie is path-scoped
         // to /admin, so the handler must live under it — see the route file.
-        const res = await fetch(`/admin/api/iq?p=${p}`, { cache: "no-store" });
+        const res = await fetch(`/admin/api/iq${qs ? `?${qs}` : ""}`, { cache: "no-store" });
         // Expired session (api A1): middleware 307s to the login page, fetch
         // follows it, and the HTML response would render as a permanent
         // generic error. Send the whole tab to login instead.
@@ -140,7 +239,6 @@ export default function CommandView({ initial }: { initial: IqCommand }) {
         setData(payload);
         // Success-only canonical URL (api A4 single-owner rule): the island
         // writes the FULL querystring; failure leaves URL and data both old.
-        const qs = buildIqQuery(p, {});
         // Preserve any open modal's deep-link hash (F5).
         window.history.replaceState(null, "", `/admin/overview${qs ? `?${qs}` : ""}${window.location.hash}`);
       } catch {
@@ -158,27 +256,46 @@ export default function CommandView({ initial }: { initial: IqCommand }) {
     (data.funnel.find((f) => f.key === "form_submit")?.events ?? 0) +
     (data.funnel.find((f) => f.key === "booking")?.events ?? 0);
 
+  // WP2 head sub-line: rendered FROM the payload's period echo — the source's
+  // own statement of what it resolved, never a client re-derivation.
+  const echo = data.period;
+  const headPeriod =
+    echo.kind === "window"
+      ? `last ${data.window} days`
+      : echo.kind === "custom"
+        ? `${fmtDay(echo.from)} to ${fmtDay(echo.to)}`
+        : echo.kind === "today"
+          ? "today"
+          : `this ${PERIOD_NOUN[echo.kind]}${echo.partial ? " to date" : ""}`;
+  const headCompare = echo.compareLabel ? ` · vs ${echo.compareLabel}` : "";
+
   return (
     <div data-acc="overview" aria-busy={loading}>
       <div className="adm-head">
         <h1>Command</h1>
         <DemoBadge demo={data.meta.mode === "demo"} />
         <span className="adm-count">
-          last {data.window} days · vs prior {data.window}
+          {headPeriod}
+          {headCompare}
           {data.gscThrough ? ` · Search Console through ${data.gscThrough}` : ""}
         </span>
       </div>
 
+      {/* WP2 control strip — the sentence-pill period+compare control. Sits
+          between .adm-head and the surface (design .adm-controlbar row). */}
+      <ControlStrip params={params} compareLabel={echo.compareLabel} loading={loading} />
+
       {error && <p className="adm-error" role="status">{error}</p>}
 
       <div className={`adm-surface${loading ? " is-loading" : ""}`}>
-        {/* ---- KPI strip: six tiles, count deltas, never % (UX §2) ---- */}
+        {/* ---- KPI strip: six tiles, honest four-state comparison rows
+                (WP2 — counts are the native language, never % on the card) ---- */}
         <div className="adm-kpis adm-kpis-6">
           {data.kpis.map((k) => {
+            // Legacy fallback ONLY when the payload predates the comparison
+            // field (old cached shape) — live+demo both emit it since WP1.
             const d = k.n - k.prior;
-            // U4: when the whole prior window predates data collection,
-            // "+n vs prior Nd" is a fake comparison — say what it really is.
-            const deltaLabel = priorWindowPredatesData(data.since, data.countingSince)
+            const legacyLabel = priorWindowPredatesData(data.since, data.countingSince)
               ? "first period with data"
               : `${d > 0 ? "+" : d < 0 ? "" : "±"}${d} vs prior ${data.window}d`;
             return (
@@ -194,7 +311,11 @@ export default function CommandView({ initial }: { initial: IqCommand }) {
                   {k.label}
                   {k.id === "search-clicks" && data.gscThrough ? ` · through ${data.gscThrough.slice(5)}` : ""}
                 </span>
-                <span className="adm-kpi-delta">{deltaLabel}</span>
+                {k.comparison ? (
+                  <CmpRow cmp={k.comparison} echoKind={echo.kind} />
+                ) : (
+                  <span className="adm-kpi-delta">{legacyLabel}</span>
+                )}
                 <span className="adm-go" aria-hidden="true">→</span>
               </button>
             );

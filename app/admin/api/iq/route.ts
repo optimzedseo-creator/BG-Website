@@ -28,7 +28,7 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
 import { readMode } from "@/lib/admin/iq/mode";
-import { parseWindowParam } from "@/lib/admin/iq/shared";
+import { parsePeriodParam, parseWindowParam, periodFilters } from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import type { IqCommand } from "@/lib/admin/iq/types";
 
@@ -44,9 +44,21 @@ export async function GET(req: Request): Promise<NextResponse> {
   try {
     const url = new URL(req.url);
     const window = parseWindowParam(url.searchParams.get("p"));
+    // Dashboard Wave WP2 — calendar-period grammar (?period&compare&from&to&
+    // cmpFrom&cmpTo), parsed by the ONE tolerant parser; invalid/absent values
+    // fall back to the ?p= window exactly as before (contract rule 2).
+    // `&view=` is RESERVED for the Phase-2 canvas — deliberately not consumed.
+    const pp = parsePeriodParam({
+      period: url.searchParams.get("period"),
+      compare: url.searchParams.get("compare"),
+      from: url.searchParams.get("from"),
+      to: url.searchParams.get("to"),
+      cmpFrom: url.searchParams.get("cmpFrom"),
+      cmpTo: url.searchParams.get("cmpTo"),
+    });
     const internalVisitorIds = await readInternalVisitorIds();
     const payload: IqCommand = await getSource(await readMode()).command(
-      { window },
+      { window, ...periodFilters(pp) },
       { internalVisitorIds }
     );
     return NextResponse.json(payload, { headers: NO_STORE });

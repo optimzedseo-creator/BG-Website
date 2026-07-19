@@ -21,11 +21,16 @@ function todayIso(): string {
 export default function DateRangeControl({
   range,
   onChange,
+  defaultOpen = false,
 }: {
   range: { from: string; to: string } | null;
   onChange: (range: { from: string; to: string } | null) => void;
+  /** WP2 (control-strip popover): start with the fields revealed — inside the
+   * time popover the "Custom range" radio IS the reveal, so a second toggle
+   * click would be pure friction. Additive; GscModal keeps the default. */
+  defaultOpen?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [from, setFrom] = useState(range?.from ?? "");
   const [to, setTo] = useState(range?.to ?? "");
 

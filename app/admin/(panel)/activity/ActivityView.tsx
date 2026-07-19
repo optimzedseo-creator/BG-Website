@@ -80,8 +80,11 @@ export default function ActivityView({ initial }: { initial: IqActivity }) {
   }
 
   useEffect(() => {
-    return subscribePeriodRefetch((p: WindowDays) => {
-      periodRef.current = p;
+    // WP2 bus upgrade: the signal is now the full period object; this module
+    // stays on ?p= (its ?period migration is a later WP) and reads the
+    // `window` fallback field.
+    return subscribePeriodRefetch((s) => {
+      periodRef.current = s.window;
       void refetch();
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

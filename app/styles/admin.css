@@ -1642,8 +1642,8 @@
 /* Phone-width wrapping (declared AFTER the base rules it overrides — cascade
    order matters at equal specificity). */
 @media (max-width: 480px) {
-  /* U2: honest-N captions (coverage denominators) must wrap at 375, not clip. */
-  .page-admin .adm-kpi-delta { white-space: normal; }
+  /* U2 note: the 480px-scoped .adm-kpi-delta wrap rule that lived here is
+     superseded by the GLOBAL wrap in the WP2 section below (design N2). */
   /* U7: donut legend labels wrap to two lines instead of mid-word ellipsis. */
   .page-admin .adm-donut-label {
     white-space: normal;
@@ -2199,6 +2199,170 @@ body.adm-modal-open { overflow: hidden; }
 }
 .page-admin .adm-daterange-clear:hover { color: var(--text0); }
 .page-admin .adm-daterange-hint { font: 500 11px var(--mono); color: var(--amber); align-self: center; }
+
+/* ============================================================
+   DASHBOARD WAVE WP2 — control strip + honest comparison rows
+   ============================================================ */
+
+/* ---------- the control strip (design: full-width row between .adm-head and
+   the surface; overview only in this WP) ---------- */
+.page-admin .adm-controlbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 16px;
+}
+.page-admin .adm-timepill-wrap { position: relative; }
+
+/* The sentence-pill — §5.8 segmented-control language on ONE button:
+   DM Mono 11px uppercase, chip surface, accent border on hover. */
+.page-admin .adm-timepill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 7px 14px;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text0);
+  cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease);
+}
+.page-admin .adm-timepill:hover { border-color: var(--acc-border); }
+/* design N4: the pill reads engaged while its popover is open. */
+.page-admin .adm-timepill[aria-expanded="true"] { border-color: var(--acc-border); }
+.page-admin .adm-timepill-caret { color: var(--text2); font-size: 10px; }
+
+/* Popover (§5.9 .adm-mini idiom: bg1 panel, line-hi border, radius 16).
+   z-layer 90/91: above the sticky top bar (20) and the mobile tab bar (30),
+   below the drill modals (100) and the mode confirm (120). */
+.page-admin .adm-timepop-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+}
+.page-admin .adm-timepop {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 91;
+  min-width: 300px;
+  background: var(--bg1);
+  border: 1px solid var(--line-hi);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: admPanelIn var(--t-med) var(--ease);
+}
+.page-admin .adm-timepop-sec { min-width: 0; }
+.page-admin .adm-timepop-title {
+  display: block;
+  font: 500 10.5px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text2);
+  margin-bottom: 8px;
+}
+.page-admin .adm-timeopts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.page-admin .adm-timeopt {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text1);
+  text-align: left;
+  cursor: pointer;
+  transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.page-admin .adm-timeopt:not(.is-on):not([aria-disabled="true"]):hover {
+  color: var(--text0);
+  background: rgba(255, 255, 255, 0.04);
+}
+/* Active segment: ink-on-accent (design D2 — NEVER #fff on accent). */
+.page-admin .adm-timeopt.is-on { background: var(--acc); color: var(--bg0); }
+.page-admin .adm-timeopt[aria-disabled="true"] { color: var(--text2); cursor: not-allowed; }
+.page-admin .adm-timeopt-hint {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  opacity: 0.75;
+}
+.page-admin .adm-timepop-custom { margin-top: 10px; }
+
+/* ≤640: the popover becomes a bottom sheet (fixed bottom, single column,
+   44px targets); the scrim darkens so the sheet reads as a layer. */
+@media (max-width: 640px) {
+  .page-admin .adm-timepop-scrim {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+  }
+  .page-admin .adm-timepop {
+    position: fixed;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    min-width: 0;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 16px 16px 0 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    animation: admSheetUp var(--t-med) var(--ease);
+  }
+  .page-admin .adm-timeopt { min-height: 44px; }
+  .page-admin .adm-timepill { min-height: 44px; }
+  /* ux #7: DateRangeControl inside the sheet joins the 44px tap floor (its
+     base styles are compact desktop chrome). */
+  .page-admin .adm-timepop .adm-daterange-field input,
+  .page-admin .adm-timepop .adm-daterange-toggle,
+  .page-admin .adm-timepop .adm-daterange-clear,
+  .page-admin .adm-timepop .adm-btn-ghost { min-height: 44px; }
+}
+@keyframes admSheetUp {
+  from { transform: translateY(24px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+/* ---------- honest comparison row states (design delta-line spec) ----------
+   Only the direction glyph+number is colored; 500-weight mono holds AA for
+   the red (#F43F5E ~4.6:1). Everything else stays text1 via .adm-kpi-delta.
+   Color encodes GOODNESS (downIsGood respected) — all six current KPIs are
+   positive-polarity, so today this equals direction. */
+.page-admin .adm-cmp-good { color: var(--green); font-weight: 500; }
+.page-admin .adm-cmp-bad { color: var(--red); font-weight: 500; }
+/* "new" state ("first month with data") — muted words, no arrow, no color. */
+.page-admin .adm-cmp-new { color: var(--text1); }
+/* Comparison rows carry more words than the old count delta ("4 now · 2
+   before · prior month · same 18 days") — let them wrap instead of clipping
+   under the tile's overflow:hidden (declared later, so it wins the cascade
+   over the §WP2.2b nowrap at equal specificity). */
+.page-admin .adm-kpi-delta { white-space: normal; }
 
 /* ---------- §5.16 reduced motion: ALL of it collapses ---------- */
 @media (prefers-reduced-motion: reduce) {

@@ -1,4 +1,4 @@
-// ADMIN-IQ — payload type contract (DATA-SPEC §7.1, metricsVersion iq-v1).
+// ADMIN-IQ — payload type contract (DATA-SPEC §7.1, metricsVersion iq-v2).
 //
 // STRUCTURAL PII FIREWALL (DATA-SPEC §4.4): no type in this file may carry
 // name / email / phone / company / message fields. Leads appear in analytics
@@ -13,12 +13,29 @@
 // Sources call .toISOString() at the boundary; consumers parse when they need
 // date math.
 
-/** Payload-contract version (DATA-SPEC header). Definition changes bump this — never silently redefine. */
-export const METRICS_VERSION = "iq-v1" as const;
+/** Payload-contract version (DATA-SPEC header). Definition changes bump this — never silently redefine.
+ * iq-v1 → iq-v2 (Dashboard Wave WP1): the period axis gained calendar-anchored
+ * presets + like-for-like comparison, so the definition of "the period" changed. */
+export const METRICS_VERSION = "iq-v2" as const;
 
 export type IqMode = "live" | "demo";
 
 export type WindowDays = 7 | 30 | 90;
+
+/**
+ * Dashboard Wave WP1 — calendar-anchored period presets (America/New_York).
+ * WEEKS START SUNDAY (Brad's ruling, overrides ISO/Monday); quarters =
+ * Jan/Apr/Jul/Oct; year = Jan–Dec. Current presets are PARTIAL/to-date while
+ * running (until = now). "custom" pairs with from/to.
+ */
+export type PeriodKind = "today" | "week" | "month" | "quarter" | "year" | "custom";
+
+/**
+ * Comparison basis for a period. "prior" = the like-for-like preceding period
+ * (previous calendar month/quarter/year, previous Sunday-week, yesterday);
+ * "year" = the same anchor one year earlier; "none" = no comparison.
+ */
+export type CompareMode = "prior" | "year" | "none";
 
 export type SourceClass = "direct" | "search" | "social" | "ai-referrer" | "other";
 
@@ -47,6 +64,20 @@ export interface Filters {
    * `window` wins. GSC detail payloads echo the resolved range back as `range`. */
   from?: string;
   to?: string;
+  /** Dashboard Wave WP1 — calendar period preset (today/week/month/quarter/
+   * year/custom). ADDITIVE OPTIONAL (contract rule 2): when absent, `window`
+   * stays the default + fallback and every existing caller behaves unchanged. */
+  period?: PeriodKind;
+  /** Comparison basis. Absent → "prior" (the like-for-like preceding period the
+   * dashboard has always computed); "none" suppresses the comparison. */
+  compareMode?: CompareMode;
+  /** Explicit custom COMPARE range (NY "YYYY-MM-DD"). CUSTOM-PERIOD ONLY
+   * (api review #9 ruling): honored exclusively when the resolved period is
+   * "custom" — calendar presets ALWAYS derive their comparison from compareMode
+   * (a hand-picked compare range under "this month" would silently break the
+   * like-for-like guarantee the preset labels promise). Ignored otherwise. */
+  cmpFrom?: string;
+  cmpTo?: string;
 }
 
 /**
@@ -78,6 +109,60 @@ export type RateOrCounts =
 export type DeltaOrCounts =
   | { kind: "delta"; pct: number; current: number; prior: number; downIsGood: boolean }
   | { kind: "counts"; current: number; prior: number; downIsGood: boolean; reason: string };
+
+/**
+ * Dashboard Wave WP1 — the honest period-over-period comparison SUPERSET. A
+ * four-state formalization of DeltaOrCounts (it REUSES deltaOrCounts, it is not
+ * a replacement) so a KPI card always reads intentional, never broken:
+ *  - "delta"  : prior >= DELTA_MIN_PRIOR — the earned % upgrade, carried with
+ *               the raw counts (counts stay the native language, % is the extra).
+ *  - "counts" : prior exists but < DELTA_MIN_PRIOR — two counts, NO % (a 1→3
+ *               change is "+2", never "+200%").
+ *  - "new"    : the whole prior period predates the first data — "first {period}
+ *               with data"; never a fake delta vs an empty prior (generalizes
+ *               the priorWindowPredatesData guard for every preset).
+ *  - "n-a"    : comparison off (compareMode "none") — current value only.
+ * `absolute` = current − prior (the strip's native count delta). `partial` marks
+ * an equal-elapsed slice of a still-running period. `priorLabel` NAMES what the
+ * comparison is against ("prior month", "same day last year"). Built by
+ * shared.buildPeriodComparison().
+ */
+export type PeriodComparison =
+  | {
+      kind: "delta";
+      current: number;
+      prior: number;
+      absolute: number;
+      pct: number;
+      downIsGood: boolean;
+      partial: boolean;
+      /** Calendar days the prior slice covers ("same N days" caption); null on a
+       * full-vs-full comparison. Clamp note: when the current elapsed exceeds the
+       * prior unit's length (Mar 29-31 vs Feb) this is the prior unit's SHORTER
+       * day count — the days actually compared, never an overclaim. */
+      elapsedDays: number | null;
+      /** Factcheck W2: the M1 clamp fired — the prior slice is the FULL prior
+       * unit and covers FEWER days than the current elapsed span, so "same N
+       * days" would assert an equality that isn't true. The card renders
+       * "vs full prior {unit} (N days)" instead. */
+      clamped: boolean;
+      priorLabel: string;
+    }
+  | {
+      kind: "counts";
+      current: number;
+      prior: number;
+      absolute: number;
+      downIsGood: boolean;
+      partial: boolean;
+      elapsedDays: number | null;
+      /** Factcheck W2 — see the delta state. */
+      clamped: boolean;
+      priorLabel: string;
+      reason: string;
+    }
+  | { kind: "new"; current: number; partial: boolean; elapsedDays: number | null; priorLabel: string }
+  | { kind: "n-a"; current: number };
 
 // ---- Summary surface payloads (current dashboard, computed through the shared module) ----
 
@@ -158,6 +243,11 @@ export interface CommandKpi {
   label: string;
   n: number;
   prior: number;
+  /** Dashboard Wave WP1 — the honest four-state comparison for this KPI over the
+   * resolved period/compare axis. ADDITIVE OPTIONAL (contract rule 2): today's
+   * strip reads {n, prior}; the WP2 comparison card reads this. Absent = legacy
+   * window callers that never resolved a comparison. */
+  comparison?: PeriodComparison;
 }
 
 /** B7 unique-visitor funnel step: distinct visitors + raw event count shown
@@ -211,14 +301,41 @@ export interface ScorecardSlot {
   target?: number;
 }
 
+/**
+ * WP1 fix #6 — the serialized period echo: tells the WP2 client exactly what
+ * the source RESOLVED (preset vs window fallback, boundaries, axis granularity,
+ * to-date flag, and the named comparison), so the control strip never has to
+ * re-derive or guess. ISO-8601 strings on the wire (standing rule).
+ */
+export interface PeriodEcho {
+  /** What drove resolution: a preset, "custom", or the `window` fallback. */
+  kind: PeriodKind | "window";
+  /** Resolved period start (inclusive), ISO string. kind "custom": the
+   * INCLUSIVE "YYYY-MM-DD" day string the user picked (factcheck W1). */
+  from: string;
+  /** Resolved period end (exclusive; = generatedAt while the period runs), ISO
+   * string — EXCEPT kind "custom": the INCLUSIVE "YYYY-MM-DD" day string the
+   * user picked (factcheck W1 — rendering the exclusive boundary printed a day
+   * the range does not contain). */
+  to: string;
+  granularity: "hour" | "day" | "week" | "month";
+  /** The period is to-date (still running). */
+  partial: boolean;
+  /** Names the comparison ("prior month", "same dates last year"); null when compare is off. */
+  compareLabel: string | null;
+}
+
 /** The full Command payload — one response drives the whole surface (DATA §4.1). */
 export interface IqCommand {
   meta: IqMeta;
   window: WindowDays;
   /** Window start (inclusive), ISO string. */
   since: string;
-  /** Prior-window start (inclusive), ISO string. */
-  priorSince: string;
+  /** Comparison-window start (inclusive), ISO string — NULL when compare is off
+   * (WP1 fix #6: never echo priorSince=since as a fake comparison anchor). */
+  priorSince: string | null;
+  /** WP1 fix #6 — what the source resolved (see PeriodEcho). */
+  period: PeriodEcho;
   generatedAt: string;
   kpis: CommandKpi[];
   /** Latest GscDaily date ("YYYY-MM-DD") — the "through {date}" label; null before first ingest. */

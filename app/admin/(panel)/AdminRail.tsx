@@ -60,7 +60,9 @@ export default function AdminRail({ leadCounts }: { leadCounts: LeadStatusCount[
   const urlPeriod = parseWindowParam(searchParams.get("p"));
   const [period, setPeriod] = useState<WindowDays>(urlPeriod);
   useEffect(() => setPeriod(urlPeriod), [urlPeriod]);
-  useEffect(() => watchPeriod(setPeriod), []);
+  // WP2 bus upgrade: the signal carries the full period object; rail links
+  // mirror only the `window` fallback (they speak ?p= exclusively).
+  useEffect(() => watchPeriod((s) => setPeriod(s.window)), []);
   const withPeriod = (href: string, extra?: string) => {
     const params = new URLSearchParams(extra);
     if (period !== 30) params.set("p", String(period));

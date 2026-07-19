@@ -131,14 +131,19 @@ import {
   VISITOR_LOG_PATHS_MAX,
   VISITOR_LOG_ROWS,
   bucketKey,
+  bucketKeyFor,
+  buildPeriodComparison,
   classifySource,
+  dayBucketKey,
   evaluateRules,
   gscDateKey,
   lastNDayKeys,
   ledgerFromFirsts,
   nyDateParts,
+  periodBucketKeys,
   priorPeriod,
   referrerHost,
+  resolveGscPeriod,
   resolvePeriod,
   windowBucketKeys,
 } from "./shared";
@@ -1322,8 +1327,14 @@ async function demoCommand(filters: Filters): Promise<IqCommand> {
   const ds = getDemoDataset();
   const { window } = filters;
   const now = ds.now;
-  const since = new Date(now.getTime() - window * DAY_MS);
-  const priorSince = new Date(now.getTime() - 2 * window * DAY_MS);
+  // WP1 parity with liveCommand: the resolved period + honest comparison drive
+  // the KPI strip (demo is the selling surface — empty comparison cards are
+  // unacceptable, data-analyst F4). Window fallback = legacy instants.
+  const resolved = resolvePeriod(filters, now);
+  const period = resolved.period;
+  const cmp = resolved.comparison;
+  const since = period.since;
+  const until = period.until;
   const since7 = new Date(now.getTime() - 7 * DAY_MS);
   const since14 = new Date(now.getTime() - RULE_EVALUATOR_WINDOW_D * DAY_MS);
   const since28 = new Date(now.getTime() - 28 * DAY_MS);
@@ -1344,49 +1355,96 @@ async function demoCommand(filters: Filters): Promise<IqCommand> {
   const firstCostQuery = findFirst(ds.gscQueries, (q) => q.intentBucket === "cost");
   const firstBrandedClick = findFirst(ds.gscQueries, (q) => q.isBranded && q.clicks > 0);
 
-  const views = allViews.filter((v) => v.createdAt >= since);
-  const priorViews = allViews.filter((v) => v.createdAt >= priorSince && v.createdAt < since);
-  const events = allEvents.filter((e) => e.createdAt >= since);
-  const priorEvents = allEvents.filter((e) => e.createdAt >= priorSince && e.createdAt < since);
-  const bookings = allBookings.filter((b) => b.createdAt >= since);
-  const priorBookings = allBookings.filter((b) => b.createdAt >= priorSince && b.createdAt < since);
+  // Period/comparison slices — same shapes as liveCommand's (demo arrays are
+  // fully in-memory, so the "bounded fetch" is simply the whole array).
+  const inRange = (t: Date, lo: Date, hi: Date) => t >= lo && t < hi;
+  const views = allViews.filter((v) => inRange(v.createdAt, since, until));
+  const priorViews = cmp ? allViews.filter((v) => inRange(v.createdAt, cmp.since, cmp.until)) : [];
+  const events = allEvents.filter((e) => inRange(e.createdAt, since, until));
+  const priorEvents = cmp ? allEvents.filter((e) => inRange(e.createdAt, cmp.since, cmp.until)) : [];
+  const bookings = allBookings.filter((b) => inRange(b.createdAt, since, until));
+  const priorBookings = cmp ? allBookings.filter((b) => inRange(b.createdAt, cmp.since, cmp.until)) : [];
 
   const distinct = (ids: (string | null)[]) => new Set(ids.filter((v): v is string => v !== null)).size;
   const countEvents = (list: typeof allEvents, name: string) => list.filter((e) => e.name === name).length;
 
-  const gscInWindow = gscDaily.filter((r) => r.date >= since);
-  const gscInPrior = gscDaily.filter((r) => r.date >= priorSince && r.date < since);
-  const subsInWindow = subscribers.filter((s) => s.createdAt >= since).length;
-  const subsInPrior = subscribers.filter((s) => s.createdAt >= priorSince && s.createdAt < since).length;
+  // M2 parity: GSC sliced by calendar-day KEYS under calendar/custom periods;
+  // window fallback keeps the legacy instant comparison.
+  const isWindowKind = resolved.kind === "window";
+  const gscKeySlice = (lo: Date, hi: Date) => {
+    const fromKey = dayBucketKey(lo);
+    const toKey = dayBucketKey(new Date(hi.getTime() - 1));
+    return gscDaily.filter((r) => {
+      const k = gscDateKey(r.date);
+      return k >= fromKey && k <= toKey;
+    });
+  };
+  const gscInWindow = isWindowKind
+    ? gscDaily.filter((r) => inRange(r.date, since, until))
+    : gscKeySlice(since, until);
+  const gscInPrior = !cmp
+    ? []
+    : isWindowKind
+      ? gscDaily.filter((r) => inRange(r.date, cmp.since, cmp.until))
+      : gscKeySlice(cmp.since, cmp.until);
+  const subsInWindow = subscribers.filter((s) => inRange(s.createdAt, since, until)).length;
+  const subsInPrior = cmp ? subscribers.filter((s) => inRange(s.createdAt, cmp.since, cmp.until)).length : 0;
+
+  // F4 (data-analyst): demo KPIs carry the SAME honest four-state comparison as
+  // live — buildPeriodComparison + the generalized predates-data "new" guard.
+  const siteStart = allViews[0]?.createdAt ?? null;
+  const gscStart = gscDaily[0]?.date ?? null;
+  const subStart = subscribers[0]?.createdAt ?? null;
+  const predates = (firstAt: Date | null): boolean =>
+    cmp !== null && (firstAt === null || cmp.until.getTime() <= firstAt.getTime());
+  const kpi = (
+    id: CommandKpiId,
+    label: string,
+    n: number,
+    prior: number,
+    firstAt: Date | null
+  ): CommandKpi => ({
+    id,
+    label,
+    n,
+    prior,
+    comparison: buildPeriodComparison(n, prior, cmp, { priorPredatesData: predates(firstAt) }),
+  });
 
   const kpis: CommandKpi[] = [
-    { id: "visitors", label: "Visitors", n: distinct(views.map((v) => v.visitorId)), prior: distinct(priorViews.map((v) => v.visitorId)) },
-    { id: "pageviews", label: "Pageviews", n: views.length, prior: priorViews.length },
-    { id: "search-clicks", label: "Search clicks", n: gscInWindow.reduce((a, r) => a + r.clicks, 0), prior: gscInPrior.reduce((a, r) => a + r.clicks, 0) },
-    { id: "briefs", label: "Briefs", n: countEvents(events, "form_submit"), prior: countEvents(priorEvents, "form_submit") },
-    { id: "bookings", label: "Bookings", n: bookings.length, prior: priorBookings.length },
-    { id: "subscribers", label: "Subscribers", n: subsInWindow, prior: subsInPrior },
+    kpi("visitors", "Visitors", distinct(views.map((v) => v.visitorId)), distinct(priorViews.map((v) => v.visitorId)), siteStart),
+    kpi("pageviews", "Pageviews", views.length, priorViews.length, siteStart),
+    kpi("search-clicks", "Search clicks", gscInWindow.reduce((a, r) => a + r.clicks, 0), gscInPrior.reduce((a, r) => a + r.clicks, 0), gscStart),
+    kpi("briefs", "Briefs", countEvents(events, "form_submit"), countEvents(priorEvents, "form_submit"), siteStart),
+    kpi("bookings", "Bookings", bookings.length, priorBookings.length, siteStart),
+    kpi("subscribers", "Subscribers", subsInWindow, subsInPrior, subStart),
   ];
 
   const gscThrough = gscDaily.length ? gscDateKey(gscDaily[gscDaily.length - 1].date) : null;
 
+  // F1 parity: axis rides the resolved period; window fallback = legacy pair.
+  const trendKeyOf = (d: Date) =>
+    isWindowKind ? bucketKey(d, window) : bucketKeyFor(d, resolved.granularity);
   const visitorsByBucket = new Map<string, Set<string>>();
   for (const v of views) {
-    const k = bucketKey(v.createdAt, window);
+    const k = trendKeyOf(v.createdAt);
     if (!visitorsByBucket.has(k)) visitorsByBucket.set(k, new Set());
     visitorsByBucket.get(k)!.add(v.visitorId);
   }
   const winsByBucket = new Map<string, number>();
   for (const e of events) {
     if (e.name !== "form_submit") continue;
-    const k = bucketKey(e.createdAt, window);
+    const k = trendKeyOf(e.createdAt);
     winsByBucket.set(k, (winsByBucket.get(k) || 0) + 1);
   }
   for (const b of bookings) {
-    const k = bucketKey(b.createdAt, window);
+    const k = trendKeyOf(b.createdAt);
     winsByBucket.set(k, (winsByBucket.get(k) || 0) + 1);
   }
-  const trend: TrendBucket[] = windowBucketKeys(window, now).map((key) => ({
+  const axisKeys = isWindowKind
+    ? windowBucketKeys(window, now)
+    : periodBucketKeys(since, until, resolved.granularity);
+  const trend: TrendBucket[] = axisKeys.map((key) => ({
     key,
     visitors: visitorsByBucket.get(key)?.size || 0,
     wins: winsByBucket.get(key) || 0,
@@ -1600,7 +1658,9 @@ async function demoCommand(filters: Filters): Promise<IqCommand> {
       return { visitorId: id, days: rec.days.size, recentPaths: distinctPaths };
     });
 
-  const views7 = views.filter((v) => v.createdAt >= since7);
+  // F2 parity: IR10's "this week" = trailing 7 NY days regardless of the
+  // selected period — derive from the full array, not the period slice.
+  const views7 = allViews.filter((v) => v.createdAt >= since7);
   const byPath7 = new Map<string, { views: number; hosts: Map<string, number> }>();
   for (const v of views7) {
     const rec = byPath7.get(v.path) ?? { views: 0, hosts: new Map() };
@@ -1652,7 +1712,18 @@ async function demoCommand(filters: Filters): Promise<IqCommand> {
     meta: demoMeta(classifierVersions),
     window,
     since: since.toISOString(),
-    priorSince: priorSince.toISOString(),
+    // Fix #6 parity: null when compare is off — never a fake anchor.
+    priorSince: cmp ? cmp.since.toISOString() : null,
+    period: {
+      kind: resolved.kind,
+      // Factcheck W1 parity: custom echoes the INCLUSIVE day strings (see
+      // liveCommand) — never the exclusive until boundary.
+      from: resolved.range ? resolved.range.from : since.toISOString(),
+      to: resolved.range ? resolved.range.to : until.toISOString(),
+      granularity: resolved.granularity,
+      partial: resolved.partial,
+      compareLabel: cmp ? cmp.label : null,
+    },
     generatedAt: now.toISOString(),
     kpis,
     gscThrough,
@@ -2354,7 +2425,9 @@ async function demoGscDetail(kind: GscDetailKind, queryArg: string | null, filte
   const ds = getDemoDataset();
   const { window } = filters;
   const now = ds.now;
-  const { period, range } = resolvePeriod(filters, now);
+  // GSC keys on stored UTC dates — the ONE sanctioned UTC-boundary resolver
+  // (api #7 / database L2), in parity with liveGscDetail.
+  const { period, range } = resolveGscPeriod(filters, now);
   const since = period.since;
   const until = period.until;
 

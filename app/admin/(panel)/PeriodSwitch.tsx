@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { WindowDays } from "@/lib/admin/iq/types";
-import { parseWindowParam, publishPeriod } from "./period-bus";
+import { parsePeriodParam } from "@/lib/admin/iq/shared";
+import { parseWindowParam, publishPeriod, watchPeriod, windowSignal } from "./period-bus";
 
 /*
  * Global period filter (WP2.1): segmented 7d / 30d / 90d ONLY, persisted as
@@ -27,24 +28,61 @@ export default function PeriodSwitch() {
   const router = useRouter();
   const urlPeriod = parseWindowParam(searchParams.get("p"));
   const [period, setPeriod] = useState<WindowDays>(urlPeriod);
+  // WP2 fix (ux P2-3): while a CALENDAR period is active ("This quarter" on
+  // the overview strip) the ?p= window is only the dormant fallback — claiming
+  // "30d" active would be a false state claim. Seeded from the URL grammar
+  // (deep links), kept live via the period bus (replaceState flips don't
+  // update useSearchParams).
+  const urlCalendar =
+    parsePeriodParam({
+      period: searchParams.get("period"),
+      compare: searchParams.get("compare"),
+      from: searchParams.get("from"),
+      to: searchParams.get("to"),
+      cmpFrom: searchParams.get("cmpFrom"),
+      cmpTo: searchParams.get("cmpTo"),
+    }).period !== null;
+  const [calendarActive, setCalendarActive] = useState(urlCalendar);
 
   // Real navigations (rail clicks, deep links) win over stale local state.
   useEffect(() => {
     setPeriod(urlPeriod);
   }, [urlPeriod]);
+  useEffect(() => {
+    setCalendarActive(urlCalendar);
+  }, [urlCalendar]);
+  useEffect(
+    () =>
+      watchPeriod((s) => {
+        setPeriod(s.window);
+        setCalendarActive(s.period !== null);
+      }),
+    []
+  );
 
   function choose(d: WindowDays) {
-    if (d === period) return;
+    // Same window but a calendar period active → still a real reset to window
+    // mode (without this, "This quarter" + click "30d" would be a dead click).
+    if (d === period && !calendarActive) return;
     setPeriod(d);
-    const handled = publishPeriod(d);
+    setCalendarActive(false);
+    // A window flip is an explicit RESET to window mode (WP2): any calendar
+    // preset/custom range on the overview strip clears, compare returns to the
+    // historical "prior" default. windowSignal encodes exactly that.
+    const handled = publishPeriod(windowSignal(d));
     if (!handled) {
-      // No island present — navigate (server re-render owns the URL).
+      // No island present — navigate (server re-render owns the URL). The
+      // period grammar is stripped: this navigation IS the window-mode reset,
+      // and a lingering ?period= would win server-side over the ?p= just set.
       const qs = new URLSearchParams(searchParams.toString());
       qs.set("p", String(d));
+      for (const k of ["period", "compare", "from", "to", "cmpFrom", "cmpTo"]) qs.delete(k);
       router.replace(`${pathname}?${qs.toString()}`);
     }
     // handled: the island writes the canonical URL on success (A4) — never here.
   }
+
+  const showActive = (d: WindowDays) => d === period && !calendarActive;
 
   return (
     <nav className="adm-window" aria-label="Period">
@@ -52,8 +90,8 @@ export default function PeriodSwitch() {
         <button
           key={d}
           type="button"
-          className={d === period ? "on" : ""}
-          aria-current={d === period ? "true" : undefined}
+          className={showActive(d) ? "on" : ""}
+          aria-current={showActive(d) ? "true" : undefined}
           onClick={() => choose(d)}
         >
           {d}d
