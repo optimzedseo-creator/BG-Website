@@ -180,6 +180,25 @@ model GscCountryDaily {
   @@unique([date, country])
 }
 
+// ---- Dashboard Wave Phase 2 (WP1) — saved dashboard layouts ----------------
+// Layout JSON lives in its OWN table, NEVER in Setting (security ruling: the
+// Setting table holds auth secrets — admin_password_hash / admin_totp_secret —
+// and dashboard writes must not share a write path or a blast radius with
+// them). `layout` is UNTRUSTED ON READ by contract: every consumer passes it
+// through lib/admin/iq/widgets.ts validateLayout() (invalid entries degrade to
+// tombstones, never crash a render). Single admin user, <10 expected rows —
+// deliberately NO index beyond the primary key. isDefault's single-default
+// invariant is enforced in the write path (setDefaultDashboard transaction),
+// not by a DB constraint.
+model Dashboard {
+  id        String   @id @default(cuid())
+  name      String
+  layout    Json
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 // Calendly bookings land here even when we can't yet enrich them: the popup's
 // postMessage carries event/invitee URIs but NOT the invitee email. Enrichment
 // via the Calendly API needs a personal access token from Brad (not built).

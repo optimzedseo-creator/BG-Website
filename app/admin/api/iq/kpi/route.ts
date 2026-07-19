@@ -15,20 +15,16 @@ import { getSource } from "@/lib/admin/iq";
 import { readMode } from "@/lib/admin/iq/mode";
 import { parseWindowParam } from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
-import type { CommandKpiId, IqKpiDetail } from "@/lib/admin/iq/types";
+// P2-WP1 fix 3 (api F2): the id whitelist comes from the widget registry's
+// compiler-exhaustive COMMAND_KPI_IDS (Record<CommandKpiId, true>-derived) —
+// the local list this route used to carry was NOT exhaustive-checked, so a
+// future CommandKpiId would have silently 400'd here.
+import { isCommandKpiId } from "@/lib/admin/iq/widgets";
+import type { IqKpiDetail } from "@/lib/admin/iq/types";
 
 export const dynamic = "force-dynamic";
 
 const NO_STORE = { "Cache-Control": "private, no-store" } as const;
-
-const KPI_IDS: readonly CommandKpiId[] = [
-  "visitors",
-  "pageviews",
-  "search-clicks",
-  "briefs",
-  "bookings",
-  "subscribers",
-];
 
 export async function GET(req: Request): Promise<NextResponse> {
   if (!(await requireAdmin())) {
@@ -38,7 +34,7 @@ export async function GET(req: Request): Promise<NextResponse> {
   try {
     const url = new URL(req.url);
     const rawId = url.searchParams.get("id");
-    const id = KPI_IDS.find((k) => k === rawId);
+    const id = isCommandKpiId(rawId) ? rawId : null;
     if (!id) {
       return NextResponse.json({ error: "Unknown metric." }, { status: 400, headers: NO_STORE });
     }

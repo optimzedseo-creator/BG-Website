@@ -4,21 +4,31 @@ import { getSource } from "@/lib/admin/iq";
 import { readMode } from "@/lib/admin/iq/mode";
 import { parsePeriodParam, parseWindowParam, periodFilters } from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
+import {
+  getDefaultDashboardRecord,
+  isDashboardId,
+  listDashboardRecords,
+} from "@/lib/admin/iq/dashboards";
+import { readFavoriteKpis } from "@/lib/admin/iq/favorites";
 import CommandView from "./CommandView";
 
 export const dynamic = "force-dynamic";
 
 /*
  * WP2.2b — COMMAND at /admin/overview (absorbs the old /admin dashboard).
- * Server-renders the full payload through the shared source (a direct load of
- * /admin/overview?p=90 server-renders 90d); the client island then refetches
- * through GET /api/admin/iq on period flips WITHOUT navigation (WP2.3).
+ * Server-renders the full payload through the shared source; the client island
+ * refetches through the batched POST /admin/api/iq/widgets on period flips
+ * WITHOUT navigation (Dashboard Wave Ph2-WP2).
  *
- * Dashboard Wave WP2: the page also parses the calendar-period grammar
- * (?period&compare&from&to&cmpFrom&cmpTo) through the SAME parsePeriodParam +
- * periodFilters pair as the /admin/api/iq handler, so a deep link and a
- * refetch can never resolve differently. ?p= stays the fallback (contract
- * rule 2). `&view=` is RESERVED for the Phase-2 canvas — not consumed here.
+ * Period grammar (?period&compare&from&to&cmpFrom&cmpTo) parses through the
+ * SAME parsePeriodParam + periodFilters pair as the /admin/api/iq handlers —
+ * deep link and refetch can never resolve differently. ?p= stays the fallback.
+ *
+ * `&view=` (Ph2-WP2): a LAYOUT SELECTOR, not a period param — it validates via
+ * isDashboardId ONLY (condition 5; it never joins parsePeriodParam) and falls
+ * back silently to the default view on any miss. The default view resolves via
+ * the condition-1 reader (oldest isDefault row, zero-default → built-in
+ * Command layout — resolved client-side from defaultId=null).
  */
 export default async function CommandPage({
   searchParams,
@@ -31,6 +41,7 @@ export default async function CommandPage({
     to?: string;
     cmpFrom?: string;
     cmpTo?: string;
+    view?: string;
   }>;
 }) {
   if (!(await requireAdmin())) redirect("/admin/login");
@@ -38,11 +49,31 @@ export default async function CommandPage({
   const sp = await searchParams;
   const windowDays = parseWindowParam(sp.p);
   const pp = parsePeriodParam(sp);
-  const internalVisitorIds = await readInternalVisitorIds();
+  const [internalVisitorIds, dashboards, defaultRecord, favorites] = await Promise.all([
+    readInternalVisitorIds(),
+    listDashboardRecords(),
+    getDefaultDashboardRecord(),
+    readFavoriteKpis(),
+  ]);
   const payload = await getSource(await readMode()).command(
     { window: windowDays, ...periodFilters(pp) },
     { internalVisitorIds }
   );
 
-  return <CommandView initial={payload} initialParams={{ window: windowDays, ...pp }} />;
+  // ?view= gate: isDashboardId + existence, nothing else. A miss is silent —
+  // the surface renders the default view (no error, no redirect).
+  const requestedView = isDashboardId(sp.view) ? sp.view : null;
+  const activeViewId =
+    requestedView && dashboards.some((d) => d.id === requestedView) ? requestedView : null;
+
+  return (
+    <CommandView
+      initial={payload}
+      initialParams={{ window: windowDays, ...pp }}
+      dashboards={dashboards}
+      activeViewId={activeViewId}
+      defaultId={defaultRecord?.id ?? null}
+      favorites={favorites}
+    />
+  );
 }

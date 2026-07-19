@@ -64,6 +64,7 @@ export default function ControlStrip({
   params,
   compareLabel,
   loading,
+  viewSlot,
 }: {
   params: PeriodSignal;
   /** The payload's PeriodEcho.compareLabel — what the source actually compared
@@ -73,6 +74,10 @@ export default function ControlStrip({
    * picked params, so the pill's compare half falls back to the client hint
    * until the new payload lands. */
   loading: boolean;
+  /** Ph2-WP2: extra strip controls (view selector + edit entry) rendered after
+   * the pill inside the SAME .adm-controlbar row. Additive — omitted, the
+   * strip is byte-identical to Phase 1. */
+  viewSlot?: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
   // "Custom range…" radio selected but no range applied yet (the reveal state).
@@ -292,6 +297,7 @@ export default function ControlStrip({
           </>
         )}
       </div>
+      {viewSlot}
     </div>
   );
 }

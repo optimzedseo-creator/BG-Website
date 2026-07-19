@@ -2211,6 +2211,9 @@ body.adm-modal-open { overflow: hidden; }
   align-items: center;
   gap: 12px;
   margin: 0 0 16px;
+  /* Ph2-WP2: the strip also hosts the view selector + edit entry — wrap
+     instead of overflowing on narrow desktop widths. */
+  flex-wrap: wrap;
 }
 .page-admin .adm-timepill-wrap { position: relative; }
 
@@ -2363,6 +2366,392 @@ body.adm-modal-open { overflow: hidden; }
    under the tile's overflow:hidden (declared later, so it wins the cascade
    over the §WP2.2b nowrap at equal specificity). */
 .page-admin .adm-kpi-delta { white-space: normal; }
+
+/* ============================================================
+   DASHBOARD WAVE Ph2-WP2 — widget canvas (view/edit), favorites
+   strip, saved-views menu, add-widget gallery.
+   ============================================================ */
+
+/* ---------- the canvas grid (design KB 1540: 12-col, 16px gutter) ----------
+   Rows are CONTENT-DRIVEN in view mode (grid-auto-rows: auto) so the built-in
+   Command layout renders exactly like the pre-canvas stacked surface — a
+   widget's `h` span only matters when neighbors share rows. Edit mode gives
+   rows a floor so empty target rows stay droppable. */
+.page-admin .adm-canvas {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+  grid-auto-rows: auto;
+  margin-bottom: 16px;
+}
+.page-admin .adm-canvas.is-edit {
+  grid-auto-rows: minmax(56px, auto);
+  border-radius: 18px;
+  /* faint dotted placement grid — edit-only (design: rgba .03 tier) */
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1.5px);
+  background-size: 32px 28px;
+}
+
+.page-admin .adm-widget {
+  grid-column: var(--gx) / span var(--gw);
+  grid-row: var(--gy) / span var(--gh);
+  position: relative;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+}
+.page-admin .adm-widget .adm-card { margin-bottom: 0; flex: 1; }
+/* design P2-1: KPI-tile widgets carry the tile radius (14) so the edit-mode
+   dashed outline hugs the tile, not an 18px module box. */
+.page-admin .adm-widget--kpi { border-radius: 14px; }
+.page-admin .adm-widget .adm-kpi { flex: 1; width: 100%; }
+.page-admin .adm-widget-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+.page-admin .adm-widget-content > * { flex: 1; }
+
+/* ---------- edit-mode chrome (design: dashed accent outline, grip,
+   corner resize, ×, ☆ — all in the derived accent tokens) ---------- */
+.page-admin .adm-widget.is-edit {
+  outline: 1.5px dashed var(--acc-border);
+  outline-offset: 2px;
+}
+.page-admin .adm-widget.is-dragging {
+  z-index: 5;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+  opacity: 0.92;
+}
+.page-admin .adm-widget-grip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 56px;
+  height: 20px;
+  z-index: 3;
+  background: transparent;
+  border: none;
+  cursor: grab;
+  touch-action: none;
+}
+.page-admin .adm-widget-grip::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 7px;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--acc-border);
+}
+.page-admin .adm-widget-grip:hover::before { background: var(--acc-hover); }
+.page-admin .adm-widget-grip:active { cursor: grabbing; }
+.page-admin .adm-widget-remove,
+.page-admin .adm-widget-fav {
+  position: absolute;
+  top: 2px;
+  z-index: 4;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text2);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+.page-admin .adm-widget-remove { right: 4px; }
+.page-admin .adm-widget-remove:hover {
+  color: var(--red);
+  background: color-mix(in srgb, var(--red) 13%, transparent);
+}
+.page-admin .adm-widget-fav { right: 30px; }
+.page-admin .adm-widget-fav:hover { color: var(--acc); background: var(--acc-chip); }
+.page-admin .adm-widget-fav.is-fav { color: var(--amber); }
+.page-admin .adm-widget-fav[aria-disabled="true"] { cursor: not-allowed; opacity: 0.6; }
+.page-admin .adm-widget-resize {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 18px;
+  height: 18px;
+  z-index: 4;
+  cursor: nwse-resize;
+  touch-action: none;
+  border-right: 2px solid var(--acc-border);
+  border-bottom: 2px solid var(--acc-border);
+  border-bottom-right-radius: 8px;
+}
+.page-admin .adm-widget-resize:hover {
+  border-right-color: var(--acc);
+  border-bottom-color: var(--acc);
+}
+/* the snapped drop-target ghost (design: --acc-chip + dashed) */
+.page-admin .adm-widget-ghost {
+  grid-column: var(--gx) / span var(--gw);
+  grid-row: var(--gy) / span var(--gh);
+  border: 1.5px dashed var(--acc-border);
+  background: var(--acc-chip);
+  border-radius: 18px;
+  min-height: 48px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ---------- tombstone + no-data (quiet, §5.17: words, never bare dashes) --- */
+.page-admin .adm-widget-tomb {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  background: var(--bg2);
+  border: 1px dashed var(--line-hi);
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+.page-admin .adm-widget-tomb-title {
+  font: 500 11px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text1);
+}
+.page-admin .adm-widget-tomb-reason { font: 500 11px var(--mono); color: var(--text2); }
+.page-admin .adm-widget-nodata { opacity: 0.75; }
+
+/* ---------- favorites strip (view mode; renders nothing when empty) -------- */
+.page-admin .adm-favstrip { margin-bottom: 16px; }
+.page-admin .adm-favstrip-label {
+  display: block;
+  font: 500 10.5px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text2);
+  margin-bottom: 8px;
+}
+.page-admin .adm-favstrip-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px; /* design nit: join the canvas gutter rhythm */
+}
+
+/* ---------- edit action bar (replaces the control strip in edit mode) ------ */
+.page-admin .adm-editbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 16px;
+}
+.page-admin .adm-editbar .adm-btn { margin-top: 0; }
+.page-admin .adm-editbar-spacer { flex: 1; }
+.page-admin .adm-editbar-err { font: 500 11px var(--mono); color: var(--red); }
+.page-admin .adm-editbar-pins {
+  font: 500 11px var(--mono);
+  letter-spacing: 0.05em;
+  color: var(--text1);
+}
+.page-admin .adm-editbar-save { min-width: 84px; }
+.page-admin .adm-mini-actions .adm-btn { margin-top: 0; }
+
+/* ---------- view selector + menu (strip controls, §5.8/§5.9 language) ------ */
+.page-admin .adm-viewctl-wrap { position: relative; }
+.page-admin .adm-viewctl {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 7px 14px;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text0);
+  cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease);
+}
+.page-admin .adm-viewctl:hover,
+.page-admin .adm-viewctl[aria-expanded="true"] { border-color: var(--acc-border); }
+.page-admin .adm-viewctl-label {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.page-admin .adm-viewctl-edit { color: var(--text1); }
+.page-admin .adm-viewctl-edit:hover { color: var(--text0); }
+.page-admin .adm-viewpop {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 91;
+  min-width: 320px;
+  background: var(--bg1);
+  border: 1px solid var(--line-hi);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: admPanelIn var(--t-med) var(--ease);
+}
+.page-admin .adm-viewrow { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.page-admin .adm-viewrow-name { flex: 1; min-width: 0; }
+.page-admin .adm-viewrow-actions { display: inline-flex; gap: 4px; flex-shrink: 0; }
+.page-admin .adm-viewact {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--text1);
+  font: 500 11px var(--mono); /* design floor ≥10.5 (QA gate note) */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 7px;
+  cursor: pointer;
+  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+}
+.page-admin .adm-viewact:hover:not(:disabled) { color: var(--text0); border-color: var(--line-hi); }
+.page-admin .adm-viewact:disabled { opacity: 0.5; cursor: default; }
+.page-admin .adm-viewact-danger {
+  color: var(--red);
+  border-color: color-mix(in srgb, var(--red) 27%, transparent);
+}
+.page-admin .adm-viewrename { display: flex; gap: 6px; align-items: center; flex: 1; }
+.page-admin .adm-viewrename input { max-width: none; flex: 1; padding: 6px 10px; font-size: 12px; }
+.page-admin .adm-viewpop-foot { border-top: 1px solid var(--line); padding-top: 10px; }
+
+/* ---------- add-widget gallery (§5.9 mini-modal + module-card grid) -------- */
+.page-admin .adm-gallery { max-width: 560px; max-height: 80vh; overflow-y: auto; }
+.page-admin .adm-gallery-group { margin-bottom: 12px; }
+.page-admin .adm-gallery-grouptitle {
+  display: block;
+  font: 500 10.5px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text2);
+  margin-bottom: 8px;
+}
+.page-admin .adm-gallery-items {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.page-admin .adm-gallery-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  text-align: left;
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease);
+}
+.page-admin .adm-gallery-item:hover:not(.is-added) { border-color: var(--acc-border); }
+.page-admin .adm-gallery-item.is-added { opacity: 0.65; cursor: default; }
+.page-admin .adm-gallery-acc {
+  /* design P2-2: §5.14 chip language — 28px --acc-chip square with a
+     centered accent dot, not a bare 10px swatch. */
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--acc-chip);
+  position: relative;
+  flex-shrink: 0;
+}
+.page-admin .adm-gallery-acc::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--acc);
+}
+.page-admin .adm-gallery-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.page-admin .adm-gallery-name {
+  font-family: var(--disp);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text0);
+}
+.page-admin .adm-gallery-desc { font-size: 11.5px; color: var(--text1); line-height: 1.4; }
+.page-admin .adm-gallery-added {
+  margin-left: auto;
+  font: 500 10px var(--mono);
+  text-transform: uppercase;
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+/* ---------- ≤1024 view-mode clamp (design P2-1) ----------
+   Explicit 12-col placement gives way to a stacked flow: modules full-width,
+   KPI tiles 2-up — fixes the w=2 tile squeeze at tablet widths and restores
+   the UX §10 phone 2-up KPI grid. DOM order IS reading order, so the stack is
+   the saved reading order. Edit mode keeps TRUE geometry (drag math must
+   match what is rendered). */
+@media (max-width: 1024px) {
+  .page-admin .adm-canvas:not(.is-edit) .adm-widget {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+  .page-admin .adm-canvas:not(.is-edit) .adm-widget--kpi { grid-column: span 6; }
+}
+
+/* ---------- mobile ≤640 (design ruling: view-mode stacks via the ≤1024
+   clamp (KPI tiles stay 2-up per UX §10); edit is desktop-only — the entry
+   point hides, a quiet hint takes its place) ---- */
+.page-admin .adm-edithint { display: none; }
+@media (max-width: 640px) {
+  .page-admin .adm-canvas.is-edit { background-image: none; }
+  .page-admin .adm-widget.is-edit { outline: none; }
+  .page-admin .adm-widget-grip,
+  .page-admin .adm-widget-remove,
+  .page-admin .adm-widget-fav,
+  .page-admin .adm-widget-resize,
+  .page-admin .adm-widget-ghost { display: none; }
+  .page-admin .adm-viewctl-edit { display: none; }
+  .page-admin .adm-edithint {
+    display: inline;
+    font: 500 10.5px var(--mono);
+    color: var(--text2);
+  }
+  .page-admin .adm-gallery-items { grid-template-columns: 1fr; }
+  /* the view menu joins the bottom-sheet idiom (same rules as .adm-timepop) */
+  .page-admin .adm-viewpop {
+    position: fixed;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    min-width: 0;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 16px 16px 0 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    animation: admSheetUp var(--t-med) var(--ease);
+  }
+  .page-admin .adm-viewctl { min-height: 44px; }
+  .page-admin .adm-viewact { min-height: 32px; }
+}
 
 /* ---------- §5.16 reduced motion: ALL of it collapses ---------- */
 @media (prefers-reduced-motion: reduce) {
