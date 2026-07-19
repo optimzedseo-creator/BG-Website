@@ -42,6 +42,10 @@ model Event {
 
   @@index([name, createdAt])
   @@index([visitorId, createdAt])
+  // Wave 3b index baseline: Event is the unbounded growth table; the plain
+  // createdAt index (which PageView already has) keeps window scans / the
+  // activity-stream newest-first ordering index-ordered as rows grow.
+  @@index([createdAt])
 }
 
 // ---- CRM capture layer — Phase 3 (BACKEND-PLAN.md §3) ----------------------
@@ -67,6 +71,13 @@ model Lead {
 
   @@index([status])
   @@index([createdAt])
+  // Wave 3b index baseline: the CRM/analytics bridge column. Powers the REVERSE
+  // stitch (find-lead-by-visitorId): the booking-enrichment lookup
+  // (app/api/booking) and visitorJourney's lead-link findFirst both filter
+  // Lead.visitorId. (The lead-detail journey join itself rides PageView's own
+  // visitorId index, not this one; this index still earns its keep on those
+  // reverse lookups instead of a full Lead scan.)
+  @@index([visitorId])
 }
 
 model Activity {

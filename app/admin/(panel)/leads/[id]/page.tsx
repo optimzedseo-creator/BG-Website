@@ -2,7 +2,12 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/admin/auth";
+import { getSource } from "@/lib/admin/iq";
+import { classifySource, DAY_MS, nyDateParts } from "@/lib/admin/iq/shared";
+import type { SourceClass } from "@/lib/admin/iq/types";
 import StatusSelect from "../StatusSelect";
+import JourneyTimeline from "../../iq/JourneyTimeline";
+import LeadDetailTabs from "./LeadDetailTabs";
 
 export const dynamic = "force-dynamic";
 
@@ -10,22 +15,30 @@ function fmt(d: Date): string {
   return d.toISOString().slice(0, 16).replace("T", " ") + " UTC";
 }
 
-function durationLabel(s: number | null): string {
-  if (!s) return "";
-  return s >= 60 ? ` · ${Math.floor(s / 60)}m ${s % 60}s` : ` · ${s}s`;
+const SOURCE_CLASS_LABEL: Record<SourceClass, string> = {
+  direct: "direct or internal",
+  search: "search",
+  social: "social",
+  "ai-referrer": "AI referrer",
+  other: "other site",
+};
+
+/** NY calendar-day key for counting distinct visit-days before contact. */
+function nyDayKey(d: Date): string {
+  const { y, m, d: day } = nyDateParts(d);
+  return `${y}-${m}-${day}`;
 }
 
-function refHost(ref: string | null): string | null {
-  if (!ref) return null;
-  try {
-    const host = new URL(ref).hostname.replace(/^www\./, "");
-    return host === "bradleygriffin.us" ? null : host;
-  } catch {
-    return ref.slice(0, 60);
-  }
+interface SourceFacts {
+  firstTouchPath: string;
+  firstTouchClass: SourceClass;
+  lastTouchPath: string | null;
+  lastTouchClass: SourceClass | null;
+  daysToDecision: number;
+  hoursToDecision: number;
+  visitDaysBeforeContact: number;
+  viewsBeforeContact: number;
 }
-
-type JourneyItem = { at: Date; kind: "view" | "event"; label: string; detail: string };
 
 export default async function AdminLeadDetail({ params }: { params: Promise<{ id: string }> }) {
   if (!(await requireAdmin())) redirect("/admin/login");
@@ -42,44 +55,185 @@ export default async function AdminLeadDetail({ params }: { params: Promise<{ id
   });
   if (!lead) notFound();
 
-  // Visitor journey — "what they read before reaching out" (Lead.visitorId is
-  // the CRM–analytics bridge, BACKEND-PLAN.md §3). Rendered as TEXT ONLY:
-  // referrer/path strings are attacker-supplied and must never become HTML.
-  let journey: JourneyItem[] = [];
-  if (lead.visitorId) {
-    const [views, events] = await Promise.all([
-      prisma.pageView.findMany({
-        where: { visitorId: lead.visitorId },
-        orderBy: { createdAt: "asc" },
-        select: { path: true, referrer: true, duration: true, device: true, country: true, createdAt: true },
-      }),
-      prisma.event.findMany({
-        where: { visitorId: lead.visitorId },
-        orderBy: { createdAt: "asc" },
-        select: { name: true, path: true, meta: true, createdAt: true },
-      }),
-    ]);
-    journey = [
-      ...views.map((v): JourneyItem => {
-        const from = refHost(v.referrer);
-        return {
-          at: v.createdAt,
-          kind: "view",
-          label: `Read ${v.path}`,
-          detail: `${from ? `via ${from}` : "direct/internal"}${durationLabel(v.duration)}${v.device ? ` · ${v.device}` : ""}${v.country ? ` · ${v.country}` : ""}`,
-        };
-      }),
-      ...events.map((e): JourneyItem => {
-        const meta =
-          e.meta && typeof e.meta === "object" && !Array.isArray(e.meta)
-            ? Object.entries(e.meta as Record<string, unknown>)
-                .map(([k, v]) => `${k}: ${String(v)}`)
-                .join(", ")
-            : "";
-        return { at: e.createdAt, kind: "event", label: e.name, detail: `${e.path}${meta ? ` · ${meta}` : ""}` };
-      }),
-    ].sort((a, b) => a.at.getTime() - b.at.getTime());
+  // Journey (WP3.4 shared component) + B4/B5 source facts. Both ride
+  // Lead.visitorId, the CRM<->analytics bridge. The journey drill is a targeted
+  // admin lookup, so it does NOT apply internal exclusion (Wave-3a manager
+  // ratification) — pass an empty list. Source facts are computed here in the
+  // CRM lane (this page already holds PII) from raw PageView rows; referrer /
+  // path strings are rendered as TEXT ONLY, never HTML.
+  const [journey, sourceViews] = await Promise.all([
+    lead.visitorId
+      ? getSource("live").visitorJourney(lead.visitorId, { internalVisitorIds: [] })
+      : Promise.resolve(null),
+    lead.visitorId
+      ? prisma.pageView.findMany({
+          where: { visitorId: lead.visitorId },
+          orderBy: { createdAt: "asc" },
+          select: { path: true, referrer: true, createdAt: true },
+        })
+      : Promise.resolve([]),
+  ]);
+
+  // Only render Source facts when there is at least one pageview at or before
+  // first contact (factcheck/database/data-analyst edge case): a visitor whose
+  // views ALL postdate the brief has no honest "first touch before contact" to
+  // show. When `before` is non-empty, before[0] is also the earliest pageview
+  // overall (B4 first touch), so both stay correct.
+  let source: SourceFacts | null = null;
+  const before = sourceViews.filter((v) => v.createdAt <= lead.createdAt);
+  if (before.length > 0) {
+    const first = before[0];
+    const last = before[before.length - 1];
+    const ms = lead.createdAt.getTime() - first.createdAt.getTime();
+    source = {
+      firstTouchPath: first.path,
+      firstTouchClass: classifySource(first.referrer),
+      lastTouchPath: last.path,
+      lastTouchClass: classifySource(last.referrer),
+      daysToDecision: Math.max(0, Math.floor(ms / DAY_MS)),
+      hoursToDecision: Math.max(0, Math.floor(ms / (60 * 60 * 1000))),
+      visitDaysBeforeContact: new Set(before.map((v) => nyDayKey(v.createdAt))).size,
+      viewsBeforeContact: before.length,
+    };
   }
+
+  const overview = (
+    <div className="adm-grid adm-grid-detail">
+      <section className="adm-card">
+        <h2>Contact</h2>
+        <dl className="adm-dl">
+          <dt>Email</dt>
+          <dd><a href={`mailto:${lead.email}`}>{lead.email}</a></dd>
+          <dt>Phone</dt>
+          <dd>{lead.phone || <span className="adm-unset">not provided</span>}</dd>
+          <dt>Company</dt>
+          <dd>{lead.company || <span className="adm-unset">not provided</span>}</dd>
+          <dt>Inquiry</dt>
+          <dd>{lead.inquiryType}</dd>
+          <dt>Status</dt>
+          <dd><StatusSelect leadId={lead.id} status={lead.status} /></dd>
+          <dt>Source</dt>
+          <dd>{lead.source}</dd>
+          <dt>First contact</dt>
+          <dd className="adm-mono">{fmt(lead.createdAt)}</dd>
+        </dl>
+      </section>
+
+      <section className="adm-card">
+        <h2>Latest message</h2>
+        <p className="adm-message">{lead.message}</p>
+      </section>
+    </div>
+  );
+
+  const journeyPanel = !lead.visitorId ? (
+    <section className="adm-card adm-card-wide">
+      <p className="adm-empty">
+        📭 No visitor id on this lead (the form was submitted without an analytics cookie). The
+        journey is unavailable.
+      </p>
+    </section>
+  ) : journey ? (
+    <section className="adm-card adm-card-wide">
+      {/* On the lead's OWN page, JourneyTimeline's "became: a lead" link would
+          point back to this same record — suppress it (ux P3). */}
+      <JourneyTimeline data={journey} hideLeadLink />
+    </section>
+  ) : (
+    <section className="adm-card adm-card-wide">
+      <p className="adm-empty">🌙 No recorded pageviews or events for this visitor yet.</p>
+    </section>
+  );
+
+  const activity = (
+    <div className="adm-grid adm-grid-detail">
+      <section className="adm-card">
+        <h2>Timeline</h2>
+        {lead.activities.length === 0 ? (
+          <p className="adm-empty">🌙 No activity yet.</p>
+        ) : (
+          <ol className="adm-timeline">
+            {lead.activities.map((a) => (
+              <li key={a.id} className={`adm-tl-${a.type}`}>
+                <span className="adm-tl-type">{a.type}</span>
+                <span className="adm-tl-body">{a.body}</span>
+                <span className="adm-mono adm-tl-at">{fmt(a.createdAt)}</span>
+              </li>
+            ))}
+          </ol>
+        )}
+      </section>
+
+      <section className="adm-card">
+        <h2>Bookings</h2>
+        {lead.bookings.length === 0 ? (
+          <p className="adm-empty">📭 No linked bookings yet.</p>
+        ) : (
+          <ul className="adm-list">
+            {lead.bookings.map((b) => (
+              <li key={b.id}>
+                <span>Calendly booking captured</span>
+                <span className="adm-mono">{fmt(b.createdAt)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </div>
+  );
+
+  const sourcePanel = (
+    <section className="adm-card adm-card-wide">
+      <h2>Source and time to decision</h2>
+      {!lead.visitorId ? (
+        <p className="adm-empty">
+          📭 No analytics cookie on this lead, so first touch and time to decision are unavailable.
+        </p>
+      ) : !source ? (
+        <p className="adm-empty">
+          🌙 Stitched to a visitor id, but no pageviews at or before first contact.
+        </p>
+      ) : (
+        <>
+          <dl className="adm-dl adm-source-dl">
+            <dt title="The earliest page this visitor landed on, and how they arrived.">
+              First touch
+            </dt>
+            <dd>
+              <span className="adm-mono">{source.firstTouchPath}</span>
+              <span className="adm-source-via"> via {SOURCE_CLASS_LABEL[source.firstTouchClass]}</span>
+            </dd>
+            <dt title="The last page they read at or before they contacted you.">
+              Last touch before contact
+            </dt>
+            <dd>
+              <span className="adm-mono">{source.lastTouchPath}</span>
+              <span className="adm-source-via"> via {SOURCE_CLASS_LABEL[source.lastTouchClass ?? "direct"]}</span>
+            </dd>
+            <dt title="Time from the first recorded visit to first contact. A single-lead value, not an average.">
+              Time to first contact
+            </dt>
+            <dd className="adm-mono">
+              {source.daysToDecision >= 1
+                ? `${source.daysToDecision} day${source.daysToDecision === 1 ? "" : "s"} from first visit to contact`
+                : `${source.hoursToDecision} hour${source.hoursToDecision === 1 ? "" : "s"} from first visit to contact`}
+            </dd>
+            <dt title="Distinct calendar days (America/New_York) with a pageview at or before first contact.">
+              Visit days before contact
+            </dt>
+            <dd className="adm-mono">
+              {source.visitDaysBeforeContact} day{source.visitDaysBeforeContact === 1 ? "" : "s"} ·{" "}
+              {source.viewsBeforeContact} pageview{source.viewsBeforeContact === 1 ? "" : "s"}
+            </dd>
+          </dl>
+          <p className="adm-caption">
+            First and last touch come from this visitor&apos;s own pageviews (the analytics cookie
+            stitched to this lead). Counts only, no rates, for one lead.
+          </p>
+        </>
+      )}
+    </section>
+  );
 
   return (
     <div data-acc="leads">
@@ -88,84 +242,12 @@ export default async function AdminLeadDetail({ params }: { params: Promise<{ id
         <Link href="/admin/leads" className="adm-back">← All leads</Link>
       </div>
 
-      <div className="adm-grid adm-grid-detail">
-        <section className="adm-card">
-          <h2>Contact</h2>
-          <dl className="adm-dl">
-            <dt>Email</dt>
-            <dd><a href={`mailto:${lead.email}`}>{lead.email}</a></dd>
-            <dt>Phone</dt>
-            <dd>{lead.phone || "—"}</dd>
-            <dt>Company</dt>
-            <dd>{lead.company || "—"}</dd>
-            <dt>Inquiry</dt>
-            <dd>{lead.inquiryType}</dd>
-            <dt>Status</dt>
-            <dd><StatusSelect leadId={lead.id} status={lead.status} /></dd>
-            <dt>Source</dt>
-            <dd>{lead.source}</dd>
-            <dt>First contact</dt>
-            <dd className="adm-mono">{fmt(lead.createdAt)}</dd>
-          </dl>
-        </section>
-
-        <section className="adm-card">
-          <h2>Latest message</h2>
-          <p className="adm-message">{lead.message}</p>
-        </section>
-
-        <section className="adm-card">
-          <h2>Timeline</h2>
-          {lead.activities.length === 0 ? (
-            <p className="adm-empty">🌙 No activity yet.</p>
-          ) : (
-            <ol className="adm-timeline">
-              {lead.activities.map((a) => (
-                <li key={a.id} className={`adm-tl-${a.type}`}>
-                  <span className="adm-tl-type">{a.type}</span>
-                  <span className="adm-tl-body">{a.body}</span>
-                  <span className="adm-mono adm-tl-at">{fmt(a.createdAt)}</span>
-                </li>
-              ))}
-            </ol>
-          )}
-        </section>
-
-        <section className="adm-card">
-          <h2>Bookings</h2>
-          {lead.bookings.length === 0 ? (
-            <p className="adm-empty">📭 No linked bookings yet.</p>
-          ) : (
-            <ul className="adm-list">
-              {lead.bookings.map((b) => (
-                <li key={b.id}>
-                  <span>Calendly booking captured</span>
-                  <span className="adm-mono">{fmt(b.createdAt)}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-
-        <section className="adm-card adm-card-wide">
-          <h2>Visitor journey</h2>
-          {!lead.visitorId ? (
-            <p className="adm-empty">📭 No visitor id on this lead (form was submitted without an analytics cookie).</p>
-          ) : journey.length === 0 ? (
-            <p className="adm-empty">🌙 No recorded pageviews or events for this visitor.</p>
-          ) : (
-            <ol className="adm-journey">
-              {journey.map((j, i) => (
-                <li key={i} className={`adm-j-${j.kind}`}>
-                  <span className="adm-mono adm-j-at">{fmt(j.at)}</span>
-                  <span className="adm-j-label">{j.label}</span>
-                  <span className="adm-j-detail">{j.detail}</span>
-                </li>
-              ))}
-            </ol>
-          )}
-        </section>
-      </div>
+      <LeadDetailTabs
+        overview={overview}
+        journey={journeyPanel}
+        activity={activity}
+        source={sourcePanel}
+      />
     </div>
   );
 }

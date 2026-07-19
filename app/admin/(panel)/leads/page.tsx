@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
-import { parseWindowParam, withPeriod } from "@/lib/admin/iq/shared";
+import { DAY_MS, parseWindowParam, RULE_LEAD_SLA_DAYS, withPeriod } from "@/lib/admin/iq/shared";
 import StatusSelect from "./StatusSelect";
 import LeadDonuts from "./LeadDonuts";
 
@@ -16,30 +17,54 @@ function fmt(d: Date): string {
 // Fixed status vocabulary (Phase-3 contract) — anything else clears the filter.
 const STATUSES = new Set(["new", "contacted", "call_booked", "qualified", "won", "lost"]);
 
+// WP3.5 sortable headers. Each key maps to ONE Prisma orderBy; unknown/absent
+// sort falls back to the default (most recently touched). Sorting only reorders
+// PII the CRM page already shows — no new data crosses any boundary.
+type SortKey = "name" | "company" | "type" | "status" | "created";
+const SORT_ORDER: Record<SortKey, (dir: "asc" | "desc") => Prisma.LeadOrderByWithRelationInput> = {
+  name: (dir) => ({ name: dir }),
+  company: (dir) => ({ company: dir }),
+  type: (dir) => ({ inquiryType: dir }),
+  status: (dir) => ({ status: dir }),
+  created: (dir) => ({ createdAt: dir }),
+};
+const SORT_KEYS = new Set<SortKey>(["name", "company", "type", "status", "created"]);
+
+// SLA threshold is interpolated from the ONE constant (factcheck/content: no
+// hardcoded "3" that silently drifts if RULE_LEAD_SLA_DAYS changes).
+const HEAD_TITLES: Record<string, string> = {
+  name: "Contact name. Click a row to open the full lead.",
+  company: "Company from the contact form, if provided.",
+  type: "Inquiry type chosen on the contact form.",
+  status: `Pipeline stage. A lead left in 'new' past ${RULE_LEAD_SLA_DAYS} days turns amber.`,
+  created: "When the contact form was submitted (UTC).",
+  activity: "Most recent logged activity on this lead.",
+};
+
 export default async function AdminLeadsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; p?: string }>;
+  searchParams: Promise<{ status?: string; p?: string; sort?: string; dir?: string }>;
 }) {
   if (!(await requireAdmin())) redirect("/admin/login");
 
-  // WP2.1 Brad addendum (Builder Prime pattern): the rail's status sub-items
-  // link here with ?status=X and the table filters accordingly; "All leads"
-  // clears it. Unknown values fall back to unfiltered — tolerant parsing.
   // ?p= doesn't cut this list (leads are all-time) but is carried through
   // outbound links so the global period never silently resets (ux U5).
-  const { status: rawStatus, p } = await searchParams;
+  const { status: rawStatus, p, sort: rawSort, dir: rawDir } = await searchParams;
   const status = rawStatus && STATUSES.has(rawStatus) ? rawStatus : null;
   const period = parseWindowParam(p);
 
-  // Donut data rides the PII-free analytics lane (counts only). The donuts
-  // always show ALL leads — filtering them by the ?status= list filter would
-  // be circular (they ARE the status overview).
+  const sort = rawSort && SORT_KEYS.has(rawSort as SortKey) ? (rawSort as SortKey) : null;
+  const dir: "asc" | "desc" = rawDir === "asc" ? "asc" : rawDir === "desc" ? "desc" : sort === "name" ? "asc" : "desc";
+  const orderBy: Prisma.LeadOrderByWithRelationInput = sort
+    ? SORT_ORDER[sort](dir)
+    : { updatedAt: "desc" };
+
   const iq = getSource("live");
   const [leads, byInquiryType, byStatus] = await Promise.all([
     prisma.lead.findMany({
       where: status ? { status } : undefined,
-      orderBy: { updatedAt: "desc" },
+      orderBy,
       include: {
         activities: { orderBy: { createdAt: "desc" }, take: 1, select: { createdAt: true, type: true } },
       },
@@ -47,6 +72,41 @@ export default async function AdminLeadsPage({
     iq.leadsByInquiryType(),
     iq.leadsByStatus(),
   ]);
+
+  // Sortable-header link: preserves ?status= and ?p=, toggles direction when
+  // the column is already active, and stays keyboard-reachable.
+  function sortHref(key: SortKey): string {
+    const nextDir = sort === key && dir === "asc" ? "desc" : "asc";
+    const q = new URLSearchParams();
+    if (status) q.set("status", status);
+    if (period !== 30) q.set("p", String(period));
+    q.set("sort", key);
+    q.set("dir", nextDir);
+    return `/admin/leads?${q.toString()}`;
+  }
+  function ariaSort(key: SortKey): "ascending" | "descending" | "none" {
+    if (sort !== key) return "none";
+    return dir === "asc" ? "ascending" : "descending";
+  }
+  function SortHead({ label, sortKey }: { label: string; sortKey: SortKey }) {
+    const active = sort === sortKey;
+    return (
+      <th aria-sort={ariaSort(sortKey)} title={`${HEAD_TITLES[sortKey]} Click to sort.`}>
+        <Link href={sortHref(sortKey)} className={`adm-th-sort${active ? " on" : ""}`}>
+          {label}
+          {/* Every sortable header carries a glyph: a dimmed ↕ advertises
+              sortability, brightening to ↑/↓ on the active column (ux: obvious
+              over subtle). */}
+          <span className={`adm-th-arrow${active ? "" : " idle"}`} aria-hidden="true">
+            {active ? (dir === "asc" ? "↑" : "↓") : "↕"}
+          </span>
+        </Link>
+      </th>
+    );
+  }
+
+  const now = Date.now();
+  const slaMs = RULE_LEAD_SLA_DAYS * DAY_MS;
 
   return (
     <div data-acc="leads">
@@ -79,39 +139,76 @@ export default async function AdminLeadsPage({
           {/* Scroll container INSIDE the card so the 3px accent keyline
               (card ::before) stays fixed while the table pans at 375. */}
           <div className="adm-table-wrap">
-          <table className="adm-table">
+          <table className="adm-table adm-table--stickycol">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Company</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th>Created</th>
-                <th>Last activity</th>
+                <SortHead label="Name" sortKey="name" />
+                <SortHead label="Company" sortKey="company" />
+                <SortHead label="Type" sortKey="type" />
+                <SortHead label="Status" sortKey="status" />
+                <SortHead label="Created" sortKey="created" />
+                <th title={HEAD_TITLES.activity}>Last activity</th>
                 <th aria-hidden="true" />
               </tr>
             </thead>
             <tbody>
-              {leads.map((lead) => (
-                <tr key={lead.id}>
-                  <td>
-                    <Link href={`/admin/leads/${lead.id}`} className="adm-lead-link">
-                      {lead.name}
-                    </Link>
-                    <span className="adm-sub">{lead.email}</span>
-                  </td>
-                  <td>{lead.company || "—"}</td>
-                  <td>{lead.inquiryType}</td>
-                  <td>
-                    <StatusSelect leadId={lead.id} status={lead.status} />
-                  </td>
-                  <td className="adm-mono">{fmt(lead.createdAt)}</td>
-                  <td className="adm-mono">
-                    {lead.activities[0] ? `${fmt(lead.activities[0].createdAt)} (${lead.activities[0].type})` : "—"}
-                  </td>
-                  <td className="adm-go" aria-hidden="true">→</td>
-                </tr>
-              ))}
+              {leads.map((lead) => {
+                const overdue = lead.status === "new" && now - lead.createdAt.getTime() > slaMs;
+                const ageDays = Math.floor((now - lead.createdAt.getTime()) / DAY_MS);
+                return (
+                  <tr key={lead.id} className={overdue ? "adm-lead-row--sla" : undefined}>
+                    <td>
+                      <Link href={`/admin/leads/${lead.id}`} className="adm-lead-link">
+                        {lead.name}
+                      </Link>
+                      <span className="adm-sub">{lead.email}</span>
+                      {/* SLA signal ALSO in the sticky name cell so it survives
+                          the horizontal scroll at 375, where Created scrolls
+                          off (ux). Text + amber, never color-only. */}
+                      {overdue ? (
+                        <span
+                          className="adm-sla-tag"
+                          title={`In 'new' for ${ageDays} days (threshold ${RULE_LEAD_SLA_DAYS}). Follow up.`}
+                        >
+                          aging · {ageDays}d
+                        </span>
+                      ) : null}
+                    </td>
+                    <td>{lead.company || <span className="adm-unset">not provided</span>}</td>
+                    <td>{lead.inquiryType}</td>
+                    <td>
+                      <StatusSelect leadId={lead.id} status={lead.status} />
+                    </td>
+                    <td
+                      className={`adm-mono${overdue ? " adm-sla-cell" : ""}`}
+                      title={overdue ? `In 'new' for ${ageDays} days (threshold ${RULE_LEAD_SLA_DAYS}). Follow up.` : undefined}
+                    >
+                      {fmt(lead.createdAt)}
+                      {overdue ? <span className="adm-sla-flag"> · {ageDays}d</span> : null}
+                    </td>
+                    <td className="adm-mono">
+                      {lead.activities[0]
+                        ? `${fmt(lead.activities[0].createdAt)} (${lead.activities[0].type})`
+                        : <span className="adm-unset">none yet</span>}
+                    </td>
+                    {/* Full-row click restored under the sticky first column:
+                        the overlay lives on THIS non-sticky trailing cell, so
+                        its inset:0 anchors to the position:relative <tr> (not
+                        the sticky name cell). The name link stays the real
+                        keyboard/SR target; this overlay is mouse-only. */}
+                    <td className="adm-rowgo" aria-hidden="true">
+                      <Link
+                        href={`/admin/leads/${lead.id}`}
+                        className="adm-row-open"
+                        tabIndex={-1}
+                        aria-hidden="true"
+                      >
+                        →
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           </div>

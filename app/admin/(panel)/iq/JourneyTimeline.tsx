@@ -31,7 +31,16 @@ function fmtTotal(seconds: number): string {
   return `${m}m ${String(s).padStart(2, "0")}s`;
 }
 
-export default function JourneyTimeline({ data }: { data: IqVisitorJourney }) {
+export default function JourneyTimeline({
+  data,
+  hideLeadLink = false,
+}: {
+  data: IqVisitorJourney;
+  /** WP3.5: on the lead's own page the "became: a lead" link would point back
+   * to the record already open — suppress it there. Defaults false (the Journey
+   * modal keeps the link). */
+  hideLeadLink?: boolean;
+}) {
   return (
     <div className="adm-journey-wrap">
       <div className="adm-journey-head">
@@ -52,7 +61,7 @@ export default function JourneyTimeline({ data }: { data: IqVisitorJourney }) {
         </div>
       </div>
 
-      {data.hasLead && data.leadId && (
+      {!hideLeadLink && data.hasLead && data.leadId && (
         <Link href={`/admin/leads/${data.leadId}`} className="adm-journey-lead">
           <span aria-hidden="true">→</span> became: a lead. Open the CRM record.
         </Link>

@@ -538,6 +538,92 @@
 .page-admin .adm-j-label { overflow-wrap: anywhere; }
 .page-admin .adm-j-detail { color: var(--text1); overflow-wrap: anywhere; }
 
+/* ---------- WP3.5 lead detail tabs + source facts + list SLA/sort ---------- */
+/* The tab row reuses the 5.8 segmented control (.adm-modal-tabs); as a page
+   element it shrinks to content width and never spans the card. */
+.page-admin .adm-leadtabs { margin-top: 4px; }
+.page-admin .adm-leadtabs > .adm-modal-tabs { display: inline-flex; margin-bottom: 16px; }
+
+/* Honest null glyph for CRM fields: plain words, no dash glyph (dash sweep,
+   design ruling). text1 (~6.3:1 on bg2), NOT text2 (~2.4:1 fails AA on a
+   13px lowercase word). */
+.page-admin .adm-unset { color: var(--text1); font-style: italic; }
+
+/* Source tab (B4/B5) facts */
+.page-admin .adm-source-dl { grid-template-columns: 210px 1fr; }
+.page-admin .adm-source-dl dt { cursor: help; }
+.page-admin .adm-source-dl .adm-mono { white-space: normal; overflow-wrap: anywhere; }
+.page-admin .adm-source-via { color: var(--text1); }
+@media (max-width: 440px) {
+  /* Stacked label-over-value is the standard responsive dl; 210px labels leave
+     too little for mono paths at 375 (design P2). */
+  .page-admin .adm-source-dl { grid-template-columns: 1fr; row-gap: 2px; }
+  .page-admin .adm-source-dl dd { margin-bottom: 8px; }
+}
+
+/* leads-list SLA amber: a 'new' lead past RULE_LEAD_SLA_DAYS (3.4, one
+   threshold shared with IR1). Guard/aging, not error (red stays semantic).
+   Signal is never color-only: the amber age text + "aging . Nd" tag carry it. */
+.page-admin .adm-lead-row--sla { background: color-mix(in srgb, var(--amber) 6%, transparent); }
+/* The sticky first cell paints an OPAQUE bg2 that would mask the semi-transparent
+   row wash (design P2) - pre-mix the same amber over bg2 so the frozen cell
+   matches the row instead of leaving a clean vertical seam. */
+.page-admin .adm-table--stickycol .adm-lead-row--sla td:first-child {
+  background: color-mix(in srgb, var(--amber) 6%, var(--bg2));
+}
+.page-admin .adm-sla-cell { color: var(--amber); }
+.page-admin .adm-sla-flag { color: var(--amber); font-weight: 500; }
+.page-admin .adm-sla-tag {
+  display: inline-block;
+  margin-top: 3px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--amber);
+}
+
+/* Hover wash + accent keyline are declared on the <tr>, but the sticky first
+   cell's opaque bg + z-index mask them on the name column (ux/design P2) -
+   re-declare on the frozen cell so hovering an aging row still lights its name. */
+.page-admin .adm-table--stickycol tbody tr:hover td:first-child,
+.page-admin .adm-table--stickycol tbody tr:focus-within td:first-child {
+  background: color-mix(in srgb, var(--bg2) 96%, #fff);
+  box-shadow: inset 3px 0 0 var(--acc);
+}
+
+/* Full-row click under a sticky first column: the overlay lives on the
+   non-sticky trailing .adm-rowgo cell, so its inset:0 anchors to the
+   position:relative <tr>. z-index 0 covers the static data cells; the sticky
+   name cell (z-index 1) and the status wrapper (z-index 2) stay clickable. */
+.page-admin .adm-rowgo { text-align: right; }
+.page-admin .adm-row-open {
+  display: inline-block;
+  color: var(--acc);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.12s var(--ease), transform 0.12s var(--ease);
+}
+.page-admin .adm-table tbody tr:hover .adm-row-open,
+.page-admin .adm-table tbody tr:focus-within .adm-row-open { opacity: 1; transform: none; }
+.page-admin .adm-row-open::after { content: ""; position: absolute; inset: 0; z-index: 0; }
+
+/* sortable table headers */
+.page-admin .adm-th-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  transition: color var(--t-fast) var(--ease);
+}
+.page-admin .adm-th-sort:hover,
+.page-admin .adm-th-sort.on { color: var(--text0); }
+.page-admin .adm-th-sort:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+.page-admin .adm-th-arrow { color: var(--acc); font-size: 10px; min-width: 10px; }
+/* Dimmed on inactive sortable headers: advertises sortability without shouting. */
+.page-admin .adm-th-arrow.idle { color: var(--text2); }
+
 /* ---------- §5.10 forms / §5.7 buttons ---------- */
 .page-admin label {
   display: block;
