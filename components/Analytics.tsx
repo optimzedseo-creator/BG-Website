@@ -93,8 +93,12 @@ export default function Analytics() {
       const path = window.location.pathname;
       const href = a.getAttribute("href") || "";
 
-      // Homepage router card → chooser_click { card: executive|fractional|consulting|speaking }
-      if (a.matches(".chooser a.card")) {
+      // The 4-path chooser → chooser_click { card: executive|fractional|consulting|speaking }.
+      // C1 re-wire (C1-CONTENT-MAP §4.3): the chooser lives on as the home
+      // offer rows (a.of-row) and the story mini-offers (a.mo); the legacy
+      // .chooser card selector stays for any unmigrated surface. Event name
+      // and meta shape are UNCHANGED so the admin funnel never goes dark.
+      if (a.matches(".chooser a.card, .c1 a.of-row, .c1 a.mo")) {
         sendEvent("chooser_click", path, { card: href.replace(/^\//, "").split(/[?#]/)[0] });
         return;
       }
