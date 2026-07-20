@@ -115,7 +115,9 @@ export default function HomePage() {
               </div>
             </a>
             <a className="arc-card reveal" href="/story#ch-05">
-              <PhotoFrame ratio="4/3" tone="room" caption="The session room" />
+              {/* Uncaptioned per the stand-in caption rule (era labels only, never
+                  moment/place claims on gradient stand-ins). */}
+              <PhotoFrame ratio="4/3" tone="room" />
               <div className="arc-body">
                 <span className="arc-n">Chapter three</span>
                 <h3>The builder</h3>
@@ -271,7 +273,7 @@ export default function HomePage() {
       <CinemaQuote
         kicker="From the story"
         quote={"When the canopy rolls up at altitude, you don’t get to negotiate with the situation."}
-        attribution={"Chapter two · Thirty seconds"}
+        attribution={"Chapter two · Twenty-five seconds"}
         ctaHref="/story"
         ctaLabel="Read the whole story"
       />

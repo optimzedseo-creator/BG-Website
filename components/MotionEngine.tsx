@@ -112,6 +112,15 @@ export default function MotionEngine() {
         }
         o.el.style.transform = "translate3d(0," + y.toFixed(2) + "px,0)";
       }
+      // Reveal sweep (design P1b + ux P3, §2.17): IntersectionObserver alone
+      // can stall (KB-documented pane gotcha; reproduced live) — this scroll+
+      // interval sweep guarantees no .reveal is ever stranded hidden. Idempotent
+      // alongside SiteEffects' IO (both only ever ADD .in).
+      const limit = vh * 0.92;
+      const pending = document.querySelectorAll<HTMLElement>(".reveal:not(.in)");
+      for (let p = 0; p < pending.length; p++) {
+        if (pending[p].getBoundingClientRect().top < limit) pending[p].classList.add("in");
+      }
       if (small) {
         for (let s = 0; s < cols.length; s++) cols[s].style.removeProperty("--spine"); // CSS shows it fully drawn
       } else {

@@ -70,6 +70,8 @@ export default function StoryPage() {
               <span>No embellishment required</span>
             </p>
           </div>
+          {/* STANDING RULE (ux P2-1): nothing above the fold carries .reveal —
+              an LCP/priority element must never render hidden waiting for JS. */}
           <PhotoFrame
             ratio="3/4"
             tone="sepia"
@@ -78,7 +80,6 @@ export default function StoryPage() {
             caption={"Bradley Griffin · U.S. Army"}
             sizes="(max-width: 860px) 100vw, 40vw"
             priority
-            className="reveal"
           />
         </div>
       </section>
@@ -122,13 +123,13 @@ export default function StoryPage() {
         </div>
       </section>
 
-      {/* ======= CH 02 — THIRTY SECONDS (dark) — the parachute account is KB-CANONICAL and FROZEN ======= */}
+      {/* ======= CH 02 — TWENTY-FIVE SECONDS (dark) — the parachute account is KB-CANONICAL and FROZEN ======= */}
       <section className="chapter dark" id="ch-02">
         <div className="wrap ch-grid" data-px="stack">
           <div className="ch-rail reveal">
             <div className="ch-num">02</div>
             <div>
-              <span className="microlabel">Thirty seconds</span>
+              <span className="microlabel">Twenty-five seconds</span>
               <p className="ch-meta">Airborne operation<br />One jump &middot; one decision</p>
             </div>
             <div className="rule"></div>
@@ -212,12 +213,10 @@ export default function StoryPage() {
             <p className="prose">The operator years came next, the ones a r&eacute;sum&eacute; lists cleanly and the work never was. At <strong>Wensco</strong> I owned every outcome, and the records for sales, revenue, and growth fell one after another.</p>
             <p className="prose">Then <strong>AcreValue</strong>, the one that proved the system travels. I came in fractional: a platform with 1.5 million users and recurring revenue that had declined two straight years. I rebuilt the go-to-market from the inside sales calls out, repositioned the product, returned MRR to growth, and set the table for the ending: <strong>acquisition by CoStar Group, a NASDAQ company</strong>. A turnaround that ends on a stock ticker doesn&rsquo;t need adjectives.</p>
             <p className="prose"><strong>Atrium</strong> handed me a $25M budget across six brands, and it was deployed the way a budget that size should be: with discipline, attribution, and zero sentiment. <strong>Vertex</strong> made me Chief Marketing Officer, and within four months inbound calls were up 490% and the booking rate had gone from 16% to 59%. Today I run Midwest marketing for <strong>Infinity Home Services</strong>, and the region leads the entire company: the #1 performing region, with double-digit year-over-year sales growth.</p>
-            <PhotoFrame
-              ratio="16/9"
-              tone="room"
-              caption={"The session room, morning of the talk"}
-              className="ch-fig-wide"
-            />
+            {/* Stand-in caption rule (design P2 + content): gradient stand-ins carry
+                era labels only, never moment claims — this frame stays uncaptioned
+                until the shoot delivers the real room photo (slot 4). */}
+            <PhotoFrame ratio="16/9" tone="room" className="ch-fig-wide" />
           </div>
         </div>
       </section>
@@ -283,7 +282,8 @@ export default function StoryPage() {
                 caption={"Michigan water · honest books"}
                 sizes="(max-width: 860px) 100vw, 320px"
               />
-              <PhotoFrame ratio="4/3" tone="dusk" caption={"Before the hunt · off the clock"} />
+              {/* Uncaptioned per the stand-in caption rule (no moment claims on gradients). */}
+              <PhotoFrame ratio="4/3" tone="dusk" />
             </div>
           </div>
         </div>

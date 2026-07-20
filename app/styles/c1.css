@@ -380,14 +380,14 @@
   margin: 34px 0 0;
   padding: 0;
 }
+/* No hover lift: method cards are not clickable — false affordance (ux P2-2,
+   design-ratified: clarity over life). Lifts belong to links only. */
 .c1 .method li {
   background: #fff;
   border: 1px solid var(--hair);
   border-radius: var(--r);
   padding: 22px;
-  transition: transform 0.2s, box-shadow 0.2s;
 }
-.c1 .method li:hover { transform: translateY(-3px); box-shadow: var(--sh-mini); }
 .c1 .step-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .c1 .step-n { display: inline-flex; color: var(--gold-deep); }
 .c1 .step-n svg { width: 22px; height: 22px; }

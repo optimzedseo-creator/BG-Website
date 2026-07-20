@@ -59,7 +59,7 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 72px; /* sticky header height — anchor targets (/story#ch-01 …) land clear of it */ }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; /* sticky header renders 73px with its border (ux P3) — anchor targets (/story#ch-01 …) land clear of it */ }
 
 body {
   font-family: var(--sans);
@@ -171,7 +171,8 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 500; line-height: 1.08; let
   font-weight: 600;
   transition: background 0.2s, transform 0.18s ease;
 }
-.nav .nav-cal:hover { background: var(--gold); color: #fff; transform: translateY(-1px); box-shadow: none; }
+/* Hover: navy + gold-bright (design P1a) — gold bg + #fff is a banned pair (3.15:1). */
+.nav .nav-cal:hover { background: var(--navy); color: var(--gold-bright); transform: translateY(-1px); box-shadow: none; }
 
 .menu-btn {
   display: none;
