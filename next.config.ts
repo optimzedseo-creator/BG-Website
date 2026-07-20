@@ -18,6 +18,15 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  /*
+   * C1 P0: next/image pipeline (the former backlog item, now P1-blocking —
+   * C1-IMPLEMENTATION-PLAN.md §3.4). Modern formats only; device sizes stay
+   * Next defaults. All new C1 imagery renders through <Image> inside
+   * PhotoFrame; legacy raw <img>s convert page-by-page in each page's phase.
+   */
+  images: {
+    formats: ["image/avif", "image/webp"],
+  },
   async headers() {
     return [
       {

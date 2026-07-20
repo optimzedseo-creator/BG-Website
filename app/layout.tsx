@@ -10,16 +10,20 @@ import "./styles/executive.css";
 import "./styles/fractional.css";
 import "./styles/consulting.css";
 import "./styles/insights.css";
+import "./styles/c1.css";
+import "./styles/motion.css";
 
 /*
  * Fonts are self-hosted via next/font (removes the Google Fonts third-party
- * call). The legacy pages loaded Fraunces normal-only (opsz 9..144, wght
- * 400/500/600) — italics were browser-synthesized — so we match that:
- * normal style only, full variable wght + opsz axes.
+ * call). Fraunces loads as a VARIABLE font (no `weight` key ⇒ full wght
+ * range) — this is load-bearing for C1: display type is weight 420, which
+ * only resolves inside the variable range (C1-DESIGN-SYSTEM.md §1.5/§8.4).
+ * C1 also leans on italic `em` in display copy, so the real italic axis is
+ * loaded (was browser-synthesized before).
  */
 const fraunces = Fraunces({
   subsets: ["latin"],
-  style: ["normal"],
+  style: ["normal", "italic"],
   axes: ["opsz"],
   variable: "--font-fraunces",
   display: "swap",
@@ -50,8 +54,20 @@ export const viewport: Viewport = {
  */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${inter.variable}`}>
-      <body>{children}</body>
+    /*
+     * suppressHydrationWarning: the inline script below adds the `js` class
+     * to <html> before first paint (same pattern as theme scripts). React 19
+     * owns <html className> here; the imperative class is additive and never
+     * managed by React — the suppression only silences the dev mismatch note.
+     * The class gates the .reveal hidden state (globals.css): no JS ⇒ no
+     * class ⇒ fully visible static page. NEVER move `js` (or the engine's
+     * `fx`) into JSX — classList only (C1-IMPLEMENTATION-PLAN.md §1.2).
+     */
+    <html lang="en" className={`${fraunces.variable} ${inter.variable}`} suppressHydrationWarning>
+      <body>
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+        {children}
+      </body>
     </html>
   );
 }
