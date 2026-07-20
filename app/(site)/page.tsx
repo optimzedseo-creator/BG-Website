@@ -3,9 +3,9 @@ import NewsletterSignup from "@/components/NewsletterSignup";
 import PhotoFrame from "@/components/PhotoFrame";
 import CinemaQuote from "@/components/CinemaQuote";
 
-const TITLE = "Bradley Griffin - Chief Marketing Officer & Growth Executive";
+const TITLE = "Bradley Griffin - CMO, Growth Executive & Army Ranger Veteran";
 const DESCRIPTION =
-  "CMO and growth executive - two successful exits, a NASDAQ acquisition, a #1-performing region on a national platform. Executive roles, fractional CMO, AI consulting, and keynotes.";
+  "Army Ranger veteran turned CMO and growth executive: two exits, a NASDAQ acquisition, and a #1-performing region. Executive roles, fractional CMO, AI consulting, and keynotes.";
 const URL = "https://www.bradleygriffin.us/";
 const OG_IMAGE = "https://www.bradleygriffin.us/assets/bradley-griffin-og.jpg";
 
@@ -16,9 +16,11 @@ const OG_IMAGE = "https://www.bradleygriffin.us/assets/bradley-griffin-og.jpg";
  * resolver strips the trailing slash on the root path. Do not re-add them
  * to this metadata object — you'd get duplicates.
  *
- * C1 MIGRATION NOTE: title/description/OG/JSON-LD are FROZEN at the live
- * values until Brad's D1 (hero identity) call lands in the KB — the C1
- * rebuild changes visible copy only (C1-IMPLEMENTATION-PLAN.md §3.2).
+ * D1 RESOLVED (2026-07-20, Brad): the identity H1 "Soldier. Operator.
+ * Builder." stays. Title/description/OG re-authored by bradley-seo in the
+ * same window for snippet-to-page coherence (blend: name + role class terms
+ * + identity; claims unchanged and visibly supported). JSON-LD deliberately
+ * untouched — zero H1 coupling, Person claims still match visible copy.
  */
 export const metadata: Metadata = {
   title: TITLE,
