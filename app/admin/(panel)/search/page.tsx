@@ -2,19 +2,30 @@ import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
 import { readMode } from "@/lib/admin/iq/mode";
-import { GSC_MIN_IMPRESSIONS, parseWindowParam } from "@/lib/admin/iq/shared";
+import {
+  GSC_MIN_IMPRESSIONS,
+  parsePeriodParam,
+  parseWindowParam,
+  periodFilters,
+} from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import type { GscTrendPoint, IqSearch } from "@/lib/admin/iq/types";
 import { GscTileButton, IntentBars, QueriesTable } from "./SearchDrills";
+import { CmpRow } from "../overview/WidgetRenderers";
+import CompareControl from "../CompareControl";
+import { periodHeadLabel } from "../fmt";
 import DemoBadge from "../iq/DemoBadge";
 
 export const dynamic = "force-dynamic";
 
 /*
- * Search (GSC) module (WP2.6) — server-rendered; period flips navigate (no
- * island needed: no module-local chips here in Wave 2). Everything is charted
- * by GSC's STORED date (gscDateKey) — never re-bucketed — and the GSC
- * population never mixes with site metrics (DATA §2).
+ * Search (GSC) module (WP2.6 → PERIOD-UI wave) — server-rendered; period and
+ * compare flips NAVIGATE (publishPeriodOrNavigate's fallback — no island
+ * here), and the grammar parses via the SAME parsePeriodParam + periodFilters
+ * pair as every other surface (closed loop; MTD default). Everything is
+ * charted by GSC's STORED date (gscDateKey) — never re-bucketed — and the GSC
+ * population never mixes with site metrics (DATA §2). The property KPI tiles
+ * carry the honest four-state comparison (GscDaily totals, M2 key-sliced).
  *
  * Honesty surface: the ~2-day lag notice is prominent, % classifiable (B9) is
  * ALWAYS shown, brandedAmbiguous is reported separately (never folded into
@@ -68,18 +79,32 @@ function GscTrendChart({ points }: { points: GscTrendPoint[] }) {
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ p?: string }>;
+  searchParams: Promise<{
+    p?: string;
+    period?: string;
+    compare?: string;
+    from?: string;
+    to?: string;
+    cmpFrom?: string;
+    cmpTo?: string;
+  }>;
 }) {
   if (!(await requireAdmin())) redirect("/admin/login");
 
-  const { p } = await searchParams;
+  const sp = await searchParams;
+  const windowDays = parseWindowParam(sp.p);
+  const pp = parsePeriodParam(sp);
   const internalVisitorIds = await readInternalVisitorIds();
   const mode = await readMode();
-  const s = await getSource(mode).search({ window: parseWindowParam(p) }, { internalVisitorIds });
+  const s = await getSource(mode).search(
+    { window: windowDays, ...periodFilters(pp) },
+    { internalVisitorIds }
+  );
 
   const classifiablePct = s.impressions > 0 ? Math.round((s.visibleImpressions / s.impressions) * 100) : null;
   const hasGsc = s.gscThrough !== null;
   const hasWindowData = s.trend.length > 0 || s.impressions > 0;
+  const headLabel = periodHeadLabel(s.period, s.window);
 
   return (
     <div data-acc="search">
@@ -87,8 +112,16 @@ export default async function SearchPage({
         <h1>🔍 Search</h1>
         <DemoBadge demo={mode === "demo"} />
         <span className="adm-count">
-          {hasGsc ? `data through ${s.gscThrough}` : "no Search Console data yet"} · last {s.window} days
+          {hasGsc ? `data through ${s.gscThrough}` : "no Search Console data yet"} · {headLabel}
+          {s.period.compareLabel ? ` · vs ${s.period.compareLabel}` : ""}
         </span>
+      </div>
+
+      <div className="adm-controlbar">
+        <CompareControl
+          params={{ window: windowDays, ...pp }}
+          compareLabel={s.period.compareLabel}
+        />
       </div>
 
       {/* Prominent lag notice (UX §7): never blame-less blankness. */}
@@ -102,10 +135,12 @@ export default async function SearchPage({
         <div className="adm-kpi" title="Property-level impressions from Search Console daily totals, the honest denominator.">
           <span className="adm-kpi-n">{s.impressions}</span>
           <span className="adm-kpi-label">Impressions</span>
+          <CmpRow cmp={s.comparisons.impressions} echoKind={s.period.kind} />
         </div>
         <div className="adm-kpi" title="Property-level clicks from Search Console daily totals.">
           <span className="adm-kpi-n">{s.clicks}</span>
           <span className="adm-kpi-label">Clicks</span>
+          <CmpRow cmp={s.comparisons.clicks} echoKind={s.period.kind} />
         </div>
         <GscTileButton
           kind="branded"
@@ -133,7 +168,7 @@ export default async function SearchPage({
         </h2>
         {s.trend.length === 0 ? (
           <p className="adm-empty">
-            📭 No Search Console days in this window yet. The two lines draw as daily reports arrive
+            📭 No Search Console days in this period yet. The two lines draw as daily reports arrive
             (about 2 days behind){s.gscSince ? `; Search Console has been counting since ${s.gscSince}` : ""}.
           </p>
         ) : (
@@ -142,7 +177,7 @@ export default async function SearchPage({
             <p className="adm-caption">
               Lines cover only the queries Search Console shows us
               {classifiablePct !== null
-                ? `; in this window that is ${s.visibleImpressions} of ${s.impressions} impressions (${classifiablePct}%)`
+                ? `; in this period that is ${s.visibleImpressions} of ${s.impressions} impressions (${classifiablePct}%)`
                 : ""}
               . Zero lines under non-zero totals mean anonymized queries, not zero search traffic.
               Ambiguous-branded clicks sit on neither line.
@@ -156,7 +191,7 @@ export default async function SearchPage({
           <h2>Intent buckets</h2>
           {s.intents.length === 0 && !s.intentsBelowThreshold ? (
             <p className="adm-empty">
-              📭 No classifiable queries in this window. Buckets fill as Search Console releases query rows
+              📭 No classifiable queries in this period. Buckets fill as Search Console releases query rows
               {s.gscSince ? ` (counting since ${s.gscSince})` : ""}.
             </p>
           ) : (
@@ -168,7 +203,7 @@ export default async function SearchPage({
           <h2>Countries</h2>
           {s.countries.length === 0 ? (
             <p className="adm-empty">
-              📭 No country rows in this window. Search Console reports its own country dimension as data arrives.
+              📭 No country rows in this period. Search Console reports its own country dimension as data arrives.
             </p>
           ) : (
             <>
@@ -215,7 +250,7 @@ export default async function SearchPage({
         {s.queries.length === 0 && !s.queriesBelowThreshold ? (
           <p className="adm-empty">
             📭 Query rows appear here as Search Console shares them; rows under {GSC_MIN_IMPRESSIONS} impressions roll into
-            one counted line. Search Console has shared no query rows in this window
+            one counted line. Search Console has shared no query rows in this period
             {s.gscSince ? ` (listening since ${s.gscSince})` : ""}. The totals above still count every
             impression, including the anonymized ones.
           </p>
@@ -232,7 +267,7 @@ export default async function SearchPage({
 
       {!hasWindowData && hasGsc && (
         <p className="adm-caption">
-          Search Console has data through {s.gscThrough}, but none of it falls inside the last {s.window} days.
+          Search Console has data through {s.gscThrough}, but none of it falls inside this period ({headLabel}).
         </p>
       )}
 

@@ -54,7 +54,11 @@ export default function AddWidgetModal({
                       if (!added) onAdd(g);
                     }}
                   >
-                    <span className={`adm-gallery-acc ${g.accentClass}`} aria-hidden="true" />
+                    <span
+                      className={`adm-gallery-acc ${g.accentClass}`}
+                      data-acc={g.acc}
+                      aria-hidden="true"
+                    />
                     <span className="adm-gallery-text">
                       <span className="adm-gallery-name">{g.name}</span>
                       <span className="adm-gallery-desc">{g.desc}</span>

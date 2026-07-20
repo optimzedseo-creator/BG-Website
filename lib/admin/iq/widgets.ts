@@ -3,7 +3,8 @@
 // THE WIDGET CONTRACT (webdev sketch, KB 2026-07-18):
 //  - WidgetKind is a closed whitelist. Every kind has exactly one WidgetDef
 //    here: title, default/min grid size, the source method that feeds it, and
-//    a PURE selector over that method's EXISTING payload (IqCommand today).
+//    a PURE selector over that method's EXISTING payload (SourcePayloadMap —
+//    the DISCRIMINATED method→payload map, KB:1692 condition a).
 //    No widget introduces a new data-fetch path — a widget is a VIEW over a
 //    payload the surface already computes (arch ruling: fetch fan-out is the
 //    biggest Phase-2 risk; the batched endpoint dedups by sourceMethod).
@@ -19,13 +20,26 @@
 // PII-free by construction — nothing here can widen that surface.
 
 import type {
+  ActivityRow,
+  AdminIqSource,
+  BelowThresholdRollup,
+  BreakdownRow,
   CommandKpi,
   CommandKpiId,
+  ContentPageRow,
+  Filters,
   FirstEntry,
   FunnelStepV2,
+  GscQueryRow,
+  IqActivity,
   IqCommand,
+  IqContent,
   IqInsightCard,
+  IqSearch,
+  IqTraffic,
+  LeadStatusCount,
   ScorecardSlot,
+  SourceOpts,
   TrendBucket,
 } from "./types";
 
@@ -57,7 +71,114 @@ export function isCommandKpiId(v: unknown): v is CommandKpiId {
   return typeof v === "string" && Object.hasOwn(KPI_ID_SET, v);
 }
 
+// ---- Source methods + the DISCRIMINATED payload map -------------------------
+// (Widget-library wave — the KB:1692 refactor, landed BEFORE any new
+// sourceMethod ships, as pre-accepted.)
+
+/** The all-time leads snapshot the endpoint assembles from the TWO existing
+ * snapshot source calls (leadsByInquiryType + leadsByStatus — no new data
+ * path; one "method" so a canvas with both donuts still costs one fetch pass).
+ * NO period, NO comparison — these are all-time counts and every renderer
+ * labels them so (data-analyst standing rule: leadsByStatus stays an all-time
+ * {status,n} snapshot). */
+export interface LeadsSnapshot {
+  byInquiryType: BreakdownRow[];
+  byStatus: LeadStatusCount[];
+}
+
+/**
+ * Method → payload type, DISCRIMINATED (KB:1692 condition a): the moment two
+ * methods return different shapes, a shared `IqCommand`-typed map would lie.
+ * Every method here maps to EXISTING source calls only — a widget is a view
+ * over a payload the app already computes, never a new data path.
+ */
+export interface SourcePayloadMap {
+  command: IqCommand;
+  traffic: IqTraffic;
+  content: IqContent;
+  search: IqSearch;
+  activity: IqActivity;
+  leads: LeadsSnapshot;
+}
+
+/** Source methods the batched endpoint may call. Dedup-by-method is the
+ * fan-out guarantee (arch KB:1527): fetch count = distinct methods, never
+ * widget count. */
+export type WidgetSourceMethod = keyof SourcePayloadMap;
+
 // ---- Widget kinds + per-widget data slices ---------------------------------
+
+/** leads-donut config axis — which snapshot the donut charts. */
+export type LeadsDonutBy = "inquiryType" | "status";
+
+const LEADS_DONUT_BY_SET: Record<LeadsDonutBy, true> = {
+  inquiryType: true,
+  status: true,
+};
+
+export function isLeadsDonutBy(v: unknown): v is LeadsDonutBy {
+  // Object.hasOwn, not `in` (security F1 — same rule as every whitelist here).
+  return typeof v === "string" && Object.hasOwn(LEADS_DONUT_BY_SET, v);
+}
+
+/** Per-widget row caps — a widget is a compact slice, the module page is the
+ * full table. Trimmed rows are COUNTED (rolled into the omitted/beyond
+ * numbers), never silently vanished (api A2 truncation honesty). */
+export const TOP_PAGES_WIDGET_ROWS = 8;
+export const SOURCES_WIDGET_ROWS = 6;
+export const GSC_QUERIES_WIDGET_ROWS = 8;
+export const ACTIVITY_WIDGET_ROWS = 8;
+
+/** leads-donut slice. `rows.label` carries the STORED value (inquiry-type
+ * string / status key) — the renderer owns display mapping + slice colors.
+ * All-time by definition; renders NO comparison row and labels itself so. */
+export interface LeadsDonutSlice {
+  by: LeadsDonutBy;
+  rows: BreakdownRow[];
+}
+
+/** top-pages slice (rides `content` — IqContent.pages IS the top-pages table;
+ * IqTraffic carries no per-page rows). */
+export interface TopPagesSlice {
+  pages: ContentPageRow[];
+  /** Payload's own pagesOmitted + rows trimmed by the widget cap. */
+  omitted: number;
+  countingSince: string | null;
+}
+
+/** sources slice: first-touch source classes (visitors) + referrers
+ * (pageviews) — both straight off IqTraffic, uncut (the dashboard applies no
+ * device/country/source cuts). */
+export interface SourcesSlice {
+  /** Visitors per first-touch source class over the period (chipOptions.sources). */
+  sourceClasses: BreakdownRow[];
+  /** The source-class denominator: distinct visitors in the period. */
+  visitors: number;
+  referrers: BreakdownRow[];
+  /** The referrer denominator: pageviews in the period. */
+  pageviews: number;
+  /** Referrer rows trimmed by the widget cap. */
+  referrersOmitted: number;
+}
+
+/** gsc-queries slice. `beyondCap` merges the payload's own beyond-cap rollup
+ * with rows the widget cap trimmed — counted, never hidden. */
+export interface GscQueriesSlice {
+  queries: GscQueryRow[];
+  below: BelowThresholdRollup | null;
+  beyondCap: BelowThresholdRollup | null;
+  gscThrough: string | null;
+  gscSince: string | null;
+}
+
+/** activity-recent slice: the newest rows, compact. */
+export interface ActivityRecentSlice {
+  rows: ActivityRow[];
+  /** More matching rows existed than the widget shows (widget cap OR the
+   * payload's own rowCap). */
+  capped: boolean;
+  countingSince: string | null;
+}
 
 /** What each widget kind's selector returns — the value in the batched
  * endpoint's keyed map. Adding a kind HERE is what forces the registry entry. */
@@ -75,6 +196,16 @@ export interface WidgetDataMap {
   firsts: { firsts: FirstEntry[]; countingSince: string | null };
   /** Fired insight cards + armed-rule count (the calm empty-strip card). */
   insights: { insights: IqInsightCard[]; ruleCount: number };
+  /** Lead donut (config.by) — ALL-TIME snapshot, self-labeled, no comparison. */
+  "leads-donut": LeadsDonutSlice;
+  /** Top pages table slice (period-scoped). */
+  "top-pages": TopPagesSlice;
+  /** Referrer + source-class breakdown (period-scoped). */
+  sources: SourcesSlice;
+  /** Top Search Console queries (period-scoped, GSC population). */
+  "gsc-queries": GscQueriesSlice;
+  /** Recent activity stream, compact (period-scoped). */
+  "activity-recent": ActivityRecentSlice;
 }
 
 export type WidgetKind = keyof WidgetDataMap;
@@ -82,18 +213,13 @@ export type WidgetKind = keyof WidgetDataMap;
 /** Union of all widget data slices (the batched response's map value type). */
 export type WidgetData = WidgetDataMap[WidgetKind];
 
-/** Per-widget config. Only `kpi` uses it today (which KPI the tile shows);
- * every other kind normalizes to {}. Unknown keys are DROPPED on validation —
+/** Per-widget config. `kpi` carries kpiId, `leads-donut` carries `by`; every
+ * other kind normalizes to {}. Unknown keys are DROPPED on validation —
  * config is persisted JSON and must never become a junk drawer. */
 export interface WidgetConfig {
   kpiId?: CommandKpiId;
+  by?: LeadsDonutBy;
 }
-
-/** Source methods the batched endpoint may call. The initial widget set all
- * rides `command` (one payload already drives the whole surface, DATA §4.1);
- * this union grows in later WPs (traffic, search, …) and the endpoint's
- * dedup-by-method guarantee is what keeps that growth safe. */
-export type WidgetSourceMethod = "command";
 
 export interface WidgetSize {
   w: number;
@@ -103,9 +229,14 @@ export interface WidgetSize {
 /**
  * One widget definition. `select` is PURE: payload in, slice out — no I/O, no
  * clock, no mutation (the endpoint calls each source method once and fans the
- * one payload out to every widget that rides it).
+ * one payload out to every widget that rides it). The K/M pairing means a def
+ * whose selector reads the wrong payload type for its declared sourceMethod is
+ * a compile error (KB:1692 condition a, enforced at the definition site).
  */
-export interface WidgetDef<K extends WidgetKind = WidgetKind> {
+export interface WidgetDef<
+  K extends WidgetKind = WidgetKind,
+  M extends WidgetSourceMethod = WidgetSourceMethod,
+> {
   kind: K;
   title: string;
   /** Grid units — 12-col canvas, coarse row unit (design spec KB 1540). */
@@ -114,21 +245,44 @@ export interface WidgetDef<K extends WidgetKind = WidgetKind> {
    * module-class 4). validateLayout does NOT enforce these — they are UI
    * ergonomics, not safety bounds. */
   minSize: WidgetSize;
-  sourceMethod: WidgetSourceMethod;
-  select(payload: IqCommand, config: WidgetConfig): WidgetDataMap[K];
+  sourceMethod: M;
+  select(payload: SourcePayloadMap[M], config: WidgetConfig): WidgetDataMap[K];
+}
+
+/** Any legal def for kind K — one entry per source method, so the registry
+ * literal must pick a method AND type its selector against that method's
+ * payload. */
+type WidgetDefFor<K extends WidgetKind> = {
+  [M in WidgetSourceMethod]: WidgetDef<K, M>;
+}[WidgetSourceMethod];
+
+/** Merge a below/beyond rollup with rows a widget cap trimmed — the trimmed
+ * rows stay COUNTED (api A2), just rolled up. Pure. */
+function mergeRollup(
+  base: BelowThresholdRollup | null,
+  trimmed: { impressions: number; clicks: number }[]
+): BelowThresholdRollup | null {
+  if (trimmed.length === 0) return base;
+  return {
+    rows: (base?.rows ?? 0) + trimmed.length,
+    impressions: (base?.impressions ?? 0) + trimmed.reduce((a, r) => a + r.impressions, 0),
+    clicks: (base?.clicks ?? 0) + trimmed.reduce((a, r) => a + r.clicks, 0),
+  };
 }
 
 /** The registry — mapped over WidgetDataMap so it is EXHAUSTIVE by
  * construction: a new WidgetKind without a def (or a def whose selector
- * returns the wrong slice) is a compile error. */
-export const WIDGET_REGISTRY: { [K in WidgetKind]: WidgetDef<K> } = {
+ * returns the wrong slice, or a selector typed against a payload that is not
+ * its declared sourceMethod's) is a compile error. Selector payload params are
+ * annotated EXPLICITLY so the K/M pairing is checked, not inferred. */
+export const WIDGET_REGISTRY: { [K in WidgetKind]: WidgetDefFor<K> } = {
   kpi: {
     kind: "kpi",
     title: "KPI tile",
     defaultSize: { w: 3, h: 1 },
     minSize: { w: 3, h: 1 },
     sourceMethod: "command",
-    select: (payload, config) => payload.kpis.find((k) => k.id === config.kpiId) ?? null,
+    select: (payload: IqCommand, config) => payload.kpis.find((k) => k.id === config.kpiId) ?? null,
   },
   trend: {
     kind: "trend",
@@ -136,7 +290,7 @@ export const WIDGET_REGISTRY: { [K in WidgetKind]: WidgetDef<K> } = {
     defaultSize: { w: 8, h: 3 },
     minSize: { w: 4, h: 2 },
     sourceMethod: "command",
-    select: (payload) => payload.trend,
+    select: (payload: IqCommand) => payload.trend,
   },
   funnel: {
     kind: "funnel",
@@ -144,7 +298,7 @@ export const WIDGET_REGISTRY: { [K in WidgetKind]: WidgetDef<K> } = {
     defaultSize: { w: 4, h: 3 },
     minSize: { w: 4, h: 2 },
     sourceMethod: "command",
-    select: (payload) => payload.funnel,
+    select: (payload: IqCommand) => payload.funnel,
   },
   scorecard: {
     kind: "scorecard",
@@ -152,7 +306,7 @@ export const WIDGET_REGISTRY: { [K in WidgetKind]: WidgetDef<K> } = {
     defaultSize: { w: 6, h: 2 },
     minSize: { w: 4, h: 2 },
     sourceMethod: "command",
-    select: (payload) => payload.scorecard,
+    select: (payload: IqCommand) => payload.scorecard,
   },
   firsts: {
     kind: "firsts",
@@ -160,7 +314,7 @@ export const WIDGET_REGISTRY: { [K in WidgetKind]: WidgetDef<K> } = {
     defaultSize: { w: 4, h: 3 },
     minSize: { w: 4, h: 2 },
     sourceMethod: "command",
-    select: (payload) => ({ firsts: payload.firsts, countingSince: payload.countingSince }),
+    select: (payload: IqCommand) => ({ firsts: payload.firsts, countingSince: payload.countingSince }),
   },
   insights: {
     kind: "insights",
@@ -168,9 +322,149 @@ export const WIDGET_REGISTRY: { [K in WidgetKind]: WidgetDef<K> } = {
     defaultSize: { w: 6, h: 2 },
     minSize: { w: 4, h: 2 },
     sourceMethod: "command",
-    select: (payload) => ({ insights: payload.insights, ruleCount: payload.ruleCount }),
+    select: (payload: IqCommand) => ({ insights: payload.insights, ruleCount: payload.ruleCount }),
+  },
+  "leads-donut": {
+    kind: "leads-donut",
+    title: "Leads donut",
+    // design #11: the donut + legend body wants a half-row by default.
+    defaultSize: { w: 6, h: 3 },
+    minSize: { w: 4, h: 2 },
+    sourceMethod: "leads",
+    // Rows keep the STORED values (status keys / inquiry strings) — display
+    // mapping + slice colors are the renderer's job. All-time by definition.
+    select: (payload: LeadsSnapshot, config) =>
+      config.by === "status"
+        ? { by: "status" as const, rows: payload.byStatus.map((s) => ({ label: s.status, n: s.n })) }
+        : { by: "inquiryType" as const, rows: payload.byInquiryType },
+  },
+  "top-pages": {
+    kind: "top-pages",
+    title: "Top pages",
+    defaultSize: { w: 6, h: 3 },
+    minSize: { w: 4, h: 2 },
+    sourceMethod: "content",
+    select: (payload: IqContent) => ({
+      pages: payload.pages.slice(0, TOP_PAGES_WIDGET_ROWS),
+      omitted:
+        (payload.pagesOmitted ?? 0) + Math.max(0, payload.pages.length - TOP_PAGES_WIDGET_ROWS),
+      countingSince: payload.countingSince,
+    }),
+  },
+  sources: {
+    kind: "sources",
+    title: "Traffic sources",
+    defaultSize: { w: 4, h: 3 },
+    minSize: { w: 4, h: 2 },
+    sourceMethod: "traffic",
+    // chipOptions are computed from the UNCUT period (types.ts) and the
+    // dashboard applies no cuts, so visitorsUnfiltered is their denominator.
+    select: (payload: IqTraffic) => ({
+      sourceClasses: payload.chipOptions.sources,
+      visitors: payload.visitorsUnfiltered,
+      referrers: payload.referrers.slice(0, SOURCES_WIDGET_ROWS),
+      pageviews: payload.pageviews,
+      referrersOmitted: Math.max(0, payload.referrers.length - SOURCES_WIDGET_ROWS),
+    }),
+  },
+  "gsc-queries": {
+    kind: "gsc-queries",
+    title: "Top search queries",
+    defaultSize: { w: 6, h: 3 },
+    minSize: { w: 4, h: 2 },
+    sourceMethod: "search",
+    select: (payload: IqSearch) => ({
+      queries: payload.queries.slice(0, GSC_QUERIES_WIDGET_ROWS),
+      below: payload.queriesBelowThreshold,
+      beyondCap: mergeRollup(
+        payload.queriesBeyondCap,
+        payload.queries.slice(GSC_QUERIES_WIDGET_ROWS)
+      ),
+      gscThrough: payload.gscThrough,
+      gscSince: payload.gscSince,
+    }),
+  },
+  "activity-recent": {
+    kind: "activity-recent",
+    title: "Recent activity",
+    defaultSize: { w: 6, h: 3 },
+    minSize: { w: 4, h: 2 },
+    sourceMethod: "activity",
+    select: (payload: IqActivity) => ({
+      rows: payload.rows.slice(0, ACTIVITY_WIDGET_ROWS),
+      capped: payload.truncated || payload.rows.length > ACTIVITY_WIDGET_ROWS,
+      countingSince: payload.countingSince,
+    }),
   },
 };
+
+/**
+ * Run one widget kind's selector against a store of fetched payloads. Returns
+ * undefined when the kind's source payload is absent from the store. The
+ * registry's mapped type pairs each def's sourceMethod with its payload type
+ * at the DEFINITION site; that correlation is erased by this generic lookup
+ * and restored by the single documented cast below — the ONE place the
+ * discriminated map is widened, so callers never hand a payload to the wrong
+ * selector by construction.
+ */
+export function selectWidgetSlice(
+  kind: WidgetKind,
+  payloads: Readonly<Partial<SourcePayloadMap>>,
+  config: WidgetConfig
+): WidgetData | undefined {
+  const def = WIDGET_REGISTRY[kind];
+  const payload = payloads[def.sourceMethod];
+  if (payload === undefined) return undefined;
+  return (
+    def.select as (p: SourcePayloadMap[WidgetSourceMethod], c: WidgetConfig) => WidgetData
+  )(payload, config);
+}
+
+// ---- Source fan-out (api N1, db-endorsed) -----------------------------------
+
+/** One typed fetcher per source method — COMPILER-EXHAUSTIVE (the mapped
+ * return type fails to build the moment WidgetSourceMethod grows without a
+ * fetcher). `leads` fans out to the TWO existing all-time snapshot calls (no
+ * new data path; one method keeps the dedup guarantee simple). Lives in THIS
+ * contract module and is imported by the batched route AND the overview
+ * server page — the fan-out cannot fork. */
+export function buildSourceFetchers(
+  src: AdminIqSource,
+  filters: Filters,
+  opts: SourceOpts
+): { [M in WidgetSourceMethod]: () => Promise<SourcePayloadMap[M]> } {
+  return {
+    command: () => src.command(filters, opts),
+    traffic: () => src.traffic(filters, opts),
+    content: () => src.content(filters, opts),
+    search: () => src.search(filters, opts),
+    activity: () => src.activity(filters, opts),
+    leads: async () => ({
+      byInquiryType: await src.leadsByInquiryType(),
+      byStatus: await src.leadsByStatus(),
+    }),
+  };
+}
+
+/** Fetch each requested method ONCE, sequentially over the one pooled
+ * connection (the arch KB:1527 fan-out guarantee — fetch count = distinct
+ * methods, never widget count), skipping anything the caller already holds
+ * (`seed`, e.g. the server page's command payload). */
+export async function fetchSourcePayloads(
+  src: AdminIqSource,
+  filters: Filters,
+  opts: SourceOpts,
+  methods: Iterable<WidgetSourceMethod>,
+  seed?: Readonly<Partial<SourcePayloadMap>>
+): Promise<Partial<SourcePayloadMap>> {
+  const fetchers = buildSourceFetchers(src, filters, opts);
+  const store: Partial<SourcePayloadMap> = { ...seed };
+  const fetchInto = async <M extends WidgetSourceMethod>(m: M): Promise<void> => {
+    if (store[m] === undefined) store[m] = await fetchers[m]();
+  };
+  for (const m of new Set(methods)) await fetchInto(m);
+  return store;
+}
 
 export const WIDGET_KINDS = Object.keys(WIDGET_REGISTRY) as readonly WidgetKind[];
 
@@ -249,6 +543,10 @@ export function validateWidgetConfig(kind: WidgetKind, raw: unknown): WidgetConf
   if (kind === "kpi") {
     if (!isRecord(raw) || !isCommandKpiId(raw.kpiId)) return null;
     return { kpiId: raw.kpiId };
+  }
+  if (kind === "leads-donut") {
+    if (!isRecord(raw) || !isLeadsDonutBy(raw.by)) return null;
+    return { by: raw.by };
   }
   // Every other kind carries no config; whatever was stored normalizes to {}.
   return {};

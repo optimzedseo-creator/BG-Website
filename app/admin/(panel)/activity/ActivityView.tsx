@@ -2,20 +2,25 @@
 
 import { useEffect, useRef, useState } from "react";
 import DemoBadge from "../iq/DemoBadge";
-import type { ActivityKind, IqActivity, SourceClass, WindowDays } from "@/lib/admin/iq/types";
-import { subscribePeriodRefetch } from "../period-bus";
-import { fmtDay } from "../fmt";
+import type { ActivityKind, IqActivity, SourceClass } from "@/lib/admin/iq/types";
+import { buildIqQuery } from "@/lib/admin/iq/shared";
+import { subscribePeriodRefetch, type PeriodSignal } from "../period-bus";
+import { fmtDay, periodHeadLabel } from "../fmt";
 import { openDrill, visitorHash } from "../iq/hash-route";
 
 /*
- * WP3.9 Activity stream (client island). One unified log; two no-navigation
- * triggers: the period bus and kind/source filter chips (refetch through GET
- * /admin/api/iq/activity, querystring kept shareable). Rows with a visitorId
- * drill to the Journey modal; rows without one are non-interactive (no dead
- * affordance). Form/booking rows show {hasVisitorId} facts only — never a name.
+ * WP3.9 Activity stream (client island). PERIOD-UI wave: the island rides the
+ * FULL PeriodSignal from the top bar and refetches with the whole grammar;
+ * the head renders from the payload PeriodEcho. Deliberately NO compare
+ * control here — a log compares nothing (the source forces compareMode
+ * "none"), and a compare pill over zero compared numbers is a dead affordance.
+ * Rows with a visitorId drill to the Journey modal; rows without one are
+ * non-interactive. Form/booking rows show {hasVisitorId} facts only.
  */
 
-const KIND_LABEL: Record<ActivityKind, string> = {
+/** Exported for the overview activity-recent widget (widget-library wave) —
+ * ONE label map + one timestamp format, no drift. */
+export const KIND_LABEL: Record<ActivityKind, string> = {
   pageview: "pageview",
   chooser_click: "chooser",
   cta_click: "cta",
@@ -23,7 +28,7 @@ const KIND_LABEL: Record<ActivityKind, string> = {
   booking: "booking",
 };
 
-function fmtWhen(iso: string): string {
+export function fmtWhen(iso: string): string {
   return `${iso.slice(0, 10)} ${iso.slice(11, 16)}`;
 }
 
@@ -33,32 +38,43 @@ interface Cuts {
   path: string | null;
 }
 
-function buildQs(p: WindowDays, cuts: Cuts): string {
-  const q = new URLSearchParams();
-  if (p !== 30) q.set("p", String(p));
+/** Activity querystring = the shared period grammar + this module's own
+ * kind/path cuts (buildIqQuery covers period + source; one grammar). */
+function buildQs(p: PeriodSignal, cuts: Cuts): string {
+  // api N3: window serializes as the default (30) — never immortalize a
+  // legacy ?p= into the canonical URL.
+  const q = new URLSearchParams(buildIqQuery(30, { source: cuts.source }, p));
   if (cuts.kind) q.set("kind", cuts.kind);
-  if (cuts.source) q.set("source", cuts.source);
   if (cuts.path) q.set("path", cuts.path);
   return q.toString();
 }
 
-export default function ActivityView({ initial }: { initial: IqActivity }) {
+export default function ActivityView({
+  initial,
+  initialParams,
+}: {
+  initial: IqActivity;
+  initialParams: PeriodSignal;
+}) {
   const [data, setData] = useState<IqActivity>(initial);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [params, setParams] = useState<PeriodSignal>(initialParams);
+  const paramsRef = useRef(params);
+  paramsRef.current = params;
   const cutsRef = useRef<Cuts>({
     kind: (initial.applied.kind as ActivityKind | null) ?? null,
     source: initial.applied.sourceClass,
     path: initial.applied.path,
   });
-  const periodRef = useRef<WindowDays>(initial.window);
   const seqRef = useRef(0);
 
-  async function refetch() {
+  async function refetch(sig?: PeriodSignal) {
+    const p = sig ?? paramsRef.current;
     const id = ++seqRef.current;
     setLoading(true);
     setError(null);
-    const qs = buildQs(periodRef.current, cutsRef.current);
+    const qs = buildQs(p, cutsRef.current);
     try {
       const res = await fetch(`/admin/api/iq/activity${qs ? `?${qs}` : ""}`, { cache: "no-store" });
       if (res.redirected && new URL(res.url).pathname.startsWith("/admin/login")) {
@@ -80,12 +96,10 @@ export default function ActivityView({ initial }: { initial: IqActivity }) {
   }
 
   useEffect(() => {
-    // WP2 bus upgrade: the signal is now the full period object; this module
-    // stays on ?p= (its ?period migration is a later WP) and reads the
-    // `window` fallback field.
+    // PERIOD-UI wave: this island rides the FULL PeriodSignal.
     return subscribePeriodRefetch((s) => {
-      periodRef.current = s.window;
-      void refetch();
+      setParams(s);
+      void refetch(s);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -111,7 +125,7 @@ export default function ActivityView({ initial }: { initial: IqActivity }) {
       <div className="adm-head">
         <h1>🗒️ Activity</h1>
         <DemoBadge demo={data.meta.mode === "demo"} />
-        <span className="adm-count">last {data.window} days</span>
+        <span className="adm-count">{periodHeadLabel(data.period, data.window)}</span>
       </div>
 
       {error && <p className="adm-error" role="status">{error}</p>}
@@ -162,7 +176,7 @@ export default function ActivityView({ initial }: { initial: IqActivity }) {
         <section className="adm-card adm-card-wide">
           {data.rows.length === 0 ? (
             <p className="adm-empty">
-              📭 No activity in this window with these filters.
+              📭 No activity in this period with these filters.
               {countingSince ? ` Counting since ${countingSince}.` : " Counting starts with the first pageview."}
             </p>
           ) : (

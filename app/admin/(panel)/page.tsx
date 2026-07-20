@@ -3,9 +3,10 @@ import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
 import { readMode } from "@/lib/admin/iq/mode";
-import { parseWindowParam } from "@/lib/admin/iq/shared";
+import { buildIqQuery, parsePeriodParam, parseWindowParam, periodFilters } from "@/lib/admin/iq/shared";
 import type { ModuleTeaser } from "@/lib/admin/iq/types";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
+import { periodHeadLabel } from "./fmt";
 import DemoBadge from "./iq/DemoBadge";
 
 export const dynamic = "force-dynamic";
@@ -61,15 +62,27 @@ function Sparkline({ values }: { values: number[] }) {
 export default async function AdminLanding({
   searchParams,
 }: {
-  searchParams: Promise<{ p?: string }>;
+  searchParams: Promise<{
+    p?: string;
+    period?: string;
+    compare?: string;
+    from?: string;
+    to?: string;
+    cmpFrom?: string;
+    cmpTo?: string;
+  }>;
 }) {
   if (!(await requireAdmin())) redirect("/admin/login");
 
-  const { p } = await searchParams;
-  const windowDays = parseWindowParam(p);
+  const sp = await searchParams;
+  const windowDays = parseWindowParam(sp.p);
+  const pp = parsePeriodParam(sp);
   const internalVisitorIds = await readInternalVisitorIds();
   const mode = await readMode();
-  const landing = await getSource(mode).landing({ window: windowDays }, { internalVisitorIds });
+  const landing = await getSource(mode).landing(
+    { window: windowDays, ...periodFilters(pp) },
+    { internalVisitorIds }
+  );
 
   const now = new Date();
   const micro = new Intl.DateTimeFormat("en-US", {
@@ -86,7 +99,10 @@ export default async function AdminLanding({
     month: "long",
     day: "numeric",
   }).format(now);
-  const suffix = windowDays === 30 ? "" : `?p=${windowDays}`;
+  // Module-card links carry the period grammar (defaults omitted — the MTD
+  // default link is bare). ?p= never re-enters a URL from here.
+  const grammarQs = buildIqQuery(30, {}, pp);
+  const suffix = grammarQs ? `?${grammarQs}` : "";
 
   return (
     <div data-acc="overview" className="adm-landing">
@@ -95,11 +111,12 @@ export default async function AdminLanding({
       </p>
       <h1 className="adm-landing-greeting">{greetingFor(now)}</h1>
       <p className="adm-landing-sub">
-        {/* FC1: every number in this sentence is WINDOWED — it says "last N
-            days", so an all-time leads count here would be false. */}
+        {/* FC1: every number in this sentence is PERIOD-SCOPED — the sentence
+            names the period, so an all-time leads count here would be false. */}
         {dateLine} · counting <b>{landing.visitors}</b> visitor{landing.visitors === 1 ? "" : "s"},{" "}
         <b>{landing.pageviews}</b> pageview{landing.pageviews === 1 ? "" : "s"} and{" "}
-        <b>{landing.leadsWindow}</b> lead{landing.leadsWindow === 1 ? "" : "s"} · last {windowDays} days
+        <b>{landing.leadsWindow}</b> lead{landing.leadsWindow === 1 ? "" : "s"} ·{" "}
+        {periodHeadLabel(landing.period, windowDays)}
       </p>
 
       <div className="adm-landing-grid">

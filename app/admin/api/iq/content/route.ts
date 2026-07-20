@@ -1,4 +1,6 @@
-// WP2.5 — Content module handler: GET /admin/api/iq/content?p=&device=&country=
+// WP2.5 → PERIOD-UI wave — Content module handler:
+// GET /admin/api/iq/content?period=&compare=&from=&to=&cmpFrom=&cmpTo=&device=&country=
+// (?p= tolerated as the dormant legacy fallback; no params = MTD default)
 //
 // Same contract as /admin/api/iq/traffic (gate first, exclusion threading,
 // PII-free typed payload, no-store, clean error bodies). Content chips are
@@ -9,7 +11,12 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
 import { readMode } from "@/lib/admin/iq/mode";
-import { parseDimParam, parseWindowParam } from "@/lib/admin/iq/shared";
+import {
+  parseDimParam,
+  parsePeriodParam,
+  parseWindowParam,
+  periodFilters,
+} from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import type { IqContent } from "@/lib/admin/iq/types";
 
@@ -24,9 +31,20 @@ export async function GET(req: Request): Promise<NextResponse> {
 
   try {
     const url = new URL(req.url);
+    // PERIOD-UI wave: the SAME parsePeriodParam→periodFilters triple as the
+    // page (closed loop — no second grammar).
+    const pp = parsePeriodParam({
+      period: url.searchParams.get("period"),
+      compare: url.searchParams.get("compare"),
+      from: url.searchParams.get("from"),
+      to: url.searchParams.get("to"),
+      cmpFrom: url.searchParams.get("cmpFrom"),
+      cmpTo: url.searchParams.get("cmpTo"),
+    });
     const payload: IqContent = await getSource(await readMode()).content(
       {
         window: parseWindowParam(url.searchParams.get("p")),
+        ...periodFilters(pp),
         device: parseDimParam(url.searchParams.get("device")),
         country: parseDimParam(url.searchParams.get("country")),
       },

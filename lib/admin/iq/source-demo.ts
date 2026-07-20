@@ -141,6 +141,8 @@ import {
   ledgerFromFirsts,
   nyDateParts,
   periodBucketKeys,
+  periodEcho,
+  PERIOD_SHORT_LABEL,
   priorPeriod,
   referrerHost,
   resolveGscPeriod,
@@ -1714,16 +1716,8 @@ async function demoCommand(filters: Filters): Promise<IqCommand> {
     since: since.toISOString(),
     // Fix #6 parity: null when compare is off — never a fake anchor.
     priorSince: cmp ? cmp.since.toISOString() : null,
-    period: {
-      kind: resolved.kind,
-      // Factcheck W1 parity: custom echoes the INCLUSIVE day strings (see
-      // liveCommand) — never the exclusive until boundary.
-      from: resolved.range ? resolved.range.from : since.toISOString(),
-      to: resolved.range ? resolved.range.to : until.toISOString(),
-      granularity: resolved.granularity,
-      partial: resolved.partial,
-      compareLabel: cmp ? cmp.label : null,
-    },
+    // Factcheck W1 rules live in the ONE shared echo builder (PERIOD-UI wave).
+    period: periodEcho(resolved),
     generatedAt: now.toISOString(),
     kpis,
     gscThrough,
@@ -1741,17 +1735,22 @@ async function demoLanding(filters: Filters): Promise<IqLanding> {
   const ds = getDemoDataset();
   const { window } = filters;
   const now = ds.now;
-  const since = new Date(now.getTime() - window * DAY_MS);
-  const fetchSince = new Date(now.getTime() - Math.max(window, 14) * DAY_MS);
+  // PERIOD-UI wave parity (see liveLanding): resolved period (MTD default),
+  // no comparison computed, sparklines stay fixed 14-day.
+  const resolved = resolvePeriod({ ...filters, compareMode: "none" }, now);
+  const { since, until } = resolved.period;
   const since14 = new Date(now.getTime() - 14 * DAY_MS);
+  const fetchSince = since < since14 ? since : since14;
 
   const views = ds.pageViews.filter((v) => v.createdAt >= fetchSince);
-  const leadsRecent = ds.leads.filter((l) => l.createdAt >= (since < since14 ? since : since14));
+  const leadsRecent = ds.leads.filter((l) => l.createdAt >= fetchSince);
   const gscDaily14 = ds.gscDaily.filter((r) => r.date >= since14);
   const gscLatest = ds.gscDaily.length ? ds.gscDaily[ds.gscDaily.length - 1] : null;
   const latestLead = ds.leads.length ? ds.leads[ds.leads.length - 1] : null;
 
-  const inWindow = views.filter((v) => v.createdAt >= since);
+  const inWindow = views.filter((v) => v.createdAt >= since && v.createdAt < until);
+  const statLabel =
+    resolved.kind === "window" ? `${window}d` : PERIOD_SHORT_LABEL[resolved.kind];
   const visitors = new Set(inWindow.map((v) => v.visitorId)).size;
   const pageviews = inWindow.length;
   const leadsTotal = ds.leads.length;
@@ -1768,7 +1767,7 @@ async function demoLanding(filters: Filters): Promise<IqLanding> {
     rec.visitors.add(v.visitorId);
     viewsByDay.set(k, rec);
   }
-  const leadsWindow = leadsRecent.filter((l) => l.createdAt >= since).length;
+  const leadsWindow = leadsRecent.filter((l) => l.createdAt >= since && l.createdAt < until).length;
   const leadsByDay = new Map<string, number>();
   for (const l of leadsRecent) {
     if (l.createdAt < since14) continue;
@@ -1798,22 +1797,23 @@ async function demoLanding(filters: Filters): Promise<IqLanding> {
   })();
 
   const teasers: ModuleTeaser[] = [
-    { module: "overview", stat: `${visitors} visitor${visitors === 1 ? "" : "s"} · ${window}d`, spark: spark((k) => viewsByDay.get(k)?.visitors.size ?? 0), latest: lastView ? `Latest: ${lastView.path} · ${NY_WEEKDAY_FMT.format(lastView.createdAt)}` : null },
+    { module: "overview", stat: `${visitors} visitor${visitors === 1 ? "" : "s"} · ${statLabel}`, spark: spark((k) => viewsByDay.get(k)?.visitors.size ?? 0), latest: lastView ? `Latest: ${lastView.path} · ${NY_WEEKDAY_FMT.format(lastView.createdAt)}` : null },
     {
       module: "traffic",
-      stat: `${pageviews} pageview${pageviews === 1 ? "" : "s"} · ${window}d`,
+      stat: `${pageviews} pageview${pageviews === 1 ? "" : "s"} · ${statLabel}`,
       spark: spark((k) => viewsByDay.get(k)?.views ?? 0),
       latest: lastView ? (lastView.country ? `Latest: visitor from ${lastView.country} · ${NY_WEEKDAY_FMT.format(lastView.createdAt)}` : `Latest: visitor · ${NY_WEEKDAY_FMT.format(lastView.createdAt)}`) : null,
     },
     { module: "search", stat: gscThrough ? `${gscClicks14} click${gscClicks14 === 1 ? "" : "s"} · 14d` : "no GSC data yet", spark: spark((k) => gscByDay.get(k) ?? 0), latest: gscThrough ? `Latest: data through ${gscThrough}` : null },
     { module: "leads", stat: `${leadsTotal} lead${leadsTotal === 1 ? "" : "s"} · ${newLeads} new`, spark: spark((k) => leadsByDay.get(k) ?? 0), latest: latestLead ? `Latest: lead (${latestLead.status.replace("_", " ")}) · ${latestLead.createdAt.toISOString().slice(0, 10)}` : null },
-    { module: "content", stat: `${pagesViewed} page${pagesViewed === 1 ? "" : "s"} viewed · ${window}d`, spark: spark((k) => viewsByDay.get(k)?.views ?? 0), latest: topPath ? `Top page: ${topPath}` : null },
+    { module: "content", stat: `${pagesViewed} page${pagesViewed === 1 ? "" : "s"} viewed · ${statLabel}`, spark: spark((k) => viewsByDay.get(k)?.views ?? 0), latest: topPath ? `Top page: ${topPath}` : null },
     { module: "security", stat: `2FA on · 0 internal visitors excluded`, spark: [], latest: null },
   ];
 
   return {
     meta: demoMeta(),
     window,
+    period: periodEcho(resolved),
     since: since.toISOString(),
     visitors,
     pageviews,
@@ -1855,9 +1855,17 @@ async function demoTraffic(filters: Filters): Promise<IqTraffic> {
   const ds = getDemoDataset();
   const { window } = filters;
   const now = ds.now;
-  const since = new Date(now.getTime() - window * DAY_MS);
+  // PERIOD-UI wave parity (see liveTraffic): resolved period + honest
+  // comparisons, prior slice under the SAME cut.
+  const resolved = resolvePeriod(filters, now);
+  const { since, until } = resolved.period;
+  const cmp = resolved.comparison;
+  const inRange = (t: Date, lo: Date, hi: Date) => t >= lo && t < hi;
 
-  const allViews: TrafficViewRow[] = ds.pageViews.filter((v) => v.createdAt >= since);
+  const allViews: TrafficViewRow[] = ds.pageViews.filter((v) => inRange(v.createdAt, since, until));
+  const priorAllViews: TrafficViewRow[] = cmp
+    ? ds.pageViews.filter((v) => inRange(v.createdAt, cmp.since, cmp.until))
+    : [];
   const firstView = ds.pageViews[0] ?? null;
 
   const firstTouchClass = new Map<string, SourceClass>();
@@ -1885,22 +1893,62 @@ async function demoTraffic(filters: Filters): Promise<IqTraffic> {
       })
     : allViews;
 
-  const daysByVisitor = new Map<string, Set<string>>();
-  for (const v of views) {
-    const set = daysByVisitor.get(v.visitorId) ?? new Set<string>();
-    set.add(nyDayKey(v.createdAt));
-    daysByVisitor.set(v.visitorId, set);
+  // Prior slice under the SAME cut (like-for-like); its own first-touch map.
+  const priorFirstTouch = new Map<string, SourceClass>();
+  for (const v of priorAllViews) {
+    if (!priorFirstTouch.has(v.visitorId)) priorFirstTouch.set(v.visitorId, classifySource(v.referrer));
   }
-  const visitors = daysByVisitor.size;
-  const returnVisitors = [...daysByVisitor.values()].filter((s) => s.size >= 2).length;
+  const priorViews: TrafficViewRow[] = hasCuts
+    ? priorAllViews.filter((v) => {
+        if (applied.device && !dimMatches(v.device, applied.device)) return false;
+        if (applied.country && !dimMatches(v.country, applied.country)) return false;
+        if (applied.sourceClass && priorFirstTouch.get(v.visitorId) !== applied.sourceClass) return false;
+        return true;
+      })
+    : priorAllViews;
 
+  const kpiCounts = (rows: TrafficViewRow[]) => {
+    const daysByVisitor = new Map<string, Set<string>>();
+    for (const v of rows) {
+      const set = daysByVisitor.get(v.visitorId) ?? new Set<string>();
+      set.add(nyDayKey(v.createdAt));
+      daysByVisitor.set(v.visitorId, set);
+    }
+    return {
+      visitors: daysByVisitor.size,
+      returnVisitors: [...daysByVisitor.values()].filter((s) => s.size >= 2).length,
+    };
+  };
+  const cur = kpiCounts(views);
+  const pri = kpiCounts(priorViews);
+  const visitors = cur.visitors;
+  const returnVisitors = cur.returnVisitors;
+
+  const siteStart = firstView?.createdAt ?? null;
+  const priorPredates =
+    cmp !== null && (siteStart === null || cmp.until.getTime() <= siteStart.getTime());
+  const cmpOf = (n: number, prior: number) =>
+    buildPeriodComparison(n, prior, cmp, { priorPredatesData: priorPredates });
+  const comparisons = {
+    visitors: cmpOf(visitors, pri.visitors),
+    pageviews: cmpOf(views.length, priorViews.length),
+    returnVisitors: cmpOf(returnVisitors, pri.returnVisitors),
+  };
+
+  // F1 tripwire: calendar/custom axes ride the resolved granularity.
+  const isWindowKind = resolved.kind === "window";
+  const trendKeyOf = (d: Date) =>
+    isWindowKind ? bucketKey(d, window) : bucketKeyFor(d, resolved.granularity);
   const visitorsByBucket = new Map<string, Set<string>>();
   for (const v of views) {
-    const k = bucketKey(v.createdAt, window);
+    const k = trendKeyOf(v.createdAt);
     if (!visitorsByBucket.has(k)) visitorsByBucket.set(k, new Set());
     visitorsByBucket.get(k)!.add(v.visitorId);
   }
-  const trend: SeriesPoint[] = windowBucketKeys(window, now).map((key) => ({ key, n: visitorsByBucket.get(key)?.size || 0 }));
+  const axisKeys = isWindowKind
+    ? windowBucketKeys(window, now)
+    : periodBucketKeys(since, until, resolved.granularity);
+  const trend: SeriesPoint[] = axisKeys.map((key) => ({ key, n: visitorsByBucket.get(key)?.size || 0 }));
 
   const journeysByVisitor = new Map<string, TrafficViewRow[]>();
   for (const v of views) {
@@ -1930,6 +1978,8 @@ async function demoTraffic(filters: Filters): Promise<IqTraffic> {
   return {
     meta: demoMeta(),
     window,
+    period: periodEcho(resolved),
+    comparisons,
     since: since.toISOString(),
     countingSince: firstView ? firstView.createdAt.toISOString() : null,
     applied,
@@ -1951,10 +2001,17 @@ async function demoContent(filters: Filters): Promise<IqContent> {
   const ds = getDemoDataset();
   const { window } = filters;
   const now = ds.now;
-  const since = new Date(now.getTime() - window * DAY_MS);
+  // PERIOD-UI wave parity (see liveContent).
+  const resolved = resolvePeriod(filters, now);
+  const { since, until } = resolved.period;
+  const cmp = resolved.comparison;
+  const inRange = (t: Date, lo: Date, hi: Date) => t >= lo && t < hi;
 
-  const allViews = ds.pageViews.filter((v) => v.createdAt >= since);
-  const allEvents = ds.events.filter((e) => e.createdAt >= since);
+  const allViews = ds.pageViews.filter((v) => inRange(v.createdAt, since, until));
+  const priorAllViews = cmp
+    ? ds.pageViews.filter((v) => inRange(v.createdAt, cmp.since, cmp.until))
+    : [];
+  const allEvents = ds.events.filter((e) => inRange(e.createdAt, since, until));
   const firstView = ds.pageViews[0] ?? null;
   const firstInsightsView = ds.pageViews.find((v) => v.path.startsWith("/insights")) ?? null;
 
@@ -1967,13 +2024,16 @@ async function demoContent(filters: Filters): Promise<IqContent> {
 
   const applied: AppliedCuts = { device: filters.device ?? null, country: filters.country ?? null, sourceClass: null };
   const hasCuts = Boolean(applied.device || applied.country);
-  const views = hasCuts
-    ? allViews.filter((v) => {
-        if (applied.device && !dimMatches(v.device, applied.device)) return false;
-        if (applied.country && !dimMatches(v.country, applied.country)) return false;
-        return true;
-      })
-    : allViews;
+  const cutViews = (rows: typeof allViews) =>
+    hasCuts
+      ? rows.filter((v) => {
+          if (applied.device && !dimMatches(v.device, applied.device)) return false;
+          if (applied.country && !dimMatches(v.country, applied.country)) return false;
+          return true;
+        })
+      : rows;
+  const views = cutViews(allViews);
+  const priorViews = cutViews(priorAllViews);
   const cohort = hasCuts ? new Set(views.map((v) => v.visitorId)) : null;
   const events = cohort ? allEvents.filter((e) => e.visitorId !== null && cohort.has(e.visitorId)) : allEvents;
 
@@ -2018,9 +2078,27 @@ async function demoContent(filters: Filters): Promise<IqContent> {
     return { slug: scope.slug, label: scope.label, views: scopeViews.length, visitors: byVisitor.size, engaged };
   });
 
+  // Honest comparisons for the head counts (post-cut) — parity with live.
+  const siteStart = firstView?.createdAt ?? null;
+  const priorPredates =
+    cmp !== null && (siteStart === null || cmp.until.getTime() <= siteStart.getTime());
+  const comparisons = {
+    visitors: buildPeriodComparison(
+      new Set(views.map((v) => v.visitorId)).size,
+      new Set(priorViews.map((v) => v.visitorId)).size,
+      cmp,
+      { priorPredatesData: priorPredates }
+    ),
+    pageviews: buildPeriodComparison(views.length, priorViews.length, cmp, {
+      priorPredatesData: priorPredates,
+    }),
+  };
+
   return {
     meta: demoMeta(),
     window,
+    period: periodEcho(resolved),
+    comparisons,
     since: since.toISOString(),
     countingSince: firstView ? firstView.createdAt.toISOString() : null,
     applied,
@@ -2039,11 +2117,37 @@ async function demoSearch(filters: Filters): Promise<IqSearch> {
   const ds = getDemoDataset();
   const { window } = filters;
   const now = ds.now;
-  const since = new Date(now.getTime() - window * DAY_MS);
+  // PERIOD-UI wave parity (see liveSearch): M2 day-KEY slicing under
+  // calendar/custom kinds; legacy instant filter under the window fallback.
+  const resolved = resolvePeriod(filters, now);
+  const { since, until } = resolved.period;
+  const cmp = resolved.comparison;
+  const isWindowKind = resolved.kind === "window";
+  const fromKey = resolved.range ? resolved.range.from : dayBucketKey(since);
+  const toKey = resolved.range
+    ? resolved.range.to
+    : dayBucketKey(new Date(until.getTime() - 1));
+  const cmpFromKey = cmp ? dayBucketKey(cmp.since) : null;
+  const cmpToKey = cmp ? dayBucketKey(new Date(cmp.until.getTime() - 1)) : null;
+  const inKeys = (d: Date, lo: string, hi: string) => {
+    const k = gscDateKey(d);
+    return k >= lo && k <= hi;
+  };
 
-  const dailyInWindow = ds.gscDaily.filter((r) => r.date >= since);
-  const queriesInWindow = ds.gscQueries.filter((q) => q.date >= since);
-  const countryRows = ds.gscCountryDaily.filter((r) => r.date >= since);
+  const dailyInWindow = isWindowKind
+    ? ds.gscDaily.filter((r) => r.date >= since)
+    : ds.gscDaily.filter((r) => inKeys(r.date, fromKey, toKey));
+  const dailyInPrior = !cmp
+    ? []
+    : isWindowKind
+      ? ds.gscDaily.filter((r) => r.date >= cmp.since && r.date < cmp.until)
+      : ds.gscDaily.filter((r) => inKeys(r.date, cmpFromKey as string, cmpToKey as string));
+  const queriesInWindow = isWindowKind
+    ? ds.gscQueries.filter((q) => q.date >= since)
+    : ds.gscQueries.filter((q) => inKeys(q.date, fromKey, toKey));
+  const countryRows = isWindowKind
+    ? ds.gscCountryDaily.filter((r) => r.date >= since)
+    : ds.gscCountryDaily.filter((r) => inKeys(r.date, fromKey, toKey));
   const firstDaily = ds.gscDaily[0] ?? null;
   const latestDaily = ds.gscDaily.length ? ds.gscDaily[ds.gscDaily.length - 1] : null;
 
@@ -2108,9 +2212,29 @@ async function demoSearch(filters: Filters): Promise<IqSearch> {
 
   const classifierVersions = [...new Set(queriesInWindow.map((q) => q.classifierVersion))].sort();
 
+  const gscStart = firstDaily?.date ?? null;
+  const priorPredates =
+    cmp !== null && (gscStart === null || cmp.until.getTime() <= gscStart.getTime());
+  const comparisons = {
+    impressions: buildPeriodComparison(
+      impressions,
+      dailyInPrior.reduce((a, r) => a + r.impressions, 0),
+      cmp,
+      { priorPredatesData: priorPredates }
+    ),
+    clicks: buildPeriodComparison(
+      clicks,
+      dailyInPrior.reduce((a, r) => a + r.clicks, 0),
+      cmp,
+      { priorPredatesData: priorPredates }
+    ),
+  };
+
   return {
     meta: demoMeta(classifierVersions),
     window,
+    period: periodEcho(resolved),
+    comparisons,
     gscSince: firstDaily ? gscDateKey(firstDaily.date) : null,
     gscThrough: latestDaily ? gscDateKey(latestDaily.date) : null,
     impressions,
@@ -2366,11 +2490,15 @@ async function demoActivity(filters: Filters): Promise<IqActivity> {
   const ds = getDemoDataset();
   const { window } = filters;
   const now = ds.now;
-  const since = new Date(now.getTime() - window * DAY_MS);
+  // PERIOD-UI wave parity (see liveActivity): period-scoped log, compare
+  // forced "none" (a log compares nothing; the echo must not claim otherwise).
+  const resolved = resolvePeriod({ ...filters, compareMode: "none" }, now);
+  const { since, until } = resolved.period;
+  const inRange = (t: Date) => t >= since && t < until;
 
-  const views = ds.pageViews.filter((v) => v.createdAt >= since);
-  const evts = ds.events.filter((e) => e.createdAt >= since);
-  const bkgs = ds.bookings.filter((b) => b.createdAt >= since);
+  const views = ds.pageViews.filter((v) => inRange(v.createdAt));
+  const evts = ds.events.filter((e) => inRange(e.createdAt));
+  const bkgs = ds.bookings.filter((b) => inRange(b.createdAt));
   const firstView = ds.pageViews[0] ?? null;
 
   const rows: ActivityRow[] = [];
@@ -2410,6 +2538,7 @@ async function demoActivity(filters: Filters): Promise<IqActivity> {
   return {
     meta: demoMeta(),
     window,
+    period: periodEcho(resolved),
     since: since.toISOString(),
     countingSince: firstView ? firstView.createdAt.toISOString() : null,
     rows: capped,

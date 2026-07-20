@@ -126,6 +126,8 @@ import {
   ledgerFromFirsts,
   nyDateParts,
   periodBucketKeys,
+  periodEcho,
+  PERIOD_SHORT_LABEL,
   priorPeriod,
   referrerHost,
   resolveGscPeriod,
@@ -970,19 +972,8 @@ async function liveCommand(filters: Filters, opts: SourceOpts): Promise<IqComman
     since: since.toISOString(),
     // Fix #6: null when compare is off — never echo priorSince=since as a fake anchor.
     priorSince: cmp ? cmp.since.toISOString() : null,
-    period: {
-      kind: resolved.kind,
-      // Factcheck W1: a custom range echoes the INCLUSIVE day strings the user
-      // picked (resolved.range) — period.until is the EXCLUSIVE boundary
-      // (start of to+1), and a client fmtDay on it printed a day the range
-      // does not contain (Jul 17 for a Jul 10–16 range). range is non-null
-      // exactly when kind === "custom".
-      from: resolved.range ? resolved.range.from : since.toISOString(),
-      to: resolved.range ? resolved.range.to : until.toISOString(),
-      granularity: resolved.granularity,
-      partial: resolved.partial,
-      compareLabel: cmp ? cmp.label : null,
-    },
+    // Factcheck W1 rules live in the ONE shared echo builder (PERIOD-UI wave).
+    period: periodEcho(resolved),
     generatedAt: now.toISOString(),
     kpis,
     gscThrough,
@@ -1009,12 +1000,17 @@ async function liveLanding(filters: Filters, opts: SourceOpts): Promise<IqLandin
   const { window } = filters;
   const internal = opts.internalVisitorIds;
   const now = new Date();
-  const since = new Date(now.getTime() - window * DAY_MS);
-  const fetchSince = new Date(now.getTime() - Math.max(window, 14) * DAY_MS);
+  // PERIOD-UI wave: the landing scopes its teaser stats + header sub-line to
+  // the resolved calendar period (MTD default). It computes NO comparison —
+  // compareMode is forced "none" so the echo can never name a comparison this
+  // surface does not render. Sparklines stay FIXED 14-day (self-labeled).
+  const resolved = resolvePeriod({ ...filters, compareMode: "none" }, now);
+  const { since, until } = resolved.period;
   const since14 = new Date(now.getTime() - 14 * DAY_MS);
-  // Lead fetch covers BOTH the 14d sparkline and the windowed sub-line count
-  // (FC1: the sub-line says "last N days", so its leads number must be windowed).
-  const leadsFetchSince = since < since14 ? since : since14;
+  const fetchSince = since < since14 ? since : since14;
+  // Lead fetch covers BOTH the 14d sparkline and the period sub-line count
+  // (FC1: the sub-line names the period, so its leads number must match).
+  const leadsFetchSince = fetchSince;
 
   const [views, leadsGrouped, latestLead, leadsRecent, gscDaily14, gscLatest, totpRow] =
     await Promise.all([
@@ -1044,11 +1040,15 @@ async function liveLanding(filters: Filters, opts: SourceOpts): Promise<IqLandin
       prisma.setting.findUnique({ where: { key: K_TOTP_SECRET }, select: { key: true } }),
     ]);
 
-  const inWindow = views.filter((v) => v.createdAt >= since);
+  const inWindow = views.filter((v) => v.createdAt >= since && v.createdAt < until);
   const visitors = new Set(inWindow.map((v) => v.visitorId)).size;
   const pageviews = inWindow.length;
   const leadsTotal = leadsGrouped.reduce((a, r) => a + r._count._all, 0);
   const newLeads = leadsGrouped.find((r) => r.status === "new")?._count._all ?? 0;
+  // Teaser stat suffix — the compact to-date label ("MTD", "WTD", …); the
+  // internal window fallback keeps its honest "Nd".
+  const statLabel =
+    resolved.kind === "window" ? `${window}d` : PERIOD_SHORT_LABEL[resolved.kind];
 
   // 14-day micro-sparklines (fixed length, NY days).
   const dayKeys = lastNDayKeys(14, now);
@@ -1062,7 +1062,7 @@ async function liveLanding(filters: Filters, opts: SourceOpts): Promise<IqLandin
     rec.visitors.add(v.visitorId);
     viewsByDay.set(k, rec);
   }
-  const leadsWindow = leadsRecent.filter((l) => l.createdAt >= since).length;
+  const leadsWindow = leadsRecent.filter((l) => l.createdAt >= since && l.createdAt < until).length;
   const leadsByDay = new Map<string, number>();
   for (const l of leadsRecent) {
     if (l.createdAt < since14) continue; // sparkline stays fixed at 14 days
@@ -1094,13 +1094,13 @@ async function liveLanding(filters: Filters, opts: SourceOpts): Promise<IqLandin
   const teasers: ModuleTeaser[] = [
     {
       module: "overview",
-      stat: `${visitors} visitor${visitors === 1 ? "" : "s"} · ${window}d`,
+      stat: `${visitors} visitor${visitors === 1 ? "" : "s"} · ${statLabel}`,
       spark: spark((k) => viewsByDay.get(k)?.visitors.size ?? 0),
       latest: lastView ? `Latest: ${lastView.path} · ${NY_WEEKDAY_FMT.format(lastView.createdAt)}` : null,
     },
     {
       module: "traffic",
-      stat: `${pageviews} pageview${pageviews === 1 ? "" : "s"} · ${window}d`,
+      stat: `${pageviews} pageview${pageviews === 1 ? "" : "s"} · ${statLabel}`,
       spark: spark((k) => viewsByDay.get(k)?.views ?? 0),
       latest: lastView
         ? lastView.country
@@ -1124,7 +1124,7 @@ async function liveLanding(filters: Filters, opts: SourceOpts): Promise<IqLandin
     },
     {
       module: "content",
-      stat: `${pagesViewed} page${pagesViewed === 1 ? "" : "s"} viewed · ${window}d`,
+      stat: `${pagesViewed} page${pagesViewed === 1 ? "" : "s"} viewed · ${statLabel}`,
       spark: spark((k) => viewsByDay.get(k)?.views ?? 0),
       latest: topPath ? `Top page: ${topPath}` : null,
     },
@@ -1147,6 +1147,7 @@ async function liveLanding(filters: Filters, opts: SourceOpts): Promise<IqLandin
       mode: "live",
     },
     window,
+    period: periodEcho(resolved),
     since: since.toISOString(),
     visitors,
     pageviews,
@@ -1209,11 +1210,18 @@ async function liveTraffic(filters: Filters, opts: SourceOpts): Promise<IqTraffi
   const { window } = filters;
   const internal = opts.internalVisitorIds;
   const now = new Date();
-  const since = new Date(now.getTime() - window * DAY_MS);
+  // PERIOD-UI wave: the resolved calendar period (MTD default) + its honest
+  // comparison drive the whole surface. ONE fetch BOUNDED to
+  // [min(cmp.since, since), until) covers both slices (Correction-A pattern —
+  // never an all-time scan for windowed numbers).
+  const resolved = resolvePeriod(filters, now);
+  const { since, until } = resolved.period;
+  const cmp = resolved.comparison;
+  const fetchSince = cmp && cmp.since < since ? cmp.since : since;
 
-  const [allViews, firstView] = await Promise.all([
+  const [fetchedViews, firstView] = await Promise.all([
     prisma.pageView.findMany({
-      where: { createdAt: { gte: since }, ...excludeInternal(internal) },
+      where: { createdAt: { gte: fetchSince, lt: until }, ...excludeInternal(internal) },
       select: {
         path: true,
         visitorId: true,
@@ -1232,6 +1240,14 @@ async function liveTraffic(filters: Filters, opts: SourceOpts): Promise<IqTraffi
       select: { createdAt: true },
     }),
   ]);
+
+  // Period slices (half-open [lo, hi) — cmp.until === since in prior mode, so
+  // no seam gap/overlap).
+  const inRange = (t: Date, lo: Date, hi: Date) => t >= lo && t < hi;
+  const allViews = fetchedViews.filter((v) => inRange(v.createdAt, since, until));
+  const priorAllViews = cmp
+    ? fetchedViews.filter((v) => inRange(v.createdAt, cmp.since, cmp.until))
+    : [];
 
   // First-touch source class per visitor — computed on the UNCUT window
   // (DATA §2: sourceClass cuts visitors by their first windowed pageview).
@@ -1269,25 +1285,71 @@ async function liveTraffic(filters: Filters, opts: SourceOpts): Promise<IqTraffi
       })
     : allViews;
 
-  // KPIs (post-cut).
-  const daysByVisitor = new Map<string, Set<string>>();
-  for (const v of views) {
-    const set = daysByVisitor.get(v.visitorId) ?? new Set<string>();
-    set.add(nyDayKey(v.createdAt));
-    daysByVisitor.set(v.visitorId, set);
+  // Prior slice with the SAME cut applied (like-for-like: a comparison under a
+  // cut must compare the cut population, never the uncut one). The sourceClass
+  // cut keys on FIRST TOUCH WITHIN THE SLICE, so the prior slice gets its own
+  // first-touch map — same definition, prior span.
+  const priorFirstTouch = new Map<string, SourceClass>();
+  for (const v of priorAllViews) {
+    if (!priorFirstTouch.has(v.visitorId)) priorFirstTouch.set(v.visitorId, classifySource(v.referrer));
   }
-  const visitors = daysByVisitor.size;
-  // B1 — pageviews on >= 2 distinct NY calendar days in the window.
-  const returnVisitors = [...daysByVisitor.values()].filter((s) => s.size >= 2).length;
+  const priorViews: TrafficViewRow[] = hasCuts
+    ? priorAllViews.filter((v) => {
+        if (applied.device && !dimMatches(v.device, applied.device)) return false;
+        if (applied.country && !dimMatches(v.country, applied.country)) return false;
+        if (applied.sourceClass && priorFirstTouch.get(v.visitorId) !== applied.sourceClass) return false;
+        return true;
+      })
+    : priorAllViews;
 
-  // Trend: visitors per bucket, zero-filled.
+  // KPIs (post-cut) — same definitions on both slices.
+  const kpiCounts = (rows: TrafficViewRow[]) => {
+    const daysByVisitor = new Map<string, Set<string>>();
+    for (const v of rows) {
+      const set = daysByVisitor.get(v.visitorId) ?? new Set<string>();
+      set.add(nyDayKey(v.createdAt));
+      daysByVisitor.set(v.visitorId, set);
+    }
+    return {
+      visitors: daysByVisitor.size,
+      // B1 — pageviews on >= 2 distinct NY calendar days in the period.
+      returnVisitors: [...daysByVisitor.values()].filter((s) => s.size >= 2).length,
+    };
+  };
+  const cur = kpiCounts(views);
+  const pri = kpiCounts(priorViews);
+  const visitors = cur.visitors;
+  const returnVisitors = cur.returnVisitors;
+
+  // Honest four-state comparisons (the delta contract — cards read these,
+  // never re-derive). "new" guard: the whole prior slice predates first data.
+  const siteStart = firstView?.createdAt ?? null;
+  const priorPredates =
+    cmp !== null && (siteStart === null || cmp.until.getTime() <= siteStart.getTime());
+  const cmpOf = (n: number, prior: number) =>
+    buildPeriodComparison(n, prior, cmp, { priorPredatesData: priorPredates });
+  const comparisons = {
+    visitors: cmpOf(visitors, pri.visitors),
+    pageviews: cmpOf(views.length, priorViews.length),
+    returnVisitors: cmpOf(returnVisitors, pri.returnVisitors),
+  };
+
+  // Trend: visitors per bucket, zero-filled. F1 tripwire: calendar/custom
+  // periods ride the RESOLVED granularity (bucketKeyFor + periodBucketKeys);
+  // the internal window fallback keeps the legacy pair.
+  const isWindowKind = resolved.kind === "window";
+  const trendKeyOf = (d: Date) =>
+    isWindowKind ? bucketKey(d, window) : bucketKeyFor(d, resolved.granularity);
   const visitorsByBucket = new Map<string, Set<string>>();
   for (const v of views) {
-    const k = bucketKey(v.createdAt, window);
+    const k = trendKeyOf(v.createdAt);
     if (!visitorsByBucket.has(k)) visitorsByBucket.set(k, new Set());
     visitorsByBucket.get(k)!.add(v.visitorId);
   }
-  const trend: SeriesPoint[] = windowBucketKeys(window, now).map((key) => ({
+  const axisKeys = isWindowKind
+    ? windowBucketKeys(window, now)
+    : periodBucketKeys(since, until, resolved.granularity);
+  const trend: SeriesPoint[] = axisKeys.map((key) => ({
     key,
     n: visitorsByBucket.get(key)?.size || 0,
   }));
@@ -1324,6 +1386,8 @@ async function liveTraffic(filters: Filters, opts: SourceOpts): Promise<IqTraffi
   return {
     meta: liveMeta(internal.length),
     window,
+    period: periodEcho(resolved),
+    comparisons,
     since: since.toISOString(),
     countingSince: firstView ? firstView.createdAt.toISOString() : null,
     applied,
@@ -1345,11 +1409,18 @@ async function liveContent(filters: Filters, opts: SourceOpts): Promise<IqConten
   const { window } = filters;
   const internal = opts.internalVisitorIds;
   const now = new Date();
-  const since = new Date(now.getTime() - window * DAY_MS);
+  // PERIOD-UI wave: resolved calendar period (MTD default) + honest head-count
+  // comparisons. Views fetch is BOUNDED to [min(cmp.since, since), until)
+  // (Correction-A); events stay current-period (they feed pillar engagement
+  // only — no event comparison renders).
+  const resolved = resolvePeriod(filters, now);
+  const { since, until } = resolved.period;
+  const cmp = resolved.comparison;
+  const fetchSince = cmp && cmp.since < since ? cmp.since : since;
 
-  const [allViews, allEvents, firstView, firstInsightsView] = await Promise.all([
+  const [fetchedViews, allEvents, firstView, firstInsightsView] = await Promise.all([
     prisma.pageView.findMany({
-      where: { createdAt: { gte: since }, ...excludeInternal(internal) },
+      where: { createdAt: { gte: fetchSince, lt: until }, ...excludeInternal(internal) },
       select: {
         path: true,
         visitorId: true,
@@ -1362,7 +1433,7 @@ async function liveContent(filters: Filters, opts: SourceOpts): Promise<IqConten
       take: PAGEVIEW_ROW_CAP,
     }),
     prisma.event.findMany({
-      where: { createdAt: { gte: since }, ...excludeInternalNullable(internal) },
+      where: { createdAt: { gte: since, lt: until }, ...excludeInternalNullable(internal) },
       select: { path: true, visitorId: true },
       take: EVENT_ROW_CAP,
     }),
@@ -1378,6 +1449,13 @@ async function liveContent(filters: Filters, opts: SourceOpts): Promise<IqConten
     }),
   ]);
 
+  // Period slices (half-open; cmp.until === since in prior mode — no overlap).
+  const inRange = (t: Date, lo: Date, hi: Date) => t >= lo && t < hi;
+  const allViews = fetchedViews.filter((v) => inRange(v.createdAt, since, until));
+  const priorAllViews = cmp
+    ? fetchedViews.filter((v) => inRange(v.createdAt, cmp.since, cmp.until))
+    : [];
+
   const visitorsUnfiltered = new Set(allViews.map((v) => v.visitorId)).size;
   const chipOptions: ChipOptions = {
     devices: topCounts(allViews.map((v) => v.device), UNKNOWN_LABEL),
@@ -1391,13 +1469,17 @@ async function liveContent(filters: Filters, opts: SourceOpts): Promise<IqConten
     sourceClass: null,
   };
   const hasCuts = Boolean(applied.device || applied.country);
-  const views = hasCuts
-    ? allViews.filter((v) => {
-        if (applied.device && !dimMatches(v.device, applied.device)) return false;
-        if (applied.country && !dimMatches(v.country, applied.country)) return false;
-        return true;
-      })
-    : allViews;
+  const cutViews = (rows: typeof allViews) =>
+    hasCuts
+      ? rows.filter((v) => {
+          if (applied.device && !dimMatches(v.device, applied.device)) return false;
+          if (applied.country && !dimMatches(v.country, applied.country)) return false;
+          return true;
+        })
+      : rows;
+  const views = cutViews(allViews);
+  // Prior slice with the SAME cut (like-for-like comparison under a cut).
+  const priorViews = cutViews(priorAllViews);
   const cohort = hasCuts ? new Set(views.map((v) => v.visitorId)) : null;
   const events = cohort
     ? allEvents.filter((e) => e.visitorId !== null && cohort.has(e.visitorId))
@@ -1470,9 +1552,27 @@ async function liveContent(filters: Filters, opts: SourceOpts): Promise<IqConten
     };
   });
 
+  // Honest four-state comparisons for the head counts (post-cut).
+  const siteStart = firstView?.createdAt ?? null;
+  const priorPredates =
+    cmp !== null && (siteStart === null || cmp.until.getTime() <= siteStart.getTime());
+  const comparisons = {
+    visitors: buildPeriodComparison(
+      new Set(views.map((v) => v.visitorId)).size,
+      new Set(priorViews.map((v) => v.visitorId)).size,
+      cmp,
+      { priorPredatesData: priorPredates }
+    ),
+    pageviews: buildPeriodComparison(views.length, priorViews.length, cmp, {
+      priorPredatesData: priorPredates,
+    }),
+  };
+
   return {
     meta: liveMeta(internal.length),
     window,
+    period: periodEcho(resolved),
+    comparisons,
     since: since.toISOString(),
     countingSince: firstView ? firstView.createdAt.toISOString() : null,
     applied,
@@ -1491,17 +1591,43 @@ async function liveSearch(filters: Filters, opts: SourceOpts): Promise<IqSearch>
   const { window } = filters;
   const internal = opts.internalVisitorIds; // footer honesty only — GSC is its own population
   const now = new Date();
-  const since = new Date(now.getTime() - window * DAY_MS);
+  // PERIOD-UI wave: the resolved calendar period (MTD default) drives the GSC
+  // window. M2 pattern (database condition 2): GscDaily/GscQuery are @db.Date
+  // (midnight UTC) while calendar boundaries are NY instants — slicing by
+  // INSTANT drops the period's first GSC day. Under calendar/custom kinds we
+  // slice by CALENDAR-DAY KEYS instead (custom uses the PICKED day strings —
+  // timezone-free, so resolveGscPeriod stays the drills' only "utc" site; the
+  // resolvePeriod NY default is correct here). The internal window fallback
+  // keeps the legacy instant filter, byte-identical to shipped.
+  const resolved = resolvePeriod(filters, now);
+  const { since, until } = resolved.period;
+  const cmp = resolved.comparison;
+  const isWindowKind = resolved.kind === "window";
+  const fromKey = resolved.range ? resolved.range.from : dayBucketKey(since);
+  const toKey = resolved.range
+    ? resolved.range.to
+    : dayBucketKey(new Date(until.getTime() - 1)); // until is exclusive
+  const cmpFromKey = cmp ? dayBucketKey(cmp.since) : null;
+  const cmpToKey = cmp ? dayBucketKey(new Date(cmp.until.getTime() - 1)) : null;
+  const keyDate = (k: string) => new Date(`${k}T00:00:00Z`); // stored dates ARE UTC midnights
+  // Daily totals are fetched over the UNION span (current + prior) so the
+  // property-total comparison can compute; queries/countries stay current-only.
+  const dailyFetchGte = isWindowKind
+    ? (cmp && cmp.since < since ? cmp.since : since)
+    : keyDate(cmpFromKey && cmpFromKey < fromKey ? cmpFromKey : fromKey);
+  const currentDateWhere = isWindowKind
+    ? { gte: since }
+    : { gte: keyDate(fromKey), lte: keyDate(toKey) };
 
-  const [dailyInWindow, queriesInWindow, countryRows, firstDaily, latestDaily] = await Promise.all([
+  const [dailyFetched, queriesInWindow, countryRows, firstDaily, latestDaily] = await Promise.all([
     prisma.gscDaily.findMany({
-      where: { date: { gte: since } },
+      where: { date: isWindowKind ? { gte: dailyFetchGte } : { gte: dailyFetchGte, lte: keyDate(toKey) } },
       select: { date: true, impressions: true, clicks: true },
       orderBy: { date: "asc" },
       take: GSC_DAILY_ROW_CAP,
     }),
     prisma.gscQuery.findMany({
-      where: { date: { gte: since } },
+      where: { date: currentDateWhere },
       select: {
         date: true,
         query: true,
@@ -1516,13 +1642,27 @@ async function liveSearch(filters: Filters, opts: SourceOpts): Promise<IqSearch>
       take: GSC_QUERY_ROW_CAP,
     }),
     prisma.gscCountryDaily.findMany({
-      where: { date: { gte: since } },
+      where: { date: currentDateWhere },
       select: { country: true, impressions: true, clicks: true },
       take: GSC_COUNTRY_ROW_CAP,
     }),
     prisma.gscDaily.findFirst({ orderBy: { date: "asc" }, select: { date: true } }),
     prisma.gscDaily.findFirst({ orderBy: { date: "desc" }, select: { date: true } }),
   ]);
+
+  // Current + prior daily slices. Calendar/custom slice by day KEYS; the
+  // window fallback keeps legacy instant comparison for the current slice.
+  const keyOfRow = (d: Date) => gscDateKey(d);
+  const dailyInWindow = isWindowKind
+    ? dailyFetched.filter((r) => r.date >= since)
+    : dailyFetched.filter((r) => keyOfRow(r.date) >= fromKey && keyOfRow(r.date) <= toKey);
+  const dailyInPrior = !cmp
+    ? []
+    : isWindowKind
+      ? dailyFetched.filter((r) => r.date >= cmp.since && r.date < cmp.until)
+      : dailyFetched.filter(
+          (r) => keyOfRow(r.date) >= (cmpFromKey as string) && keyOfRow(r.date) <= (cmpToKey as string)
+        );
 
   const impressions = dailyInWindow.reduce((a, r) => a + r.impressions, 0);
   const clicks = dailyInWindow.reduce((a, r) => a + r.clicks, 0);
@@ -1663,9 +1803,31 @@ async function liveSearch(filters: Filters, opts: SourceOpts): Promise<IqSearch>
 
   const classifierVersions = [...new Set(queriesInWindow.map((q) => q.classifierVersion))].sort();
 
+  // Honest four-state comparisons for the property totals (GscDaily). "new"
+  // guard: the whole prior slice predates the first stored GSC day.
+  const gscStart = firstDaily?.date ?? null;
+  const priorPredates =
+    cmp !== null && (gscStart === null || cmp.until.getTime() <= gscStart.getTime());
+  const comparisons = {
+    impressions: buildPeriodComparison(
+      impressions,
+      dailyInPrior.reduce((a, r) => a + r.impressions, 0),
+      cmp,
+      { priorPredatesData: priorPredates }
+    ),
+    clicks: buildPeriodComparison(
+      clicks,
+      dailyInPrior.reduce((a, r) => a + r.clicks, 0),
+      cmp,
+      { priorPredatesData: priorPredates }
+    ),
+  };
+
   return {
     meta: liveMeta(internal.length, classifierVersions),
     window,
+    period: periodEcho(resolved),
+    comparisons,
     gscSince: firstDaily ? gscDateKey(firstDaily.date) : null,
     gscThrough: latestDaily ? gscDateKey(latestDaily.date) : null,
     impressions,
@@ -2182,23 +2344,27 @@ async function liveActivity(filters: Filters, opts: SourceOpts): Promise<IqActiv
   const { window } = filters;
   const internal = opts.internalVisitorIds;
   const now = new Date();
-  const since = new Date(now.getTime() - window * DAY_MS);
+  // PERIOD-UI wave: the log scopes to the resolved calendar period (MTD
+  // default). A log has nothing to compare — compareMode is forced "none" so
+  // the echo can never name a comparison this surface does not render.
+  const resolved = resolvePeriod({ ...filters, compareMode: "none" }, now);
+  const { since, until } = resolved.period;
 
   const [views, events, bookings, firstView] = await Promise.all([
     prisma.pageView.findMany({
-      where: { createdAt: { gte: since }, ...excludeInternal(internal) },
+      where: { createdAt: { gte: since, lt: until }, ...excludeInternal(internal) },
       select: { id: true, path: true, visitorId: true, referrer: true, createdAt: true },
       orderBy: { createdAt: "desc" },
       take: PAGEVIEW_ROW_CAP,
     }),
     prisma.event.findMany({
-      where: { createdAt: { gte: since }, ...excludeInternalNullable(internal) },
+      where: { createdAt: { gte: since, lt: until }, ...excludeInternalNullable(internal) },
       select: { id: true, name: true, path: true, visitorId: true, meta: true, createdAt: true },
       orderBy: { createdAt: "desc" },
       take: EVENT_ROW_CAP,
     }),
     prisma.booking.findMany({
-      where: { createdAt: { gte: since }, ...excludeInternalNullable(internal) },
+      where: { createdAt: { gte: since, lt: until }, ...excludeInternalNullable(internal) },
       select: { id: true, visitorId: true, createdAt: true },
       orderBy: { createdAt: "desc" },
       take: BOOKING_ROW_CAP,
@@ -2280,6 +2446,7 @@ async function liveActivity(filters: Filters, opts: SourceOpts): Promise<IqActiv
   return {
     meta: liveMeta(internal.length),
     window,
+    period: periodEcho(resolved),
     since: since.toISOString(),
     countingSince: firstView ? firstView.createdAt.toISOString() : null,
     rows: capped,

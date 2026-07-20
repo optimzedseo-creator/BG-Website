@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import type { LeadStatusCount, WindowDays } from "@/lib/admin/iq/types";
-import { parseWindowParam, watchPeriod } from "./period-bus";
+import type { LeadStatusCount } from "@/lib/admin/iq/types";
+import { buildIqQuery, parsePeriodParam } from "@/lib/admin/iq/shared";
+import { parseWindowParam, watchPeriod, type PeriodSignal } from "./period-bus";
 
 /*
  * WP2.1 nav shell — persistent left rail (desktop; icon-collapse ≤1024px) and
@@ -54,18 +55,32 @@ export default function AdminRail({ leadCounts }: { leadCounts: LeadStatusCount[
   const [moreOpen, setMoreOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
 
-  // Mirror the live period into nav links so navigation keeps ?p= (WP2.1:
-  // deep links shareable). replaceState flips on /admin/overview don't update
-  // useSearchParams, so the rail also listens on the period bus.
-  const urlPeriod = parseWindowParam(searchParams.get("p"));
-  const [period, setPeriod] = useState<WindowDays>(urlPeriod);
-  useEffect(() => setPeriod(urlPeriod), [urlPeriod]);
-  // WP2 bus upgrade: the signal carries the full period object; rail links
-  // mirror only the `window` fallback (they speak ?p= exclusively).
-  useEffect(() => watchPeriod((s) => setPeriod(s.window)), []);
+  // PERIOD-UI wave: rail links mirror the FULL period grammar (MTD default
+  // omitted — the default link is bare; ?p= never re-enters a URL from here).
+  // replaceState flips on island pages don't update useSearchParams, so the
+  // rail also listens on the period bus.
+  const urlSignal: PeriodSignal = {
+    window: parseWindowParam(searchParams.get("p")),
+    ...parsePeriodParam({
+      period: searchParams.get("period"),
+      compare: searchParams.get("compare"),
+      from: searchParams.get("from"),
+      to: searchParams.get("to"),
+      cmpFrom: searchParams.get("cmpFrom"),
+      cmpTo: searchParams.get("cmpTo"),
+    }),
+  };
+  const urlKey = JSON.stringify(urlSignal);
+  const [sig, setSig] = useState<PeriodSignal>(urlSignal);
+  useEffect(() => {
+    setSig(urlSignal);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlKey]);
+  useEffect(() => watchPeriod((s) => setSig(s)), []);
   const withPeriod = (href: string, extra?: string) => {
     const params = new URLSearchParams(extra);
-    if (period !== 30) params.set("p", String(period));
+    const grammar = new URLSearchParams(buildIqQuery(30, {}, sig));
+    for (const [k, v] of grammar) params.set(k, v);
     const qs = params.toString();
     return qs ? `${href}?${qs}` : href;
   };

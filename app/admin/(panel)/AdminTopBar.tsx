@@ -8,16 +8,15 @@ import PeriodSwitch from "./PeriodSwitch";
 import ModePill from "./ModePill";
 
 /*
- * ADMIN-IQ top bar (WP2.1 slots): brand doorplate (links home to the module
- * landing) · global period filter (7/30/90, ?p=) · mode-pill placeholder slot
- * (EMPTY until Wave 4 — layout space reserved, nothing rendered) · sign out
- * (passed in as children from the server layout). Module nav lives in the
- * left rail / bottom tab bar now (AdminRail).
+ * ADMIN-IQ top bar (WP2.1 slots → PERIOD-UI wave): brand doorplate (links
+ * home to the module landing) · the GLOBAL calendar period switch (Today ·
+ * WTD · MTD · QTD · YTD · Custom — Brad's exact labels; the old 7d/30d/90d
+ * window switch is retired) · LIVE/DEMO mode pill · sign out (passed in as
+ * children from the server layout). Module nav lives in the left rail /
+ * bottom tab bar (AdminRail).
  *
- * Deliberate WP2.1 deviations (manager ruling — the no-dead-control rule
- * outranks the slot list): no "Custom" period option (no DateRangeModal until
- * Wave 3) and no compare toggle (nothing consumes it until Wave 3 overlays;
- * KPI deltas are always-on counts vs prior period per UX §2).
+ * The top bar OWNS period selection console-wide; compare lives on the
+ * per-page compare pill (CompareControl) — one obvious owner per concern.
  */
 
 function sectionFor(pathname: string): string {

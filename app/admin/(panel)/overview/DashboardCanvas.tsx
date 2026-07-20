@@ -33,13 +33,18 @@ import {
   type WidgetData,
   type WidgetDataMap,
 } from "@/lib/admin/iq/widgets";
-import { KPI_ACCENTS, KPI_NAMES, resizeFloor, sortReading } from "./canvas-lib";
+import { KPI_ACCENTS, KPI_NAMES, WIDGET_MODULE_ACC, resizeFloor, sortReading } from "./canvas-lib";
 import {
+  ActivityRecentWidget,
   FirstsWidget,
   FunnelWidget,
+  GscQueriesWidget,
   InsightsWidget,
   KpiTile,
+  LeadsDonutWidget,
   ScorecardWidget,
+  SourcesWidget,
+  TopPagesWidget,
   TrendWidget,
   type WidgetCtx,
 } from "./WidgetRenderers";
@@ -80,6 +85,9 @@ interface DragState {
 
 function widgetTitle(e: LayoutWidget): string {
   if (e.kind === "kpi" && e.config.kpiId) return KPI_NAMES[e.config.kpiId];
+  if (e.kind === "leads-donut") {
+    return e.config.by === "status" ? "Leads by status" : "Leads by inquiry type";
+  }
   return WIDGET_REGISTRY[e.kind].title;
 }
 
@@ -126,6 +134,16 @@ function WidgetBody({
       return <FirstsWidget data={data as WidgetDataMap["firsts"]} />;
     case "insights":
       return <InsightsWidget data={data as WidgetDataMap["insights"]} ctx={ctx} />;
+    case "leads-donut":
+      return <LeadsDonutWidget data={data as WidgetDataMap["leads-donut"]} />;
+    case "top-pages":
+      return <TopPagesWidget data={data as WidgetDataMap["top-pages"]} ctx={ctx} />;
+    case "sources":
+      return <SourcesWidget data={data as WidgetDataMap["sources"]} />;
+    case "gsc-queries":
+      return <GscQueriesWidget data={data as WidgetDataMap["gsc-queries"]} />;
+    case "activity-recent":
+      return <ActivityRecentWidget data={data as WidgetDataMap["activity-recent"]} ctx={ctx} />;
   }
 }
 
@@ -318,9 +336,13 @@ export default function DashboardCanvas({
         const title = widgetTitle(e);
         const kpiId = e.kind === "kpi" ? e.config.kpiId : undefined;
         const isFav = kpiId ? favorites.includes(kpiId) : false;
+        // Module-fed widgets wear their module's accent (the [data-acc] §1b
+        // lever) — the card, edit chrome and gallery swatch all agree.
+        const moduleAcc = WIDGET_MODULE_ACC[e.kind] ?? undefined;
         return (
           <div
             key={e.i}
+            data-acc={moduleAcc}
             className={`adm-widget${editing ? " is-edit" : ""}${isDragging ? " is-dragging" : ""}${accent}`}
             style={{
               ...gridVars(e),

@@ -17,8 +17,41 @@ import {
   type LayoutWidget,
   type WidgetConfig,
   type WidgetKind,
+  type WidgetRequestItem,
 } from "@/lib/admin/iq/widgets";
 import type { CommandKpiId } from "@/lib/admin/iq/types";
+
+// ---- request-item helpers (shared: server page initial fetch, client island) --
+
+/** Synthetic request-id prefix for favorites-strip KPIs (not layout members). */
+export const FAV_PREFIX = "fav-";
+
+export function layoutItems(entries: LayoutEntry[]): WidgetRequestItem[] {
+  return entries
+    .filter((e): e is LayoutWidget => e.kind !== "tombstone")
+    .map((e) => ({ i: e.i, kind: e.kind, config: e.config }));
+}
+
+export function favItems(favs: readonly CommandKpiId[]): WidgetRequestItem[] {
+  return favs.map((k) => ({ i: `${FAV_PREFIX}${k}`, kind: "kpi" as const, config: { kpiId: k } }));
+}
+
+/** Module accent per widget kind (the [data-acc] lever, §1b): a module-fed
+ * widget wears its module's accent on the canvas and in the gallery. null =
+ * inherit the Overview blue. */
+export const WIDGET_MODULE_ACC: Record<WidgetKind, string | null> = {
+  kpi: null,
+  trend: null,
+  funnel: null,
+  scorecard: null,
+  firsts: null,
+  insights: null,
+  "leads-donut": "leads",
+  "top-pages": "content",
+  sources: "traffic",
+  "gsc-queries": "search",
+  "activity-recent": null,
+};
 
 // ---- per-metric accents + descriptions (shared: KPI tiles, gallery) ---------
 // (Moved from CommandView so the gallery and the renderers read ONE copy.)
@@ -95,10 +128,15 @@ export interface GalleryItem {
   /** Accent class applied to the entry's swatch (re-derives --acc via the D1
    * rule); "" inherits the module accent (overview blue). */
   accentClass: string;
+  /** Module accent for the swatch's [data-acc] hook; undefined inherits. */
+  acc?: string;
   group: string;
 }
 
-const MODULE_DESCS: Record<Exclude<WidgetKind, "kpi">, string> = {
+const OVERVIEW_DESCS: Record<
+  Exclude<WidgetKind, "kpi" | "leads-donut" | "top-pages" | "sources" | "gsc-queries" | "activity-recent">,
+  string
+> = {
   trend: "Visitors and wins over the active period.",
   funnel: "Distinct visitors through chooser, CTA, brief and booking steps.",
   scorecard: "The three gated scorecard numbers with their meters.",
@@ -106,9 +144,22 @@ const MODULE_DESCS: Record<Exclude<WidgetKind, "kpi">, string> = {
   insights: "Insight cards that fired, or the armed-rule count when quiet.",
 };
 
-/** Grouped by module accent (design §5.9). Everything rides the Overview
- * module today (all six kinds are command-fed — condition 6 holds), so the
- * groups are the KPI tile set and the Overview module cards. */
+function moduleEntry(kind: WidgetKind, desc: string, group: string): GalleryItem {
+  return {
+    id: kind,
+    kind,
+    config: {},
+    name: WIDGET_REGISTRY[kind].title,
+    desc,
+    accentClass: "",
+    acc: WIDGET_MODULE_ACC[kind] ?? undefined,
+    group,
+  };
+}
+
+/** Grouped by module accent (design §5.9). Group order is display order:
+ * KPI tiles, then the lead donuts (Brad asked for these twice — they sit
+ * high), then the Overview modules, then the module-fed widgets. */
 export const GALLERY: GalleryItem[] = [
   ...COMMAND_KPI_IDS.map((id) => ({
     id: `kpi-${id}`,
@@ -119,24 +170,49 @@ export const GALLERY: GalleryItem[] = [
     accentClass: KPI_ACCENTS[id] ?? "adm-kpi--blue",
     group: "KPI tiles",
   })),
-  ...(Object.keys(MODULE_DESCS) as (keyof typeof MODULE_DESCS)[]).map((kind) => ({
-    id: kind,
-    kind,
-    config: {},
-    name: WIDGET_REGISTRY[kind].title,
-    desc: MODULE_DESCS[kind],
+  {
+    id: "leads-donut-inquiry",
+    kind: "leads-donut" as const,
+    config: { by: "inquiryType" as const },
+    name: "Leads by inquiry type",
+    desc: "Donut of every lead by what they asked for. All-time counts.",
     accentClass: "",
-    group: "Overview modules",
-  })),
+    acc: "leads",
+    group: "Lead charts",
+  },
+  {
+    id: "leads-donut-status",
+    kind: "leads-donut" as const,
+    config: { by: "status" as const },
+    name: "Leads by status",
+    desc: "Donut of every lead by pipeline status. All-time counts.",
+    accentClass: "",
+    acc: "leads",
+    group: "Lead charts",
+  },
+  ...(Object.keys(OVERVIEW_DESCS) as (keyof typeof OVERVIEW_DESCS)[]).map((kind) =>
+    moduleEntry(kind, OVERVIEW_DESCS[kind], "Overview modules")
+  ),
+  moduleEntry("sources", "Referrers and first-touch sources for the active period.", "Traffic"),
+  moduleEntry("top-pages", "The most-viewed pages in the active period.", "Content"),
+  moduleEntry(
+    "gsc-queries",
+    "Top Search Console queries in the active period. The data lags about 2 days.",
+    "Search"
+  ),
+  moduleEntry("activity-recent", "The newest visitor activity in the active period.", "Activity"),
 ];
 
 /** Is a widget matching this gallery entry already on the canvas? (kpi entries
- * match by kpiId, not id — a hand-edited row keeps its id but still counts.) */
+ * match by kpiId and leads-donut entries by `by`, not id — a hand-edited row
+ * keeps its id but still counts. Other kinds carry no config axis, where both
+ * sides are undefined and the equalities hold trivially.) */
 export function galleryItemPresent(entries: LayoutEntry[], item: GalleryItem): boolean {
   return entries.some(
     (e) =>
       e.kind === item.kind &&
-      (item.kind !== "kpi" || (e as LayoutWidget).config?.kpiId === item.config.kpiId)
+      (e as LayoutWidget).config?.kpiId === item.config.kpiId &&
+      (e as LayoutWidget).config?.by === item.config.by
   );
 }
 

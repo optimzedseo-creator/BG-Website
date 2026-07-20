@@ -10,6 +10,13 @@ import {
   listDashboardRecords,
 } from "@/lib/admin/iq/dashboards";
 import { readFavoriteKpis } from "@/lib/admin/iq/favorites";
+import {
+  WIDGET_REGISTRY,
+  fetchSourcePayloads,
+  selectWidgetSlice,
+  type WidgetData,
+} from "@/lib/admin/iq/widgets";
+import { BUILT_IN_COMMAND_LAYOUT, favItems, layoutItems } from "./canvas-lib";
 import CommandView from "./CommandView";
 
 export const dynamic = "force-dynamic";
@@ -55,10 +62,10 @@ export default async function CommandPage({
     getDefaultDashboardRecord(),
     readFavoriteKpis(),
   ]);
-  const payload = await getSource(await readMode()).command(
-    { window: windowDays, ...periodFilters(pp) },
-    { internalVisitorIds }
-  );
+  const src = getSource(await readMode());
+  const filters = { window: windowDays, ...periodFilters(pp) };
+  const opts = { internalVisitorIds };
+  const payload = await src.command(filters, opts);
 
   // ?view= gate: isDashboardId + existence, nothing else. A miss is silent —
   // the surface renders the default view (no error, no redirect).
@@ -66,9 +73,35 @@ export default async function CommandPage({
   const activeViewId =
     requestedView && dashboards.some((d) => d.id === requestedView) ? requestedView : null;
 
+  // Widget-library wave: run the registry selectors server-side over every
+  // payload the ACTIVE layout needs, so the first paint is complete even for
+  // non-command widgets. Same discipline as the batched endpoint: ONE Filters
+  // object, dedup by sourceMethod, each distinct method called ONCE,
+  // sequentially over the one pooled connection. The default layout is all
+  // command-fed, so a fresh DB costs exactly the one payload it always did.
+  const activeRecord =
+    (activeViewId ? dashboards.find((d) => d.id === activeViewId) : null) ?? defaultRecord ?? null;
+  const entries = activeRecord ? activeRecord.layout.widgets : BUILT_IN_COMMAND_LAYOUT;
+  const items = [...layoutItems(entries), ...favItems(favorites)];
+  // api N1: the ONE shared fan-out from the contract module (same code path
+  // as the batched endpoint); the already-fetched command payload seeds it.
+  const payloads = await fetchSourcePayloads(
+    src,
+    filters,
+    opts,
+    items.map((it) => WIDGET_REGISTRY[it.kind].sourceMethod),
+    { command: payload }
+  );
+  const initialData: [string, WidgetData][] = [];
+  for (const it of items) {
+    const slice = selectWidgetSlice(it.kind, payloads, it.config);
+    if (slice !== undefined) initialData.push([it.i, slice]);
+  }
+
   return (
     <CommandView
       initial={payload}
+      initialData={initialData}
       initialParams={{ window: windowDays, ...pp }}
       dashboards={dashboards}
       activeViewId={activeViewId}

@@ -2352,6 +2352,75 @@ body.adm-modal-open { overflow: hidden; }
   to { transform: none; opacity: 1; }
 }
 
+/* ---------- PERIOD-UI wave — top-bar calendar period switch ---------- */
+/* Wrapper anchors the Custom dropdown and constrains the scrollable rail
+   inside the flex top bar (min-width 0 is what lets it shrink at 375). */
+.page-admin .adm-window-wrap {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+/* Six segments (Today · WTD · MTD · QTD · YTD · Custom): the rail itself
+   scrolls when it does not fit; the edge-fade cue appears ONLY when a JS
+   scrollWidth measurement sets .is-scrollable (house pattern — no phantom
+   fade on wide screens). Active fill stays D2 ink-on-accent via the base
+   .adm-window button.on rule. */
+.page-admin .adm-window {
+  overflow-x: auto;
+  scrollbar-width: none;
+  min-width: 0;
+}
+.page-admin .adm-window::-webkit-scrollbar { display: none; }
+.page-admin .adm-window button { white-space: nowrap; }
+.page-admin .adm-window.is-scrollable {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 22px), transparent 100%);
+  mask-image: linear-gradient(to right, #000 calc(100% - 22px), transparent 100%);
+}
+/* ux #5: the 40px segment tap floor previously started at ≤480 only — a
+   scrollable 6-segment rail is just as finger-driven at 481–640. (The ≤480
+   block re-states the same values; equal rules, no cascade fight.) */
+@media (max-width: 640px) {
+  .page-admin .adm-window a,
+  .page-admin .adm-window button {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+/* The Custom dropdown panel (reuses the .adm-timepop chrome): right-anchored
+   under the top-bar switch on desktop; the ≤640 .adm-timepop bottom-sheet
+   rules take over untouched (position: fixed wins over these overrides). */
+.page-admin .adm-periodpop {
+  left: auto;
+  right: 0;
+  min-width: 340px;
+}
+@media (max-width: 640px) {
+  .page-admin .adm-periodpop { left: 0; right: 0; min-width: 0; }
+}
+
+/* Module head comparison line (Content): the CmpRow spans ride a quiet mono
+   row; each item names its metric. The whole line collapses when compare is
+   off (rendered conditionally — never a bare label over nothing). */
+.page-admin .adm-cmpline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: 0 0 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text1);
+}
+.page-admin .adm-cmpline-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+/* design #12: the delta chip inherits a KPI-tile top margin it does not need
+   inside the inline head row — kill it so the row baselines align. */
+.page-admin .adm-cmpline .adm-kpi-delta { margin-top: 0; }
+
 /* ---------- honest comparison row states (design delta-line spec) ----------
    Only the direction glyph+number is colored; 500-weight mono holds AA for
    the red (#F43F5E ~4.6:1). Everything else stays text1 via .adm-kpi-delta.
@@ -2588,8 +2657,21 @@ body.adm-modal-open { overflow: hidden; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.page-admin .adm-viewctl-edit { color: var(--text1); }
-.page-admin .adm-viewctl-edit:hover { color: var(--text0); }
+/* Widget-library wave: the edit entry is the loud, primary "Customize"
+   control (Brad's reference-CRM idiom) — §5.7 primary fill, D2 ink-on-accent
+   (var(--bg0) on var(--acc), the .adm-timeopt.is-on pairing; never plain
+   white ink). */
+.page-admin .adm-viewctl-customize {
+  background: var(--acc);
+  border-color: var(--acc);
+  color: var(--bg0);
+  font-weight: 700;
+}
+.page-admin .adm-viewctl-customize:hover,
+.page-admin .adm-viewctl-customize[aria-expanded="true"] {
+  border-color: var(--acc);
+  filter: brightness(1.08);
+}
 .page-admin .adm-viewpop {
   position: absolute;
   top: calc(100% + 6px);
@@ -2724,7 +2806,7 @@ body.adm-modal-open { overflow: hidden; }
   .page-admin .adm-widget-fav,
   .page-admin .adm-widget-resize,
   .page-admin .adm-widget-ghost { display: none; }
-  .page-admin .adm-viewctl-edit { display: none; }
+  .page-admin .adm-viewctl-customize { display: none; }
   .page-admin .adm-edithint {
     display: inline;
     font: 500 10.5px var(--mono);
@@ -2752,6 +2834,21 @@ body.adm-modal-open { overflow: hidden; }
   .page-admin .adm-viewctl { min-height: 44px; }
   .page-admin .adm-viewact { min-height: 32px; }
 }
+
+/* ---------- widget-library wave — module-fed widgets ---------- */
+/* Sub-heading inside a multi-list widget card (Sources): micro-label tone at
+   the ≥11px license floor, text1 (§7 — it labels, it is not interactive). */
+.page-admin .adm-widget-subhead {
+  font: 600 11px var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text1);
+  margin: 14px 0 6px;
+}
+.page-admin .adm-widget-subhead:first-of-type { margin-top: 10px; }
+/* Donut card inside a canvas cell: the leads-page grid supplied the width
+   constraint there; in a widget the cell does — let the body wrap tight. */
+.page-admin .adm-widget .adm-donut-card { margin-bottom: 0; }
 
 /* ---------- §5.16 reduced motion: ALL of it collapses ---------- */
 @media (prefers-reduced-motion: reduce) {

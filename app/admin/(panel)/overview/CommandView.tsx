@@ -26,7 +26,7 @@ import {
   setDefaultDashboard,
   setFavoriteKpis,
 } from "./dashboard-actions";
-import { fmtDay } from "../fmt";
+import { periodHeadLabel } from "../fmt";
 import { subscribePeriodRefetch, type PeriodSignal } from "../period-bus";
 import ControlStrip from "./ControlStrip";
 import DashboardCanvas from "./DashboardCanvas";
@@ -34,14 +34,17 @@ import AddWidgetModal from "./AddWidgetModal";
 import ViewMenu from "./ViewMenu";
 import {
   BUILT_IN_COMMAND_LAYOUT,
+  FAV_PREFIX,
   compactLayout,
+  favItems,
   firstOpenSlot,
+  layoutItems,
   newWidgetId,
   placeWidget,
   resizeWidget,
   type GalleryItem,
 } from "./canvas-lib";
-import { KpiTile, PERIOD_NOUN, type WidgetCtx } from "./WidgetRenderers";
+import { KpiTile, type WidgetCtx } from "./WidgetRenderers";
 import type { IqWidgetsResponse } from "@/app/admin/api/iq/widgets/route";
 
 /*
@@ -68,31 +71,11 @@ import type { IqWidgetsResponse } from "@/app/admin/api/iq/widgets/route";
  * nodes only (condition 2).
  */
 
-/** Synthetic request-id prefix for favorites-strip KPIs (not layout members). */
-const FAV_PREFIX = "fav-";
-
-function layoutItems(entries: LayoutEntry[]): WidgetRequestItem[] {
-  return entries
-    .filter((e): e is LayoutWidget => e.kind !== "tombstone")
-    .map((e) => ({ i: e.i, kind: e.kind, config: e.config }));
-}
-
-function favItems(favs: readonly CommandKpiId[]): WidgetRequestItem[] {
-  return favs.map((k) => ({ i: `${FAV_PREFIX}${k}`, kind: "kpi" as const, config: { kpiId: k } }));
-}
-
-/** Select every requested slice from a full command payload (initial render —
- * same selectors the batched endpoint runs). */
-function selectFromPayload(payload: IqCommand, items: WidgetRequestItem[]): Map<string, WidgetData> {
-  const map = new Map<string, WidgetData>();
-  for (const it of items) map.set(it.i, WIDGET_REGISTRY[it.kind].select(payload, it.config));
-  return map;
-}
-
 type NameDialog = { mode: "first-save" | "save-as" } | null;
 
 export default function CommandView({
   initial,
+  initialData,
   initialParams,
   dashboards: initialDashboards,
   activeViewId,
@@ -100,6 +83,11 @@ export default function CommandView({
   favorites: initialFavorites,
 }: {
   initial: IqCommand;
+  /** Widget-library wave: the server page runs the registry selectors over
+   * every payload the active layout needs (dedup by sourceMethod, same
+   * guarantee as the batched endpoint) and hands the slices over as entries —
+   * the initial paint is complete even for non-command widgets. */
+  initialData: [string, WidgetData][];
   initialParams: PeriodSignal;
   dashboards: DashboardRecord[];
   /** Valid ?view= id that matched a record (server-validated via isDashboardId
@@ -149,12 +137,8 @@ export default function CommandView({
   const shownEntries = editing ? draft : activeEntries;
 
   // ---- widget data map (condition 4: a Map, never a plain object) ----------
-  const [dataMap, setDataMap] = useState<Map<string, WidgetData>>(() =>
-    selectFromPayload(initial, [
-      ...layoutItems(viewEntries(initialDashboards, activeViewId, initialDefaultId)),
-      ...favItems(initialFavorites),
-    ])
-  );
+  // Seeded from the server page's selector pass (initialData entries).
+  const [dataMap, setDataMap] = useState<Map<string, WidgetData>>(() => new Map(initialData));
 
   // Latest state for the (single) bus subscription AND for fetchMissing
   // (api LOW-2: a fetch fired in the seq gap must ride the LATEST params).
@@ -162,8 +146,11 @@ export default function CommandView({
   stateRef.current = { shownEntries, favs, viewId, params };
 
   // ---- canonical URL (single-owner writer; condition 5: &view= preserved) --
+  // api N3: window is serialized as the DEFAULT (30) — the period grammar is
+  // the only time axis this island speaks, and a legacy ?p=7 deep link must
+  // not be immortalized into every future URL it writes.
   function canonicalQs(s: PeriodSignal, vid: string | null): string {
-    const q = new URLSearchParams(buildIqQuery(s.window, {}, s));
+    const q = new URLSearchParams(buildIqQuery(30, {}, s));
     if (vid) q.set("view", vid);
     return q.toString();
   }
@@ -183,7 +170,8 @@ export default function CommandView({
       cache: "no-store",
       body: JSON.stringify({
         widgets: items.slice(0, WIDGETS_REQUEST_MAX),
-        p: String(s.window),
+        // api N3: no `p` — the body speaks the period grammar only; the
+        // endpoint's parseWindowParam(null) resolves the same default 30.
         period: s.period,
         compare: s.compareMode,
         from: s.from,
@@ -216,7 +204,7 @@ export default function CommandView({
           // Empty dashboard edge: nothing to fetch, but the head sub-line still
           // needs the payload echo — ride the existing GET (same one-payload
           // cost; the batched endpoint's echo requires >=1 widget).
-          const qs = buildIqQuery(s.window, {}, s);
+          const qs = buildIqQuery(30, {}, s); // api N3: window stays the default
           const res = await fetch(`/admin/api/iq${qs ? `?${qs}` : ""}`, { cache: "no-store" });
           if (res.redirected && new URL(res.url).pathname.startsWith("/admin/login")) {
             window.location.assign("/admin/login");
@@ -235,8 +223,10 @@ export default function CommandView({
           // Object.entries reads OWN keys only — safe bridge from wire JSON to
           // the Map (condition 4).
           setDataMap(new Map(Object.entries(payload.widgets)));
-          if (payload.meta) setMeta(payload.meta);
-          if (payload.period) setEcho(payload.period);
+          // meta/period are handler-resolved and non-null (KB:1692 b) — no
+          // dead guards (api #15).
+          setMeta(payload.meta);
+          setEcho(payload.period);
         }
         writeUrl(s, stateRef.current.viewId);
       } catch {
@@ -482,18 +472,14 @@ export default function CommandView({
   }
 
   // ---- render --------------------------------------------------------------
-  const headPeriod =
-    echo.kind === "window"
-      ? `last ${params.window} days`
-      : echo.kind === "custom"
-        ? `${fmtDay(echo.from)} to ${fmtDay(echo.to)}`
-        : echo.kind === "today"
-          ? "today"
-          : `this ${PERIOD_NOUN[echo.kind]}${echo.partial ? " to date" : ""}`;
+  // PERIOD-UI wave: the head sub-line rides the ONE shared periodHeadLabel so
+  // every surface reads the same echo the same way.
+  const headPeriod = periodHeadLabel(echo, params.window);
   const headCompare = echo.compareLabel ? ` · vs ${echo.compareLabel}` : "";
 
   const ctx: WidgetCtx = {
     window: params.window,
+    pp: params,
     echoKind: echo.kind,
     granularity: echo.granularity,
     countingSince: staticRef.current.countingSince,
@@ -558,15 +544,19 @@ export default function CommandView({
                 onDelete={deleteView}
                 onSetDefault={makeDefault}
               />
+              {/* Widget-library wave: the edit entry is the loud, primary
+                  "Customize" control (Brad's reference-CRM idiom) — §5.7
+                  primary, D2 ink-on-accent. View mode stays pristine
+                  otherwise. */}
               <button
                 type="button"
-                className="adm-viewctl adm-viewctl-edit"
-                aria-label="Edit dashboard"
+                className="adm-viewctl adm-viewctl-customize"
+                aria-label="Customize dashboard"
                 onClick={startEdit}
               >
-                <span aria-hidden="true">✎</span> Edit
+                <span aria-hidden="true">✎</span> Customize
               </button>
-              <span className="adm-edithint">edit on a desktop screen</span>
+              <span className="adm-edithint">customize on a desktop screen</span>
             </>
           }
         />
@@ -621,7 +611,7 @@ export default function CommandView({
             <p className="adm-empty">
               {editing
                 ? "Nothing here yet. Add widgets, or reset to the default layout."
-                : "This view has no widgets. Open Edit to add widgets or reset to the default layout."}
+                : "This view has no widgets. Open Customize to add widgets or reset to the default layout."}
             </p>
           </section>
         ) : (

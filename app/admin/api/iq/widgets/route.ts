@@ -1,22 +1,33 @@
-// Dashboard Wave PHASE 2 · WP1 — batched widget endpoint:
+// Dashboard Wave PHASE 2 · WP1 (+ widget-library wave) — batched widget
+// endpoint:
 //   POST /admin/api/iq/widgets
 //   body: { widgets: [{ i, kind, config }], p?, period?, compare?, from?, to?,
 //           cmpFrom?, cmpTo? }
 //
 // THE FAN-OUT GUARANTEE (arch ruling KB 1527): the canvas posts its whole
 // widget set + the period ONCE; this handler dedups by WidgetDef.sourceMethod
-// and calls each source method EXACTLY ONCE over the one pooled connection.
-// Fetch count = number of DISTINCT source methods, never widget count — today
-// the whole initial set rides `command`, so a 12-widget dashboard costs the
-// same one payload the Command surface already costs.
+// and calls each distinct source method EXACTLY ONCE over the one pooled
+// connection, sequentially. Fetch count = number of DISTINCT source methods,
+// never widget count.
+//
+// KB:1692 REFACTOR (landed with the first non-command sourceMethod, as
+// pre-accepted):
+//  (a) the payloads store is DISCRIMINATED — Partial<SourcePayloadMap>, each
+//      method keyed to ITS OWN payload type; selection goes through the
+//      contract module's selectWidgetSlice (the one sanctioned widening).
+//  (b) meta + period authority are resolved ONCE by THIS HANDLER (resolvePeriod
+//      + periodEcho over the one Filters object) — never plucked off whichever
+//      payload happened to ride along. classifierVersions honestly union the
+//      fetched payloads' versions (the versions that informed this response).
+//  (c) ONE Filters object is built once and handed to every method call; each
+//      source still stamps its own `now` internally (phase-1 signatures are
+//      frozen) — the only drift possible is ms-level between distinct methods,
+//      pre-accepted at KB:1568.
 //
 // Period params ride the BODY but flow through the SAME parseWindowParam /
 // parsePeriodParam / periodFilters triple as the GET handler and the overview
 // page — the closed parse/forward/serialize loop (api ruling KB 1627) gains no
-// second grammar here. One Filters object is built once and handed to every
-// deduped source call, so all widgets answer for the same resolved period; the
-// response carries the command payload's PeriodEcho as the single authority.
-// `&view=` stays RESERVED for the WP2 canvas — not consumed here.
+// second grammar here. `&view=` stays RESERVED for the canvas — not consumed.
 //
 // Contract (mirrors /admin/api/iq exactly):
 //   1. `await requireAdmin()` FIRST — before the body is read or parsed.
@@ -31,15 +42,22 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
 import { readMode } from "@/lib/admin/iq/mode";
-import { parsePeriodParam, parseWindowParam, periodFilters } from "@/lib/admin/iq/shared";
+import {
+  parsePeriodParam,
+  parseWindowParam,
+  periodEcho,
+  periodFilters,
+  resolvePeriod,
+} from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import {
   WIDGET_REGISTRY,
+  fetchSourcePayloads,
   parseWidgetRequest,
+  selectWidgetSlice,
   type WidgetData,
-  type WidgetSourceMethod,
 } from "@/lib/admin/iq/widgets";
-import type { Filters, IqCommand, IqMeta, PeriodEcho } from "@/lib/admin/iq/types";
+import { METRICS_VERSION, type Filters, type IqMeta, type PeriodEcho } from "@/lib/admin/iq/types";
 
 export const dynamic = "force-dynamic";
 
@@ -49,12 +67,12 @@ const NO_STORE = { "Cache-Control": "private, no-store" } as const;
  * ~4KB; 32KB is an order of magnitude of headroom, not an invitation. */
 const BODY_MAX_BYTES = 32_768;
 
-/** The batched response: one keyed map + the single period authority. `meta` /
- * `period` come from the deduped `command` payload (null only when the request
- * named zero command-fed widgets — with today's registry, zero widgets). */
+/** The batched response: one keyed map + the single period authority. `meta`
+ * and `period` are HANDLER-RESOLVED (KB:1692 condition b) — always present,
+ * never dependent on which payloads the request happened to name. */
 export interface IqWidgetsResponse {
-  meta: IqMeta | null;
-  period: PeriodEcho | null;
+  meta: IqMeta;
+  period: PeriodEcho;
   widgets: Record<string, WidgetData>;
   /** Request items that failed validation, by id (or "#<index>" when the id
    * itself was unusable). Skipped, named, never silently vanished. */
@@ -114,19 +132,37 @@ export async function POST(req: Request): Promise<NextResponse> {
     });
     const filters: Filters = { window: parseWindowParam(bodyString(b.p)), ...periodFilters(pp) };
     const opts = { internalVisitorIds: await readInternalVisitorIds() };
-    const src = getSource(await readMode());
+    const mode = await readMode();
+    const src = getSource(mode);
 
-    // Dedup by source method; call each ONCE. Sequential on purpose — one
-    // pooled connection, no parallel fan-out (with one distinct method today
-    // there is nothing to parallelize anyway). Each source resolves its own
-    // `now` internally; because every method runs once off the same Filters,
-    // the only drift possible is ms-level BETWEEN distinct methods (api seat
-    // pre-accepted this; revisit if a second sourceMethod ever joins).
+    // KB:1692 (b): THE period authority — resolved once, here, from the same
+    // Filters every source call receives. periodEcho() is the one shared echo
+    // builder (the W1 inclusive-custom rule lives inside it).
+    const period: PeriodEcho = periodEcho(resolvePeriod(filters));
+
+    // KB:1692 (a) + api N1: the fan-out is built ONCE in the contract module
+    // (compiler-exhaustive over WidgetSourceMethod) and shared with the
+    // overview server page. Dedup by method, each called ONCE, sequential —
+    // one pooled connection, no parallel amplification. The store is keyed by
+    // the CLOSED method union (registry-derived from whitelisted kinds, never
+    // a client string).
     const methods = [...new Set(valid.map((w) => WIDGET_REGISTRY[w.kind].sourceMethod))];
-    const payloads = new Map<WidgetSourceMethod, IqCommand>();
+    const payloads = await fetchSourcePayloads(src, filters, opts, methods);
+
+    // Honest meta: union the classifier versions of every payload that
+    // informed this response (LeadsSnapshot carries no meta and contributes
+    // none); the rest of the envelope is handler-known.
+    const versions = new Set<string>();
     for (const m of methods) {
-      payloads.set(m, await src[m](filters, opts));
+      const p = payloads[m];
+      if (p && "meta" in p) for (const v of p.meta.classifierVersions) versions.add(v);
     }
+    const meta: IqMeta = {
+      metricsVersion: METRICS_VERSION,
+      classifierVersions: [...versions].sort(),
+      internalExcluded: opts.internalVisitorIds.length,
+      mode,
+    };
 
     // Object.create(null), not {} (security F2/api F1): on a plain object
     // literal a widget id like "__proto__" silently refuses assignment — the
@@ -134,18 +170,11 @@ export async function POST(req: Request): Promise<NextResponse> {
     // never silently vanished" contract. A null-prototype map has no such ids.
     const widgets: Record<string, WidgetData> = Object.create(null);
     for (const w of valid) {
-      const def = WIDGET_REGISTRY[w.kind];
-      const payload = payloads.get(def.sourceMethod);
-      if (payload) widgets[w.i] = def.select(payload, w.config);
+      const slice = selectWidgetSlice(w.kind, payloads, w.config);
+      if (slice !== undefined) widgets[w.i] = slice;
     }
 
-    const command = payloads.get("command") ?? null;
-    const res: IqWidgetsResponse = {
-      meta: command?.meta ?? null,
-      period: command?.period ?? null,
-      widgets,
-      invalid,
-    };
+    const res: IqWidgetsResponse = { meta, period, widgets, invalid };
     return NextResponse.json(res, { headers: NO_STORE });
   } catch (err) {
     console.error("[/admin/api/iq/widgets]", err); // server log only — body stays clean

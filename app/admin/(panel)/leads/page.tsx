@@ -4,7 +4,13 @@ import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
 import { getCrmSource } from "@/lib/admin/crm";
 import { readMode } from "@/lib/admin/iq/mode";
-import { DAY_MS, parseWindowParam, RULE_LEAD_SLA_DAYS, withPeriod } from "@/lib/admin/iq/shared";
+import {
+  DAY_MS,
+  buildIqQuery,
+  parsePeriodParam,
+  RULE_LEAD_SLA_DAYS,
+  withPeriodGrammar,
+} from "@/lib/admin/iq/shared";
 import StatusSelect from "./StatusSelect";
 import LeadDonuts from "./LeadDonuts";
 import DemoBadge from "../iq/DemoBadge";
@@ -38,15 +44,33 @@ const HEAD_TITLES: Record<string, string> = {
 export default async function AdminLeadsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; p?: string; sort?: string; dir?: string }>;
+  searchParams: Promise<{
+    status?: string;
+    p?: string;
+    period?: string;
+    compare?: string;
+    from?: string;
+    to?: string;
+    cmpFrom?: string;
+    cmpTo?: string;
+    sort?: string;
+    dir?: string;
+  }>;
 }) {
   if (!(await requireAdmin())) redirect("/admin/login");
 
-  // ?p= doesn't cut this list (leads are all-time) but is carried through
-  // outbound links so the global period never silently resets (ux U5).
-  const { status: rawStatus, p, sort: rawSort, dir: rawDir } = await searchParams;
+  // PERIOD-UI wave: the period grammar doesn't cut this page (the list and
+  // BOTH donuts are all-time snapshots — standing data-analyst rule: NO period
+  // delta on leadsByStatus) but is parsed tolerantly and carried through every
+  // outbound link so the global period never silently resets (ux U5). No
+  // compare control here either — nothing on this page compares anything.
+  const sp = await searchParams;
+  const { status: rawStatus, sort: rawSort, dir: rawDir } = sp;
   const status = rawStatus && STATUSES.has(rawStatus) ? rawStatus : null;
-  const period = parseWindowParam(p);
+  const pp = parsePeriodParam(sp);
+  // Grammar fragment every link on this page carries (defaults omitted;
+  // window forced to 30 so a dormant legacy ?p= never re-enters a URL).
+  const grammarQs = buildIqQuery(30, {}, pp);
 
   const sort = rawSort && SORT_KEYS.has(rawSort as SortKey) ? (rawSort as SortKey) : null;
   const dir: "asc" | "desc" = rawDir === "asc" ? "asc" : rawDir === "desc" ? "desc" : sort === "name" ? "asc" : "desc";
@@ -63,13 +87,12 @@ export default async function AdminLeadsPage({
     iq.leadsByStatus(),
   ]);
 
-  // Sortable-header link: preserves ?status= and ?p=, toggles direction when
-  // the column is already active, and stays keyboard-reachable.
+  // Sortable-header link: preserves ?status= and the period grammar, toggles
+  // direction when the column is already active, stays keyboard-reachable.
   function sortHref(key: SortKey): string {
     const nextDir = sort === key && dir === "asc" ? "desc" : "asc";
-    const q = new URLSearchParams();
+    const q = new URLSearchParams(grammarQs);
     if (status) q.set("status", status);
-    if (period !== 30) q.set("p", String(period));
     q.set("sort", key);
     q.set("dir", nextDir);
     return `/admin/leads?${q.toString()}`;
@@ -107,10 +130,10 @@ export default async function AdminLeadsPage({
           {status ? (
             <>
               {leads.length} in {status.replace("_", " ")} ·{" "}
-              <Link href={withPeriod("/admin/leads", period)} className="adm-back">show all</Link>
+              <Link href={withPeriodGrammar("/admin/leads", pp)} className="adm-back">show all</Link>
             </>
           ) : (
-            `${leads.length} total`
+            `${leads.length} total · all time`
           )}
         </span>
       </div>

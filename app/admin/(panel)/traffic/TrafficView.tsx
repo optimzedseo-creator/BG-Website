@@ -2,23 +2,23 @@
 
 import { useEffect, useRef, useState } from "react";
 import DemoBadge from "../iq/DemoBadge";
-import type { BreakdownRow, IqTraffic, SeriesPoint, SourceClass, WindowDays } from "@/lib/admin/iq/types";
+import type { BreakdownRow, IqTraffic, SeriesPoint, SourceClass } from "@/lib/admin/iq/types";
 import { RATE_MIN_DENOM, buildIqQuery, rateOrCounts } from "@/lib/admin/iq/shared";
-import { subscribePeriodRefetch } from "../period-bus";
+import { subscribePeriodRefetch, type PeriodSignal } from "../period-bus";
 import SegmentChips, { type ChipGroup } from "../SegmentChips";
-import { fmtDay, fmtSeconds } from "../fmt";
+import CompareControl from "../CompareControl";
+import { CmpRow } from "../overview/WidgetRenderers";
+import { bucketTickLabel, fmtDay, fmtSeconds, periodHeadLabel } from "../fmt";
 import { openDrill, visitorHash } from "../iq/hash-route";
 
 /*
- * WP2.4 Traffic module (client island) — "people". Everything renders from the
- * ONE typed payload (PII-free by construction). Two no-navigation triggers:
- *  - period flips arrive over the period bus (the switch syncs ?p= itself,
- *    then this island re-syncs the FULL querystring after the refetch so chip
- *    state stays shareable);
- *  - module-local segment chips (device / country / sourceClass) refetch
- *    through GET /admin/api/iq/traffic and sync the querystring.
- * Visitor-log rows and KPI tiles carry NO click affordance — journeys drill in
- * Wave 3 (no dead affordances).
+ * WP2.4 Traffic module (client island) — "people". PERIOD-UI wave: the island
+ * subscribes to the FULL PeriodSignal (Today/WTD/MTD/QTD/YTD/Custom from the
+ * top bar, compare from the pill below the head) and refetches through GET
+ * /admin/api/iq/traffic with the whole grammar. The head sub-line and trend
+ * axis render from the payload PeriodEcho (granularity-aware — never a
+ * hard-coded cadence); the count KPIs carry the honest four-state comparison
+ * (CmpRow — one renderer, never re-derived).
  */
 
 interface Cuts {
@@ -71,7 +71,7 @@ function VisitorsChart({ points }: { points: SeriesPoint[] }) {
       {points.map((d, i) =>
         i % labelEvery === 0 ? (
           <text key={d.key} x={x(i)} y={H - 6} textAnchor="middle" className="adm-chart-tick">
-            {d.key.slice(5)}
+            {bucketTickLabel(d.key)}
           </text>
         ) : null
       )}
@@ -120,25 +120,37 @@ function MixCard({ title, rows, total }: { title: string; rows: BreakdownRow[]; 
   );
 }
 
-export default function TrafficView({ initial }: { initial: IqTraffic }) {
+export default function TrafficView({
+  initial,
+  initialParams,
+}: {
+  initial: IqTraffic;
+  initialParams: PeriodSignal;
+}) {
   const [data, setData] = useState<IqTraffic>(initial);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [params, setParams] = useState<PeriodSignal>(initialParams);
+  const paramsRef = useRef(params);
+  paramsRef.current = params;
   const cutsRef = useRef<Cuts>({
     device: initial.applied.device,
     country: initial.applied.country,
     source: initial.applied.sourceClass,
   });
-  const periodRef = useRef<WindowDays>(initial.window);
   // Monotonic fetch sequence (api A3): a slow older response must never
   // overwrite a newer one, and must never win the URL.
   const seqRef = useRef(0);
 
-  async function refetch() {
+  async function refetch(sig?: PeriodSignal) {
+    const p = sig ?? paramsRef.current;
     const id = ++seqRef.current;
     setLoading(true);
     setError(null);
-    const qs = buildIqQuery(periodRef.current, cutsRef.current);
+    // api N3: window serializes as the default (30) — the period grammar is
+    // the only time axis this surface speaks; a legacy ?p=7 deep link must not
+    // be immortalized into every URL this island writes.
+    const qs = buildIqQuery(30, cutsRef.current, p);
     try {
       const res = await fetch(`/admin/api/iq/traffic${qs ? `?${qs}` : ""}`, { cache: "no-store" });
       // Expired session (api A1): the middleware 307s to login and fetch
@@ -165,12 +177,11 @@ export default function TrafficView({ initial }: { initial: IqTraffic }) {
   }
 
   useEffect(() => {
-    // WP2 bus upgrade: the signal is now the full period object; this module
-    // stays on ?p= (its ?period migration is a later WP) and reads the
-    // `window` fallback field.
+    // PERIOD-UI wave: this island rides the FULL PeriodSignal — top-bar
+    // period picks AND compare-pill flips land here as one refetch path.
     return subscribePeriodRefetch((s) => {
-      periodRef.current = s.window;
-      void refetch();
+      setParams(s);
+      void refetch(s);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -196,10 +207,17 @@ export default function TrafficView({ initial }: { initial: IqTraffic }) {
       <div className="adm-head">
         <h1>📈 Traffic</h1>
         <DemoBadge demo={data.meta.mode === "demo"} />
-        <span className="adm-count">last {data.window} days</span>
+        <span className="adm-count">
+          {periodHeadLabel(data.period, data.window)}
+          {data.period.compareLabel ? ` · vs ${data.period.compareLabel}` : ""}
+        </span>
       </div>
 
       {error && <p className="adm-error" role="status">{error}</p>}
+
+      <div className="adm-controlbar">
+        <CompareControl params={params} compareLabel={data.period.compareLabel} loading={loading} />
+      </div>
 
       <SegmentChips groups={chipGroups} onToggle={onToggle} disabled={loading} />
       {hasCut && (
@@ -213,10 +231,12 @@ export default function TrafficView({ initial }: { initial: IqTraffic }) {
           <div className="adm-kpi" title="Distinct visitor ids with a pageview in the period. Internal traffic excluded.">
             <span className="adm-kpi-n">{data.visitors}</span>
             <span className="adm-kpi-label">Visitors</span>
+            <CmpRow cmp={data.comparisons.visitors} echoKind={data.period.kind} />
           </div>
           <div className="adm-kpi" title="Pageviews in the period. Internal traffic excluded.">
             <span className="adm-kpi-n">{data.pageviews}</span>
             <span className="adm-kpi-label">Pageviews</span>
+            <CmpRow cmp={data.comparisons.pageviews} echoKind={data.period.kind} />
           </div>
           <div
             className="adm-kpi"
@@ -232,6 +252,7 @@ export default function TrafficView({ initial }: { initial: IqTraffic }) {
           <div className="adm-kpi" title="Visitors with pageviews on 2 or more distinct days in the period.">
             <span className="adm-kpi-n">{data.returnVisitors}</span>
             <span className="adm-kpi-label">Return visitors</span>
+            <CmpRow cmp={data.comparisons.returnVisitors} echoKind={data.period.kind} />
           </div>
         </div>
 
@@ -251,7 +272,7 @@ export default function TrafficView({ initial }: { initial: IqTraffic }) {
           <h2>Recent visitors</h2>
           {data.visitorLog.length === 0 ? (
             <p className="adm-empty">
-              📭 No visitor journeys in this {hasCut ? "cut" : "window"} yet.
+              📭 No visitor journeys in this {hasCut ? "cut" : "period"} yet.
               {countingSince ? ` Counting since ${countingSince}.` : " Counting starts with the first pageview."}
             </p>
           ) : (

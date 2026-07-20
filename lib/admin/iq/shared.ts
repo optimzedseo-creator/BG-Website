@@ -20,6 +20,7 @@ import type {
   IqInsightCard,
   IqRuleInputs,
   PeriodComparison,
+  PeriodEcho,
   PeriodKind,
   RateOrCounts,
   SourceClass,
@@ -178,6 +179,12 @@ export function windowBucketKeys(window: WindowDays, now: Date = new Date()): st
  * Tolerant ?p= querystring parser (WP2.3: parse params tolerantly) — anything
  * that isn't exactly 7/30/90 falls back to the 30-day default. ONE copy used
  * by pages, the /api/admin/iq handler, and the client period switch.
+ *
+ * PERIOD-UI wave: ?p= is now a DORMANT legacy fallback only. No UI emits it;
+ * a legacy ?p=7/30/90 deep link still parses here, but because such links
+ * carry no ?period=, parsePeriodParam resolves them to the MTD default and
+ * the window value never drives a surface (contract rule 2: `window` stays
+ * the required internal fallback type).
  */
 export function parseWindowParam(raw: string | null | undefined): WindowDays {
   if (raw === "7") return 7;
@@ -188,8 +195,10 @@ export function parseWindowParam(raw: string | null | undefined): WindowDays {
 const PERIOD_KINDS: readonly PeriodKind[] = ["today", "week", "month", "quarter", "year", "custom"];
 const COMPARE_MODES: readonly CompareMode[] = ["prior", "year", "none"];
 
-/** Parsed dashboard-wave URL params (WP1). `period: null` = no valid preset →
- * the caller keeps `window` (contract rule 2 fallback). */
+/** Parsed dashboard-wave URL params (WP1). `period: null` = window mode — the
+ * INTERNAL fallback only since the PERIOD-UI wave (parsePeriodParam never
+ * emits it anymore; the type keeps null so hand-built signals stay typable and
+ * consumers keep their defensive branches). */
 export interface PeriodParams {
   period: PeriodKind | null;
   compareMode: CompareMode;
@@ -207,11 +216,19 @@ export interface PeriodParams {
  *   &from&to&cmpFrom&cmpTo   ("YYYY-MM-DD", validated by parseDayParam)
  *
  * DEFAULTS + FALLBACK (documented, like parseWindowParam's drop-to-30):
- *  - `period` absent or unrecognized → null (caller falls back to `window`).
- *  - `period=custom` with no valid from/to range → null (window fallback).
+ *  - `period` absent or unrecognized → "month" (PERIOD-UI wave: the admin
+ *    default is MONTH-TO-DATE, Brad's ruling). This is the ONE defaulting
+ *    seam — every page and handler that parses the grammar resolves MTD when
+ *    no period params are present. Legacy ?p=7/30/90 deep links carry no
+ *    ?period=, so they land on the MTD default too (?p= stays tolerated as a
+ *    dormant fallback; it never drives a surface anymore).
+ *  - `period=custom` with no valid from/to range → "month" (same default; a
+ *    lone ?period=custom never silently resolves to nothing).
  *  - `compare` absent or unrecognized → "prior" (the historical default the
  *    dashboard has always computed).
  * from/to/cmpFrom/cmpTo are round-trip-validated NY day strings or null.
+ * `period: null` (window mode) is NO LONGER producible from a URL — it
+ * survives only as the internal fallback type (contract rule 2).
  */
 export function parsePeriodParam(params: {
   period?: string | null;
@@ -228,18 +245,23 @@ export function parsePeriodParam(params: {
   const rawPeriod = PERIOD_KINDS.includes(params.period as PeriodKind)
     ? (params.period as PeriodKind)
     : null;
-  // "custom" is only honored with a valid from/to range; otherwise drop to the
-  // window fallback so a lone ?period=custom never silently resolves to nothing.
-  const period = rawPeriod === "custom" && !parseCustomRange(from, to) ? null : rawPeriod;
-  const rawCompare = COMPARE_MODES.includes(params.compare as CompareMode)
+  // PERIOD-UI wave: absent/unrecognized period → the MTD default; "custom"
+  // without a valid from/to range drops to the same default (a lone
+  // ?period=custom never silently resolves to nothing).
+  const period: PeriodKind =
+    rawPeriod === null || (rawPeriod === "custom" && !parseCustomRange(from, to))
+      ? "month"
+      : rawPeriod;
+  const compareMode: CompareMode = COMPARE_MODES.includes(params.compare as CompareMode)
     ? (params.compare as CompareMode)
     : "prior";
-  // api N1 / data-analyst N1: "year" needs a calendar anchor. Under the window
-  // fallback resolvePeriod would silently compute a plain prior-period window —
-  // rendering it under a "last year" label would lie. A crafted
-  // ?p=30&compare=year therefore normalizes to the honest "prior" here, at the
-  // ONE parser both the page and the handler share.
-  const compareMode: CompareMode = period === null && rawCompare === "year" ? "prior" : rawCompare;
+  // api N1 / data-analyst N1 note: the old year→prior coercion guarded
+  // compare=year under period null (window mode, no calendar anchor). The
+  // parser now always resolves a calendar period (MTD default), so "year"
+  // always has an anchor and the coercion is retired. resolvePeriod's window
+  // branch still computes plain prior-period if a hand-built Filters ever
+  // pairs period:undefined with compareMode "year" — and labels it honestly
+  // as "prior period".
   return { period, compareMode, from, to, cmpFrom, cmpTo };
 }
 
@@ -616,13 +638,39 @@ function customPeriod(custom: { from: string; to: string }, boundary: "ny" | "ut
   return { since: nyStartOfDay(fy, fm, fd), until: nyStartOfDay(ty, tm, td + 1) };
 }
 
+/** Equal-elapsed prior slice for a RUNNING period (data-analyst M — the custom
+ * branch mirrors calendarComparison exactly): give the prior range the same
+ * elapsed span as the still-running current period, clamped to the prior
+ * range's own full end (never overlap, never overclaim), with the honest
+ * elapsed-day count and the W2 clamped flag. Full-vs-full when not partial. */
+function elapsedSlice(
+  priorSince: Date,
+  fullUntil: Date,
+  periodSince: Date,
+  partial: boolean,
+  now: Date
+): { until: Date; elapsedDays: number | null; clamped: boolean; partial: boolean } {
+  if (!partial) return { until: fullUntil, elapsedDays: null, clamped: false, partial: false };
+  const elapsedMs = Math.max(0, now.getTime() - periodSince.getTime());
+  const rawUntil = priorSince.getTime() + elapsedMs;
+  const clamped = rawUntil > fullUntil.getTime();
+  const until = new Date(Math.min(rawUntil, fullUntil.getTime()));
+  const elapsedDays = Math.max(1, Math.round((until.getTime() - priorSince.getTime()) / DAY_MS));
+  return { until, elapsedDays, clamped, partial: true };
+}
+
 function customComparison(
   custom: { from: string; to: string },
   mode: Exclude<CompareMode, "none">,
   filters: { cmpFrom?: string; cmpTo?: string },
-  boundary: "ny" | "utc"
+  boundary: "ny" | "utc",
+  periodSince: Date,
+  partial: boolean,
+  now: Date
 ): ResolvedComparison {
-  // Explicit compare range wins when both bounds validate.
+  // Explicit compare range wins when both bounds validate. It stays a
+  // full-range comparison even under a running current period — the user
+  // picked those exact dates, and slicing them would second-guess the pick.
   const explicit = parseCustomRange(filters.cmpFrom, filters.cmpTo);
   if (explicit) {
     const cp = customPeriod(explicit, boundary);
@@ -645,7 +693,8 @@ function customComparison(
       boundary === "utc"
         ? { since: new Date(Date.UTC(fy - 1, fm - 1, fd)), until: new Date(Date.UTC(ty - 1, tm - 1, td + 1)) }
         : { since: nyStartOfDay(fy - 1, fm, fd), until: nyStartOfDay(ty - 1, tm, td + 1) };
-    return { since: cp.since, until: cp.until, kind: "year", partial: false, elapsedDays: null, clamped: false, label: "same dates last year" };
+    const slice = elapsedSlice(cp.since, cp.until, periodSince, partial, now);
+    return { since: cp.since, until: slice.until, kind: "year", partial: slice.partial, elapsedDays: slice.elapsedDays, clamped: slice.clamped, label: "same dates last year" };
   }
   // prior: the immediately-preceding range of the SAME NUMBER OF CALENDAR DAYS,
   // derived by calendar-day arithmetic like the year branch (database L1 — an
@@ -662,13 +711,14 @@ function customComparison(
     { from: `${pf.y}-${pad2(pf.m)}-${pad2(pf.d)}`, to: `${pt.y}-${pad2(pt.m)}-${pad2(pt.d)}` },
     boundary
   );
+  const slice = elapsedSlice(cp.since, cp.until, periodSince, partial, now);
   return {
     since: cp.since,
-    until: cp.until,
+    until: slice.until,
     kind: "prior",
-    partial: false,
-    elapsedDays: null,
-    clamped: false,
+    partial: slice.partial,
+    elapsedDays: slice.elapsedDays,
+    clamped: slice.clamped,
     label: "prior period",
   };
 }
@@ -757,61 +807,117 @@ export function resolvePeriod(
   const custom = parseCustomRange(filters.from, filters.to);
   const kind = filters.period;
 
-  // ---- 1. CUSTOM ----------------------------------------------------------
-  if (custom && (kind === "custom" || kind === undefined)) {
-    const period = customPeriod(custom, boundary);
-    const comparison =
-      mode === "none" ? null : customComparison(custom, mode, filters, boundary);
+  const resolved: ResolvedPeriod = (() => {
+    // ---- 1. CUSTOM --------------------------------------------------------
+    if (custom && (kind === "custom" || kind === undefined)) {
+      const picked = customPeriod(custom, boundary);
+      // Data-analyst M: a custom range whose `to` has not finished yet is a
+      // RUNNING period — mirror the preset branch exactly: partial:true, until
+      // clamped to now (never claim a full range while its days are still
+      // arriving), and an equal-elapsed prior (customComparison mirrors
+      // calendarComparison via elapsedSlice, so the elapsed label renders).
+      // Granularity stays the PICKED range's — the axis describes the range
+      // the user chose, not the elapsed slice.
+      const partial = now.getTime() < picked.until.getTime();
+      const period: Period = partial
+        ? { since: picked.since, until: new Date(Math.max(now.getTime(), picked.since.getTime())) }
+        : picked;
+      const comparison =
+        mode === "none"
+          ? null
+          : customComparison(custom, mode, filters, boundary, period.since, partial, now);
+      return {
+        period,
+        comparison,
+        range: custom,
+        kind: "custom" as const,
+        granularity: rangeGranularity(picked.since, picked.until),
+        partial,
+      };
+    }
+
+    // ---- 2. CALENDAR PRESET -----------------------------------------------
+    if (kind && kind !== "custom") {
+      const anchor = periodAnchor(kind, now);
+      const since = nyStartOfDay(anchor.y, anchor.m, anchor.d);
+      const fullEnd = (() => {
+        const na = nextUnitAnchor(kind, anchor);
+        return nyStartOfDay(na.y, na.m, na.d);
+      })();
+      const partial = now.getTime() < fullEnd.getTime();
+      const period: Period = { since, until: partial ? now : fullEnd };
+      const comparison =
+        mode === "none" ? null : calendarComparison(kind, anchor, period, partial, mode, now);
+      return { period, comparison, range: null, kind, granularity: PERIOD_GRANULARITY[kind], partial };
+    }
+
+    // ---- 3. WINDOW FALLBACK (contract rule 2) -----------------------------
+    const period = currentPeriod(filters.window, now);
+    const comparison: ResolvedComparison | null =
+      mode === "none"
+        ? null
+        : {
+            // The immediately preceding equal-length window — byte-identical to
+            // the legacy priorSince = now − 2·window / until = since.
+            since: new Date(period.since.getTime() - filters.window * DAY_MS),
+            until: period.since,
+            kind: "prior",
+            partial: false,
+            elapsedDays: null,
+            clamped: false,
+            label: "prior period",
+          };
     return {
       period,
       comparison,
-      range: custom,
-      kind: "custom",
-      granularity: rangeGranularity(period.since, period.until),
+      range: null,
+      kind: "window" as const,
+      granularity: (filters.window === 90 ? "week" : "day") as BucketGranularity,
       partial: false,
     };
-  }
+  })();
 
-  // ---- 2. CALENDAR PRESET -------------------------------------------------
-  if (kind && kind !== "custom") {
-    const anchor = periodAnchor(kind, now);
-    const since = nyStartOfDay(anchor.y, anchor.m, anchor.d);
-    const fullEnd = (() => {
-      const na = nextUnitAnchor(kind, anchor);
-      return nyStartOfDay(na.y, na.m, na.d);
-    })();
-    const partial = now.getTime() < fullEnd.getTime();
-    const period: Period = { since, until: partial ? now : fullEnd };
-    const comparison =
-      mode === "none" ? null : calendarComparison(kind, anchor, period, partial, mode, now);
-    return { period, comparison, range: null, kind, granularity: PERIOD_GRANULARITY[kind], partial };
-  }
+  // INVARIANT (data-analyst M, enforced ONCE — not per-branch): a period whose
+  // `until` extends past `now` is by definition still running. Every branch
+  // above already clamps/flags; this is the net that keeps any future branch
+  // honest without relying on it remembering to.
+  if (resolved.period.until.getTime() > now.getTime()) resolved.partial = true;
+  return resolved;
+}
 
-  // ---- 3. WINDOW FALLBACK (contract rule 2) -------------------------------
-  const period = currentPeriod(filters.window, now);
-  const comparison: ResolvedComparison | null =
-    mode === "none"
-      ? null
-      : {
-          // The immediately preceding equal-length window — byte-identical to
-          // the legacy priorSince = now − 2·window / until = since.
-          since: new Date(period.since.getTime() - filters.window * DAY_MS),
-          until: period.since,
-          kind: "prior",
-          partial: false,
-          elapsedDays: null,
-          clamped: false,
-          label: "prior period",
-        };
+/**
+ * PERIOD-UI wave — the ONE serialized PeriodEcho builder. Every payload that
+ * carries a `period` echo builds it here so the honesty rules can never drift
+ * per-surface:
+ *  - factcheck W1: a custom range echoes the INCLUSIVE "YYYY-MM-DD" day
+ *    strings the user picked (resolved.range, non-null exactly when kind is
+ *    "custom") — period.until is the EXCLUSIVE boundary (start of to+1), and
+ *    a client fmtDay on it would print a day the range does not contain.
+ *  - compareLabel is the resolved comparison's own label (null when compare
+ *    is off or the surface computes none) — server-authoritative, never a
+ *    client re-derivation.
+ */
+export function periodEcho(resolved: ResolvedPeriod): PeriodEcho {
   return {
-    period,
-    comparison,
-    range: null,
-    kind: "window",
-    granularity: filters.window === 90 ? "week" : "day",
-    partial: false,
+    kind: resolved.kind,
+    from: resolved.range ? resolved.range.from : resolved.period.since.toISOString(),
+    to: resolved.range ? resolved.range.to : resolved.period.until.toISOString(),
+    granularity: resolved.granularity,
+    partial: resolved.partial,
+    compareLabel: resolved.comparison ? resolved.comparison.label : null,
   };
 }
+
+/** PERIOD-UI wave — the compact to-date label per period kind (top-bar segment
+ * vocabulary, Brad's exact labels; also the landing teaser stat suffix). */
+export const PERIOD_SHORT_LABEL: Record<PeriodKind, string> = {
+  today: "today",
+  week: "WTD",
+  month: "MTD",
+  quarter: "QTD",
+  year: "YTD",
+  custom: "custom range",
+};
 
 /**
  * The ONLY sanctioned "utc"-boundary period resolver — for the GSC population
@@ -897,13 +1003,17 @@ export function parseSourceClassParam(raw: string | null | undefined): SourceCla
 }
 
 /**
- * Period-stable href (ux U5): appends the active ?p= to a server-rendered
- * content link (insight-card hrefs, leads "show all") so deep links never
- * silently reset to the 30d default. 30 IS the default — omitted.
+ * Period-stable href (ux U5, PERIOD-UI wave): appends the active period
+ * GRAMMAR (?period&compare&from&to&cmpFrom&cmpTo) to a content link (insight
+ * cards, leads "show all", rail links) so deep links never silently reset to
+ * the MTD default. Defaults are omitted via buildIqQuery — an MTD + prior link
+ * gains nothing. `window` is forced to 30 so ?p= (the dormant fallback) never
+ * re-enters a URL from a link. Replaces the retired ?p=-only withPeriod().
  */
-export function withPeriod(href: string, p: WindowDays): string {
-  if (p === 30) return href;
-  return `${href}${href.includes("?") ? "&" : "?"}p=${p}`;
+export function withPeriodGrammar(href: string, pp: PeriodParams | null): string {
+  const qs = buildIqQuery(30, {}, pp);
+  if (!qs) return href;
+  return `${href}${href.includes("?") ? "&" : "?"}${qs}`;
 }
 
 /** Module-local cuts an island puts on the wire (subset per module). */
@@ -930,7 +1040,11 @@ export function buildIqQuery(p: WindowDays, cuts: IslandCuts, pp?: PeriodParams 
   const q = new URLSearchParams();
   if (p !== 30) q.set("p", String(p));
   if (pp) {
-    if (pp.period) q.set("period", pp.period);
+    // PERIOD-UI wave: "month" (MTD) is the admin default — omitted, exactly
+    // like p=30 and compare=prior, so the default admin URL stays "" (the
+    // byte-identity rule the URL-grammar harness asserts). parsePeriodParam
+    // resolves the omission back to month; the loop stays closed.
+    if (pp.period && pp.period !== "month") q.set("period", pp.period);
     if (pp.compareMode !== "prior") q.set("compare", pp.compareMode);
     if (pp.period === "custom" && pp.from && pp.to) {
       q.set("from", pp.from);

@@ -1,4 +1,6 @@
-// WP2.4 — Traffic module handler: GET /admin/api/iq/traffic?p=&device=&country=&source=
+// WP2.4 → PERIOD-UI wave — Traffic module handler:
+// GET /admin/api/iq/traffic?period=&compare=&from=&to=&cmpFrom=&cmpTo=&device=&country=&source=
+// (?p= tolerated as the dormant legacy fallback; no params = MTD default)
 //
 // Lives under /admin/api/* (NOT /api/admin/*): the bg_admin session cookie is
 // path-scoped to /admin, so a handler outside it can never authenticate
@@ -16,7 +18,13 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
 import { readMode } from "@/lib/admin/iq/mode";
-import { parseDimParam, parseSourceClassParam, parseWindowParam } from "@/lib/admin/iq/shared";
+import {
+  parseDimParam,
+  parsePeriodParam,
+  parseSourceClassParam,
+  parseWindowParam,
+  periodFilters,
+} from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import type { IqTraffic } from "@/lib/admin/iq/types";
 
@@ -31,9 +39,21 @@ export async function GET(req: Request): Promise<NextResponse> {
 
   try {
     const url = new URL(req.url);
+    // PERIOD-UI wave: the SAME parsePeriodParam→periodFilters triple as the
+    // page (closed loop — no second grammar). No params = MTD default; legacy
+    // ?p= is the tolerated dormant fallback.
+    const pp = parsePeriodParam({
+      period: url.searchParams.get("period"),
+      compare: url.searchParams.get("compare"),
+      from: url.searchParams.get("from"),
+      to: url.searchParams.get("to"),
+      cmpFrom: url.searchParams.get("cmpFrom"),
+      cmpTo: url.searchParams.get("cmpTo"),
+    });
     const payload: IqTraffic = await getSource(await readMode()).traffic(
       {
         window: parseWindowParam(url.searchParams.get("p")),
+        ...periodFilters(pp),
         device: parseDimParam(url.searchParams.get("device")),
         country: parseDimParam(url.searchParams.get("country")),
         sourceClass: parseSourceClassParam(url.searchParams.get("source")),

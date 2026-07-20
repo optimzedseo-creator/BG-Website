@@ -22,8 +22,9 @@ const R = 45;
 const STROKE = 16;
 const C = 2 * Math.PI * R;
 
-/** §5.6 status badge color map (lost = neutral). */
-const STATUS_COLORS: Record<string, string> = {
+/** §5.6 status badge color map (lost = neutral). Exported for the overview
+ * leads-donut widget (widget-library wave) — ONE color map, no drift. */
+export const STATUS_COLORS: Record<string, string> = {
   new: "var(--blue)",
   contacted: "var(--cyan)",
   call_booked: "var(--purple)",
@@ -33,8 +34,9 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 /** Inquiry-type slice colors — accent family, one hue per stored form value.
- * Keys are the EXACT stored strings (ContactForm.tsx). */
-const INQUIRY_COLORS: Record<string, string> = {
+ * Keys are the EXACT stored strings (ContactForm.tsx). Exported for the
+ * overview leads-donut widget. */
+export const INQUIRY_COLORS: Record<string, string> = {
   "Full-Time Executive Role": "var(--blue)",
   "Fractional Leadership": "var(--cyan)",
   "Project (Audit / AI Build)": "var(--purple)",
@@ -43,13 +45,24 @@ const INQUIRY_COLORS: Record<string, string> = {
   "Other / unset": "var(--text2)",
 };
 
-interface Slice {
+export interface DonutSlice {
   label: string;
   n: number;
   color: string;
 }
 
-function Donut({ title, slices, emptyCopy }: { title: string; slices: Slice[]; emptyCopy: string }) {
+/** ONE donut card. Exported for the overview leads-donut widget (widget-
+ * library wave) — the widget renders THIS component, never a re-drawn chart.
+ * The caption self-labels the data as all-time ("all leads, all time"). */
+export function Donut({
+  title,
+  slices,
+  emptyCopy,
+}: {
+  title: string;
+  slices: DonutSlice[];
+  emptyCopy: string;
+}) {
   const total = slices.reduce((a, s) => a + s.n, 0);
   let acc = 0;
 
@@ -117,12 +130,12 @@ export default function LeadDonuts({
   byInquiryType: BreakdownRow[];
   byStatus: LeadStatusCount[];
 }) {
-  const inquirySlices: Slice[] = byInquiryType.map((r) => ({
+  const inquirySlices: DonutSlice[] = byInquiryType.map((r) => ({
     label: r.label,
     n: r.n,
     color: INQUIRY_COLORS[r.label] ?? "var(--text2)",
   }));
-  const statusSlices: Slice[] = byStatus.map((r) => ({
+  const statusSlices: DonutSlice[] = byStatus.map((r) => ({
     label: r.status.replace("_", " "),
     n: r.n,
     color: STATUS_COLORS[r.status] ?? "var(--text2)",

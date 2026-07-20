@@ -89,8 +89,8 @@ export function QueriesTable({
         <thead>
           <tr>
             <th>Query</th>
-            <th title="Clicks in the window">Clicks</th>
-            <th title="Impressions in the window">Impressions</th>
+            <th title="Clicks in this period">Clicks</th>
+            <th title="Impressions in this period">Impressions</th>
             <th title="Impression-weighted average position (lower is better)">Position</th>
             <th>Tags</th>
           </tr>

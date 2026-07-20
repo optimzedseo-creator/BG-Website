@@ -1,4 +1,7 @@
-// WP3.9 — Activity stream handler: GET /admin/api/iq/activity?p=&kind=&path=&source=
+// WP3.9 → PERIOD-UI wave — Activity stream handler:
+// GET /admin/api/iq/activity?period=&compare=&from=&to=&cmpFrom=&cmpTo=&kind=&path=&source=
+// (?p= tolerated as the dormant legacy fallback; no params = MTD default;
+// the source forces compareMode "none" — a log compares nothing)
 //
 // Under /admin/api/* (cookie path scope). Contract: requireAdmin() first-line,
 // exclusion via SourceOpts, PII-free typed payload (form/booking rows carry
@@ -10,7 +13,14 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin/auth";
 import { getSource } from "@/lib/admin/iq";
 import { readMode } from "@/lib/admin/iq/mode";
-import { parseDimParam, parsePathParam, parseSourceClassParam, parseWindowParam } from "@/lib/admin/iq/shared";
+import {
+  parseDimParam,
+  parsePathParam,
+  parsePeriodParam,
+  parseSourceClassParam,
+  parseWindowParam,
+  periodFilters,
+} from "@/lib/admin/iq/shared";
 import { readInternalVisitorIds } from "@/lib/admin/iq/internal";
 import type { IqActivity } from "@/lib/admin/iq/types";
 
@@ -25,9 +35,20 @@ export async function GET(req: Request): Promise<NextResponse> {
 
   try {
     const url = new URL(req.url);
+    // PERIOD-UI wave: the SAME parsePeriodParam→periodFilters triple as the
+    // page (closed loop — no second grammar).
+    const pp = parsePeriodParam({
+      period: url.searchParams.get("period"),
+      compare: url.searchParams.get("compare"),
+      from: url.searchParams.get("from"),
+      to: url.searchParams.get("to"),
+      cmpFrom: url.searchParams.get("cmpFrom"),
+      cmpTo: url.searchParams.get("cmpTo"),
+    });
     const payload: IqActivity = await getSource(await readMode()).activity(
       {
         window: parseWindowParam(url.searchParams.get("p")),
+        ...periodFilters(pp),
         kind: parseDimParam(url.searchParams.get("kind")),
         path: parsePathParam(url.searchParams.get("path")) ?? undefined,
         sourceClass: parseSourceClassParam(url.searchParams.get("source")),

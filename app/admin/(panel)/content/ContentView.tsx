@@ -2,21 +2,22 @@
 
 import { useEffect, useRef, useState } from "react";
 import DemoBadge from "../iq/DemoBadge";
-import type { IqContent, WindowDays } from "@/lib/admin/iq/types";
+import type { IqContent } from "@/lib/admin/iq/types";
 import { ENGAGED_MIN_DURATION_S, buildIqQuery } from "@/lib/admin/iq/shared";
-import { subscribePeriodRefetch } from "../period-bus";
+import { subscribePeriodRefetch, type PeriodSignal } from "../period-bus";
 import SegmentChips, { type ChipGroup } from "../SegmentChips";
-import { fmtDay, fmtSeconds } from "../fmt";
+import CompareControl from "../CompareControl";
+import { CmpRow } from "../overview/WidgetRenderers";
+import { fmtDay, fmtSeconds, periodHeadLabel } from "../fmt";
 import { openDrill, pageHash } from "../iq/hash-route";
 
 /*
- * WP2.5 Content module (client island) — "pages". Pages table (path sticky,
- * views, visitors, avg duration WITH coverage, entrances) + the B13 pillar
- * rollup. Rows are NOT clickable (page drills arrive in Wave 3 — no dead
- * affordances). Module-local chips: device / country only, refetching through
- * GET /admin/api/iq/content without navigation; querystring stays shareable.
- * Duration coloring uses the ONE canonical engagement floor (10s, B2) — no
- * invented ramp values.
+ * WP2.5 Content module (client island) — "pages". PERIOD-UI wave: the island
+ * rides the FULL PeriodSignal (top-bar period, compare pill) and refetches
+ * through GET /admin/api/iq/content with the whole grammar; the head renders
+ * from the payload PeriodEcho and the head counts carry the honest four-state
+ * comparison line. Duration coloring uses the ONE canonical engagement floor
+ * (10s, B2) — no invented ramp values.
  */
 
 interface Cuts {
@@ -30,21 +31,32 @@ function durClass(avg: number | null): string {
   return avg >= ENGAGED_MIN_DURATION_S ? " adm-dur-hi" : " adm-dur-lo";
 }
 
-export default function ContentView({ initial }: { initial: IqContent }) {
+export default function ContentView({
+  initial,
+  initialParams,
+}: {
+  initial: IqContent;
+  initialParams: PeriodSignal;
+}) {
   const [data, setData] = useState<IqContent>(initial);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [params, setParams] = useState<PeriodSignal>(initialParams);
+  const paramsRef = useRef(params);
+  paramsRef.current = params;
   const cutsRef = useRef<Cuts>({ device: initial.applied.device, country: initial.applied.country });
-  const periodRef = useRef<WindowDays>(initial.window);
   // Monotonic fetch sequence (api A3): a slow older response must never
   // overwrite a newer one, and must never win the URL.
   const seqRef = useRef(0);
 
-  async function refetch() {
+  async function refetch(sig?: PeriodSignal) {
+    const p = sig ?? paramsRef.current;
     const id = ++seqRef.current;
     setLoading(true);
     setError(null);
-    const qs = buildIqQuery(periodRef.current, cutsRef.current);
+    // api N3: window serializes as the default (30) — never immortalize a
+    // legacy ?p= into the canonical URL.
+    const qs = buildIqQuery(30, cutsRef.current, p);
     try {
       const res = await fetch(`/admin/api/iq/content${qs ? `?${qs}` : ""}`, { cache: "no-store" });
       // Expired session (api A1): the middleware 307s to login and fetch
@@ -69,12 +81,11 @@ export default function ContentView({ initial }: { initial: IqContent }) {
   }
 
   useEffect(() => {
-    // WP2 bus upgrade: the signal is now the full period object; this module
-    // stays on ?p= (its ?period migration is a later WP) and reads the
-    // `window` fallback field.
+    // PERIOD-UI wave: this island rides the FULL PeriodSignal — top-bar
+    // period picks AND compare-pill flips land here as one refetch path.
     return subscribePeriodRefetch((s) => {
-      periodRef.current = s.window;
-      void refetch();
+      setParams(s);
+      void refetch(s);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -101,12 +112,30 @@ export default function ContentView({ initial }: { initial: IqContent }) {
         <h1>✍️ Content</h1>
         <DemoBadge demo={data.meta.mode === "demo"} />
         <span className="adm-count">
-          last {data.window} days · {data.pageviews} pageview{data.pageviews === 1 ? "" : "s"} ·{" "}
-          {data.visitors} visitor{data.visitors === 1 ? "" : "s"}
+          {periodHeadLabel(data.period, data.window)} · {data.pageviews} pageview
+          {data.pageviews === 1 ? "" : "s"} · {data.visitors} visitor
+          {data.visitors === 1 ? "" : "s"}
         </span>
       </div>
 
       {error && <p className="adm-error" role="status">{error}</p>}
+
+      <div className="adm-controlbar">
+        <CompareControl params={params} compareLabel={data.period.compareLabel} loading={loading} />
+      </div>
+
+      {/* Honest head-count comparison line (four-state CmpRow — the whole line
+          collapses when compare is off, never a bare label over nothing). */}
+      {data.comparisons.visitors.kind !== "n-a" && (
+        <p className="adm-cmpline">
+          <span className="adm-cmpline-item">
+            visitors <CmpRow cmp={data.comparisons.visitors} echoKind={data.period.kind} />
+          </span>
+          <span className="adm-cmpline-item">
+            pageviews <CmpRow cmp={data.comparisons.pageviews} echoKind={data.period.kind} />
+          </span>
+        </p>
+      )}
 
       <SegmentChips groups={chipGroups} onToggle={onToggle} disabled={loading} />
       {hasCut && (
@@ -120,7 +149,7 @@ export default function ContentView({ initial }: { initial: IqContent }) {
           <h2>Pages</h2>
           {data.pages.length === 0 ? (
             <p className="adm-empty">
-              📭 No pageviews in this {hasCut ? "cut" : "window"} yet.
+              📭 No pageviews in this {hasCut ? "cut" : "period"} yet.
               {countingSince ? ` Counting since ${countingSince}.` : " Counting starts with the first pageview."}
             </p>
           ) : (
@@ -217,7 +246,7 @@ export default function ContentView({ initial }: { initial: IqContent }) {
             {anyPillarTraffic
               ? `Rollup of /insights and its four pillars.${insightsSince ? ` Counting since ${insightsSince}.` : ""}`
               : insightsSince
-                ? `No /insights traffic in this window. Counting since ${insightsSince}; zeros are data, not absence.`
+                ? `No /insights traffic in this period. Counting since ${insightsSince}; zeros are data, not absence.`
                 : "No /insights traffic yet. Pillar counts fill from the first article visit; the meter is running."}
           </p>
         </section>

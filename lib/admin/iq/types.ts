@@ -1,4 +1,4 @@
-// ADMIN-IQ — payload type contract (DATA-SPEC §7.1, metricsVersion iq-v2).
+// ADMIN-IQ — payload type contract (DATA-SPEC §7.1, metricsVersion iq-v3).
 //
 // STRUCTURAL PII FIREWALL (DATA-SPEC §4.4): no type in this file may carry
 // name / email / phone / company / message fields. Leads appear in analytics
@@ -15,8 +15,12 @@
 
 /** Payload-contract version (DATA-SPEC header). Definition changes bump this — never silently redefine.
  * iq-v1 → iq-v2 (Dashboard Wave WP1): the period axis gained calendar-anchored
- * presets + like-for-like comparison, so the definition of "the period" changed. */
-export const METRICS_VERSION = "iq-v2" as const;
+ * presets + like-for-like comparison, so the definition of "the period" changed.
+ * iq-v2 → iq-v3 (PERIOD-UI wave): the DEFAULT period changed from a rolling
+ * 30-day window to calendar month-to-date, and every module surface (traffic /
+ * content / search / activity / landing) became period-scoped with a PeriodEcho
+ * — the same URL now measures a different span than it did under iq-v2. */
+export const METRICS_VERSION = "iq-v3" as const;
 
 export type IqMode = "live" | "demo";
 
@@ -371,9 +375,14 @@ export interface ModuleTeaser {
 export interface IqLanding {
   meta: IqMeta;
   window: WindowDays;
+  /** PERIOD-UI wave — what the source resolved (MTD default). The landing
+   * computes no comparison (compareMode "none" at the source; compareLabel is
+   * always null). Teaser sparklines stay FIXED 14-day (self-labeled design);
+   * teaser stats + the header sub-line ride the resolved period. */
+  period: PeriodEcho;
   since: string;
-  /** Header sub-line inputs. visitors/pageviews/leadsWindow are WINDOWED —
-   * the sub-line says "last N days", so every number in it must be (factcheck
+  /** Header sub-line inputs. visitors/pageviews/leadsWindow are PERIOD-SCOPED —
+   * the sub-line names the period, so every number in it must match (factcheck
    * FC1). leadsTotal stays all-time for the leads teaser, which labels itself. */
   visitors: number;
   pageviews: number;
@@ -527,6 +536,16 @@ export interface AppliedCuts {
 export interface IqTraffic {
   meta: IqMeta;
   window: WindowDays;
+  /** PERIOD-UI wave — what the source resolved (MTD default; see PeriodEcho). */
+  period: PeriodEcho;
+  /** Honest four-state comparisons for the count KPIs (post-cut, like the
+   * tiles they sit under; the prior slice applies the SAME device/country/
+   * source cut). avgDuration is a coverage-guarded rate — no comparison. */
+  comparisons: {
+    visitors: PeriodComparison;
+    pageviews: PeriodComparison;
+    returnVisitors: PeriodComparison;
+  };
   since: string;
   /** ISO date of the first post-exclusion pageview ever; null = no data yet. */
   countingSince: string | null;
@@ -573,6 +592,13 @@ export interface PillarRow {
 export interface IqContent {
   meta: IqMeta;
   window: WindowDays;
+  /** PERIOD-UI wave — what the source resolved (MTD default). */
+  period: PeriodEcho;
+  /** Honest comparisons for the head counts (post-cut, device/country). */
+  comparisons: {
+    visitors: PeriodComparison;
+    pageviews: PeriodComparison;
+  };
   since: string;
   countingSince: string | null;
   /** Content chips are device/country only — sourceClass stays null. */
@@ -635,6 +661,14 @@ export interface GscCountryRow {
 export interface IqSearch {
   meta: IqMeta;
   window: WindowDays;
+  /** PERIOD-UI wave — what the source resolved (MTD default). GSC rows are
+   * sliced by calendar-day KEYS under calendar/custom periods (M2 pattern). */
+  period: PeriodEcho;
+  /** Honest comparisons for the property totals (GscDaily population). */
+  comparisons: {
+    impressions: PeriodComparison;
+    clicks: PeriodComparison;
+  };
   /** Earliest stored GscDaily date ever — the "GSC connected / counting since" date; null before first ingest. */
   gscSince: string | null;
   /** Latest stored GscDaily date — the "data through {date}" notice; null before first ingest. */
@@ -816,6 +850,11 @@ export interface ActivityRow {
 export interface IqActivity {
   meta: IqMeta;
   window: WindowDays;
+  /** PERIOD-UI wave — what the source resolved (MTD default). The activity
+   * log is a pure event stream: the source resolves with compareMode "none",
+   * so compareLabel is ALWAYS null here (nothing is compared — an echo naming
+   * a comparison no number renders would lie). */
+  period: PeriodEcho;
   since: string;
   countingSince: string | null;
   /** Newest-first, post-filter, capped at rowCap. */
