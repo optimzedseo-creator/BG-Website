@@ -213,10 +213,19 @@ export default function StoryPage() {
             <p className="prose">The operator years came next, the ones a r&eacute;sum&eacute; lists cleanly and the work never was. At <strong>Wensco</strong> I owned every outcome, and the records for sales, revenue, and growth fell one after another.</p>
             <p className="prose">Then <strong>AcreValue</strong>, the one that proved the system travels. I came in fractional: a platform with 1.5 million users and recurring revenue that had declined two straight years. I rebuilt the go-to-market from the inside sales calls out, repositioned the product, returned MRR to growth, and set the table for the ending: <strong>acquisition by CoStar Group, a NASDAQ company</strong>. A turnaround that ends on a stock ticker doesn&rsquo;t need adjectives.</p>
             <p className="prose"><strong>Atrium</strong> handed me a $25M budget across six brands, and it was deployed the way a budget that size should be: with discipline, attribution, and zero sentiment. <strong>Vertex</strong> made me Chief Marketing Officer, and within four months inbound calls were up 490% and the booking rate had gone from 16% to 59%. Today I run Midwest marketing for <strong>Infinity Home Services</strong>, and the region leads the entire company: the #1 performing region, with double-digit year-over-year sales growth.</p>
-            {/* Stand-in caption rule (design P2 + content): gradient stand-ins carry
-                era labels only, never moment claims — this frame stays uncaptioned
-                until the shoot delivers the real room photo (slot 4). */}
-            <PhotoFrame ratio="16/9" tone="room" className="ch-fig-wide" />
+            {/* Brad's call (2026-07-20): the real session room lands in slot 4.
+                NOTE the frame is the EMPTY room from the speaker's position —
+                Brad is not in the shot, so the alt describes exactly that (no
+                "speaking at" claim). Caption stays off until content writes one.
+                Export carries the §4 13% bleed — full parallax fig. */}
+            <PhotoFrame
+              ratio="16/9"
+              tone="room"
+              className="ch-fig-wide"
+              src="/assets/session-room-lectern-2024.jpg"
+              alt="The view from the lectern in an empty session room: a microphone in the foreground, rows of chairs, a projector, and a video camera on a tripod"
+              sizes="(max-width: 860px) 100vw, 640px"
+            />
           </div>
         </div>
       </section>
@@ -282,8 +291,19 @@ export default function StoryPage() {
                 caption={"Michigan water · honest books"}
                 sizes="(max-width: 860px) 100vw, 320px"
               />
-              {/* Uncaptioned per the stand-in caption rule (no moment claims on gradients). */}
-              <PhotoFrame ratio="4/3" tone="dusk" />
+              {/* Brad's call (2026-07-20): slot 8's open frame gets a couple
+                  shot — both approved; design's palette lean picks goldenrod
+                  (gold field = brand). The camo-deck swap is this one line:
+                  src="/assets/camo-couple-deck-2021.jpg" + matching alt (a
+                  bleed export from Z: would be needed first). Uncaptioned
+                  until content writes one. Full parallax fig (§4 bleed). */}
+              <PhotoFrame
+                ratio="4/3"
+                tone="dusk"
+                src="/assets/couple-goldenrod-2024.jpg"
+                alt="Bradley Griffin in a blue blazer standing with his wife in a field of goldenrod"
+                sizes="(max-width: 860px) 100vw, 320px"
+              />
             </div>
           </div>
         </div>

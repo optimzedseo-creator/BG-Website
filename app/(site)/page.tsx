@@ -108,7 +108,20 @@ export default function HomePage() {
               </div>
             </a>
             <a className="arc-card reveal" href="/story#ch-03">
-              <PhotoFrame ratio="4/3" tone="navy" caption="The working years" />
+              {/* Brad's call (2026-07-20): the 2018 campaign portrait, visually
+                  neutral frame, era-label caption unchanged. STATIC plate per
+                  C1-PHOTO-MAP — the 805px re-save has no 13% bleed, so it is
+                  excluded from the parallax registry (staticPlate). If the
+                  camera original ever lands, re-export with bleed + drop the
+                  prop and it re-enters the registry. */}
+              <PhotoFrame
+                ratio="4/3"
+                tone="navy"
+                src="/assets/campaign-downtown-2018.png"
+                alt="Bradley Griffin in a gray suit and tie on a downtown main street"
+                caption="The working years"
+                staticPlate
+              />
               <div className="arc-body">
                 <span className="arc-n">Chapter two</span>
                 <h3>The operator</h3>

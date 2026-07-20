@@ -17,8 +17,11 @@ html.fx .hero-plate,
 html.fx .hero-veil { will-change: transform; }
 
 /* Photo plates: art layer over-scanned 13% so it can drift inside its
-   clipped frame (the "window into depth"). Static: inset 0, safe crop. */
-html.fx .ph-art { inset: -13% 0; }
+   clipped frame (the "window into depth"). Static: inset 0, safe crop.
+   Keyed to data-px="art" so a static plate (PhotoFrame `staticPlate` — a
+   source without the 13% bleed, e.g. the 805px campaign portrait) keeps
+   inset 0 under fx too: no registry entry, no over-scan, no drift. */
+html.fx .ph-art[data-px="art"] { inset: -13% 0; }
 
 /* Cinema backdrop plate: 14% over-scan. */
 html.fx .cinema-plate { inset: -14% 0; }

@@ -18,6 +18,13 @@ import Image from "next/image";
  * ASSET CONTRACT (P4 photo swap): every real image destined for this frame
  * ships with ≥13% extra height beyond the visible crop, duotone baked in.
  * The swap after the shoot is a props change — no layout code.
+ *
+ * STATIC-PLATE EXCEPTION (C1-PHOTO-MAP.md, Brad's call 2026-07-20): a source
+ * too small to carry the 13% bleed may ship with `staticPlate` — the art
+ * layer loses data-px="art" (never enters the MotionEngine registry) and the
+ * fx over-scan CSS keys off that attribute, so the frame renders the full-
+ * quality safe crop with zero drift. Currently: campaign-downtown-2018.png
+ * (805px social re-save; re-enters the registry if the original is found).
  */
 
 const RATIO_CLASS = {
@@ -38,6 +45,8 @@ type Props = {
   caption?: string;
   sub?: string;
   className?: string;
+  /** Exclude the art layer from the parallax registry (static-plate exception). */
+  staticPlate?: boolean;
 };
 
 export default function PhotoFrame({
@@ -51,6 +60,7 @@ export default function PhotoFrame({
   caption,
   sub,
   className,
+  staticPlate,
 }: Props) {
   const classes = ["ph", RATIO_CLASS[ratio], tone ? `ph-${tone}` : "", className || ""]
     .filter(Boolean)
@@ -58,7 +68,7 @@ export default function PhotoFrame({
   const hasCaption = Boolean(kicker || caption || sub);
   return (
     <figure className={classes}>
-      <div className="ph-art" data-px="art" aria-hidden={src ? undefined : true}>
+      <div className="ph-art" data-px={staticPlate ? undefined : "art"} aria-hidden={src ? undefined : true}>
         {src ? (
           <Image
             src={src}
