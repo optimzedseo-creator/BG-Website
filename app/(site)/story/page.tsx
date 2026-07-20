@@ -77,6 +77,7 @@ export default function StoryPage() {
             alt="A young Bradley Griffin in U.S. Army dress uniform and beret"
             caption={"Bradley Griffin · U.S. Army"}
             sizes="(max-width: 860px) 100vw, 40vw"
+            priority
             className="reveal"
           />
         </div>
