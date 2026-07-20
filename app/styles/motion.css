@@ -1,0 +1,61 @@
+/* ============================================================
+   C1 MOTION LAYER — every rule in this file is gated behind
+   `html.fx`, which components/MotionEngine.tsx adds ONLY when
+   prefers-reduced-motion does not match (and removes live if it
+   flips). Default CSS elsewhere IS the complete static site.
+
+   HARD CONTRACT (C1-IMPLEMENTATION-PLAN.md §3.5): fx-gated rules
+   may touch ONLY transform, will-change, `inset` on absolutely
+   positioned over-scan layers, and the spine's scaleY. Nothing
+   here may change flow geometry — the html.fx class flip must
+   cause zero layout shift. The depth-stack radius/overlap is
+   therefore UNGATED and lives in c1.css (it reads fine static).
+   ============================================================ */
+
+/* will-change on exactly two elements — the hero planes. */
+html.fx .hero-plate,
+html.fx .hero-veil { will-change: transform; }
+
+/* Photo plates: art layer over-scanned 13% so it can drift inside its
+   clipped frame (the "window into depth"). Static: inset 0, safe crop. */
+html.fx .ph-art { inset: -13% 0; }
+
+/* Cinema backdrop plate: 14% over-scan. */
+html.fx .cinema-plate { inset: -14% 0; }
+
+/* Timeline spine: draws itself as you scroll (engine feeds --spine 0..1).
+   Static/no-fx: the .tl-item hairline border + gold dots render complete. */
+html.fx .tl-col::before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 40px;
+  width: 2px;
+  background: linear-gradient(180deg, var(--gold) 0%, var(--gold-deep) 100%);
+  transform-origin: top center;
+  transform: scaleY(var(--spine, 0));
+  z-index: 1;
+}
+html.fx .tl-item::before {
+  background: var(--hair-2);
+  transform: scale(0.55);
+  transition: background 0.4s ease, transform 0.4s ease;
+  z-index: 2;
+}
+html.fx .tl-item.lit::before {
+  background: var(--gold);
+  transform: scale(1);
+}
+
+@media (max-width: 640px) {
+  /* Mobile: single-plane hero drift only; spine renders fully drawn,
+     dots pre-lit, zero per-frame geometry work. */
+  html.fx .tl-col { --spine: 1; }
+  html.fx .tl-item::before {
+    background: var(--gold);
+    transform: scale(1);
+    transition: none;
+  }
+}

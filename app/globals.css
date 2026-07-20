@@ -24,10 +24,42 @@
   --serif: var(--font-fraunces), "Fraunces", Georgia, serif;
   --sans: var(--font-inter), "Inter", -apple-system, "Segoe UI", sans-serif;
   --wrap: 1120px;
+
+  /* ==========================================================
+     C1 TOKEN LAYER (redesign/c1 · C1-DESIGN-SYSTEM.md §1)
+     Additive: new names only, so every unmigrated page renders
+     byte-identical until its phase. Migrated pages opt in via a
+     `.c1` wrapper class (which also re-scopes the legacy names
+     it retires: --ink-soft, --mute, --wrap). "Bronze" naming is
+     retired page-by-page; the brand word going forward is GOLD.
+     ========================================================== */
+  --cream-deep: #F2EDE1;      /* replaces --cream-2 on C1 pages */
+  --navy: #1C2B4A;            /* = --ink; surface-role alias */
+  --navy-deep: #15213A;       /* dark story chapters */
+  --navy-night: #0F1930;      /* footer, hero base, cinema, photo-plate backing */
+  --gold: #B08C3E;            /* = --bronze, renamed */
+  --gold-deep: #8C6D24;       /* = --bronze-deep, renamed */
+  --gold-bright: #D2AC58;     /* gold on dark — tokenizes the scattered literal */
+  --gold-hairline: rgba(210, 172, 88, 0.28);
+  --gold-hairline-hi: rgba(210, 172, 88, 0.35);
+  --hair: #E2DBCC;            /* = --line, renamed */
+  --hair-2: #D3CABA;          /* = --line-strong, renamed */
+  --paper-on-dark: #F5F1E6;   /* headlines/primary text on any navy */
+  --muted-on-dark: #B9C0D2;   /* one grey on dark (replaces #C3CBDC/#9FABC0/#76839B) */
+  --link: #1E55B8;            /* in-content read-links */
+  --r: 14px;                  /* cards, photo plates */
+  --r-stack: 26px;            /* depth-stack top corners (18px ≤640, set per-scope) */
+  --r-pill: 999px;            /* all buttons */
+  --r-input: 12px;            /* form inputs */
+  --sh-photo: 0 24px 60px -28px rgba(28, 43, 74, 0.45);
+  --sh-card: 0 26px 50px -26px rgba(28, 43, 74, 0.35);
+  --sh-tcard: 0 24px 55px -30px rgba(28, 43, 74, 0.28);
+  --sh-mini: 0 18px 40px -22px rgba(28, 43, 74, 0.3);
+  --sh-stack: 0 -24px 48px -30px rgba(15, 25, 48, 0.5);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; /* sticky header renders 73px with its border (ux P3) — anchor targets (/story#ch-01 …) land clear of it */ }
 
 body {
   font-family: var(--sans);
@@ -83,15 +115,20 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 500; line-height: 1.08; let
 .btn-gold:hover { background: var(--cream); border-color: var(--cream); color: var(--ink); }
 .fin-ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 
-/* ---------- header ---------- */
+/* ---------- header (C1 chrome, §1.10/§2.1 — all pages, P1) ----------
+   Deliberate deviation from the spec's "fixed" position: sticky is kept.
+   Visually identical for a top-of-page bar (sticky reserves its own 72px of
+   flow), and it avoids a body padding-top that would leak into /admin (whose
+   layout has no Header). Height 72px per the spec's ribbonless note. */
 .header {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(250, 248, 243, 0.9);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--line);
+  background: rgba(250, 248, 243, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--hair);
 }
+.header { --wrap: 1160px; }
 .header .wrap {
   display: flex;
   align-items: center;
@@ -105,24 +142,37 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 500; line-height: 1.08; let
   letter-spacing: -0.01em;
   color: var(--ink);
 }
-.nav { display: flex; align-items: center; gap: 32px; }
+.brand .gs { color: var(--gold); }
+.nav { display: flex; align-items: center; gap: 26px; }
 .nav a {
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 500;
-  color: var(--ink-soft);
+  color: #4A5470;
   transition: color 0.18s;
 }
-.nav a:hover { color: var(--bronze-deep); }
+.nav a:hover { color: var(--navy); }
+.nav a.on { color: var(--navy); box-shadow: 0 2px 0 var(--gold); }
 .nav .nav-cta {
-  color: var(--cream);
-  background: var(--ink);
-  padding: 10px 20px;
-  border-radius: 100px;
+  color: var(--paper-on-dark);
+  background: var(--navy);
+  padding: 9px 18px;
+  border-radius: var(--r-pill);
+  font-size: 14px;
+  font-weight: 600;
   transition: background 0.2s;
 }
-.nav .nav-cta:hover { background: var(--bronze-deep); color: var(--cream); }
-.nav .nav-cal { color: #fff; background: var(--bronze-deep); padding: 10px 20px; border-radius: 100px; transition: background 0.2s; }
-.nav .nav-cal:hover { background: var(--ink); color: var(--cream); }
+.nav .nav-cta:hover { background: var(--gold-deep); color: #fff; box-shadow: none; }
+.nav .nav-cal {
+  color: var(--navy);
+  background: var(--gold-bright);
+  padding: 9px 18px;
+  border-radius: var(--r-pill);
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.2s, transform 0.18s ease;
+}
+/* Hover: navy + gold-bright (design P1a) — gold bg + #fff is a banned pair (3.15:1). */
+.nav .nav-cal:hover { background: var(--navy); color: var(--gold-bright); transform: translateY(-1px); box-shadow: none; }
 
 .menu-btn {
   display: none;
@@ -138,17 +188,17 @@ body.nav-open .menu-btn .mi:nth-child(1) { transform: translateY(7px) rotate(45d
 body.nav-open .menu-btn .mi:nth-child(2) { opacity: 0; }
 body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-.mobile-nav { display: none; border-top: 1px solid var(--line); background: var(--cream); }
+.mobile-nav { display: none; border-top: 1px solid var(--hair); background: var(--cream); }
 .mobile-nav a {
   display: block;
   padding: 16px 28px;
   font-size: 16px;
   font-weight: 500;
   color: var(--ink);
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--hair);
 }
-.mobile-nav a.nav-cta { color: var(--bronze-deep); font-weight: 600; }
-.mobile-nav a.nav-cal { color: var(--bronze-deep); font-weight: 600; }
+.mobile-nav a.nav-cta { color: var(--gold-deep); font-weight: 600; }
+.mobile-nav a.nav-cal { color: var(--gold-deep); font-weight: 600; }
 
 /* ---------- finale ---------- */
 .finale {
@@ -169,18 +219,28 @@ body.nav-open .menu-btn .mi:nth-child(3) { transform: translateY(-7px) rotate(-4
 .finale .btn-solid { background: var(--cream); color: var(--ink); border-color: var(--cream); }
 .finale .btn-solid:hover { background: #D2AC58; border-color: #D2AC58; color: var(--ink); }
 
-/* ---------- footer ---------- */
-.footer { padding: 40px 0; background: var(--ink); color: #9FABC0; border-top: 1px solid rgba(255,255,255,0.08); }
+/* ---------- footer (C1 chrome §2.16 — navy-night, one grey, all pages, P1) ---------- */
+.footer { padding: 44px 0; background: var(--navy-night); color: var(--muted-on-dark); font-size: 13.5px; }
+.footer { --wrap: 1160px; }
 .footer .wrap { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
-.footer .fbrand { font-family: var(--serif); font-size: 18px; color: var(--cream); }
+.footer .fbrand { font-family: var(--serif); font-size: 18px; color: var(--paper-on-dark); }
+.footer .fbrand .gs { color: var(--gold-bright); }
 .footer nav { display: flex; gap: 22px; flex-wrap: wrap; }
-.footer nav a { font-size: 14px; color: #9FABC0; transition: color 0.18s; }
-.footer nav a:hover { color: var(--cream); }
-.footer .fine { font-size: 13px; color: #76839B; }
+.footer nav a { font-size: 13.5px; color: var(--muted-on-dark); transition: color 0.18s; }
+.footer nav a:hover { color: var(--paper-on-dark); }
+.footer .fine { font-size: 13px; color: var(--muted-on-dark); }
 
-/* ---------- reveal ---------- */
-.reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
-.reveal.in { opacity: 1; transform: none; }
+/* ---------- reveal ----------
+   C1 P0 no-JS fix (C1-DESIGN-SYSTEM.md §2.17): the hidden state is gated
+   behind html.js, added by an inline script at the top of <body> in the root
+   layout. JS dead/disabled ⇒ the class never lands ⇒ the page renders fully
+   visible. Reduced-motion users get instant visibility, no fade. Values
+   updated 16px/.6s → 26px/.7s per the C1 kill list (§5). */
+html.js .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s ease; }
+html.js .reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  html.js .reveal { opacity: 1; transform: none; transition: none; }
+}
 
 /* ---------- responsive (shared) ---------- */
 /* Nav collapses to the hamburger at 1050px, not 940px: the 2026-07 rework added

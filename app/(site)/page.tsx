@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import NewsletterSignup from "@/components/NewsletterSignup";
+import PhotoFrame from "@/components/PhotoFrame";
+import CinemaQuote from "@/components/CinemaQuote";
 
-const TITLE = "Bradley Griffin - Chief Marketing Officer & Growth Executive";
+const TITLE = "Bradley Griffin - CMO, Growth Executive & Army Ranger Veteran";
 const DESCRIPTION =
-  "CMO and growth executive - two successful exits, a NASDAQ acquisition, a #1-performing region on a national platform. Executive roles, fractional CMO, AI consulting, and keynotes.";
+  "Army Ranger veteran turned CMO and growth executive: two exits, a NASDAQ acquisition, and a #1-performing region. Executive roles, fractional CMO, AI consulting, and keynotes.";
 const URL = "https://www.bradleygriffin.us/";
 const OG_IMAGE = "https://www.bradleygriffin.us/assets/bradley-griffin-og.jpg";
 
@@ -13,6 +15,12 @@ const OG_IMAGE = "https://www.bradleygriffin.us/assets/bradley-griffin-og.jpg";
  * trailing-slash form "https://www.bradleygriffin.us/" and Next's metadata
  * resolver strips the trailing slash on the root path. Do not re-add them
  * to this metadata object — you'd get duplicates.
+ *
+ * D1 RESOLVED (2026-07-20, Brad): the identity H1 "Soldier. Operator.
+ * Builder." stays. Title/description/OG re-authored by bradley-seo in the
+ * same window for snippet-to-page coherence (blend: name + role class terms
+ * + identity; claims unchanged and visibly supported). JSON-LD deliberately
+ * untouched — zero H1 coupling, Person claims still match visible copy.
  */
 export const metadata: Metadata = {
   title: TITLE,
@@ -37,50 +45,171 @@ export const metadata: Metadata = {
 const homeJsonLd =
   '{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://www.bradleygriffin.us/#website", "name": "Bradley Griffin", "url": "https://www.bradleygriffin.us/", "publisher": {"@type": "Person", "@id": "https://www.bradleygriffin.us/#person", "name": "Bradley Griffin"}}, {"@type": "Person", "@id": "https://www.bradleygriffin.us/#person", "name": "Bradley Griffin", "alternateName": "Brad Griffin", "jobTitle": "Chief Marketing Officer & Growth Executive", "description": "CMO and growth marketing executive with 20+ years scaling B2C brands, SaaS platforms, and multi-location operations - two founded-and-sold companies and a NASDAQ acquisition. U.S. Army 75th Ranger Regiment veteran.", "url": "https://www.bradleygriffin.us/", "image": "https://www.bradleygriffin.us/assets/bradley-griffin-portrait.jpg", "sameAs": ["https://www.linkedin.com/in/brad-w-griffin/"], "address": {"@type": "PostalAddress", "addressRegion": "MI", "addressCountry": "US"}, "alumniOf": [{"@type": "CollegeOrUniversity", "name": "Auburn University"}, {"@type": "CollegeOrUniversity", "name": "Central Michigan University"}], "knowsAbout": ["Growth Marketing", "Demand Generation", "Fractional CMO Leadership", "SEO", "AI Overviews (AIO)", "AI Marketing Operations", "Marketing Automation", "CRM Architecture", "Attribution Modeling", "Paid Media", "Go-to-Market Strategy"]}, {"@type": "ProfilePage", "url": "https://www.bradleygriffin.us/", "mainEntity": {"@type": "Person", "@id": "https://www.bradleygriffin.us/#person", "name": "Bradley Griffin"}, "isPartOf": {"@id": "https://www.bradleygriffin.us/#website"}}]}';
 
+/*
+ * C1 homepage (Tier F) — structure per the picked mockup + C1-CONTENT-MAP §1.1:
+ * Hero (3-plane) → Arc → Proof band → Offers (the reborn chooser; trust peak
+ * H1) → Method band (spine restored — home-band default, Brad decides final
+ * placement at the preview) → Cinema quote (peak H2 → /story only) → Book
+ * (CTA IS the capture) → Testimonial → Newsletter (restored) → Finale.
+ * Copy = the audited mockup draft (em-dash-swept, claims-sanctioned).
+ * Hero H1 ships the mockup's "Soldier. Operator. Builder." on the PREVIEW —
+ * Brad's D1 decision point.
+ */
 export default function HomePage() {
   return (
-    <div className="pg-home">
+    <div className="c1 c1-home">
       <link rel="canonical" href={URL} />
       <meta property="og:url" content={URL} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: homeJsonLd }} />
 
-      {/* ======= HERO ======= */}
+      {/* ======= HERO — 3-plane parallax signature ======= */}
       <section className="hero" id="top">
-        <div className="wrap hero-grid">
-          <div>
-            <span className="microlabel">Growth executive &amp; fractional CMO</span>
-            <h1>I Build <em>Systems</em> That Unlock <em>Growth</em></h1>
-            <p className="lede">
-              I&rsquo;m Bradley Griffin. Most companies can&rsquo;t tell what&rsquo;s actually
-              working in their marketing, so growth runs hot then cold. I read the raw source
-              data, find the waste, and build the systems that make growth predictable and keep
-              it that way.
-            </p>
-            <div className="hero-ctas">
-              <a className="btn btn-solid" href="/contact">Get in Touch <span className="arr">&rarr;</span></a>
-              <a className="btn btn-bronze cal-link" href="https://calendly.com/optimzedseo/30min" target="_blank" rel="noopener">Schedule a Call <span className="arr">&rarr;</span></a>
-            </div>
+        <div className="hero-plate" data-px="plate" aria-hidden="true"></div>
+        <div className="hero-veil" data-px="veil" aria-hidden="true"></div>
+        <div className="hero-in" data-px="fore">
+          <span className="microlabel">Bradley Griffin &middot; Growth executive &amp; fractional CMO</span>
+          <h1>Soldier. Operator. <em>Builder.</em></h1>
+          <p className="lede">
+            I solve complex business challenges in marketing, sales, and call center operations.
+            Two companies built and sold. A NASDAQ exit. A region that leads a national platform.
+            The story behind those results is the reason they hold.
+          </p>
+          <p className="sig">Bring me the problem. I&rsquo;ll provide the solution.</p>
+          <div className="hero-ctas">
+            <a className="btn btn-gold" href="/contact">Get in Touch <span className="arr">&rarr;</span></a>
+            <a className="btn btn-line cal-link" href="https://calendly.com/optimzedseo/30min" target="_blank" rel="noopener">Schedule a Call <span className="arr">&rarr;</span></a>
           </div>
-          <figure className="portrait">
-            <img src="/assets/bradley-griffin-portrait.jpg" alt="Bradley Griffin" />
-          </figure>
+        </div>
+        <div className="scrollcue" aria-hidden="true">The story &darr;</div>
+      </section>
+
+      {/* ======= THE ARC ======= */}
+      <section className="arc" id="arc">
+        <div className="wrap">
+          <div className="arc-head reveal">
+            <span className="microlabel">The arc</span>
+            <h2>People hire people. Here is <em>mine,</em> in three chapters.</h2>
+            <p>Every result on this site traces back to a standard set at Fort Benning. Follow the line from the Regiment to the boardroom, then decide if it belongs on your problem.</p>
+          </div>
+          <div className="arc-grid">
+            <a className="arc-card reveal" href="/story#ch-01">
+              <PhotoFrame
+                ratio="4/3"
+                tone="sepia"
+                src="/assets/military-three-generations.jpg"
+                alt="Bradley Griffin in Army dress uniform and beret, flanked by his father and grandfather on graduation day"
+                caption={"Dress uniform · three generations"}
+              />
+              <div className="arc-body">
+                <span className="arc-n">Chapter one</span>
+                <h3>The soldier</h3>
+                <p>The 75th Ranger Regiment, a parachute that opened wrong, and about twenty-five seconds. The standard survived the injury.</p>
+                <span className="go">Read the chapter <span className="arr">&rarr;</span></span>
+              </div>
+            </a>
+            <a className="arc-card reveal" href="/story#ch-03">
+              <PhotoFrame ratio="4/3" tone="navy" caption="The working years" />
+              <div className="arc-body">
+                <span className="arc-n">Chapter two</span>
+                <h3>The operator</h3>
+                <p>Sales floors first, then founder. Optimized, bootstrapped from a team of one to 23 employees and a sale to a UK equity firm.</p>
+                <span className="go">Read the chapter <span className="arr">&rarr;</span></span>
+              </div>
+            </a>
+            <a className="arc-card reveal" href="/story#ch-05">
+              {/* Uncaptioned per the stand-in caption rule (era labels only, never
+                  moment/place claims on gradient stand-ins). */}
+              <PhotoFrame ratio="4/3" tone="room" />
+              <div className="arc-body">
+                <span className="arc-n">Chapter three</span>
+                <h3>The builder</h3>
+                <p>CMO years, a NASDAQ acquisition, and a Midwest region that now leads a national platform. Systems that hold after I leave the room.</p>
+                <span className="go">Read the chapter <span className="arr">&rarr;</span></span>
+              </div>
+            </a>
+          </div>
         </div>
       </section>
 
-      {/* ======= PROBLEM -> METHOD SPINE ======= */}
-      <section className="spine" id="method">
+      {/* ======= PROOF BAND ======= */}
+      <section className="proofband" id="results">
         <div className="wrap">
-          <div className="spine-head reveal">
-            <span className="microlabel">The problem I solve</span>
-            <h2>Your marketing runs <em>hot then cold</em>. You can&rsquo;t tell what&rsquo;s actually working.</h2>
-            <p>
-              Reports look busy. Leads swing month to month. The dashboard says one thing, the
-              bank says another. When you can&rsquo;t see what&rsquo;s driving results, you
-              can&rsquo;t repeat them, so good months feel like luck and bad months feel like a
-              mystery. And that guesswork costs you: wasted spend, uneven sales, and thinner
-              margins than the business should earn.
-            </p>
-            <p className="spine-line">Bring me the problem. I&rsquo;ll provide the solution.</p>
+          <div className="pb-head reveal">
+            <span className="microlabel">Selected results</span>
+            <h2>The chapters end in <em>numbers.</em></h2>
+          </div>
+          <div className="pb-grid">
+            <div className="pb reveal">
+              <div className="stat">Sold</div>
+              <h3>From two years of decline to a NASDAQ exit</h3>
+              <p>AcreValue&rsquo;s revenue had fallen two years straight. I rebuilt the go-to-market from the sales calls out and returned it to growth. CoStar Group bought the company.</p>
+            </div>
+            <div className="pb reveal">
+              <div className="stat">490%</div>
+              <h3>Inbound calls, rebuilt</h3>
+              <p>At Vertex, drove inbound calls up 490% and lifted booking rate from 16% to 59% in four months.</p>
+            </div>
+            <div className="pb reveal">
+              <div className="stat">#1</div>
+              <h3>The Midwest region</h3>
+              <p>Full ownership of Midwest marketing across a national platform. Now the #1 performing region, with double-digit year-over-year sales growth.</p>
+            </div>
+          </div>
+          <div className="pb-more reveal">
+            <a className="lt-link" href="/case-studies"><span className="lt">Read the full case studies</span> <span className="arr">&rarr;</span></a>
+          </div>
+        </div>
+      </section>
+
+      {/* ======= OFFERS — the chooser, reborn as rows (trust peak H1) ======= */}
+      <section className="offers" id="work">
+        <div className="wrap">
+          <div className="of-head reveal">
+            <span className="microlabel">Ways to work together</span>
+            <h2>Now the part where the story <em>meets your problem.</em></h2>
+            <p>Pick the path that fits. Each one goes straight to the details.</p>
+          </div>
+          <a className="of-row reveal" href="/fractional">
+            <span className="of-k">Part-time &amp; ongoing</span>
+            <div>
+              <h3>Hire me fractionally</h3>
+              <p>Executive marketing leadership on a part-time, ongoing basis. I embed with your team and own the growth agenda month after month, at a fraction of the cost of a full-time hire.</p>
+            </div>
+            <span className="of-go" aria-hidden="true">&rarr;</span>
+          </a>
+          <a className="of-row reveal" href="/consulting">
+            <span className="of-k">One-time projects, defined scope</span>
+            <div>
+              <h3>Hire me for a project</h3>
+              <p>Need one thing done well? An audit built from your raw platform data, or an AI build: an automation, a dashboard, software you own. Scoped as a single project with a clear deliverable and a clear quote.</p>
+            </div>
+            <span className="of-go" aria-hidden="true">&rarr;</span>
+          </a>
+          <a className="of-row reveal" href="/speaking">
+            <span className="of-k">Conferences, trade shows &amp; events</span>
+            <div>
+              <h3>Book me to speak</h3>
+              <p>Bring me to your stage. Market strategy, competition, and AI, delivered with composure, from a sell-out expo session to a statewide PBS debate stage.</p>
+            </div>
+            <span className="of-go" aria-hidden="true">&rarr;</span>
+          </a>
+          <a className="of-row reveal" href="/executive">
+            <span className="of-k">CMO, CEO &amp; executive roles</span>
+            <div>
+              <h3>Hire me full-time</h3>
+              <p>Hiring a CMO, CEO, or senior growth leader? I bring twenty years of P&amp;L-accountable leadership to the whole picture: revenue, team, budget, and results that hold up under scrutiny.</p>
+            </div>
+            <span className="of-go" aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+      </section>
+
+      {/* ======= METHOD BAND — the 4-step spine, restored (home-band default; Brad decides placement at preview) ======= */}
+      <section className="methodband" id="method">
+        <div className="wrap">
+          <div className="reveal">
+            <span className="microlabel">The method</span>
+            <h2>The same four steps, <em>every time.</em></h2>
           </div>
           <ol className="method reveal">
             <li>
@@ -142,85 +271,26 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ======= THE ROUTER ======= */}
-      <section className="chooser" id="work">
-        <div className="wrap">
-          <div className="chooser-head reveal">
-            <span className="microlabel">Ways to work together</span>
-            <h2>What are you looking for?</h2>
-            <p>Pick the path that fits. Each one goes straight to the details.</p>
-          </div>
-          <div className="cards">
-            <a className="card reveal" href="/fractional">
-              <span className="kicker">Part-time &amp; ongoing</span>
-              <h3>Hire me fractionally</h3>
-              <p>Executive marketing leadership on a part-time, ongoing basis &mdash; I embed with your team, own the growth agenda month after month, at a fraction of the cost of a full-time hire.</p>
-              <span className="go"><span className="lt">Explore fractional leadership</span> <span className="arr">&rarr;</span></span>
-            </a>
-            <a className="card reveal" href="/consulting">
-              <span className="kicker">One-time projects, defined scope</span>
-              <h3>Hire me for a project</h3>
-              <p>Need one thing done well? An audit built from your raw platform data, or an AI build &mdash; an automation, a dashboard, software you own &mdash; scoped as a single project with a clear deliverable and a clear quote.</p>
-              <span className="go"><span className="lt">Explore project work</span> <span className="arr">&rarr;</span></span>
-            </a>
-            <a className="card reveal" href="/speaking">
-              <span className="kicker">Conferences, trade shows &amp; events</span>
-              <h3>Book me to speak</h3>
-              <p>Bring me to your stage. Market strategy, competition, and AI &mdash; delivered with composure, from a sell-out expo session to a statewide PBS debate stage.</p>
-              <span className="go"><span className="lt">Keynotes &amp; speaking</span> <span className="arr">&rarr;</span></span>
-            </a>
-            <a className="card reveal" href="/executive">
-              <span className="kicker">CMO, CEO &amp; executive roles</span>
-              <h3>Hire me full-time</h3>
-              <p>Hiring a CMO, CEO, or senior growth leader? I bring twenty years of P&amp;L-accountable leadership to the whole picture &mdash; revenue, team, budget, and results that hold up under scrutiny.</p>
-              <span className="go"><span className="lt">Explore executive roles</span> <span className="arr">&rarr;</span></span>
-            </a>
-          </div>
-        </div>
-      </section>
+      {/* ======= CINEMA QUOTE — emotional peak; story-first, no contact CTA here ======= */}
+      <CinemaQuote
+        kicker="From the story"
+        quote={"When the canopy rolls up at altitude, you don’t get to negotiate with the situation."}
+        attribution={"Chapter two · Twenty-five seconds"}
+        ctaHref="/story"
+        ctaLabel="Read the whole story"
+      />
 
-      {/* ======= PROOF STRIP ======= */}
-      <section className="proof" id="results">
-        <div className="wrap">
-          <div className="proof-head reveal">
-            <span className="microlabel">Selected results</span>
-            <h2>A track record that speaks first</h2>
-            <p>Real companies, real numbers, and the systems behind them.</p>
-          </div>
-          <div className="results">
-            <div className="result reveal">
-              <div className="stat">Sold</div>
-              <h3>From two years of decline to a NASDAQ exit</h3>
-              <p>AcreValue&rsquo;s revenue had fallen two years straight. I rebuilt the go-to-market from the sales calls out, returned it to growth &mdash; and CoStar Group bought the company.</p>
-            </div>
-            <div className="result reveal">
-              <div className="stat">490%</div>
-              <h3>Inbound calls, rebuilt</h3>
-              <p>At Vertex, drove inbound calls up 490% and lifted booking rate from 16% to 59% in four months.</p>
-            </div>
-            <div className="result reveal">
-              <div className="stat">#1</div>
-              <h3>The Midwest region</h3>
-              <p>Full ownership of Midwest marketing across a national platform &mdash; now the #1 performing region, with double-digit year-over-year sales growth.</p>
-            </div>
-          </div>
-          <div className="proof-more reveal">
-            <a href="/case-studies"><span className="lt">Read the full case studies</span> <span className="arr">&rarr;</span></a>
-          </div>
-        </div>
-      </section>
-
-      {/* ======= BOOK BANNER ======= */}
-      <section className="bookbar" id="book">
-        <div className="wrap bookbar-grid">
+      {/* ======= BOOK — "Be first to know" IS the capture (§4.4) ======= */}
+      <section className="book" id="book">
+        <div className="wrap book-grid">
           <div className="reveal">
             <span className="microlabel">New book &middot; Coming soon</span>
             <h2>It&rsquo;s Not a <em>Marketing</em> Problem</h2>
             <p className="booksub">Hard truths for companies that want to grow.</p>
-            <p className="bookdesc">Twenty years of blunt lessons from the field &mdash; why your business isn&rsquo;t as different as you think, why tactics can&rsquo;t save a bad strategy, and why the answer is in your data, not your slogan. No fluff. No platitudes. Just the conversations most consultants are too polite to have.</p>
-            <a className="btn btn-gold" href="/contact">Be first to know <span className="arr">&rarr;</span></a>
+            <p className="bookdesc">Twenty years of blunt lessons from the field. Why your business isn&rsquo;t as different as you think, why tactics can&rsquo;t save a bad strategy, and why the answer is in your data, not your slogan. No fluff. No platitudes. Just the conversations most consultants are too polite to have.</p>
+            <NewsletterSignup heading="" blurb="" source="book" cta="Be first to know" />
           </div>
-          <div className="bookcover-wrap reveal">
+          <div className="reveal">
             <div className="bookcover">
               <span className="bk-label">Coming soon</span>
               <span className="bk-title">It&rsquo;s Not a <em>Marketing</em> Problem</span>
@@ -232,32 +302,32 @@ export default function HomePage() {
       </section>
 
       {/* ======= ABOUT + TESTIMONIAL ======= */}
-      <section className="about">
-        <div className="wrap about-grid">
+      <section className="testi">
+        <div className="wrap testi-grid">
           <div className="reveal">
-            <span className="microlabel">About</span>
-            <h2>Twenty years of building growth that holds</h2>
-            <p>
+            <span className="microlabel">From the people who worked for him</span>
+            <h2>The standard, seen <em>from inside the team.</em></h2>
+            <p className="lede">
               I&rsquo;m a marketing, AI, and data-analysis operator. I&rsquo;ve built two companies
               from zero to a successful exit and rebuilt growth for brands that had stalled. Before
               any of that, I served in the 75th Ranger Regiment, where I learned to plan when the
               cost of being wrong is absolute. That same standard shows up in how I work now:
               prepared, precise, and accountable to the numbers.
             </p>
-            <a className="plain" href="/story"><span className="lt">Read my story</span> <span className="arr">&rarr;</span></a>
+            <p style={{ marginTop: 18 }}><a className="lt-link" href="/story"><span className="lt">Read my story</span> <span className="arr">&rarr;</span></a></p>
           </div>
-          <figure className="testimonial reveal">
-            <span className="qmark">&ldquo;</span>
+          <figure className="tcard reveal">
+            <span className="qmark" aria-hidden="true">&ldquo;</span>
             <blockquote>He excels at setting clear goals and consistently delivering results. He is a valuable asset to any team.</blockquote>
             <div className="who">
               <div className="nm">Michael Loomus</div>
-              <div className="rl">Inside Sales &amp; Customer Service Leader &mdash; reported to Bradley</div>
+              <div className="rl">Inside Sales &amp; Customer Service Leader, reported to Bradley</div>
             </div>
           </figure>
         </div>
       </section>
 
-      {/* ======= NEWSLETTER ======= */}
+      {/* ======= NEWSLETTER — restored pre-finale (§4.4) ======= */}
       <section className="newsletter" id="newsletter">
         <div className="wrap reveal">
           <span className="microlabel">Field notes</span>
@@ -267,14 +337,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ======= CONTACT CTA ======= */}
+      {/* ======= FINALE ======= */}
       <section className="finale" id="contact">
         <div className="wrap reveal">
           <span className="microlabel">Start a conversation</span>
           <h2>The next win is <em>a conversation away.</em></h2>
-          <p>Tell me what you&rsquo;re building &mdash; a role to fill, a growth problem to solve, or a stage that needs a speaker &mdash; and I&rsquo;ll tell you how I&rsquo;d approach it.</p>
-          <div className="fin-ctas"><a className="btn btn-solid" href="/contact">Get in Touch <span className="arr">&rarr;</span></a>
-          <a className="btn btn-gold cal-link" href="https://calendly.com/optimzedseo/30min" target="_blank" rel="noopener">Schedule a Call <span className="arr">&rarr;</span></a></div>
+          <p>Tell me what you&rsquo;re building. A role to fill, a growth problem to solve, or a stage that needs a speaker, and I&rsquo;ll tell you how I&rsquo;d approach it.</p>
+          <div className="fin-ctas">
+            <a className="btn btn-gold" href="/contact">Get in Touch <span className="arr">&rarr;</span></a>
+            <a className="btn btn-line cal-link" href="https://calendly.com/optimzedseo/30min" target="_blank" rel="noopener">Schedule a Call <span className="arr">&rarr;</span></a>
+          </div>
         </div>
       </section>
     </div>

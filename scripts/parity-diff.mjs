@@ -1,12 +1,22 @@
 /**
- * Parity gate: compares LIVE production pages vs the local Next.js port.
- *   node scripts/parity-diff.mjs [localBase]
+ * Parity gate: compares LIVE production pages vs the local Next.js build.
+ *   node scripts/parity-diff.mjs [localBase] [--changed=/,/story]
  * Checks per page: title, meta description, meta robots, canonical,
  * og:* / twitter:* values, JSON-LD (byte-level), and normalized visible copy.
+ *
+ * C1 migration mode (redesign/c1): routes listed via --changed are the
+ * phase's migrated pages. On those routes a VISIBLE-COPY diff is reported in
+ * full but counted as INTENTIONAL (not a failure) — head metadata and
+ * JSON-LD stay hard failures everywhere, because the SEO surface is frozen
+ * until Brad's D1 call lands (C1-IMPLEMENTATION-PLAN.md §3.2). Untouched
+ * routes must pass every check.
  */
 const LIVE = "https://www.bradleygriffin.us";
-const LOCAL = process.argv[2] || "http://localhost:3199";
-const PAGES = ["/", "/executive", "/fractional", "/consulting", "/case-studies", "/story", "/speaking", "/credentials", "/faq", "/contact", "/rates"];
+const args = process.argv.slice(2);
+const LOCAL = args.find((a) => !a.startsWith("--")) || "http://localhost:3199";
+const changedArg = args.find((a) => a.startsWith("--changed="));
+const CHANGED = new Set(changedArg ? changedArg.slice("--changed=".length).split(",").filter(Boolean) : []);
+const PAGES = ["/", "/executive", "/fractional", "/consulting", "/case-studies", "/story", "/speaking", "/credentials", "/faq", "/contact", "/rates", "/insights"];
 
 const ENTITIES = {
   "&mdash;": "—", "&ndash;": "–", "&rsquo;": "’", "&lsquo;": "‘",
@@ -62,6 +72,7 @@ const KEYS = [
 ];
 
 let failures = 0;
+let intentional = 0;
 function check(page, label, live, local) {
   if (live === local) {
     console.log(`  OK   ${label}`);
@@ -110,7 +121,15 @@ for (const page of PAGES) {
   const liveText = visibleText(liveHtml);
   const localText = visibleText(localHtml);
   if (liveText === localText) console.log("  OK   visible copy identical (normalized)");
-  else {
+  else if (CHANGED.has(page)) {
+    intentional++;
+    console.log("  INTENTIONAL visible-copy diff (route listed via --changed — migrated this phase)");
+    let i = 0;
+    while (i < Math.min(liveText.length, localText.length) && liveText[i] === localText[i]) i++;
+    console.log(`       first divergence at char ${i}:`);
+    console.log(`       live : ...${JSON.stringify(liveText.slice(Math.max(0, i - 60), i + 120))}`);
+    console.log(`       local: ...${JSON.stringify(localText.slice(Math.max(0, i - 60), i + 120))}`);
+  } else {
     failures++;
     console.log("  DIFF visible copy");
     // find first divergence for a readable report
@@ -122,5 +141,6 @@ for (const page of PAGES) {
   }
 }
 
-console.log(failures === 0 ? "\nPARITY: PASS (all checks)" : `\nPARITY: ${failures} difference(s) found`);
+if (intentional > 0) console.log(`\nINTENTIONAL: ${intentional} visible-copy diff(s) on --changed route(s) [${[...CHANGED].join(", ")}]`);
+console.log(failures === 0 ? "PARITY: PASS (all hard checks)" : `PARITY: ${failures} difference(s) found`);
 process.exit(failures === 0 ? 0 : 1);
