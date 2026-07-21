@@ -108,8 +108,21 @@ export default function HomePage() {
               </div>
             </a>
             <a className="arc-card reveal" href="/story#ch-03">
-              {/* Brad's call (2026-07-20): the 2018 campaign portrait, visually
-                  neutral frame, era-label caption unchanged. STATIC plate per
+              {/* Gradient stand-in: the operator working-shot is the one true
+                  photo gap (shoot item #2). Uncaptioned per the stand-in rule. */}
+              <PhotoFrame ratio="4/3" tone="navy" />
+              <div className="arc-body">
+                <span className="arc-n">Chapter two</span>
+                <h3>The operator</h3>
+                <p>Sales floors first, then founder. Optimized, bootstrapped from a team of one to 23 employees and a sale to a UK equity firm.</p>
+                <span className="go">Read the chapter <span className="arr">&rarr;</span></span>
+              </div>
+            </a>
+            <a className="arc-card reveal" href="/story#ch-05">
+              {/* Brad's call (2026-07-20): the 2018 portrait belongs on THE
+                  BUILDER card (the visibly-labeled one — a placement miss put
+                  it on the operator card first; corrected same day). Visually
+                  neutral frame, era-label caption only. STATIC plate per
                   C1-PHOTO-MAP — the 805px re-save has no 13% bleed, so it is
                   excluded from the parallax registry (staticPlate). If the
                   camera original ever lands, re-export with bleed + drop the
@@ -119,20 +132,9 @@ export default function HomePage() {
                 tone="navy"
                 src="/assets/campaign-downtown-2018.png"
                 alt="Bradley Griffin in a gray suit and tie on a downtown main street"
-                caption="The working years"
+                caption="The building years"
                 staticPlate
               />
-              <div className="arc-body">
-                <span className="arc-n">Chapter two</span>
-                <h3>The operator</h3>
-                <p>Sales floors first, then founder. Optimized, bootstrapped from a team of one to 23 employees and a sale to a UK equity firm.</p>
-                <span className="go">Read the chapter <span className="arr">&rarr;</span></span>
-              </div>
-            </a>
-            <a className="arc-card reveal" href="/story#ch-05">
-              {/* Uncaptioned per the stand-in caption rule (era labels only, never
-                  moment/place claims on gradient stand-ins). */}
-              <PhotoFrame ratio="4/3" tone="room" />
               <div className="arc-body">
                 <span className="arc-n">Chapter three</span>
                 <h3>The builder</h3>
