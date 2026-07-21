@@ -189,7 +189,7 @@ export default function FractionalPage() {
           <div className="why-grid reveal">
             <p className="big-claim">&ldquo;I build companies <em>that sell</em>.&rdquo;</p>
             <div className="why-copy">
-              <p>Optimized was founded as a team of one &mdash; <strong>the sales floor by day; SEO, PPC, social, and web development by night</strong>. It grew into a <strong>$5M firm with 23 employees, seven satellite offices, and Fortune 500 clients</strong> &mdash; then <strong>sold to a UK equity firm</strong> expanding into the U.S.</p>
+              <p>Optimized was founded as a team of one &mdash; <strong>the sales floor by day; SEO, PPC, social, and web development by night</strong>. It grew into a <strong>$5M firm with 23 employees, seven satellite offices, and Fortune 500 clients</strong> &mdash; then <strong>sold to an equity firm</strong> expanding into the U.S.</p>
               <p>An acquirer doesn&rsquo;t purchase hustle. It purchases systems that run without the founder &mdash; documented processes, a trained team, revenue that doesn&rsquo;t depend on one person. That&rsquo;s exactly what a fractional engagement leaves behind in your company.</p>
               <p>And because I&rsquo;ve personally done every job I now direct, nothing gets managed from a job description. When I review your paid accounts, coach your inside sales team, or rebuild your automations, I&rsquo;m inspecting work I&rsquo;ve done with my own hands.</p>
               <p className="rule-note">Founder <em>&times;2</em> &middot; Exits <em>&times;2</em></p>

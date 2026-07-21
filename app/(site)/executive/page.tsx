@@ -172,7 +172,7 @@ export default function ExecutivePage() {
                 <div className="co-name">Founder &times;2</div>
                 <div className="co-role">Optimized &middot; Florida Landscaping Services</div>
               </div>
-              <p>I built Optimized from a team of one into a <strong>$5M firm with 23 employees</strong> serving Fortune 500 clients, and co-founded Florida Landscaping Services &mdash; <strong>both exited successfully</strong>, Optimized to a UK equity firm expanding into the U.S.</p>
+              <p>I built Optimized from a team of one into a <strong>$5M firm with 23 employees</strong> serving Fortune 500 clients, and co-founded Florida Landscaping Services &mdash; <strong>both exited successfully</strong>, Optimized to an equity firm expanding into the U.S.</p>
               <div className="headline">2 exits<span className="sub-h">Founded, scaled &amp; sold</span></div>
             </div>
           </div>

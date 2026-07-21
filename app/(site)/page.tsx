@@ -114,7 +114,7 @@ export default function HomePage() {
               <div className="arc-body">
                 <span className="arc-n">Chapter two</span>
                 <h3>The operator</h3>
-                <p>Sales floors first, then founder. Optimized, bootstrapped from a team of one to 23 employees and a sale to a UK equity firm.</p>
+                <p>Sales floors first, then founder. Optimized, bootstrapped from a team of one to 23 employees and a sale to an equity firm.</p>
                 <span className="go">Read the chapter <span className="arr">&rarr;</span></span>
               </div>
             </a>
