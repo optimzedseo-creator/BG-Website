@@ -16,7 +16,9 @@
 /* ---------- case-file section backgrounds (opaque — depth-stack invariant) ---------- */
 .c1-cs .section { background: var(--cream); }
 .c1-cs .cs { scroll-margin-top: 92px; }
-.c1-cs .cs-dark { background: var(--navy); color: var(--paper-on-dark); }
+/* .section.cs-dark (0,0,3,0) must beat the shared `.c1 .section` cream rule
+   in c1.css (0,0,2,0, later source order) — else dark cases render cream. */
+.c1-cs .section.cs-dark { background: var(--navy); color: var(--paper-on-dark); }
 
 /* ---------- page hero: index of cases (ruled list) ---------- */
 .c1-cs .subhero .lede { margin-bottom: 12px; }
