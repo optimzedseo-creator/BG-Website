@@ -682,3 +682,52 @@
   .c1 .mini-offers { grid-template-columns: 1fr; }
   .c1 .method { grid-template-columns: 1fr; }
 }
+
+/* ============================================================
+   P2 — QUIET-C1 SUBPAGE PRIMITIVES
+   Shared across .c1-executive / .c1-fractional / .c1-consulting /
+   .c1-speaking / .c1-cs (C1-CONTENT-MAP §1.3–1.8, C1-DESIGN-SYSTEM §6).
+   QUIET tier: NO parallax planes (these pages carry forms, tables,
+   and dense reading) — tokens, the normalized type scale, hairlines,
+   dark bands, the ungated depth-stack, and the shared finale only.
+   Per-page bespoke grids live in each page's stylesheet, re-scoped
+   from the legacy .page- and .pg-cs selectors to .c1-*.
+   ============================================================ */
+
+/* subpage hero (§6 — story-hero pattern lite: single column, no plane) */
+.c1 .subhero {
+  padding: 92px 0 78px;
+  background: linear-gradient(180deg, var(--cream-deep), var(--cream));
+}
+.c1 .subhero .microlabel { display: block; margin-bottom: 20px; }
+.c1 .subhero h1 { font-size: var(--fs-display-2); color: var(--ink); max-width: 18ch; }
+.c1 .subhero .lede { margin-top: 22px; font-size: 19px; max-width: 60ch; }
+.c1 .subhero .lede strong { color: var(--ink); font-weight: 600; }
+.c1 .subhero-ctas { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-top: 34px; }
+
+/* shared light-section rhythm (pages use .section / .section-head / .section-intro) */
+.c1 .section { padding: 96px 0; background: var(--cream); }
+.c1 .section-head, .c1 .section-intro { max-width: 640px; margin-bottom: 48px; }
+.c1 .section-head .microlabel, .c1 .section-intro .microlabel { display: block; margin-bottom: 16px; }
+.c1 .section-head h2, .c1 .section-intro h2 { font-size: var(--fs-h2); color: var(--ink); }
+.c1 .section-head p, .c1 .section-intro p { margin-top: 14px; font-size: 17px; color: var(--ink-soft); }
+
+/* dark band shared text treatment (sections carry .dark; §1.2 navy ramp) */
+.c1 .section.dark, .c1 .operate.dark { background: var(--navy); color: var(--paper-on-dark); }
+.c1 .dark .section-head h2, .c1 .dark .section-intro h2 { color: var(--paper-on-dark); }
+.c1 .dark .section-head p, .c1 .dark .section-intro p { color: var(--muted-on-dark); }
+
+/* trust-peak CTA — exactly one per page, at the content-map named peak (§1) */
+.c1 .peak-cta {
+  background: var(--cream-deep);
+  border-top: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+  padding: 46px 0;
+}
+.c1 .peak-cta .wrap { display: flex; justify-content: center; }
+
+@media (max-width: 620px) {
+  .c1 .subhero { padding: 60px 0 56px; }
+  .c1 .section { padding: 64px 0; }
+  .c1 .subhero-ctas .btn { flex: 1 1 auto; justify-content: center; }
+}
