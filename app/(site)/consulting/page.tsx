@@ -68,7 +68,7 @@ export default function ConsultingPage() {
           <div className="section-intro reveal">
             <span className="microlabel">Where I&rsquo;m pointed</span>
             <h2>Six problems, <em>one operator</em></h2>
-            <p>Costs too high, leads too few, a stack held together with duct tape, or the sense that AI is passing you by, every engagement starts with a specific problem and ends with a working system. These are the six I get hired to solve.</p>
+            <p>Costs too high, leads too few, a stack held together with duct tape, or the sense that AI is passing you by: every engagement starts with a specific problem and ends with a working system. These are the six I get hired to solve.</p>
           </div>
           <div className="areas">
             <div className="area reveal">

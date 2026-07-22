@@ -7,7 +7,9 @@
    ============================================================ */
 
 /* ---------- cream-deep bands (areas / build / shapes) ---------- */
-.c1-consulting .help { background: var(--cream-deep); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
+/* .section.help (0,0,3,0) must beat the shared `.c1 .section` cream rule
+   (c1.css, later source) — else the warm band flattens to plain cream. */
+.c1-consulting .section.help { background: var(--cream-deep); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
 
 /* ---------- consulting areas / build (card grid) ---------- */
 .c1-consulting .areas { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
@@ -18,11 +20,7 @@
   padding: 30px 30px 28px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-.c1-consulting .area:hover {
-  border-color: var(--gold);
-  box-shadow: var(--sh-card);
-  transform: translateY(-3px);
-}
+.c1-consulting .area:hover { border-color: var(--gold); }
 .c1-consulting .area .a-idx {
   font-size: 12px;
   font-weight: 700;
@@ -77,11 +75,7 @@
   padding: 30px 30px 28px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-.c1-consulting .engage:hover {
-  border-color: var(--gold);
-  box-shadow: var(--sh-card);
-  transform: translateY(-3px);
-}
+.c1-consulting .engage:hover { border-color: var(--gold); }
 .c1-consulting .engage .idx {
   font-family: var(--serif);
   font-size: 30px;

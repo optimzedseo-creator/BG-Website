@@ -34,7 +34,8 @@ const fractionalJsonLd =
  * QUIET C1 (P2). Wrapper `c1 c1-fractional` adopts the C1 token/type
  * system; no parallax planes. Copy survives verbatim minus the em-dash
  * sweep (C1-CONTENT-MAP §2). ONE trust-peak CTA sits directly after the
- * proof section (the AcreValue fractional→NASDAQ proof - §1.3). Hero pair,
+ * proof section ("already ended in an acquisition"; two cards, AcreValue
+ * fractional→NASDAQ then Roofing GR - §1.3). Hero pair,
  * finale pair, and the ?type=fractional deep links are preserved exactly.
  * The Roofing GR "+1,000%" proof card is a CARRIED live claim on Brad's
  * 9-item confirm/kill (§6, item 5) - it is preserved verbatim, not spread.
@@ -189,10 +190,10 @@ export default function FractionalPage() {
         </div>
       </section>
 
-      {/* ======= TRUST-PEAK CTA (§1.3 - after the AcreValue fractional→NASDAQ proof) ======= */}
+      {/* ======= TRUST-PEAK CTA (§1.3 - after the proof section: AcreValue fractional→NASDAQ + Roofing GR cards) ======= */}
       <section className="peak-cta">
         <div className="wrap reveal">
-          <a className="btn btn-solid" href="/contact?type=fractional">Get in Touch <span className="arr">&rarr;</span></a>
+          <a className="btn btn-solid" href="/contact?type=fractional">Get it installed <span className="arr">&rarr;</span></a>
         </div>
       </section>
 

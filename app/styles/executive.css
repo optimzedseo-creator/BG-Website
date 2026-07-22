@@ -60,11 +60,7 @@
   padding: 32px 30px 28px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-.c1-executive .own:hover {
-  border-color: var(--gold);
-  box-shadow: var(--sh-card);
-  transform: translateY(-3px);
-}
+.c1-executive .own:hover { border-color: var(--gold); }
 .c1-executive .own .kicker {
   font-size: 12px;
   font-weight: 700;
@@ -99,11 +95,7 @@
   padding: 32px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-.c1-executive .rec:hover {
-  border-color: var(--gold);
-  box-shadow: var(--sh-card);
-  transform: translateY(-3px);
-}
+.c1-executive .rec:hover { border-color: var(--gold); }
 .c1-executive .rec .co-name { font-family: var(--serif); font-size: 21px; font-weight: 420; color: var(--ink); line-height: 1.15; }
 .c1-executive .rec .co-role {
   font-size: 12px;

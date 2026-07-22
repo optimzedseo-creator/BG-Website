@@ -252,7 +252,7 @@ export default function CaseStudiesPage() {
                 </svg>
               </div>
               <p className="excap"><span className="tick">Exhibit A</span>, Inbound calls (bars, left axis) &amp; booking rate (line), Aug &rarr; Nov</p>
-              <p className="exnote">* August is mostly missing, pre-migration tracking couldn&rsquo;t be trusted, so August volume is understated and the booking rate isn&rsquo;t reportable. &dagger; September week 4 is absent entirely; it fell during the Salesforce &rarr; Builder Prime cutover. The gaps are reported as found, that&rsquo;s the point of the migration.</p>
+              <p className="exnote">* August is mostly missing: pre-migration tracking couldn&rsquo;t be trusted, so August volume is understated and the booking rate isn&rsquo;t reportable. &dagger; September week 4 is absent entirely; it fell during the Salesforce &rarr; Builder Prime cutover. The gaps are reported as found. That&rsquo;s the point of the migration.</p>
             </div>
           </div>
         </div>

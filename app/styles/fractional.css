@@ -17,11 +17,7 @@
   padding: 32px 30px 30px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-.c1-fractional .problem:hover {
-  border-color: var(--gold);
-  box-shadow: var(--sh-card);
-  transform: translateY(-3px);
-}
+.c1-fractional .problem:hover { border-color: var(--gold); }
 .c1-fractional .problem .p-idx {
   font-family: var(--serif);
   font-size: 15px;
@@ -35,7 +31,9 @@
 .c1-fractional .problem p { font-size: 15.5px; line-height: 1.6; color: var(--ink-soft); }
 
 /* ---------- what gets installed — 6 cards on the cream-deep band ---------- */
-.c1-fractional .install { background: var(--cream-deep); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
+/* .section.install (0,0,3,0) must beat the shared `.c1 .section` cream rule
+   (c1.css, later source) — else the warm band flattens to plain cream. */
+.c1-fractional .section.install { background: var(--cream-deep); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
 .c1-fractional .install-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .c1-fractional .install-card {
   background: #fff;
@@ -44,11 +42,7 @@
   padding: 30px 28px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-.c1-fractional .install-card:hover {
-  border-color: var(--gold);
-  box-shadow: var(--sh-card);
-  transform: translateY(-3px);
-}
+.c1-fractional .install-card:hover { border-color: var(--gold); }
 .c1-fractional .install-card .i-num {
   font-family: var(--serif);
   font-size: 14px;
@@ -153,7 +147,7 @@
 .c1-fractional .why-copy .rule-note em { font-style: normal; color: var(--gold-deep); font-weight: 600; }
 
 /* ---------- testimonial ---------- */
-.c1-fractional .testimonial-sec { background: var(--cream-deep); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
+.c1-fractional .section.testimonial-sec { background: var(--cream-deep); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
 .c1-fractional .testimonial-sec .section-head { text-align: center; margin: 0 auto 44px; }
 .c1-fractional .testimonial {
   max-width: 820px;
