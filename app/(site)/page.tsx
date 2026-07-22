@@ -108,9 +108,28 @@ export default function HomePage() {
               </div>
             </a>
             <a className="arc-card reveal" href="/story#ch-03">
-              {/* Gradient stand-in: the operator working-shot is the one true
-                  photo gap (shoot item #2). Uncaptioned per the stand-in rule. */}
-              <PhotoFrame ratio="4/3" tone="navy" />
+              {/* Interim designed frontispiece plate (Brad's call 2026-07-21):
+                  the operator working-shot is the one true photo gap (shoot
+                  item #2). Until it lands, this fills the slot with a designed
+                  data-mark drawn ONLY from this card's own published copy
+                  ("team of one to 23 employees") — no new claim, no date span
+                  (the story uses "operator" for two eras). Swaps to the real
+                  photo by dropping `plate` and adding `src`/`alt`. */}
+              <PhotoFrame
+                ratio="4/3"
+                tone="navy"
+                plate={
+                  <div className="ph-plate" aria-hidden="true">
+                    <span className="ph-plate-nums">
+                      <b>1</b>
+                      <i className="ph-plate-arr">&rarr;</i>
+                      <b>23</b>
+                    </span>
+                    <span className="ph-plate-rule" />
+                    <span className="ph-plate-lab">Team of one, bootstrapped</span>
+                  </div>
+                }
+              />
               <div className="arc-body">
                 <span className="arc-n">Chapter two</span>
                 <h3>The operator</h3>

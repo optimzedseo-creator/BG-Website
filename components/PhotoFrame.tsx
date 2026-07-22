@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
 
 /**
@@ -47,6 +48,11 @@ type Props = {
   className?: string;
   /** Exclude the art layer from the parallax registry (static-plate exception). */
   staticPlate?: boolean;
+  /** Designed frontispiece plate (typography/graphic, no photo) that fills the
+   *  frame when no real image exists yet. Renders over the tone gradient,
+   *  static (never in the parallax registry), decorative (aria-hidden — the
+   *  card's heading + copy carry the meaning). Replaced by a real photo later. */
+  plate?: ReactNode;
 };
 
 export default function PhotoFrame({
@@ -61,6 +67,7 @@ export default function PhotoFrame({
   sub,
   className,
   staticPlate,
+  plate,
 }: Props) {
   const classes = ["ph", RATIO_CLASS[ratio], tone ? `ph-${tone}` : "", className || ""]
     .filter(Boolean)
@@ -68,7 +75,11 @@ export default function PhotoFrame({
   const hasCaption = Boolean(kicker || caption || sub);
   return (
     <figure className={classes}>
-      <div className="ph-art" data-px={staticPlate ? undefined : "art"} aria-hidden={src ? undefined : true}>
+      <div
+        className="ph-art"
+        data-px={staticPlate || plate ? undefined : "art"}
+        aria-hidden={src && !plate ? undefined : true}
+      >
         {src ? (
           <Image
             src={src}
@@ -78,6 +89,8 @@ export default function PhotoFrame({
             className="ph-img"
             priority={priority}
           />
+        ) : plate ? (
+          plate
         ) : null}
       </div>
       {hasCaption ? (
