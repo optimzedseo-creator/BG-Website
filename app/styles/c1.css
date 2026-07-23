@@ -404,9 +404,10 @@
 .c1-home .hero-tail .hero-ctas { margin-top: 0; }
 /* Full-time = the quietest path: a plain text link, never a peer tile
    (advisor-expertise 2026-07-15 — must not read as a 4th equal option). */
-.c1-home .hpath-quiet { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--muted-on-dark); }
+.c1-home .hpath-quiet { display: inline-flex; align-items: center; gap: 6px; padding: 6px 0; font-size: 13.5px; color: var(--muted-on-dark); }
 .c1-home .hpath-quiet .u { box-shadow: 0 1px 0 var(--gold-hairline); }
 .c1-home .hpath-quiet:hover { color: var(--paper-on-dark); }
+.c1-home .hpath-quiet:focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 3px; border-radius: 2px; }
 .c1-home .hpath-quiet .arr { color: var(--gold); }
 
 .c1 .scrollcue {

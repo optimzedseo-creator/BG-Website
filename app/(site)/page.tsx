@@ -5,7 +5,7 @@ import CinemaQuote from "@/components/CinemaQuote";
 
 const TITLE = "Bradley Griffin - Fractional CMO, Advisor & Growth Operator";
 const DESCRIPTION =
-  "Most growth problems aren't marketing problems. Bradley Griffin is a fractional CMO, advisor, and operator who finds what's actually broken and builds growth that holds. Fractional CMO, advisory and AI, and keynotes.";
+  "Most growth problems aren't marketing problems. Bradley Griffin is a fractional CMO and advisor who finds what's actually broken and builds growth that holds.";
 const URL = "https://www.bradleygriffin.us/";
 const OG_IMAGE = "https://www.bradleygriffin.us/assets/bradley-griffin-og.jpg";
 
@@ -82,7 +82,7 @@ export default function HomePage() {
         <div className="hero-in" data-px="fore">
           <p className="hero-eyebrow">
             <span className="he-name">Bradley Griffin</span>
-            <span className="he-tag">Soldier. Operator. Builder.</span>
+            <span className="he-tag">Fractional CMO</span>
           </p>
           <h1>Most growth problems aren&rsquo;t <em>marketing problems.</em></h1>
           <p className="lede">
@@ -90,7 +90,7 @@ export default function HomePage() {
           </p>
           <p className="hero-avail">
             <span className="av-dot" aria-hidden="true"></span>
-            Available now for fractional and advisory work.
+            Taking select fractional and advisory work.
           </p>
           <div className="hero-paths" role="group" aria-label="Ways to work together">
             <a className="hpath is-primary" href="/fractional">
@@ -111,7 +111,7 @@ export default function HomePage() {
           </div>
           <div className="hero-tail">
             <div className="hero-ctas">
-              <a className="btn btn-gold" href="/contact?type=fractional">Get in Touch <span className="arr">&rarr;</span></a>
+              <a className="btn btn-gold" href="/contact?type=fractional">Find what&rsquo;s broken <span className="arr">&rarr;</span></a>
               <a className="btn btn-line" href="/case-studies">See the record <span className="arr">&rarr;</span></a>
             </div>
             <a className="hpath-quiet" href="/executive">Hiring full-time? <span className="u">See executive roles</span> <span className="arr" aria-hidden="true">&rarr;</span></a>

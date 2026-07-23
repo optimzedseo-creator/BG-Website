@@ -79,12 +79,26 @@ const KEYS = [
   "twitter:card", "twitter:title", "twitter:description", "twitter:image",
 ];
 
+// Narrow --changed amnesty: ONLY these six head fields may intentionally differ
+// on a --changed route. Everything else (canonical, og:url, og:image,
+// twitter:card/image, robots, and ALL JSON-LD) stays HARD-FAIL even on --changed
+// routes — those fields are byte-identical to live this phase, so keeping them
+// hard-fail actively PROVES they did not drift. (SEO seat, 2026-07-23.)
+const AMNESTY = new Set([
+  "title",
+  "meta description",
+  "meta og:title",
+  "meta og:description",
+  "meta twitter:title",
+  "meta twitter:description",
+]);
+
 let failures = 0;
 let intentional = 0;
 function check(page, label, live, local) {
   if (live === local) {
     console.log(`  OK   ${label}`);
-  } else if (CHANGED.has(page)) {
+  } else if (CHANGED.has(page) && AMNESTY.has(label)) {
     intentional++;
     console.log(`  INTENTIONAL ${label} (route listed via --changed — re-synced this phase)`);
     console.log(`       live : ${JSON.stringify(live)}`);
@@ -123,12 +137,9 @@ for (const page of PAGES) {
   for (let i = 0; i < Math.max(liveLd.length, localLd.length); i++) {
     const same = liveLd[i] === localLd[i];
     if (same) console.log(`  OK   json-ld[${i}] byte-identical`);
-    else if (CHANGED.has(page)) {
-      intentional++;
-      console.log(`  INTENTIONAL json-ld[${i}] diff (route listed via --changed — re-synced this phase)`);
-      console.log(`       live : ${liveLd[i]}`);
-      console.log(`       local: ${localLd[i]}`);
-    } else {
+    else {
+      // JSON-LD is HARD-FAIL on every route, --changed or not: it is
+      // byte-identical to live this phase, so any diff is real drift.
       failures++;
       console.log(`  DIFF json-ld[${i}]`);
       console.log(`       live : ${liveLd[i]}`);
