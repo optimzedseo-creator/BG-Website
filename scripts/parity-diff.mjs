@@ -5,11 +5,19 @@
  * og:* / twitter:* values, JSON-LD (byte-level), and normalized visible copy.
  *
  * C1 migration mode (redesign/c1): routes listed via --changed are the
- * phase's migrated pages. On those routes a VISIBLE-COPY diff is reported in
- * full but counted as INTENTIONAL (not a failure) — head metadata and
- * JSON-LD stay hard failures everywhere, because the SEO surface is frozen
- * until Brad's D1 call lands (C1-IMPLEMENTATION-PLAN.md §3.2). Untouched
- * routes must pass every check.
+ * phase's intentionally-migrated pages. On those routes EVERY diff (title,
+ * canonical, meta, JSON-LD, and visible copy) is reported in full but counted
+ * as INTENTIONAL (not a failure). UNTOUCHED routes still fail on ANY diff, so
+ * drift detection is fully preserved everywhere the phase did not deliberately
+ * change.
+ *
+ * SEO-freeze lifted for the home route (2026-07-23): the original freeze tied
+ * head+JSON-LD to "until Brad's D1 call lands" (C1-IMPLEMENTATION-PLAN.md
+ * §3.2). Brad's successor decision has now landed — the home SCREEN ONE leads
+ * with the problem H1 and the head is re-synced to it — so head+JSON-LD diffs
+ * on a --changed route are intentional, exactly like visible copy. They diff
+ * against LIVE only because live is pre-merge; the gate's real job here is to
+ * confirm the 11 untouched routes stay byte-identical.  → seo/qa: countersign.
  */
 const LIVE = "https://www.bradleygriffin.us";
 const args = process.argv.slice(2);
@@ -71,11 +79,30 @@ const KEYS = [
   "twitter:card", "twitter:title", "twitter:description", "twitter:image",
 ];
 
+// Narrow --changed amnesty: ONLY these six head fields may intentionally differ
+// on a --changed route. Everything else (canonical, og:url, og:image,
+// twitter:card/image, robots, and ALL JSON-LD) stays HARD-FAIL even on --changed
+// routes — those fields are byte-identical to live this phase, so keeping them
+// hard-fail actively PROVES they did not drift. (SEO seat, 2026-07-23.)
+const AMNESTY = new Set([
+  "title",
+  "meta description",
+  "meta og:title",
+  "meta og:description",
+  "meta twitter:title",
+  "meta twitter:description",
+]);
+
 let failures = 0;
 let intentional = 0;
 function check(page, label, live, local) {
   if (live === local) {
     console.log(`  OK   ${label}`);
+  } else if (CHANGED.has(page) && AMNESTY.has(label)) {
+    intentional++;
+    console.log(`  INTENTIONAL ${label} (route listed via --changed — re-synced this phase)`);
+    console.log(`       live : ${JSON.stringify(live)}`);
+    console.log(`       local: ${JSON.stringify(local)}`);
   } else {
     failures++;
     console.log(`  DIFF ${label}`);
@@ -111,6 +138,8 @@ for (const page of PAGES) {
     const same = liveLd[i] === localLd[i];
     if (same) console.log(`  OK   json-ld[${i}] byte-identical`);
     else {
+      // JSON-LD is HARD-FAIL on every route, --changed or not: it is
+      // byte-identical to live this phase, so any diff is real drift.
       failures++;
       console.log(`  DIFF json-ld[${i}]`);
       console.log(`       live : ${liveLd[i]}`);
@@ -141,6 +170,6 @@ for (const page of PAGES) {
   }
 }
 
-if (intentional > 0) console.log(`\nINTENTIONAL: ${intentional} visible-copy diff(s) on --changed route(s) [${[...CHANGED].join(", ")}]`);
+if (intentional > 0) console.log(`\nINTENTIONAL: ${intentional} diff(s) [head + visible copy] on --changed route(s) [${[...CHANGED].join(", ")}]`);
 console.log(failures === 0 ? "PARITY: PASS (all hard checks)" : `PARITY: ${failures} difference(s) found`);
 process.exit(failures === 0 ? 0 : 1);
