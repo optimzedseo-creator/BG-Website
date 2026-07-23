@@ -1,292 +1,226 @@
 /* ============================================================
-   PAGE: /speaking — extracted from legacy speaking.html inline <style>
-   Every selector is scoped under .page-speaking (the page wrapper div)
-   because generic class names (.section, .section-intro, .hero)
-   collide with other pages once all page CSS is loaded globally.
-   Shared system (tokens/base/buttons/header/footer/finale/reveal)
-   lives in app/globals.css and is NOT repeated here.
+   PAGE: /speaking — Keynotes & Speaking  ·  QUIET C1 (P2)
+   Re-scoped from legacy .page-speaking to .c1-speaking. Shared C1
+   primitives (tokens, type, buttons, .section rhythm, .subhero,
+   dark bands, depth-stack, finale) come from c1.css. The legacy
+   light `.book` final CTA is now the shared dark `.finale`. Only
+   this page's bespoke blocks live here. No parallax planes.
    ============================================================ */
 
-/* ---------- section rhythm ---------- */
-.page-speaking .section { padding: 96px 0; }
-
-.page-speaking .section-intro { max-width: 640px; margin-bottom: 48px; }
-.page-speaking .section-intro .microlabel { display: block; margin-bottom: 16px; }
-.page-speaking .section-intro h2 {
-  font-size: clamp(28px, 3.8vw, 44px);
-  color: var(--ink);
-  margin-bottom: 12px;
-}
-.page-speaking .section-intro h2 em { font-style: italic; color: var(--bronze-deep); }
-.page-speaking .section-intro p { font-size: 17px; color: var(--mute); }
-
-/* ---------- hero ---------- */
-.page-speaking .hero { padding: 88px 0 76px; }
-.page-speaking .hero .microlabel { margin-bottom: 22px; display: block; }
-.page-speaking .hero h1 {
-  font-size: clamp(40px, 5.4vw, 66px);
-  color: var(--ink);
-  margin-bottom: 26px;
-  max-width: 16ch;
-}
-.page-speaking .hero h1 em { font-style: italic; color: var(--bronze-deep); }
-.page-speaking .hero .lede {
-  font-size: 19px;
-  line-height: 1.6;
-  color: var(--ink-soft);
-  max-width: 56ch;
-}
-.page-speaking .hero .lede strong { color: var(--ink); font-weight: 600; }
-
-/* ---------- signature topics ---------- */
-.page-speaking .topics-sec { background: var(--cream-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.page-speaking .topic-list { display: flex; flex-direction: column; gap: 16px; }
-.page-speaking .topic {
+/* ---------- signature topics (cream-deep band) ---------- */
+/* .section.topics-sec (0,0,3,0) must beat the shared `.c1 .section` cream rule
+   (c1.css, later source) — else the warm band flattens to plain cream. */
+.c1-speaking .section.topics-sec { background: var(--cream-deep); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
+.c1-speaking .topic-list { display: flex; flex-direction: column; gap: 16px; }
+.c1-speaking .topic {
   display: grid;
   grid-template-columns: 64px 1fr;
   gap: 24px;
   align-items: start;
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r);
   padding: 30px 32px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-.page-speaking .topic:hover {
-  border-color: var(--bronze);
-  box-shadow: 0 18px 40px -28px rgba(27, 26, 24, 0.45);
-  transform: translateY(-3px);
-}
-.page-speaking .topic .idx {
+.c1-speaking .topic:hover { border-color: var(--gold); }
+.c1-speaking .topic .idx {
   font-family: var(--serif);
   font-size: 34px;
-  font-weight: 500;
-  color: var(--bronze-deep);
+  font-weight: 420;
+  color: var(--gold-deep);
   line-height: 1;
   letter-spacing: -0.02em;
 }
-.page-speaking .topic h3 { font-size: 24px; color: var(--ink); margin-bottom: 4px; }
-.page-speaking .topic .for {
+.c1-speaking .topic h3 { font-size: 24px; color: var(--ink); margin-bottom: 4px; }
+.c1-speaking .topic .for {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--bronze-deep);
+  color: var(--gold-deep);
   margin-bottom: 12px;
 }
-.page-speaking .topic p { font-size: 16px; color: var(--mute); line-height: 1.55; }
+.c1-speaking .topic p { font-size: 16px; color: var(--ink-soft); line-height: 1.55; }
 
 /* ---------- featured venue: expo ---------- */
-.page-speaking .feature {
+.c1-speaking .feature {
   display: grid;
   grid-template-columns: 1.08fr 0.92fr;
   gap: 0;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r);
   overflow: hidden;
   background: #fff;
+  box-shadow: var(--sh-tcard);
 }
-.page-speaking .feature-copy { padding: 44px 42px; }
-.page-speaking .feature-copy .where {
+.c1-speaking .feature-copy { padding: 44px 42px; }
+.c1-speaking .feature-copy .where {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--bronze-deep);
+  color: var(--gold-deep);
   margin-bottom: 18px;
 }
-.page-speaking .feature-copy h3 {
+.c1-speaking .feature-copy h3 {
   font-size: 26px;
   color: var(--ink);
   margin-bottom: 18px;
   max-width: 22ch;
   line-height: 1.2;
 }
-.page-speaking .feature-copy p { font-size: 16px; line-height: 1.6; color: var(--ink-soft); margin-bottom: 16px; }
-.page-speaking .feature-copy p strong { color: var(--ink); font-weight: 600; }
-.page-speaking .feature-facts { margin-top: 28px; border-top: 1px solid var(--line); }
-.page-speaking .feature-facts .fact {
+.c1-speaking .feature-copy p { font-size: 16px; line-height: 1.6; color: var(--ink-soft); margin-bottom: 16px; }
+.c1-speaking .feature-copy p strong { color: var(--ink); font-weight: 600; }
+.c1-speaking .feature-facts { margin-top: 28px; border-top: 1px solid var(--hair); }
+.c1-speaking .feature-facts .fact {
   display: grid;
   grid-template-columns: 130px 1fr;
   gap: 22px;
   padding: 14px 0;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--hair);
   align-items: baseline;
 }
-.page-speaking .feature-facts .fact:last-child { border-bottom: none; }
-.page-speaking .feature-facts .k {
+.c1-speaking .feature-facts .fact:last-child { border-bottom: none; }
+.c1-speaking .feature-facts .k {
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--mute);
+  color: var(--ink-soft);
 }
-.page-speaking .feature-facts .v { font-size: 15px; color: var(--ink); }
-.page-speaking .feature-quote {
-  background: var(--cream-2);
-  border-left: 1px solid var(--line);
+.c1-speaking .feature-facts .v { font-size: 15px; color: var(--ink); }
+.c1-speaking .feature-quote {
+  background: var(--cream-deep);
+  border-left: 1px solid var(--hair);
   padding: 44px 42px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
-.page-speaking .feature-quote .qmark {
+.c1-speaking .feature-quote .qmark {
   font-family: var(--serif);
   font-size: 60px;
   line-height: 0.5;
-  color: var(--bronze);
+  color: var(--gold);
   display: block;
   margin-bottom: 24px;
+  opacity: 0.5;
 }
-.page-speaking .feature-quote blockquote {
+.c1-speaking .feature-quote blockquote {
   font-family: var(--serif);
   font-size: clamp(22px, 2.4vw, 28px);
-  font-weight: 400;
+  font-weight: 420;
   line-height: 1.4;
   color: var(--ink);
   margin: 0 0 26px;
 }
-.page-speaking .feature-quote blockquote em { font-style: italic; color: var(--bronze-deep); }
-.page-speaking .feature-quote .srclink {
+.c1-speaking .feature-quote blockquote em { font-style: italic; color: var(--gold-deep); }
+.c1-speaking .feature-quote .srclink {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   font-size: 15px;
   font-weight: 600;
-  color: var(--ink);
-  border-bottom: 1px solid var(--line-strong);
+  color: var(--link);
+  border-bottom: 1.5px solid currentColor;
   padding-bottom: 3px;
   align-self: flex-start;
-  transition: color 0.18s, border-color 0.18s;
+  transition: color 0.18s;
 }
-.page-speaking .feature-quote .srclink:hover { color: var(--bronze-deep); border-color: var(--bronze); }
-.page-speaking .feature-quote .srclink .arr { transition: transform 0.2s ease; }
-.page-speaking .feature-quote .srclink:hover .arr { transform: translateX(4px); }
+.c1-speaking .feature-quote .srclink .arr { transition: transform 0.2s ease; }
+.c1-speaking .feature-quote .srclink:hover .arr { transform: translateX(4px); }
 
-/* ---------- debate (dark) ---------- */
-.page-speaking .debate { background: var(--ink); color: var(--cream); }
-.page-speaking .debate .microlabel { color: #D2AC58; }
-.page-speaking .debate .section-intro h2 { color: var(--cream); }
-.page-speaking .debate .section-intro h2 em { color: #D2AC58; }
-.page-speaking .debate-grid {
+/* ---------- debate (dark navy) — trust peak ---------- */
+.c1-speaking .debate-grid {
   display: grid;
   grid-template-columns: 0.9fr 1.1fr;
   gap: 56px;
   align-items: center;
 }
-.page-speaking .debate-copy .where {
+.c1-speaking .debate-copy .where {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #D2AC58;
+  color: var(--gold-bright);
   margin-bottom: 16px;
 }
-.page-speaking .debate-copy h3 {
+.c1-speaking .debate-copy h3 {
   font-size: clamp(26px, 3vw, 34px);
-  color: var(--cream);
+  color: var(--paper-on-dark);
   margin-bottom: 22px;
   max-width: 18ch;
 }
-.page-speaking .debate-copy p { font-size: 17px; line-height: 1.7; color: #C3CBDC; margin-bottom: 16px; }
-.page-speaking .debate-copy p strong { color: var(--cream); font-weight: 600; }
-.page-speaking .debate-facts { margin-top: 28px; border-top: 1px solid rgba(250,248,243,0.14); }
-.page-speaking .debate-facts .fact {
+.c1-speaking .debate-copy p { font-size: 17px; line-height: 1.7; color: var(--muted-on-dark); margin-bottom: 16px; }
+.c1-speaking .debate-copy p strong { color: var(--paper-on-dark); font-weight: 600; }
+.c1-speaking .debate-facts { margin-top: 28px; border-top: 1px solid var(--gold-hairline); }
+.c1-speaking .debate-facts .fact {
   display: grid;
   grid-template-columns: 130px 1fr;
   gap: 22px;
   padding: 14px 0;
-  border-bottom: 1px solid rgba(250,248,243,0.14);
+  border-bottom: 1px solid var(--gold-hairline);
   align-items: baseline;
 }
-.page-speaking .debate-facts .k {
+.c1-speaking .debate-facts .k {
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #9FABC0;
+  color: var(--gold-bright);
 }
-.page-speaking .debate-facts .v { font-size: 15px; color: var(--cream); }
-.page-speaking .video-frame {
+.c1-speaking .debate-facts .v { font-size: 15px; color: var(--paper-on-dark); }
+.c1-speaking .video-frame {
   position: relative;
-  border-radius: 14px;
+  border-radius: var(--r);
   overflow: hidden;
   background: #000;
-  border: 1px solid rgba(250,248,243,0.14);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--gold-hairline);
+  box-shadow: var(--sh-photo);
 }
-.page-speaking .video-inner { position: relative; padding-top: 56.25%; }
-.page-speaking .video-inner iframe {
+.c1-speaking .video-inner { position: relative; padding-top: 56.25%; }
+.c1-speaking .video-inner iframe {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   border: 0;
 }
-.page-speaking .video-note {
-  margin-top: 18px;
-  font-size: 14px;
-  color: #C3CBDC;
-}
-.page-speaking .video-note .tick { color: #D2AC58; font-weight: 600; }
+.c1-speaking .video-note { margin-top: 18px; font-size: 14px; color: var(--muted-on-dark); }
+.c1-speaking .video-note .tick { color: var(--gold-bright); font-weight: 600; }
 
 /* ---------- what organizers get ---------- */
-.page-speaking .gets { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.page-speaking .get {
+.c1-speaking .gets { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.c1-speaking .get {
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r);
   padding: 32px 30px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-.page-speaking .get:hover {
-  border-color: var(--bronze);
-  box-shadow: 0 18px 40px -28px rgba(27, 26, 24, 0.45);
-  transform: translateY(-3px);
-}
-.page-speaking .get .kicker {
+.c1-speaking .get:hover { border-color: var(--gold); }
+.c1-speaking .get .kicker {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--bronze-deep);
+  color: var(--gold-deep);
   display: block;
   margin-bottom: 14px;
 }
-.page-speaking .get h3 { font-size: 22px; color: var(--ink); margin-bottom: 10px; }
-.page-speaking .get p { font-size: 16px; line-height: 1.55; color: var(--mute); }
-
-/* ---------- final cta ---------- */
-.page-speaking .book {
-  text-align: center;
-  padding: 104px 0 112px;
-  background: var(--cream-2);
-  border-top: 1px solid var(--line);
-}
-.page-speaking .book .microlabel { display: block; margin-bottom: 20px; }
-.page-speaking .book h2 {
-  font-size: clamp(34px, 4.6vw, 56px);
-  color: var(--ink);
-  margin: 0 auto 22px;
-  max-width: 20ch;
-}
-.page-speaking .book h2 em { font-style: italic; color: var(--bronze-deep); }
-.page-speaking .book p { color: var(--ink-soft); max-width: 52ch; margin: 0 auto 40px; font-size: 18px; }
+.c1-speaking .get h3 { font-size: 22px; color: var(--ink); margin-bottom: 10px; }
+.c1-speaking .get p { font-size: 16px; line-height: 1.55; color: var(--ink-soft); }
 
 /* ---------- responsive ---------- */
 @media (max-width: 940px) {
-  .page-speaking .feature { grid-template-columns: 1fr; }
-  .page-speaking .feature-quote { border-left: none; border-top: 1px solid var(--line); }
-  .page-speaking .debate-grid { grid-template-columns: 1fr; gap: 44px; }
-  .page-speaking .gets { grid-template-columns: 1fr; }
-  .page-speaking .section { padding: 72px 0; }
+  .c1-speaking .feature { grid-template-columns: 1fr; }
+  .c1-speaking .feature-quote { border-left: none; border-top: 1px solid var(--hair); }
+  .c1-speaking .debate-grid { grid-template-columns: 1fr; gap: 44px; }
+  .c1-speaking .gets { grid-template-columns: 1fr; }
 }
 @media (max-width: 620px) {
-  .page-speaking .hero { padding: 56px 0 52px; }
-  .page-speaking .hero .lede { font-size: 17px; }
-  .page-speaking .topic { grid-template-columns: 1fr; gap: 12px; padding: 26px 24px; }
-  .page-speaking .feature-copy, .page-speaking .feature-quote { padding: 34px 26px; }
-  .page-speaking .feature-facts .fact, .page-speaking .debate-facts .fact { grid-template-columns: 1fr; gap: 4px; }
-  .page-speaking .section { padding: 60px 0; }
-  .page-speaking .book { padding: 72px 0 78px; }
+  .c1-speaking .topic { grid-template-columns: 1fr; gap: 12px; padding: 26px 24px; }
+  .c1-speaking .feature-copy, .c1-speaking .feature-quote { padding: 34px 26px; }
+  .c1-speaking .feature-facts .fact, .c1-speaking .debate-facts .fact { grid-template-columns: 1fr; gap: 4px; }
 }

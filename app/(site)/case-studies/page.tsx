@@ -27,18 +27,18 @@ export const metadata: Metadata = {
 };
 
 /* JSON-LD: CollectionPage + ItemList (seven anchored cases) + BreadcrumbList.
-   Vertex entry updated 2026-07-18 — name de-branded to "Vertex" and booking
+   Vertex entry updated 2026-07-18, name de-branded to "Vertex" and booking
    metric reconciled to "16% to 59%" to match visible copy and /insights. */
 const caseStudiesJsonLd =
   '{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "url": "https://www.bradleygriffin.us/case-studies", "name": "Case Studies - Bradley Griffin", "about": {"@type": "Person", "@id": "https://www.bradleygriffin.us/#person", "name": "Bradley Griffin"}, "mainEntity": {"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "AcreValue / Ag Analytics - turnaround through a NASDAQ acquisition", "url": "https://www.bradleygriffin.us/case-studies#acrevalue"}, {"@type": "ListItem", "position": 2, "name": "Vertex - +490% inbound calls, 16% to 59% booking rate", "url": "https://www.bradleygriffin.us/case-studies#vertex"}, {"@type": "ListItem", "position": 3, "name": "Infinity Home Services - #1 performing Midwest region", "url": "https://www.bradleygriffin.us/case-studies#ihs"}, {"@type": "ListItem", "position": 4, "name": "Optimized - bootstrapped from one person to a successful exit", "url": "https://www.bradleygriffin.us/case-studies#optimized"}, {"@type": "ListItem", "position": 5, "name": "Roofing GR - 1,000% YoY lead generation", "url": "https://www.bradleygriffin.us/case-studies#roofinggr"}, {"@type": "ListItem", "position": 6, "name": "Wensco Sign Supply - +30% revenue, -35% marketing cost", "url": "https://www.bradleygriffin.us/case-studies#wensco"}, {"@type": "ListItem", "position": 7, "name": "Griffin Opus - a custom e-commerce, ERP, and CRM platform built end to end", "url": "https://www.bradleygriffin.us/case-studies#griffin-opus"}]}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.bradleygriffin.us/"}, {"@type": "ListItem", "position": 2, "name": "Case Studies", "item": "https://www.bradleygriffin.us/case-studies"}]}]}';
 
 export default function CaseStudiesPage() {
   return (
-    <div className="pg-cs">
+    <div className="c1 c1-cs">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: caseStudiesJsonLd }} />
 
       {/* ======= PAGE HERO + INDEX OF CASES ======= */}
-      <section className="page-hero" id="top">
+      <section className="subhero" id="top">
         <div className="wrap">
           <span className="microlabel">The record</span>
           <h1>A few companies, and what actually <em>changed.</em></h1>
@@ -104,11 +104,11 @@ export default function CaseStudiesPage() {
         </div>
       </section>
 
-      {/* ======= CASE 01 — ACREVALUE ======= */}
+      {/* ======= CASE 01, ACREVALUE ======= */}
       <section className="section cs" id="acrevalue">
         <div className="wrap">
           <div className="reveal">
-            <p className="microlabel cs-eyebrow">01 — Case file · AcreValue</p>
+            <p className="microlabel cs-eyebrow">01, Case file · AcreValue</p>
             <div className="cs-headrow">
               <div className="cs-metric">Sold</div>
               <div>
@@ -124,25 +124,25 @@ export default function CaseStudiesPage() {
           <div className="cs-cols">
             <div className="cs-block reveal">
               <span className="microlabel">Context</span>
-              <p>An ag-tech SaaS platform with <strong>1.5M+ registered users across 48 states</strong> — and recurring revenue that had declined two straight years. The product had reach; the business had no clear vision and no defensible positioning.</p>
+              <p>An ag-tech SaaS platform with <strong>1.5M+ registered users across 48 states</strong>, and recurring revenue that had declined two straight years. The product had reach; the business had no clear vision and no defensible positioning.</p>
               <div className="press-clip">
-                <p className="pc-label">Exhibit — Press release</p>
+                <p className="pc-label">Exhibit, Press release</p>
                 <p className="pc-src">CoStar Group, Inc. &middot; Investor Relations</p>
                 <h3 className="pc-head">CoStar Group acquires Ag&#8209;Analytics, augmenting Land.com services and capabilities</h3>
                 <p className="pc-date">February 14, 2025 &middot; NASDAQ: CSGP</p>
-                <p className="pc-body">CoStar&rsquo;s announcement cites AcreValue&rsquo;s 1.5 million registered users and data on tens of millions of parcels &mdash; in a farm real-estate asset class the company sizes at $3.4&nbsp;trillion.</p>
+                <p className="pc-body">CoStar&rsquo;s announcement cites AcreValue&rsquo;s 1.5 million registered users and data on tens of millions of parcels, in a farm real-estate asset class the company sizes at $3.4&nbsp;trillion.</p>
                 <a className="pc-link" href="https://investors.costargroup.com/news-releases/news-release-details/costar-group-acquires-ag-analytics-augmenting-landcom-services" target="_blank" rel="noopener">Read the release at investors.costargroup.com &rarr;</a>
               </div>
             </div>
             <div className="cs-block reveal">
               <span className="microlabel">What I built</span>
               <ul>
-                <li><strong>Relearned the market firsthand</strong> — sat on client and sales calls before touching strategy.</li>
+                <li><strong>Relearned the market firsthand</strong>, sat on client and sales calls before touching strategy.</li>
                 <li><strong>Carried that intelligence to the development team</strong> and shipped the features the marketplace actually wanted.</li>
                 <li><strong>Rebuilt the image, the website, and the value propositions</strong> around what the calls revealed.</li>
                 <li><strong>Opened entirely new segments</strong>, including the energy sector.</li>
               </ul>
-              <p style={{ marginTop: "20px" }}>One of the defining calls was with <strong>Duke Energy</strong>. They needed a way to evaluate greenfield and brownfield sites for energy development — proximity to transmission lines, surrounding infrastructure, overall plan viability — plus parcel-ownership records and a way to actually reach the landowners behind them.</p>
+              <p style={{ marginTop: "20px" }}>One of the defining calls was with <strong>Duke Energy</strong>. They needed a way to evaluate greenfield and brownfield sites for energy development, proximity to transmission lines, surrounding infrastructure, overall plan viability, plus parcel-ownership records and a way to actually reach the landowners behind them.</p>
               <p>I carried that spec back to the development team and made the case for a <strong>visual data layer built around exactly those features</strong>. That build is the move that opened the energy-sector segment in the results below.</p>
             </div>
           </div>
@@ -159,11 +159,11 @@ export default function CaseStudiesPage() {
         </div>
       </section>
 
-      {/* ======= CASE 02 — VERTEX (dark) ======= */}
+      {/* ======= CASE 02, VERTEX (dark) ======= */}
       <section className="section cs cs-dark" id="vertex">
         <div className="wrap">
           <div className="reveal">
-            <p className="microlabel cs-eyebrow">02 — Case file · Vertex</p>
+            <p className="microlabel cs-eyebrow">02, Case file · Vertex</p>
             <div className="cs-headrow">
               <div className="cs-metric">+490%</div>
               <div>
@@ -179,32 +179,32 @@ export default function CaseStudiesPage() {
           <div className="cs-cols">
             <div className="cs-block reveal">
               <span className="microlabel">Context</span>
-              <p>A <strong>three-state home-services operation</strong> where the call center rolled up to me as CMO. My audits told an uncomfortable story: inbound volume was thin, the booking rate sat at <strong>16%</strong>, and acquisition leaned on outbound — lead aggregators and aged lists the sales floor had to chase.</p>
+              <p>A <strong>three-state home-services operation</strong> where the call center rolled up to me as CMO. My audits told an uncomfortable story: inbound volume was thin, the booking rate sat at <strong>16%</strong>, and acquisition leaned on outbound, lead aggregators and aged lists the sales floor had to chase.</p>
               <p>One more problem underneath all of it: <strong>the data couldn&rsquo;t be trusted enough to even report on.</strong> Before I could grow the numbers, I had to make them honest.</p>
             </div>
             <div className="cs-block reveal">
               <span className="microlabel">What I built</span>
               <ul>
-                <li><strong>Outsourced the call center to AnswerForce</strong> — professional coverage on every ring, so demand stopped dying on hold.</li>
-                <li><strong>Flipped the acquisition model from outbound to demand-driven inbound</strong> — Google Ads, Microsoft Ads, and Google Local Services Ads replaced the aggregators and aged leads.</li>
-                <li><strong>Built automated booking that sent every inbound lead straight to sales</strong> — no manual entry — and migrated the CRM from Salesforce to Builder Prime, so every number below could be trusted.</li>
+                <li><strong>Outsourced the call center to AnswerForce</strong>, professional coverage on every ring, so demand stopped dying on hold.</li>
+                <li><strong>Flipped the acquisition model from outbound to demand-driven inbound</strong>, Google Ads, Microsoft Ads, and Google Local Services Ads replaced the aggregators and aged leads.</li>
+                <li><strong>Built automated booking that sent every inbound lead straight to sales</strong>, no manual entry, and migrated the CRM from Salesforce to Builder Prime, so every number below could be trusted.</li>
                 <li><strong>Rewrote the inside sales scripts and inbound workflows</strong> around one metric: calls that become booked appointments.</li>
               </ul>
             </div>
           </div>
           <div className="cs-results reveal">
-            <span className="microlabel">Results — Aug &rarr; Nov</span>
+            <span className="microlabel">Results, Aug &rarr; Nov</span>
             <div className="rgrid cols-5">
-              <div className="rcell"><div className="num">+490<em>%</em></div><div className="lbl">Inbound calls — 108 &rarr; 637</div></div>
-              <div className="rcell"><div className="num">+269<em>%</em></div><div className="lbl">Booking rate — 16% &rarr; 59%</div></div>
-              <div className="rcell"><div className="num">+212<em>%</em></div><div className="lbl">Appointments set — 26 &rarr; 81</div></div>
-              <div className="rcell"><div className="num">+192<em>%</em></div><div className="lbl">Leads issued to sales — 26 &rarr; 76</div></div>
-              <div className="rcell"><div className="num">+20<em>%</em></div><div className="lbl">Qualified leads — 178 &rarr; 213</div></div>
+              <div className="rcell"><div className="num">+490<em>%</em></div><div className="lbl">Inbound calls, 108 &rarr; 637</div></div>
+              <div className="rcell"><div className="num">+269<em>%</em></div><div className="lbl">Booking rate, 16% &rarr; 59%</div></div>
+              <div className="rcell"><div className="num">+212<em>%</em></div><div className="lbl">Appointments set, 26 &rarr; 81</div></div>
+              <div className="rcell"><div className="num">+192<em>%</em></div><div className="lbl">Leads issued to sales, 26 &rarr; 76</div></div>
+              <div className="rcell"><div className="num">+20<em>%</em></div><div className="lbl">Qualified leads, 178 &rarr; 213</div></div>
             </div>
             <p className="cs-pull">First you make the numbers honest. Then you make them move.</p>
           </div>
           <div className="exhibits reveal">
-            <span className="microlabel">Exhibit — Inbound calls &amp; booking rate, Aug–Nov</span>
+            <span className="microlabel">Exhibit, Inbound calls &amp; booking rate, Aug–Nov</span>
             <div className="exgroup">
               <div className="exframe">
                 <svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Combined chart: inbound calls grew from 108 in August to 637 in November; booking rate rose from 16 percent in September to 59 percent in November">
@@ -251,18 +251,18 @@ export default function CaseStudiesPage() {
                   <text x="617" y="364" fontSize="12" fontWeight="700" letterSpacing="2" fill="var(--ink)" textAnchor="middle">NOV</text>
                 </svg>
               </div>
-              <p className="excap"><span className="tick">Exhibit A —</span> Inbound calls (bars, left axis) &amp; booking rate (line), Aug &rarr; Nov</p>
-              <p className="exnote">* August is mostly missing — pre-migration tracking couldn&rsquo;t be trusted, so August volume is understated and the booking rate isn&rsquo;t reportable. &dagger; September week 4 is absent entirely; it fell during the Salesforce &rarr; Builder Prime cutover. The gaps are reported as found — that&rsquo;s the point of the migration.</p>
+              <p className="excap"><span className="tick">Exhibit A</span>, Inbound calls (bars, left axis) &amp; booking rate (line), Aug &rarr; Nov</p>
+              <p className="exnote">* August is mostly missing: pre-migration tracking couldn&rsquo;t be trusted, so August volume is understated and the booking rate isn&rsquo;t reportable. &dagger; September week 4 is absent entirely; it fell during the Salesforce &rarr; Builder Prime cutover. The gaps are reported as found. That&rsquo;s the point of the migration.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ======= CASE 03 — IHS ======= */}
+      {/* ======= CASE 03, IHS ======= */}
       <section className="section cs" id="ihs">
         <div className="wrap">
           <div className="reveal">
-            <p className="microlabel cs-eyebrow">03 — Case file · Infinity Home Services</p>
+            <p className="microlabel cs-eyebrow">03, Case file · Infinity Home Services</p>
             <div className="cs-headrow">
               <div className="cs-metric">#1</div>
               <div>
@@ -278,15 +278,15 @@ export default function CaseStudiesPage() {
           <div className="cs-cols">
             <div className="cs-block reveal">
               <span className="microlabel">Context</span>
-              <p>A <strong>national home-services platform</strong>. Full ownership of Midwest marketing — budget, channels, and a team of four.</p>
+              <p>A <strong>national home-services platform</strong>. Full ownership of Midwest marketing, budget, channels, and a team of four.</p>
             </div>
             <div className="cs-block reveal">
               <span className="microlabel">The standing record</span>
-              <p>This is the current engagement, so the numbers below are live and year-over-year. The exact figures stay in the boardroom while the engagement is live — but the shape is public: <strong>double-digit year-over-year sales growth</strong>, and the region now leads every other region in the company on performance.</p>
+              <p>This is the current engagement, so the numbers below are live and year-over-year. The exact figures stay in the boardroom while the engagement is live, but the shape is public: <strong>double-digit year-over-year sales growth</strong>, and the region now leads every other region in the company on performance.</p>
             </div>
           </div>
           <div className="cs-results reveal">
-            <span className="microlabel">Results — Year over year</span>
+            <span className="microlabel">Results, Year over year</span>
             <div className="rgrid cols-4">
               <div className="rcell"><div className="num">2<em>×</em>digit</div><div className="lbl">YoY qualified-lead growth</div></div>
               <div className="rcell"><div className="num">2<em>×</em>digit</div><div className="lbl">YoY appointment growth</div></div>
@@ -297,11 +297,11 @@ export default function CaseStudiesPage() {
         </div>
       </section>
 
-      {/* ======= CASE 04 — OPTIMIZED (dark) ======= */}
+      {/* ======= CASE 04, OPTIMIZED (dark) ======= */}
       <section className="section cs cs-dark" id="optimized">
         <div className="wrap">
           <div className="reveal">
-            <p className="microlabel cs-eyebrow">04 — Case file · Optimized</p>
+            <p className="microlabel cs-eyebrow">04, Case file · Optimized</p>
             <div className="cs-headrow">
               <div className="cs-metric">Founded &amp; sold</div>
               <div>
@@ -317,15 +317,15 @@ export default function CaseStudiesPage() {
           <div className="cs-cols">
             <div className="cs-block reveal">
               <span className="microlabel">Context</span>
-              <p>Founded as a team of <strong>one</strong>. Sales by day — cold calls, pipeline, contracts. Delivery by night — SEO, PPC, social, web builds. Every seat in the org chart, held first by me.</p>
+              <p>Founded as a team of <strong>one</strong>. Sales by day, cold calls, pipeline, contracts. Delivery by night, SEO, PPC, social, web builds. Every seat in the org chart, held first by me.</p>
             </div>
             <div className="cs-block reveal">
               <span className="microlabel">What it became</span>
               <ul>
                 <li><strong>23 employees</strong> across seven satellite offices spanning the continental U.S.</li>
                 <li><strong>$5M in annual revenue</strong>, built without outside capital.</li>
-                <li><strong>A client roster spanning 10+ industries</strong> — with Fortune 500 names among them — medical and private practice, SaaS, manufacturing, aerospace, automotive, e-commerce, food &amp; beverage, travel &amp; hospitality, legal, and real estate &amp; brokerages.</li>
-                <li><strong>A successful exit</strong> — acquired by an equity firm expanding its US book of business. The breadth and caliber of the client roster were core drivers of the deal.</li>
+                <li><strong>A client roster spanning 10+ industries</strong>, with Fortune 500 names among them, medical and private practice, SaaS, manufacturing, aerospace, automotive, e-commerce, food &amp; beverage, travel &amp; hospitality, legal, and real estate &amp; brokerages.</li>
+                <li><strong>A successful exit</strong>, acquired by an equity firm expanding its US book of business. The breadth and caliber of the client roster were core drivers of the deal.</li>
               </ul>
             </div>
           </div>
@@ -338,16 +338,16 @@ export default function CaseStudiesPage() {
               <div className="rcell"><div className="num">10<em>+</em></div><div className="lbl">Industries served</div></div>
               <div className="rcell"><div className="num">Sold</div><div className="lbl">Acquired by an equity firm</div></div>
             </div>
-            <p className="cs-pull">I&rsquo;ve held every role I now hire for. And the best proof of the work is what clients did next: Clint Hoppes came to Optimized as a customer &mdash; and later chose me as his business partner at Roofing GR.</p>
+            <p className="cs-pull">I&rsquo;ve held every role I now hire for. And the best proof of the work is what clients did next: Clint Hoppes came to Optimized as a customer, and later chose me as his business partner at Roofing GR.</p>
           </div>
         </div>
       </section>
 
-      {/* ======= CASE 05 — ROOFING GR ======= */}
+      {/* ======= CASE 05, ROOFING GR ======= */}
       <section className="section cs" id="roofinggr">
         <div className="wrap">
           <div className="reveal">
-            <p className="microlabel cs-eyebrow">05 — Case file · Roofing GR</p>
+            <p className="microlabel cs-eyebrow">05, Case file · Roofing GR</p>
             <div className="cs-headrow">
               <div className="cs-metric">+1,000%</div>
               <div>
@@ -363,13 +363,13 @@ export default function CaseStudiesPage() {
           <div className="cs-cols">
             <div className="cs-block reveal">
               <span className="microlabel">Context</span>
-              <p>A <strong>West Michigan roofing company</strong>. Full ownership of demand generation and inside sales — the entire funnel, first click to signed contract.</p>
+              <p>A <strong>West Michigan roofing company</strong>. Full ownership of demand generation and inside sales, the entire funnel, first click to signed contract.</p>
             </div>
             <div className="cs-block reveal">
               <span className="microlabel">What I built</span>
               <ul>
                 <li><strong>Advanced geotargeting and lead generation</strong> across search and local channels.</li>
-                <li><strong>Marketing automation on N8N, Make, and Zapier</strong> — routing, enrichment, and follow-up without added headcount.</li>
+                <li><strong>Marketing automation on N8N, Make, and Zapier</strong>, routing, enrichment, and follow-up without added headcount.</li>
                 <li><strong>Attribution and lifecycle email</strong> tied to behavioral triggers.</li>
               </ul>
             </div>
@@ -383,7 +383,7 @@ export default function CaseStudiesPage() {
             </div>
           </div>
           <div className="exhibits reveal">
-            <span className="microlabel">Exhibit — Organic clicks, first 12 months of a new domain</span>
+            <span className="microlabel">Exhibit, Organic clicks, first 12 months of a new domain</span>
             <div className="exgroup">
               <div className="exframe">
                 <svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Line chart of weekly organic clicks for a new website, June 2023 to June 2024: near zero for six months, then a compounding climb to a peak of 13">
@@ -415,8 +415,8 @@ export default function CaseStudiesPage() {
                   <text x="690" y="364" fontSize="12" fontWeight="700" letterSpacing="2" fill="var(--ink)" textAnchor="end">JUN &rsquo;24</text>
                 </svg>
               </div>
-              <p className="excap"><span className="tick">Exhibit A &mdash;</span> Weekly organic clicks, brand-new domain, June 2023 &rarr; June 2024</p>
-              <p className="exnote">Redrawn from the original Google Search Console report. The shape is the story: roughly six months of near-zero while a brand-new domain indexed and the content library was built &mdash; then a compounding climb as rankings landed, out-competing established brands for position, clicks, and organic leads. Headline totals as reported: 426 clicks on 469K impressions in the first twelve months.</p>
+              <p className="excap"><span className="tick">Exhibit A</span>, Weekly organic clicks, brand-new domain, June 2023 &rarr; June 2024</p>
+              <p className="exnote">Redrawn from the original Google Search Console report. The shape is the story: roughly six months of near-zero while a brand-new domain indexed and the content library was built, then a compounding climb as rankings landed, out-competing established brands for position, clicks, and organic leads. Headline totals as reported: 426 clicks on 469K impressions in the first twelve months.</p>
             </div>
             <div className="rev-exhibit">
               <div className="rev-head">
@@ -438,20 +438,20 @@ export default function CaseStudiesPage() {
                   <span className="rev-who">Kevin Shettler &middot; Google review</span>
                 </div>
               </div>
-              <p className="excap"><span className="tick">Exhibit B &mdash;</span> Google Business Profile, Roofing GR</p>
-              <p className="exnote">Transcribed from the live Google listing &mdash; a 5.0 rating across 18 reviews. The marketing filled the calendar; the operation earned the stars.</p>
+              <p className="excap"><span className="tick">Exhibit B</span>, Google Business Profile, Roofing GR</p>
+              <p className="exnote">Transcribed from the live Google listing, a 5.0 rating across 18 reviews. The marketing filled the calendar; the operation earned the stars.</p>
             </div>
-            <blockquote className="cs-pull">&ldquo;Within the first quarter of his leadership, we saw a 35% increase in qualified leads and a record-setting month in terms of booked jobs.&rdquo;<span className="src">&mdash; Clint Hoppes, CEO, Roofing GR</span></blockquote>
+            <blockquote className="cs-pull">&ldquo;Within the first quarter of his leadership, we saw a 35% increase in qualified leads and a record-setting month in terms of booked jobs.&rdquo;<span className="src">Clint Hoppes, CEO, Roofing GR</span></blockquote>
           </div>
 
         </div>
       </section>
 
-      {/* ======= CASE 06 — WENSCO (dark) ======= */}
+      {/* ======= CASE 06, WENSCO (dark) ======= */}
       <section className="section cs cs-dark" id="wensco">
         <div className="wrap">
           <div className="reveal">
-            <p className="microlabel cs-eyebrow">06 — Case file · Wensco Sign Supply</p>
+            <p className="microlabel cs-eyebrow">06, Case file · Wensco Sign Supply</p>
             <div className="cs-headrow">
               <div className="cs-metric">+30%</div>
               <div>
@@ -467,13 +467,13 @@ export default function CaseStudiesPage() {
           <div className="cs-cols">
             <div className="cs-block reveal">
               <span className="microlabel">Context</span>
-              <p>An <strong>87-year-old wholesale distributor</strong> — 100+ employees, $30M+ in revenue — with a legacy digital footprint that undersold the operation behind it.</p>
+              <p>An <strong>87-year-old wholesale distributor</strong>, 100+ employees, $30M+ in revenue, with a legacy digital footprint that undersold the operation behind it.</p>
             </div>
             <div className="cs-block reveal">
               <span className="microlabel">What I built</span>
               <ul>
                 <li><strong>Managed a $1M+ marketing budget</strong> and cut marketing costs 35% while output grew.</li>
-                <li><strong>Overhauled a 20,000+ page website</strong> — the platform behind the online sales gains below.</li>
+                <li><strong>Overhauled a 20,000+ page website</strong>, the platform behind the online sales gains below.</li>
                 <li><strong>Scaled customer engagement</strong> to 10,000+ interactions per month.</li>
               </ul>
             </div>
@@ -488,16 +488,16 @@ export default function CaseStudiesPage() {
             </div>
           </div>
           <div className="exhibits reveal">
-            <span className="microlabel">Exhibit — Internal email, Office of the CFO</span>
+            <span className="microlabel">Exhibit, Internal email, Office of the CFO</span>
             <div className="exgroup">
               <div className="doc-exhibit">
-                <p className="pc-label">Exhibit — Internal email</p>
+                <p className="pc-label">Exhibit, Internal email</p>
                 <div className="de-meta">
                   <p><span>From</span>Office of the Chief Financial Officer, Wensco Sign Supply</p>
                   <p><span>Subject</span>Web Orders</p>
                 </div>
                 <p className="de-line">&ldquo;There were 256 web orders placed yesterday. These orders represented 56% of the total number of orders entered for the day, and 42.7% of the total dollar value for the day.&rdquo;</p>
-                <p className="de-tablehead">Top 10 single-day web order records &mdash; 14 years of company data (Feb 2007 &rarr; Apr 2021)</p>
+                <p className="de-tablehead">Top 10 single-day web order records, 14 years of company data (Feb 2007 &rarr; Apr 2021)</p>
                 <table className="de-table">
                   <thead><tr><th></th><th>Date</th><th>Orders</th><th>Ext. price</th></tr></thead>
                   <tbody>
@@ -515,24 +515,24 @@ export default function CaseStudiesPage() {
                 </table>
                 <p className="de-verdict"><span className="tick">/</span> = during his tenure as Head of Marketing. <strong>Six of the ten biggest web-order days in fourteen years of company history happened in his twenty months.</strong></p>
               </div>
-              <p className="excap"><span className="tick">Exhibit A &mdash;</span> Retyped from the CFO&rsquo;s internal email; sender identity redacted, figures as reported</p>
+              <p className="excap"><span className="tick">Exhibit A</span>, Retyped from the CFO&rsquo;s internal email; sender identity redacted, figures as reported</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ======= CASE 07 — GRIFFIN OPUS ======= */}
+      {/* ======= CASE 07, GRIFFIN OPUS ======= */}
       <section className="section cs" id="griffin-opus">
         <div className="wrap">
           <div className="reveal">
-            <p className="microlabel cs-eyebrow">07 — Case file · Griffin Opus</p>
+            <p className="microlabel cs-eyebrow">07, Case file · Griffin Opus</p>
             <div className="cs-headrow">
               <div className="cs-metric">Built</div>
               <div>
                 <h2>A whole business, on <em>software I built</em></h2>
                 <p className="cs-meta">
                   <span>Griffin Opus</span>
-                  <span>Platform build &mdash; e-commerce, ERP &amp; CRM</span>
+                  <span>Platform build, e-commerce, ERP &amp; CRM</span>
                   <span>2026–Present</span>
                 </p>
               </div>
@@ -541,16 +541,16 @@ export default function CaseStudiesPage() {
           <div className="cs-cols">
             <div className="cs-block reveal">
               <span className="microlabel">Context</span>
-              <p>Griffin Opus is a <strong>direct-to-consumer paper-goods brand</strong> my wife founded and runs. It needed to operate on real software &mdash; not a stack of monthly subscriptions that own your data and raise the rent every year. So I built the software myself.</p>
-              <p>This is the AI-assisted build work I do for clients, proven on a business that runs on it every day. Not a demo, not a prototype &mdash; a live storefront taking real orders.</p>
+              <p>Griffin Opus is a <strong>direct-to-consumer paper-goods brand</strong> my wife founded and runs. It needed to operate on real software, not a stack of monthly subscriptions that own your data and raise the rent every year. So I built the software myself.</p>
+              <p>This is the AI-assisted build work I do for clients, proven on a business that runs on it every day. Not a demo, not a prototype, a live storefront taking real orders.</p>
             </div>
             <div className="cs-block reveal">
               <span className="microlabel">What I built</span>
               <ul>
-                <li><strong>A custom e-commerce storefront</strong> &mdash; the entire buying experience, coded and owned outright, with no platform fees skimming every sale.</li>
-                <li><strong>An admin and ERP</strong> &mdash; inventory and landed-cost model, purchasing and POs, reorder logic, shipping and returns, and a full stock audit log.</li>
-                <li><strong>A CRM</strong> &mdash; customers, orders, and lifecycle in one owned system instead of a rented tool with a per-seat bill.</li>
-                <li><strong>Shipping and label automation</strong> &mdash; rating, labels, and fulfillment wired straight into the admin, so orders move without hand-keying.</li>
+                <li><strong>A custom e-commerce storefront</strong>, the entire buying experience, coded and owned outright, with no platform fees skimming every sale.</li>
+                <li><strong>An admin and ERP</strong>, inventory and landed-cost model, purchasing and POs, reorder logic, shipping and returns, and a full stock audit log.</li>
+                <li><strong>A CRM</strong>, customers, orders, and lifecycle in one owned system instead of a rented tool with a per-seat bill.</li>
+                <li><strong>Shipping and label automation</strong>, rating, labels, and fulfillment wired straight into the admin, so orders move without hand-keying.</li>
               </ul>
             </div>
           </div>
@@ -573,8 +573,8 @@ export default function CaseStudiesPage() {
           <span className="microlabel">Start a conversation</span>
           <h2>The next case file <em>could be yours.</em></h2>
           <p>Every engagement above started the same way: a conversation about what the numbers should look like and weren&rsquo;t. Tell me what you&rsquo;re building, and I&rsquo;ll tell you how I&rsquo;d grow it.</p>
-          <div className="fin-ctas"><a className="btn btn-solid" href="/contact">Get in Touch <span className="arr">&rarr;</span></a>
-          <a className="btn btn-gold cal-link" href="https://calendly.com/optimzedseo/30min" target="_blank" rel="noopener">Schedule a Call <span className="arr">&rarr;</span></a></div>
+          <div className="fin-ctas"><a className="btn btn-gold" href="/contact">Get in Touch <span className="arr">&rarr;</span></a>
+          <a className="btn btn-line cal-link" href="https://calendly.com/optimzedseo/30min" target="_blank" rel="noopener">Schedule a Call <span className="arr">&rarr;</span></a></div>
         </div>
       </section>
     </div>

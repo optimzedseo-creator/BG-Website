@@ -1,310 +1,236 @@
 /* ============================================================
-   PAGE: /executive — Executive Leadership
-   Extracted verbatim from legacy executive.html <style>; every
-   rule is scoped under .page-executive (the page wrapper div)
-   because this page's .section/.section-head/.hero/.testimonial
-   values differ from /fractional and /consulting, and its
-   .finale is LIGHT (cream) unlike the shared dark finale in
-   globals.css. Shared-system rules are NOT repeated here.
+   PAGE: /executive — Executive Leadership  ·  QUIET C1 (P2)
+   Re-scoped from legacy .page-executive to .c1-executive. Shared
+   C1 primitives (tokens, type, buttons, .section rhythm, .subhero,
+   dark bands, depth-stack, the shared dark finale) come from
+   c1.css. This page's legacy LIGHT finale is dropped so the C1
+   dark finale applies (C1-DESIGN-SYSTEM §6: every page closes
+   finale → footer). No parallax planes (quiet tier).
    ============================================================ */
 
-/* ---------- section rhythm ---------- */
-.page-executive .section { padding: 92px 0; }
-.page-executive .section-head { max-width: 640px; margin-bottom: 48px; }
-.page-executive .section-head .microlabel { display: block; margin-bottom: 14px; }
-.page-executive .section-head h2 {
-  font-size: clamp(28px, 3.6vw, 42px);
-  color: var(--ink);
-  margin-bottom: 12px;
-}
-.page-executive .section-head h2 em { font-style: italic; color: var(--bronze-deep); }
-.page-executive .section-head p { font-size: 17px; color: var(--mute); }
-
-/* ---------- hero ---------- */
-.page-executive .hero { padding: 88px 0 76px; }
-.page-executive .hero .microlabel { display: block; margin-bottom: 22px; }
-.page-executive .hero h1 {
-  font-size: clamp(40px, 5.4vw, 66px);
-  color: var(--ink);
-  margin-bottom: 26px;
-  max-width: 18ch;
-}
-.page-executive .hero h1 em { font-style: italic; color: var(--bronze-deep); }
-.page-executive .hero .lede {
-  font-size: 19px;
-  line-height: 1.6;
-  color: var(--ink-soft);
-  max-width: 60ch;
-  margin-bottom: 30px;
-}
-.page-executive .hero .lede strong { color: var(--ink); font-weight: 600; }
-.page-executive .hero-meta {
+/* ---------- hero meta chips ---------- */
+.c1-executive .hero-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 10px 28px;
+  margin-top: 26px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--mute);
+  color: var(--ink-soft);
 }
-.page-executive .hero-meta span::before { content: "· "; color: var(--bronze); font-weight: 700; }
+.c1-executive .hero-meta span::before { content: "· "; color: var(--gold); font-weight: 700; }
 
-/* ---------- stat band ---------- */
-.page-executive .stats {
+/* ---------- stat band (cream-deep) ---------- */
+.c1-executive .stats {
   padding: 76px 0;
-  background: var(--cream-2);
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  background: var(--cream-deep);
+  border-top: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
 }
-.page-executive .stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-.page-executive .stat {
+.c1-executive .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.c1-executive .stat {
   background: var(--cream);
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r);
   padding: 28px 26px;
 }
-.page-executive .stat .num {
+.c1-executive .stat .num {
   font-family: var(--serif);
   font-size: clamp(36px, 4.4vw, 46px);
-  font-weight: 500;
+  font-weight: 420;
   letter-spacing: -0.02em;
-  color: var(--bronze-deep);
+  color: var(--gold-deep);
   line-height: 1;
 }
-.page-executive .stat .lbl {
+.c1-executive .stat .lbl {
   margin-top: 14px;
   font-size: 14.5px;
-  color: var(--mute);
+  color: var(--ink-soft);
   line-height: 1.5;
 }
 
 /* ---------- what I own (cards) ---------- */
-.page-executive .own-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-.page-executive .own {
+.c1-executive .own-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.c1-executive .own {
   display: flex;
   flex-direction: column;
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r);
   padding: 32px 30px 28px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-.page-executive .own:hover {
-  border-color: var(--bronze);
-  box-shadow: 0 18px 40px -28px rgba(27, 26, 24, 0.45);
-  transform: translateY(-3px);
-}
-.page-executive .own .kicker {
+.c1-executive .own:hover { border-color: var(--gold); }
+.c1-executive .own .kicker {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--bronze-deep);
+  color: var(--gold-deep);
   margin-bottom: 14px;
 }
-.page-executive .own h3 { font-size: 22px; color: var(--ink); margin-bottom: 10px; }
-.page-executive .own p { font-size: 15.5px; line-height: 1.6; color: var(--mute); flex: 1; }
-.page-executive .own .stack {
+.c1-executive .own h3 { font-size: 22px; color: var(--ink); margin-bottom: 10px; }
+.c1-executive .own p { font-size: 15.5px; line-height: 1.6; color: var(--ink-soft); flex: 1; }
+.c1-executive .own .stack {
   flex: 0 0 auto;
   margin-top: 20px;
   font-size: 13px;
   font-weight: 500;
-  color: var(--mute);
-  border-top: 1px solid var(--line);
+  color: var(--ink-soft);
+  border-top: 1px solid var(--hair);
   padding-top: 14px;
   line-height: 1.7;
 }
 
-/* ---------- the record (rows) ---------- */
-.page-executive .record { display: flex; flex-direction: column; gap: 20px; }
-.page-executive .rec {
+/* ---------- the record (rows) — trust peak precedes the peak CTA ---------- */
+.c1-executive .record { display: flex; flex-direction: column; gap: 20px; }
+.c1-executive .rec {
   display: grid;
   grid-template-columns: 220px 1fr 180px;
   gap: 32px;
   align-items: start;
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r);
   padding: 32px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-.page-executive .rec:hover {
-  border-color: var(--bronze);
-  box-shadow: 0 18px 40px -28px rgba(27, 26, 24, 0.45);
-  transform: translateY(-3px);
-}
-.page-executive .rec .co-name { font-family: var(--serif); font-size: 21px; font-weight: 500; color: var(--ink); line-height: 1.15; }
-.page-executive .rec .co-role {
+.c1-executive .rec:hover { border-color: var(--gold); }
+.c1-executive .rec .co-name { font-family: var(--serif); font-size: 21px; font-weight: 420; color: var(--ink); line-height: 1.15; }
+.c1-executive .rec .co-role {
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--mute);
+  color: var(--ink-soft);
   margin-top: 8px;
   line-height: 1.5;
 }
-.page-executive .rec .co-when {
+.c1-executive .rec .co-when {
   font-size: 13px;
   font-weight: 600;
-  color: var(--bronze-deep);
+  color: var(--gold-deep);
   margin-top: 10px;
 }
-.page-executive .rec p { font-size: 15.5px; line-height: 1.6; color: var(--ink-soft); }
-.page-executive .rec p strong { color: var(--ink); font-weight: 600; }
-.page-executive .rec .headline {
+.c1-executive .rec p { font-size: 15.5px; line-height: 1.6; color: var(--ink-soft); }
+.c1-executive .rec p strong { color: var(--ink); font-weight: 600; }
+.c1-executive .rec .headline {
   font-family: var(--serif);
   font-size: 30px;
-  font-weight: 500;
+  font-weight: 420;
   letter-spacing: -0.02em;
-  color: var(--bronze-deep);
+  color: var(--gold-deep);
   line-height: 1.05;
   text-align: right;
 }
-.page-executive .rec .headline .sub-h {
+.c1-executive .rec .headline .sub-h {
   display: block;
   font-family: var(--sans);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: var(--mute);
+  color: var(--ink-soft);
   margin-top: 10px;
   line-height: 1.4;
 }
 
-/* ---------- how I operate (dark) ---------- */
-.page-executive .operate {
-  padding: 100px 0;
-  background: var(--ink);
-  color: var(--cream);
-}
-.page-executive .operate .section-head .microlabel { color: #D2AC58; }
-.page-executive .operate .section-head h2 { color: var(--cream); }
-.page-executive .operate .section-head h2 em { color: #D2AC58; }
-.page-executive .operate .section-head p { color: #C3CBDC; }
-.page-executive .principles {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 40px 48px;
-}
-.page-executive .principle .p-idx {
+/* ---------- how I operate (dark navy) ---------- */
+.c1-executive .operate { padding: 100px 0; }
+.c1-executive .principles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px 48px; }
+.c1-executive .principle .p-idx {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #D2AC58;
+  color: var(--gold-bright);
   margin-bottom: 16px;
 }
-.page-executive .principle h3 { font-size: 24px; color: var(--cream); margin-bottom: 12px; }
-.page-executive .principle p { font-size: 16px; line-height: 1.7; color: #C3CBDC; }
-.page-executive .principle p strong { color: var(--cream); font-weight: 600; }
+.c1-executive .principle h3 { font-size: 24px; color: var(--paper-on-dark); margin-bottom: 12px; }
+.c1-executive .principle p { font-size: 16px; line-height: 1.7; color: var(--muted-on-dark); }
+.c1-executive .principle p strong { color: var(--paper-on-dark); font-weight: 600; }
 
 /* ---------- education strip ---------- */
-.page-executive .edu-strip { display: flex; flex-direction: column; gap: 20px; }
-.page-executive .edu {
+.c1-executive .edu-strip { display: flex; flex-direction: column; gap: 20px; }
+.c1-executive .edu {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 24px;
   align-items: center;
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r);
   padding: 28px 30px;
   transition: border-color 0.2s ease;
 }
-.page-executive .edu:hover { border-color: var(--bronze); }
-/* legacy page styled h4 in its global h1–h4 rule; globals.css only
-   covers h1–h3, so the h4 base props are folded in here */
-.page-executive .edu h4 {
+.c1-executive .edu:hover { border-color: var(--gold); }
+.c1-executive .edu h4 {
   font-family: var(--serif);
-  font-weight: 500;
-  line-height: 1.08;
+  font-weight: 420;
+  line-height: 1.12;
   letter-spacing: -0.01em;
   font-size: 20px;
   color: var(--ink);
 }
-.page-executive .edu .sub { font-size: 15px; color: var(--mute); margin-top: 6px; }
-.page-executive .edu .yr {
+.c1-executive .edu .sub { font-size: 15px; color: var(--ink-soft); margin-top: 6px; }
+.c1-executive .edu .yr {
   font-family: var(--serif);
   font-size: 17px;
-  font-weight: 500;
-  color: var(--bronze-deep);
+  font-weight: 420;
+  color: var(--gold-deep);
   white-space: nowrap;
 }
 
-/* ---------- testimonial ---------- */
-.page-executive .reference {
+/* ---------- testimonial (cream-deep band) ---------- */
+.c1-executive .reference {
   padding: 92px 0;
-  background: var(--cream-2);
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  background: var(--cream-deep);
+  border-top: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
 }
-.page-executive .testimonial {
+.c1-executive .testimonial {
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r);
   padding: 44px 42px;
   max-width: 820px;
+  box-shadow: var(--sh-tcard);
 }
-.page-executive .testimonial .qmark {
+.c1-executive .testimonial .qmark {
   font-family: var(--serif);
   font-size: 60px;
   line-height: 0.5;
-  color: var(--bronze);
+  color: var(--gold);
   display: block;
   margin-bottom: 22px;
+  opacity: 0.5;
 }
-.page-executive .testimonial blockquote {
+.c1-executive .testimonial blockquote {
   font-family: var(--serif);
   font-size: 22px;
-  font-weight: 400;
+  font-weight: 420;
   line-height: 1.45;
   color: var(--ink);
   margin-bottom: 26px;
 }
-.page-executive .testimonial .who .nm { font-size: 15px; font-weight: 600; color: var(--ink); }
-.page-executive .testimonial .who .rl { font-size: 14px; color: var(--mute); margin-top: 3px; }
-
-/* ---------- final cta — LIGHT on this page (legacy has no dark
-   background here; overrides the shared dark finale) ---------- */
-.page-executive .finale {
-  background: var(--cream);
-  color: var(--ink);
-}
-.page-executive .finale .microlabel { color: var(--bronze-deep); }
-.page-executive .finale h2 { color: var(--ink); }
-.page-executive .finale h2 em { font-style: italic; color: var(--bronze-deep); }
-.page-executive .finale p { color: var(--mute); }
-.page-executive .finale .btn-solid { background: var(--ink); color: var(--cream); border-color: var(--ink); }
-.page-executive .finale .btn-solid:hover { background: var(--bronze-deep); border-color: var(--bronze-deep); color: var(--cream); }
+.c1-executive .testimonial .who .nm { font-size: 15px; font-weight: 700; color: var(--ink); }
+.c1-executive .testimonial .who .rl { font-size: 14px; color: var(--ink-soft); margin-top: 3px; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 940px) {
-  .page-executive .stats-grid { grid-template-columns: 1fr 1fr; }
-  .page-executive .own-grid { grid-template-columns: 1fr 1fr; }
-  .page-executive .principles { grid-template-columns: 1fr; }
-  .page-executive .rec { grid-template-columns: 1fr; gap: 16px; }
-  .page-executive .rec .headline { text-align: left; }
-  .page-executive .section { padding: 72px 0; }
-  .page-executive .operate { padding: 80px 0; }
-  .page-executive .hero { padding: 60px 0 56px; }
+  .c1-executive .stats-grid { grid-template-columns: 1fr 1fr; }
+  .c1-executive .own-grid { grid-template-columns: 1fr 1fr; }
+  .c1-executive .principles { grid-template-columns: 1fr; }
+  .c1-executive .rec { grid-template-columns: 1fr; gap: 16px; }
+  .c1-executive .rec .headline { text-align: left; }
+  .c1-executive .operate { padding: 80px 0; }
 }
 @media (max-width: 620px) {
-  .page-executive .hero { padding: 52px 0 48px; }
-  .page-executive .hero .lede { font-size: 17px; }
-  .page-executive .stats { padding: 56px 0; }
-  .page-executive .stats-grid { grid-template-columns: 1fr; }
-  .page-executive .own-grid { grid-template-columns: 1fr; }
-  .page-executive .section { padding: 60px 0; }
-  .page-executive .operate { padding: 68px 0; }
-  .page-executive .reference { padding: 60px 0; }
-  .page-executive .edu { grid-template-columns: 1fr; gap: 10px; }
-  .page-executive .testimonial { padding: 34px 28px; }
-  .page-executive .testimonial blockquote { font-size: 20px; }
+  .c1-executive .stats { padding: 56px 0; }
+  .c1-executive .stats-grid { grid-template-columns: 1fr; }
+  .c1-executive .own-grid { grid-template-columns: 1fr; }
+  .c1-executive .operate { padding: 68px 0; }
+  .c1-executive .reference { padding: 60px 0; }
+  .c1-executive .edu { grid-template-columns: 1fr; gap: 10px; }
+  .c1-executive .testimonial { padding: 34px 28px; }
+  .c1-executive .testimonial blockquote { font-size: 20px; }
 }

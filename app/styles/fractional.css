@@ -1,239 +1,194 @@
 /* ============================================================
-   PAGE: /fractional — Fractional CMO
-   Extracted verbatim from legacy fractional.html <style>; every
-   rule is scoped under .page-fractional (the page wrapper div)
-   because .section/.section-head/.hero/.proof-grid/.testimonial
-   carry different values on /executive and /consulting.
-   This page's .finale matches the shared dark finale in
-   globals.css exactly, so it is not repeated here.
+   PAGE: /fractional — Fractional CMO  ·  QUIET C1 (P2)
+   Re-scoped from legacy .page-fractional to .c1-fractional; the
+   page wrapper is now `c1 c1-fractional`, so shared C1 primitives
+   (tokens, type scale, buttons, microlabel, .section rhythm,
+   .subhero, dark bands, depth-stack, finale) come from c1.css.
+   Only this page's bespoke grids live here, restyled onto the C1
+   navy/gold/paper token set. No parallax planes (quiet tier).
    ============================================================ */
 
-/* ---------- section rhythm ---------- */
-.page-fractional .section { padding: 96px 0; }
-.page-fractional .section-head { max-width: 640px; margin-bottom: 48px; }
-.page-fractional .section-head .microlabel { display: block; margin-bottom: 16px; }
-.page-fractional .section-head h2 {
-  font-size: clamp(30px, 3.8vw, 44px);
-  color: var(--ink);
-  margin-bottom: 14px;
-}
-.page-fractional .section-head h2 em { font-style: italic; color: var(--bronze-deep); }
-.page-fractional .section-head p { font-size: 17px; color: var(--mute); max-width: 58ch; }
-
-/* ---------- hero ---------- */
-.page-fractional .hero { padding: 88px 0 84px; }
-.page-fractional .hero .microlabel { margin-bottom: 22px; display: block; }
-.page-fractional .hero h1 {
-  font-size: clamp(40px, 5.4vw, 66px);
-  color: var(--ink);
-  margin-bottom: 26px;
-  max-width: 18ch;
-}
-.page-fractional .hero h1 em { font-style: italic; color: var(--bronze-deep); }
-.page-fractional .hero .lede {
-  font-size: 19px;
-  line-height: 1.6;
-  color: var(--ink-soft);
-  max-width: 58ch;
-  margin-bottom: 34px;
-}
-.page-fractional .hero .lede strong { color: var(--ink); font-weight: 600; }
-.page-fractional .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
-
 /* ---------- the problem — three white cards ---------- */
-.page-fractional .problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-.page-fractional .problem {
+.c1-fractional .problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.c1-fractional .problem {
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r);
   padding: 32px 30px 30px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-.page-fractional .problem:hover {
-  border-color: var(--bronze);
-  box-shadow: 0 18px 40px -28px rgba(27, 26, 24, 0.45);
-  transform: translateY(-3px);
-}
-.page-fractional .problem .p-idx {
+.c1-fractional .problem:hover { border-color: var(--gold); }
+.c1-fractional .problem .p-idx {
   font-family: var(--serif);
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.06em;
-  color: var(--bronze-deep);
+  color: var(--gold-deep);
   display: block;
   margin-bottom: 16px;
 }
-.page-fractional .problem h3 { font-size: 22px; color: var(--ink); margin-bottom: 12px; }
-.page-fractional .problem p { font-size: 15.5px; line-height: 1.6; color: var(--mute); }
+.c1-fractional .problem h3 { font-size: 22px; color: var(--ink); margin-bottom: 12px; }
+.c1-fractional .problem p { font-size: 15.5px; line-height: 1.6; color: var(--ink-soft); }
 
-/* ---------- what gets installed — 6 cards on cream-2 ---------- */
-.page-fractional .install { background: var(--cream-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.page-fractional .install-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-.page-fractional .install-card {
+/* ---------- what gets installed — 6 cards on the cream-deep band ---------- */
+/* .section.install (0,0,3,0) must beat the shared `.c1 .section` cream rule
+   (c1.css, later source) — else the warm band flattens to plain cream. */
+.c1-fractional .section.install { background: var(--cream-deep); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
+.c1-fractional .install-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.c1-fractional .install-card {
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r);
   padding: 30px 28px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-.page-fractional .install-card:hover {
-  border-color: var(--bronze);
-  box-shadow: 0 18px 40px -28px rgba(27, 26, 24, 0.45);
-  transform: translateY(-3px);
-}
-.page-fractional .install-card .i-num {
+.c1-fractional .install-card:hover { border-color: var(--gold); }
+.c1-fractional .install-card .i-num {
   font-family: var(--serif);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.08em;
-  color: var(--bronze-deep);
+  color: var(--gold-deep);
   display: block;
   margin-bottom: 18px;
 }
-.page-fractional .install-card h3 { font-size: 20px; color: var(--ink); margin-bottom: 10px; }
-.page-fractional .install-card p { font-size: 15px; line-height: 1.6; color: var(--mute); }
+.c1-fractional .install-card h3 { font-size: 20px; color: var(--ink); margin-bottom: 10px; }
+.c1-fractional .install-card p { font-size: 15px; line-height: 1.6; color: var(--ink-soft); }
 
 /* ---------- how an engagement runs — 4 steps ---------- */
-.page-fractional .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-.page-fractional .step {
+.c1-fractional .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.c1-fractional .step {
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r);
   padding: 30px 26px;
 }
-.page-fractional .step .s-idx {
+.c1-fractional .step .s-idx {
   font-family: var(--serif);
   font-size: 40px;
-  font-weight: 500;
+  font-weight: 420;
   letter-spacing: -0.02em;
-  color: var(--bronze-deep);
+  color: var(--gold-deep);
   line-height: 1;
   margin-bottom: 22px;
 }
-.page-fractional .step h3 { font-size: 20px; color: var(--ink); margin-bottom: 10px; }
-.page-fractional .step p { font-size: 14.5px; line-height: 1.6; color: var(--mute); }
+.c1-fractional .step h3 { font-size: 20px; color: var(--ink); margin-bottom: 10px; }
+.c1-fractional .step p { font-size: 14.5px; line-height: 1.6; color: var(--ink-soft); }
 
-/* ---------- proof (dark) ---------- */
-.page-fractional .proof-sec { background: var(--ink); color: var(--cream); }
-.page-fractional .proof-sec .microlabel { color: #D2AC58; display: block; margin-bottom: 16px; }
-.page-fractional .proof-sec h2 {
-  font-size: clamp(30px, 3.8vw, 44px);
-  color: var(--cream);
+/* ---------- proof (dark navy) — trust peak precedes the peak CTA ---------- */
+.c1-fractional .proof-sec h2 {
+  font-size: var(--fs-h2-dark);
+  color: var(--paper-on-dark);
   margin-bottom: 48px;
   max-width: 22ch;
 }
-.page-fractional .proof-sec h2 em { font-style: italic; color: #D2AC58; }
-.page-fractional .proof-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.page-fractional .proof-card {
-  background: rgba(250, 248, 243, 0.04);
-  border: 1px solid rgba(250, 248, 243, 0.14);
-  border-radius: 14px;
+.c1-fractional .proof-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.c1-fractional .proof-card {
+  background: rgba(245, 241, 230, 0.04);
+  border: 1px solid var(--gold-hairline);
+  border-radius: var(--r);
   padding: 38px 36px 34px;
 }
-.page-fractional .proof-card .p-co {
+.c1-fractional .proof-card .p-co {
   font-family: var(--sans);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #D2AC58;
+  color: var(--gold-bright);
   margin-bottom: 20px;
 }
-.page-fractional .proof-card .p-big {
+.c1-fractional .proof-card .p-big {
   font-family: var(--serif);
   font-size: clamp(26px, 3vw, 34px);
-  font-weight: 500;
+  font-weight: 420;
   line-height: 1.12;
   letter-spacing: -0.01em;
-  color: var(--cream);
+  color: var(--paper-on-dark);
   margin-bottom: 18px;
 }
-.page-fractional .proof-card .p-big em { font-style: italic; color: #D2AC58; }
-.page-fractional .proof-card p { font-size: 16px; line-height: 1.7; color: #C3CBDC; }
-.page-fractional .proof-card p strong { color: var(--cream); font-weight: 600; }
-.page-fractional .proof-card .p-tag {
+.c1-fractional .proof-card .p-big em { font-style: italic; color: var(--gold-bright); }
+.c1-fractional .proof-card p { font-size: 16px; line-height: 1.7; color: var(--muted-on-dark); }
+.c1-fractional .proof-card p strong { color: var(--paper-on-dark); font-weight: 600; }
+.c1-fractional .proof-card .p-tag {
   margin-top: 24px;
   padding-top: 18px;
-  border-top: 1px solid rgba(250, 248, 243, 0.14);
+  border-top: 1px solid var(--gold-hairline);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: #9FABC0;
+  color: var(--muted-on-dark);
 }
-.page-fractional .proof-card .p-tag em { font-style: normal; color: #D2AC58; font-weight: 600; }
+.c1-fractional .proof-card .p-tag em { font-style: normal; color: var(--gold-bright); font-weight: 600; }
 
 /* ---------- why this works — statement + copy ---------- */
-.page-fractional .why-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 64px; align-items: start; }
-.page-fractional .why-grid .big-claim {
+.c1-fractional .why-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 64px; align-items: start; }
+.c1-fractional .why-grid .big-claim {
   font-family: var(--serif);
   font-size: clamp(28px, 3.6vw, 40px);
-  font-weight: 500;
+  font-weight: 420;
   font-style: italic;
   line-height: 1.25;
   color: var(--ink);
 }
-.page-fractional .why-grid .big-claim em { font-style: normal; color: var(--bronze-deep); }
-.page-fractional .why-copy p { font-size: 17px; line-height: 1.75; color: var(--ink-soft); margin-bottom: 18px; }
-.page-fractional .why-copy p strong { color: var(--ink); font-weight: 600; }
-.page-fractional .why-copy .rule-note {
+.c1-fractional .why-grid .big-claim em { font-style: normal; color: var(--gold-deep); }
+.c1-fractional .why-copy p { font-size: 17px; line-height: 1.75; color: var(--ink-soft); margin-bottom: 18px; }
+.c1-fractional .why-copy p strong { color: var(--ink); font-weight: 600; }
+.c1-fractional .why-copy .rule-note {
   margin-top: 24px;
   padding-top: 20px;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--hair);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--mute);
+  color: var(--ink-soft);
 }
-.page-fractional .why-copy .rule-note em { font-style: normal; color: var(--bronze-deep); font-weight: 600; }
+.c1-fractional .why-copy .rule-note em { font-style: normal; color: var(--gold-deep); font-weight: 600; }
 
 /* ---------- testimonial ---------- */
-.page-fractional .testimonial-sec { background: var(--cream-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.page-fractional .testimonial-sec .section-head { text-align: center; margin: 0 auto 44px; }
-.page-fractional .testimonial {
+.c1-fractional .section.testimonial-sec { background: var(--cream-deep); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
+.c1-fractional .testimonial-sec .section-head { text-align: center; margin: 0 auto 44px; }
+.c1-fractional .testimonial {
   max-width: 820px;
   margin: 0 auto;
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r);
   padding: 44px 42px;
+  box-shadow: var(--sh-tcard);
 }
-.page-fractional .testimonial .qmark {
+.c1-fractional .testimonial .qmark {
   font-family: var(--serif);
   font-size: 60px;
   line-height: 0.5;
-  color: var(--bronze);
+  color: var(--gold);
   display: block;
   margin-bottom: 22px;
+  opacity: 0.5;
 }
-.page-fractional .testimonial blockquote {
+.c1-fractional .testimonial blockquote {
   font-family: var(--serif);
   font-size: 22px;
-  font-weight: 400;
+  font-weight: 420;
   line-height: 1.45;
   color: var(--ink);
   margin-bottom: 26px;
 }
-.page-fractional .testimonial .who .nm { font-size: 15px; font-weight: 600; color: var(--ink); }
-.page-fractional .testimonial .who .rl { font-size: 14px; color: var(--mute); margin-top: 3px; }
+.c1-fractional .testimonial .who .nm { font-size: 15px; font-weight: 700; color: var(--ink); }
+.c1-fractional .testimonial .who .rl { font-size: 14px; color: var(--ink-soft); margin-top: 3px; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 940px) {
-  .page-fractional .problem-grid { grid-template-columns: 1fr; }
-  .page-fractional .install-grid { grid-template-columns: 1fr 1fr; }
-  .page-fractional .steps { grid-template-columns: 1fr 1fr; }
-  .page-fractional .proof-grid { grid-template-columns: 1fr; }
-  .page-fractional .why-grid { grid-template-columns: 1fr; gap: 36px; }
-  .page-fractional .section { padding: 76px 0; }
-  .page-fractional .hero { padding: 60px 0 64px; }
+  .c1-fractional .problem-grid { grid-template-columns: 1fr; }
+  .c1-fractional .install-grid { grid-template-columns: 1fr 1fr; }
+  .c1-fractional .steps { grid-template-columns: 1fr 1fr; }
+  .c1-fractional .proof-grid { grid-template-columns: 1fr; }
+  .c1-fractional .why-grid { grid-template-columns: 1fr; gap: 36px; }
 }
 @media (max-width: 620px) {
-  .page-fractional .hero { padding: 56px 0 52px; }
-  .page-fractional .hero .lede { font-size: 17px; }
-  .page-fractional .hero-ctas .btn { flex: 1 1 auto; justify-content: center; }
-  .page-fractional .install-grid { grid-template-columns: 1fr; }
-  .page-fractional .steps { grid-template-columns: 1fr; }
-  .page-fractional .section { padding: 60px 0; }
-  .page-fractional .testimonial { padding: 34px 28px; }
-  .page-fractional .testimonial blockquote { font-size: 20px; }
+  .c1-fractional .install-grid { grid-template-columns: 1fr; }
+  .c1-fractional .steps { grid-template-columns: 1fr; }
+  .c1-fractional .testimonial { padding: 34px 28px; }
+  .c1-fractional .testimonial blockquote { font-size: 20px; }
 }

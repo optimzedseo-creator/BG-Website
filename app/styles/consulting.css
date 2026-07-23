@@ -1,266 +1,198 @@
 /* ============================================================
-   PAGE: /consulting — Marketing Strategy & AI Consulting
-   Extracted verbatim from legacy consulting.html <style>; every
-   rule is scoped under .page-consulting (the page wrapper div)
-   because .section/.proof-grid and friends carry different
-   values on /executive and /fractional. This page's .finale
-   matches the shared dark finale in globals.css exactly, so it
-   is not repeated here.
+   PAGE: /consulting — Strategy & AI Consulting  ·  QUIET C1 (P2)
+   Re-scoped from legacy .page-consulting to .c1-consulting. Shared
+   C1 primitives (tokens, type, buttons, .section rhythm, .subhero,
+   dark bands, depth-stack, finale) come from c1.css. Only this
+   page's bespoke grids live here, on the C1 token set. No planes.
    ============================================================ */
 
-/* ---------- section rhythm ---------- */
-.page-consulting .section { padding: 96px 0; }
-
-.page-consulting .section-intro { max-width: 620px; margin-bottom: 48px; }
-.page-consulting .section-intro .microlabel { display: block; }
-.page-consulting .section-intro h2 {
-  font-size: clamp(28px, 3.8vw, 44px);
-  color: var(--ink);
-  margin: 16px 0 12px;
-}
-.page-consulting .section-intro h2 em { font-style: italic; color: var(--bronze-deep); }
-.page-consulting .section-intro p { font-size: 17px; color: var(--mute); }
-
-/* ---------- consulting hero ---------- */
-.page-consulting .c-hero { padding: 88px 0 84px; }
-.page-consulting .c-hero .microlabel { display: block; margin-bottom: 22px; }
-.page-consulting .c-hero h1 {
-  font-size: clamp(40px, 5.4vw, 66px);
-  color: var(--ink);
-  margin-bottom: 26px;
-  max-width: 18ch;
-}
-.page-consulting .c-hero h1 em { font-style: italic; color: var(--bronze-deep); }
-.page-consulting .c-hero .lede {
-  font-size: 19px;
-  line-height: 1.65;
-  color: var(--ink-soft);
-  max-width: 62ch;
-  margin-bottom: 36px;
-}
-.page-consulting .c-hero .lede strong { color: var(--ink); font-weight: 600; }
-.page-consulting .c-hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+/* ---------- cream-deep bands (areas / build / shapes) ---------- */
+/* .section.help (0,0,3,0) must beat the shared `.c1 .section` cream rule
+   (c1.css, later source) — else the warm band flattens to plain cream. */
+.c1-consulting .section.help { background: var(--cream-deep); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
 
 /* ---------- consulting areas / build (card grid) ---------- */
-.page-consulting .help { background: var(--cream-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.page-consulting .areas {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-}
-.page-consulting .area {
+.c1-consulting .areas { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.c1-consulting .area {
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r);
   padding: 30px 30px 28px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-.page-consulting .area:hover {
-  border-color: var(--bronze);
-  box-shadow: 0 18px 40px -28px rgba(27, 26, 24, 0.45);
-  transform: translateY(-3px);
-}
-.page-consulting .area .a-idx {
+.c1-consulting .area:hover { border-color: var(--gold); }
+.c1-consulting .area .a-idx {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--bronze-deep);
+  color: var(--gold-deep);
   margin-bottom: 14px;
 }
-.page-consulting .area h3 {
-  font-size: 24px;
-  color: var(--ink);
-  margin-bottom: 8px;
-}
-.page-consulting .area .a-sys {
+.c1-consulting .area h3 { font-size: 24px; color: var(--ink); margin-bottom: 8px; }
+.c1-consulting .area .a-sys {
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.06em;
-  color: var(--mute);
+  color: var(--ink-soft);
   margin-bottom: 14px;
 }
-.page-consulting .area p { font-size: 15.5px; color: var(--mute); line-height: 1.6; }
+.c1-consulting .area p { font-size: 15.5px; color: var(--ink-soft); line-height: 1.6; }
 
 /* ---------- proof band (stat cards) ---------- */
-.page-consulting .proof { padding: 72px 0; background: var(--cream-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.page-consulting .proof-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-}
-.page-consulting .pstat {
+.c1-consulting .proof { padding: 72px 0; background: var(--cream-deep); border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
+.c1-consulting .proof-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.c1-consulting .pstat {
   background: var(--cream);
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r);
   padding: 30px 26px;
 }
-.page-consulting .pstat .num {
+.c1-consulting .pstat .num {
   font-family: var(--serif);
   font-size: clamp(34px, 4vw, 44px);
-  font-weight: 500;
+  font-weight: 420;
   line-height: 1;
-  color: var(--bronze-deep);
+  color: var(--gold-deep);
   letter-spacing: -0.02em;
 }
-.page-consulting .pstat .lbl {
+.c1-consulting .pstat .lbl {
   margin-top: 14px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--mute);
+  color: var(--ink-soft);
   line-height: 1.5;
 }
 
 /* ---------- engagements / shapes ---------- */
-.page-consulting .engagements {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-.page-consulting .engage {
+.c1-consulting .engagements { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.c1-consulting .engage {
   display: flex;
   flex-direction: column;
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r);
   padding: 30px 30px 28px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-.page-consulting .engage:hover {
-  border-color: var(--bronze);
-  box-shadow: 0 18px 40px -28px rgba(27, 26, 24, 0.45);
-  transform: translateY(-3px);
-}
-.page-consulting .engage .idx {
+.c1-consulting .engage:hover { border-color: var(--gold); }
+.c1-consulting .engage .idx {
   font-family: var(--serif);
   font-size: 30px;
-  font-weight: 500;
-  color: var(--bronze);
+  font-weight: 420;
+  color: var(--gold);
   line-height: 1;
   margin-bottom: 20px;
 }
-.page-consulting .engage h3 {
-  font-size: 24px;
-  color: var(--ink);
-  margin-bottom: 8px;
-}
-.page-consulting .engage .span {
+.c1-consulting .engage h3 { font-size: 24px; color: var(--ink); margin-bottom: 8px; }
+.c1-consulting .engage .span {
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--mute);
+  color: var(--ink-soft);
   margin-bottom: 16px;
 }
-.page-consulting .engage p { font-size: 15.5px; line-height: 1.6; color: var(--mute); flex: 1; }
-.page-consulting .engage .outcome {
+.c1-consulting .engage p { font-size: 15.5px; line-height: 1.6; color: var(--ink-soft); flex: 1; }
+.c1-consulting .engage .outcome {
   margin-top: 24px;
   padding-top: 18px;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--hair);
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: var(--bronze-deep);
+  color: var(--gold-deep);
 }
 
-/* ---------- the difference (dark) ---------- */
-.page-consulting .difference { background: var(--ink); color: var(--cream); border: none; }
-.page-consulting .difference .microlabel { color: #D2AC58; }
-.page-consulting .diff-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 64px; align-items: start; }
-.page-consulting .difference h2 {
-  font-size: clamp(28px, 3.8vw, 44px);
-  color: var(--cream);
+/* ---------- the difference (dark navy) — trust peak ---------- */
+.c1-consulting .diff-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 64px; align-items: start; }
+.c1-consulting .difference h2 {
+  font-size: var(--fs-h2-dark);
+  color: var(--paper-on-dark);
   margin: 16px 0 26px;
   max-width: 18ch;
 }
-.page-consulting .difference h2 em { font-style: italic; color: #D2AC58; }
-.page-consulting .diff-copy p {
+.c1-consulting .diff-copy p {
   font-size: 17px;
   line-height: 1.75;
-  color: #C3CBDC;
+  color: var(--muted-on-dark);
   margin-bottom: 18px;
 }
-.page-consulting .diff-copy p strong { color: var(--cream); font-weight: 600; }
-.page-consulting .diff-copy .pull {
+.c1-consulting .diff-copy p strong { color: var(--paper-on-dark); font-weight: 600; }
+.c1-consulting .diff-copy .pull {
   font-family: var(--serif);
   font-size: clamp(22px, 3vw, 28px);
-  font-weight: 400;
+  font-weight: 420;
   font-style: italic;
   line-height: 1.4;
-  color: var(--cream);
-  border-left: 3px solid #D2AC58;
+  color: var(--paper-on-dark);
+  border-left: 3px solid var(--gold-bright);
   padding-left: 24px;
   margin: 30px 0;
 }
-.page-consulting .receipts { display: flex; flex-direction: column; gap: 26px; }
-.page-consulting .receipt {
-  border-left: 1px solid rgba(199, 154, 94, 0.4);
+.c1-consulting .receipts { display: flex; flex-direction: column; gap: 26px; }
+.c1-consulting .receipt {
+  border-left: 1px solid var(--gold-hairline);
   padding-left: 22px;
 }
-.page-consulting .receipt .tag {
+.c1-consulting .receipt .tag {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #D2AC58;
+  color: var(--gold-bright);
 }
-/* legacy page styled h4 in its global h1–h4 rule; globals.css only
-   covers h1–h3, so the h4 base props are folded in here */
-.page-consulting .receipt h4 {
+.c1-consulting .receipt h4 {
   font-family: var(--serif);
-  font-weight: 500;
-  line-height: 1.08;
+  font-weight: 420;
+  line-height: 1.12;
   letter-spacing: -0.01em;
   font-size: 19px;
-  color: var(--cream);
+  color: var(--paper-on-dark);
   margin: 8px 0 6px;
 }
-.page-consulting .receipt p { font-size: 15px; line-height: 1.6; color: #9FABC0; }
+.c1-consulting .receipt p { font-size: 15px; line-height: 1.6; color: var(--muted-on-dark); }
 
 /* ---------- single testimonial ---------- */
-.page-consulting .quote-solo {
+.c1-consulting .quote-solo {
   max-width: 760px;
   margin: 0 auto;
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r);
   padding: 44px 42px;
+  box-shadow: var(--sh-tcard);
 }
-.page-consulting .quote-solo .qmark {
+.c1-consulting .quote-solo .qmark {
   font-family: var(--serif);
   font-size: 60px;
   line-height: 0.5;
-  color: var(--bronze);
+  color: var(--gold);
   display: block;
   margin-bottom: 22px;
+  opacity: 0.5;
 }
-.page-consulting .quote-solo blockquote {
+.c1-consulting .quote-solo blockquote {
   font-family: var(--serif);
   font-size: 23px;
-  font-weight: 400;
+  font-weight: 420;
   line-height: 1.45;
   color: var(--ink);
 }
-.page-consulting .quote-solo .who { margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--line); }
-.page-consulting .quote-solo .who .nm { font-size: 15px; font-weight: 600; color: var(--ink); }
-.page-consulting .quote-solo .who .rl { font-size: 14px; color: var(--mute); margin-top: 3px; }
+.c1-consulting .quote-solo .who { margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--hair); }
+.c1-consulting .quote-solo .who .nm { font-size: 15px; font-weight: 700; color: var(--ink); }
+.c1-consulting .quote-solo .who .rl { font-size: 14px; color: var(--ink-soft); margin-top: 3px; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 940px) {
-  .page-consulting .diff-grid { grid-template-columns: 1fr; gap: 44px; }
-  .page-consulting .engagements { grid-template-columns: 1fr; }
-  .page-consulting .section { padding: 76px 0; }
-  .page-consulting .c-hero { padding: 60px 0 64px; }
-  .page-consulting .proof-grid { grid-template-columns: 1fr 1fr; }
+  .c1-consulting .diff-grid { grid-template-columns: 1fr; gap: 44px; }
+  .c1-consulting .engagements { grid-template-columns: 1fr; }
+  .c1-consulting .proof-grid { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 620px) {
-  .page-consulting .areas { grid-template-columns: 1fr; }
-  .page-consulting .proof-grid { grid-template-columns: 1fr; }
-  .page-consulting .c-hero h1 { font-size: clamp(34px, 9vw, 44px); }
-  .page-consulting .c-hero .lede { font-size: 17px; }
-  .page-consulting .c-hero-ctas .btn { flex: 1 1 auto; justify-content: center; }
-  .page-consulting .section { padding: 60px 0; }
-  .page-consulting .proof { padding: 52px 0; }
-  .page-consulting .quote-solo { padding: 34px 28px; }
-  .page-consulting .quote-solo blockquote { font-size: 20px; }
+  .c1-consulting .areas { grid-template-columns: 1fr; }
+  .c1-consulting .proof-grid { grid-template-columns: 1fr; }
+  .c1-consulting .proof { padding: 52px 0; }
+  .c1-consulting .quote-solo { padding: 34px 28px; }
+  .c1-consulting .quote-solo blockquote { font-size: 20px; }
 }
