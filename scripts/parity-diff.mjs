@@ -159,6 +159,6 @@ for (const page of PAGES) {
   }
 }
 
-if (intentional > 0) console.log(`\nINTENTIONAL: ${intentional} visible-copy diff(s) on --changed route(s) [${[...CHANGED].join(", ")}]`);
+if (intentional > 0) console.log(`\nINTENTIONAL: ${intentional} diff(s) [head + visible copy] on --changed route(s) [${[...CHANGED].join(", ")}]`);
 console.log(failures === 0 ? "PARITY: PASS (all hard checks)" : `PARITY: ${failures} difference(s) found`);
 process.exit(failures === 0 ? 0 : 1);
