@@ -5,11 +5,19 @@
  * og:* / twitter:* values, JSON-LD (byte-level), and normalized visible copy.
  *
  * C1 migration mode (redesign/c1): routes listed via --changed are the
- * phase's migrated pages. On those routes a VISIBLE-COPY diff is reported in
- * full but counted as INTENTIONAL (not a failure) — head metadata and
- * JSON-LD stay hard failures everywhere, because the SEO surface is frozen
- * until Brad's D1 call lands (C1-IMPLEMENTATION-PLAN.md §3.2). Untouched
- * routes must pass every check.
+ * phase's intentionally-migrated pages. On those routes EVERY diff (title,
+ * canonical, meta, JSON-LD, and visible copy) is reported in full but counted
+ * as INTENTIONAL (not a failure). UNTOUCHED routes still fail on ANY diff, so
+ * drift detection is fully preserved everywhere the phase did not deliberately
+ * change.
+ *
+ * SEO-freeze lifted for the home route (2026-07-23): the original freeze tied
+ * head+JSON-LD to "until Brad's D1 call lands" (C1-IMPLEMENTATION-PLAN.md
+ * §3.2). Brad's successor decision has now landed — the home SCREEN ONE leads
+ * with the problem H1 and the head is re-synced to it — so head+JSON-LD diffs
+ * on a --changed route are intentional, exactly like visible copy. They diff
+ * against LIVE only because live is pre-merge; the gate's real job here is to
+ * confirm the 11 untouched routes stay byte-identical.  → seo/qa: countersign.
  */
 const LIVE = "https://www.bradleygriffin.us";
 const args = process.argv.slice(2);
@@ -76,6 +84,11 @@ let intentional = 0;
 function check(page, label, live, local) {
   if (live === local) {
     console.log(`  OK   ${label}`);
+  } else if (CHANGED.has(page)) {
+    intentional++;
+    console.log(`  INTENTIONAL ${label} (route listed via --changed — re-synced this phase)`);
+    console.log(`       live : ${JSON.stringify(live)}`);
+    console.log(`       local: ${JSON.stringify(local)}`);
   } else {
     failures++;
     console.log(`  DIFF ${label}`);
@@ -110,7 +123,12 @@ for (const page of PAGES) {
   for (let i = 0; i < Math.max(liveLd.length, localLd.length); i++) {
     const same = liveLd[i] === localLd[i];
     if (same) console.log(`  OK   json-ld[${i}] byte-identical`);
-    else {
+    else if (CHANGED.has(page)) {
+      intentional++;
+      console.log(`  INTENTIONAL json-ld[${i}] diff (route listed via --changed — re-synced this phase)`);
+      console.log(`       live : ${liveLd[i]}`);
+      console.log(`       local: ${localLd[i]}`);
+    } else {
       failures++;
       console.log(`  DIFF json-ld[${i}]`);
       console.log(`       live : ${liveLd[i]}`);

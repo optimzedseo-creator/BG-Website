@@ -3,9 +3,9 @@ import NewsletterSignup from "@/components/NewsletterSignup";
 import PhotoFrame from "@/components/PhotoFrame";
 import CinemaQuote from "@/components/CinemaQuote";
 
-const TITLE = "Bradley Griffin - CMO, Growth Executive & Army Ranger Veteran";
+const TITLE = "Bradley Griffin - Fractional CMO, Advisor & Growth Operator";
 const DESCRIPTION =
-  "Army Ranger veteran turned CMO and growth executive: two exits, a NASDAQ acquisition, and a #1-performing region. Executive roles, fractional CMO, AI consulting, and keynotes.";
+  "Most growth problems aren't marketing problems. Bradley Griffin is a fractional CMO, advisor, and operator who finds what's actually broken and builds growth that holds. Fractional CMO, advisory and AI, and keynotes.";
 const URL = "https://www.bradleygriffin.us/";
 const OG_IMAGE = "https://www.bradleygriffin.us/assets/bradley-griffin-og.jpg";
 
@@ -16,11 +16,18 @@ const OG_IMAGE = "https://www.bradleygriffin.us/assets/bradley-griffin-og.jpg";
  * resolver strips the trailing slash on the root path. Do not re-add them
  * to this metadata object — you'd get duplicates.
  *
- * D1 RESOLVED (2026-07-20, Brad): the identity H1 "Soldier. Operator.
- * Builder." stays. Title/description/OG re-authored by bradley-seo in the
- * same window for snippet-to-page coherence (blend: name + role class terms
- * + identity; claims unchanged and visibly supported). JSON-LD deliberately
- * untouched — zero H1 coupling, Person claims still match visible copy.
+ * D1 SUPERSEDED (2026-07-23, Brad's locked decision): the home SCREEN ONE
+ * now leads with the buyer's PROBLEM, not the identity line. H1 is the locked
+ * verbatim "Most growth problems aren't marketing problems."; "Soldier.
+ * Operator. Builder." demotes to the subordinate eyebrow tag. Title +
+ * description + og/twitter re-synced to the new problem-first, fractional-lead
+ * positioning for snippet-to-page coherence (name anchor kept; liftable
+ * identity sentence added, closing the AIO answerability gap; NO metric claims,
+ * matching the metric-free hero). JSON-LD deliberately kept BYTE-IDENTICAL:
+ * it has zero H1 coupling, every Person claim (CMO/growth-exec, two exits,
+ * NASDAQ, Ranger, knowsAbout incl. Fractional CMO Leadership) still appears in
+ * the visible copy below, and re-titling jobTitle to "Fractional CMO" is a
+ * positioning/claim call that needs factcheck + Brad — flagged, not made here.
  */
 export const metadata: Metadata = {
   title: TITLE,
@@ -62,22 +69,52 @@ export default function HomePage() {
       <meta property="og:url" content={URL} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: homeJsonLd }} />
 
-      {/* ======= HERO — 3-plane parallax signature ======= */}
+      {/* ======= HERO — problem-first screen one (3-plane parallax kept) =======
+          Brad's 2026-07-23 decision (Clark direction): lead with the buyer's
+          problem as the H1, an availability signal, and a slim four-path strip
+          reachable without scrolling (Fractional primary). The identity line
+          "Soldier. Operator. Builder." demotes to the subordinate eyebrow tag;
+          the Storyteller arc + proof band stay below as the trust-closer.
+          H1 is LOCKED verbatim (book-title framing) — do not reword. */}
       <section className="hero" id="top">
         <div className="hero-plate" data-px="plate" aria-hidden="true"></div>
         <div className="hero-veil" data-px="veil" aria-hidden="true"></div>
         <div className="hero-in" data-px="fore">
-          <span className="microlabel">Bradley Griffin &middot; Growth executive &amp; fractional CMO</span>
-          <h1>Soldier. Operator. <em>Builder.</em></h1>
-          <p className="lede">
-            I solve complex business challenges in marketing, sales, and call center operations.
-            Two companies built and sold. A NASDAQ exit. A region that leads a national platform.
-            The story behind those results is the reason they hold.
+          <p className="hero-eyebrow">
+            <span className="he-name">Bradley Griffin</span>
+            <span className="he-tag">Soldier. Operator. Builder.</span>
           </p>
-          <p className="sig">Bring me the problem. I&rsquo;ll provide the solution.</p>
-          <div className="hero-ctas">
-            <a className="btn btn-gold" href="/contact">Get in Touch <span className="arr">&rarr;</span></a>
-            <a className="btn btn-line cal-link" href="https://calendly.com/optimzedseo/30min" target="_blank" rel="noopener">Schedule a Call <span className="arr">&rarr;</span></a>
+          <h1>Most growth problems aren&rsquo;t <em>marketing problems.</em></h1>
+          <p className="lede">
+            Fractional CMO, advisor, and operator. I find what&rsquo;s actually broken and move the number.
+          </p>
+          <p className="hero-avail">
+            <span className="av-dot" aria-hidden="true"></span>
+            Available now for fractional and advisory work.
+          </p>
+          <div className="hero-paths" role="group" aria-label="Ways to work together">
+            <a className="hpath is-primary" href="/fractional">
+              <span className="hp-t">Fractional CMO</span>
+              <span className="hp-d">Embedded growth leadership, month over month.</span>
+              <span className="hp-arr" aria-hidden="true">&rarr;</span>
+            </a>
+            <a className="hpath" href="/consulting">
+              <span className="hp-t">Advisory &amp; AI</span>
+              <span className="hp-d">Audits, AI builds, one-off projects.</span>
+              <span className="hp-arr" aria-hidden="true">&rarr;</span>
+            </a>
+            <a className="hpath" href="/speaking">
+              <span className="hp-t">Keynotes</span>
+              <span className="hp-d">Stages, panels, and expos.</span>
+              <span className="hp-arr" aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+          <div className="hero-tail">
+            <div className="hero-ctas">
+              <a className="btn btn-gold" href="/contact?type=fractional">Get in Touch <span className="arr">&rarr;</span></a>
+              <a className="btn btn-line" href="/case-studies">See the record <span className="arr">&rarr;</span></a>
+            </div>
+            <a className="hpath-quiet" href="/executive">Hiring full-time? <span className="u">See executive roles</span> <span className="arr" aria-hidden="true">&rarr;</span></a>
           </div>
         </div>
         <div className="scrollcue" aria-hidden="true">The story &darr;</div>
