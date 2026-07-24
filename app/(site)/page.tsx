@@ -360,7 +360,7 @@ export default function HomePage() {
           <div className="reveal">
             <span className="microlabel">New book &middot; Coming soon</span>
             <h2>It&rsquo;s Not a <em>Marketing</em> Problem</h2>
-            <p className="booksub">Hard truths for companies that want to grow.</p>
+            <p className="booksub">...but you probably won&rsquo;t believe me, and it&rsquo;s costing you growth.</p>
             <p className="bookdesc">Twenty years of blunt lessons from the field. Why your business isn&rsquo;t as different as you think, why tactics can&rsquo;t save a bad strategy, and why the answer is in your data, not your slogan. No fluff. No platitudes. Just the conversations most consultants are too polite to have.</p>
             <NewsletterSignup heading="" blurb="" source="book" cta="Be first to know" />
           </div>
