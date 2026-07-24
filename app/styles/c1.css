@@ -520,6 +520,7 @@
   padding: 70px 0;
 }
 .c1 .methodband h2 { font-size: var(--fs-h2-band); max-width: 24ch; }
+.c1 .methodband .method-sub { color: var(--ink-soft); margin-top: 14px; max-width: 42ch; }
 .c1 .method {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
