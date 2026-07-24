@@ -68,7 +68,7 @@ export default function InsightsFilter({
             </span>
           ),
         )}
-        <span className="ix-chip-count">{total} notes</span>
+        <span className="ix-chip-count">{total} field notes</span>
       </div>
 
       <span className="ix-notes-label">The field notes</span>
@@ -82,8 +82,7 @@ export default function InsightsFilter({
                 <span className="ix-note-title">{n.title}</span>
                 <span className="ix-note-dek">{n.dek}</span>
                 <span className="ix-note-meta">
-                  {n.pillarLabel} <span className="dot">&middot;</span> {n.dateLabel}{" "}
-                  <span className="dot">&middot;</span> {n.readMin} min read
+                  {n.dateLabel} <span className="dot">&middot;</span> {n.readMin} min read
                 </span>
               </span>
             </Link>

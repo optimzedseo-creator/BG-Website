@@ -16,7 +16,7 @@ import {
 
 const TITLE = "Insights - Bradley Griffin";
 const DESCRIPTION =
-  "Field notes from twenty years of finding the real problem behind the symptom. Bradley Griffin on reading the raw data before you spend against the wrong fix.";
+  "Field notes from twenty years of finding the real problem behind the symptom. Bradley Griffin on reading the raw data before you spend on the wrong fix.";
 const URL = "https://www.bradleygriffin.us/insights";
 const OG_IMAGE = "https://www.bradleygriffin.us/assets/bradley-griffin-og.jpg";
 
@@ -98,7 +98,8 @@ export default function InsightsIndexPage() {
           </p>
           <p className="ix-thesis">
             {total} field notes <span className="dot">&middot;</span> one running argument{" "}
-            <span className="dot">&middot;</span> start with the data
+            <span className="dot">&middot;</span>{" "}
+            <Link href="/insights/data-analytics">start with the data</Link>
           </p>
         </div>
       </section>

@@ -222,7 +222,7 @@ export const posts: Post[] = [
       `I read that gap for a living. If you want a clear diagnosis of what is actually holding your growth back, and a plan to fix it, [Get in Touch](/contact).`,
     ],
     related:
-      "This piece is one part of [a data and analytics audit that starts at the raw source](/insights/data-analytics). If you want the other half of that picture, read [why your attribution report is fiction](/insights/data-analytics/attribution-is-fiction).",
+      "This piece is one part of [a data and analytics audit that starts at the raw source](/insights/data-analytics). If you want the other half of that picture, read [why your attribution report is fiction](/insights/data-analytics/attribution-is-fiction). And for the argument that ties the series together, see [why the problem shows up in marketing but rarely lives there](/insights/data-analytics/not-a-marketing-problem).",
   },
   {
     slug: "attribution-is-fiction",
@@ -257,7 +257,7 @@ export const posts: Post[] = [
       `If your growth runs hot then cold and your reports can't tell you why, the report is probably the reason. I read the raw data underneath it and tell you what is actually working. If that is the clarity you want before your next budget call, [Get in Touch](/contact).`,
     ],
     related:
-      "This piece is part of [a data and analytics audit of what's actually working](/insights/data-analytics). For the mindset underneath it, read [why a good audit works like a blood test](/insights/data-analytics/audit-is-a-blood-test).",
+      "This piece is part of [a data and analytics audit of what's actually working](/insights/data-analytics). For the mindset underneath it, read [why a good audit works like a blood test](/insights/data-analytics/audit-is-a-blood-test). And for the argument that ties the series together, see [why the problem shows up in marketing but rarely lives there](/insights/data-analytics/not-a-marketing-problem).",
   },
   {
     slug: "agency-can-win-while-you-lose",
@@ -289,7 +289,7 @@ export const posts: Post[] = [
       `If you are tired of buying activity and hoping it turns into growth, [Get in Touch](/contact). I will tell you what is actually wrong first.`,
     ],
     related:
-      "This piece is part of [a data and analytics audit that starts at the raw source](/insights/data-analytics). For the tooling side of the same story, read [why you can't fix what you can't see](/insights/data-analytics/you-cant-fix-what-you-cant-see). For the mindset underneath it, read [why a good audit works like a blood test](/insights/data-analytics/audit-is-a-blood-test) and [why your attribution report is fiction](/insights/data-analytics/attribution-is-fiction).",
+      "This piece is part of [a data and analytics audit that starts at the raw source](/insights/data-analytics). For the tooling side of the same story, read [why you can't fix what you can't see](/insights/data-analytics/you-cant-fix-what-you-cant-see). For the mindset underneath it, read [why a good audit works like a blood test](/insights/data-analytics/audit-is-a-blood-test) and [why your attribution report is fiction](/insights/data-analytics/attribution-is-fiction). And the keystone that ties it all together: [why the problem shows up in marketing but rarely lives there](/insights/data-analytics/not-a-marketing-problem).",
   },
   {
     slug: "you-cant-fix-what-you-cant-see",
@@ -323,7 +323,7 @@ export const posts: Post[] = [
       `If your reports look fine but your growth does not, that gap is the tell. The answer is almost never in the columns you were handed, or inside any one tool's fence. It takes someone who will read the raw data, build the cut nobody built, and line up every source until the real problem has nowhere left to hide. If that is the clarity you want, [Get in Touch](/contact).`,
     ],
     related:
-      "This piece is part of [a data and analytics audit of what's actually working](/insights/data-analytics). For the incentive side of the same story, read [how your agency can win while you lose](/insights/data-analytics/agency-can-win-while-you-lose). For the mindset underneath it, read [why a good audit works like a blood test](/insights/data-analytics/audit-is-a-blood-test) and [why your attribution report is fiction](/insights/data-analytics/attribution-is-fiction).",
+      "This piece is part of [a data and analytics audit of what's actually working](/insights/data-analytics). For the incentive side of the same story, read [how your agency can win while you lose](/insights/data-analytics/agency-can-win-while-you-lose). For the mindset underneath it, read [why a good audit works like a blood test](/insights/data-analytics/audit-is-a-blood-test) and [why your attribution report is fiction](/insights/data-analytics/attribution-is-fiction). And the keystone that ties it all together: [why the problem shows up in marketing but rarely lives there](/insights/data-analytics/not-a-marketing-problem).",
   },
   {
     slug: "not-a-marketing-problem",

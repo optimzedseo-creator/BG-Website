@@ -91,6 +91,17 @@
   margin-top: 22px;
 }
 .page-insights .ix-hero .ix-thesis .dot { margin: 0 8px; color: var(--line-strong); font-style: normal; }
+/* editorial contextual link back to the flagship hub — reads inline, not plumbing */
+.page-insights .ix-hero .ix-thesis a {
+  color: var(--bronze-deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--line-strong);
+  transition: text-decoration-color 0.18s ease, color 0.18s ease;
+}
+.page-insights .ix-hero .ix-thesis a:hover { color: var(--bronze); text-decoration-color: var(--bronze); }
+.page-insights .ix-hero .ix-thesis a:focus-visible { outline: 2px solid var(--bronze); outline-offset: 2px; }
 
 /* ---------- featured "start here" (the keystone post) ---------- */
 .page-insights .ix-featured { padding: 20px 0 8px; }
@@ -110,6 +121,7 @@
   box-shadow: 0 18px 40px -28px rgba(27, 26, 24, 0.45);
   transform: translateY(-3px);
 }
+.page-insights a.ix-feat:focus-visible { outline: 2px solid var(--bronze); outline-offset: 2px; }
 .page-insights .ix-feat-main { display: block; }
 .page-insights .ix-feat-pill {
   display: inline-block;
@@ -219,7 +231,7 @@
   color: var(--cream);
 }
 .page-insights .ix-chip.is-disabled {
-  opacity: 0.5;
+  opacity: 0.6;
   cursor: default;
   color: var(--mute);
 }
@@ -282,6 +294,7 @@
   transition: color 0.2s ease;
 }
 .page-insights a.ix-note:hover .ix-note-title { color: var(--bronze-deep); }
+.page-insights a.ix-note:focus-visible { outline: 2px solid var(--bronze); outline-offset: 2px; }
 .page-insights .ix-note-dek {
   display: block;
   margin-top: 8px;
