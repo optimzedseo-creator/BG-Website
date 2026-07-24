@@ -127,7 +127,7 @@ export default function HomePage() {
         <div className="wrap">
           <div className="arc-head reveal">
             <span className="microlabel">The arc</span>
-            <h2>People hire people. Here is <em>mine,</em> in three chapters.</h2>
+            <h2>The story behind the results, in <em>three chapters.</em></h2>
             <p>Every result on this site traces back to a standard set at Fort Benning. Follow the line from the Regiment to the boardroom, then decide if it belongs on your problem.</p>
           </div>
           <div className="arc-grid">
