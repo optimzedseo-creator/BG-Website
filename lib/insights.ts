@@ -24,6 +24,11 @@ export const PUBLISHED = "2026-07-17T00:00:00-04:00";
 export const MODIFIED = "2026-07-17T00:00:00-04:00";
 export const SITEMAP_LASTMOD = "2026-07-17";
 
+/** "The Difference" release (Articles 1 & 2) — same date/offset convention. */
+export const RELEASE_PUBLISHED = "2026-07-24T00:00:00-04:00";
+export const RELEASE_MODIFIED = "2026-07-24T00:00:00-04:00";
+export const RELEASE_SITEMAP_LASTMOD = "2026-07-24";
+
 export type IconKey = "data" | "marketing" | "ai" | "sales";
 
 export interface Cta {
@@ -248,6 +253,72 @@ export const posts: Post[] = [
     ],
     related:
       "This piece is part of [a data and analytics audit of what's actually working](/insights/data-analytics). For the mindset underneath it, read [why a good audit works like a blood test](/insights/data-analytics/audit-is-a-blood-test).",
+  },
+  {
+    slug: "agency-can-win-while-you-lose",
+    pillarSlug: "data-analytics",
+    order: 3,
+    title: "Your agency can win while you lose",
+    dek:
+      "The retainer pays whether your revenue moves or not. That is not a bug in the agency model. It is the model.",
+    datePublished: RELEASE_PUBLISHED,
+    dateModified: RELEASE_MODIFIED,
+    cta: { label: "Get in Touch", href: "/contact" },
+    body: [
+      `There is a hard truth most agencies will never put in a pitch deck.`,
+      `They can win while you lose.`,
+      `Not because they are evil. Because of how the deal is built. The retainer clears on the first of the month whether your revenue moved or not. The invoice does not know if you grew. That single fact bends everything that happens next.`,
+      `Follow the incentive and you can predict the behavior.`,
+      `If an agency gets paid for activity, it will sell you activity. More posts. More emails. More campaigns. A busier dashboard. All of it real work, none of it promised to change the number that actually matters. You are buying motion and calling it progress.`,
+      `Then come the vanity metrics. Impressions. Reach. Engagement. Open rates. Numbers that always go up and to the right, because they are chosen to. They make the monthly report look like a win. They rarely touch revenue. A metric that cannot go down is not a measurement. It is a comfort blanket.`,
+      `And when results do not come, no one is on the hook. This is the quiet genius of the agency model. An agency is faceless, and faceless is blameless. You do not know who touched your account. You cannot point to the person who made the call. When it underperforms, the work gets "optimized," a new junior name shows up on the email chain, and the retainer renews. Accountability has nowhere to land.`,
+      `It gets worse under the surface. The person who sold you is not the person doing the work. The work is often handed down, then handed out, to a white-label shop or an offshore team you were never told about. You are paying senior rates for whoever is cheapest that week. You will never meet them. You were never supposed to.`,
+      `I want to be fair here, because this is a structural problem, not a character one. There are good people inside agencies doing honest work. But good people inside a broken incentive still answer to the incentive. The model rewards billable activity and punishes nobody for missing results. Put anyone in that system long enough and the system wins.`,
+      `So here is what I built instead. One name. Mine.`,
+      `I am the direct point of contact, one hundred percent of the time. Nothing is farmed out to a shop you cannot see. When the work moves your number, that is on me. When it does not, that is on me too. You always know exactly who is accountable, because there is only one person it could be.`,
+      `And I start where agencies never do. Before the building, the diagnosis. I confirm the real problem first, so you stop paying to fix the one you only think you have. Most companies are sure they have a marketing problem. Often they have a conversion problem, or a pricing problem, or a follow-up problem nobody owns. Spend against the wrong diagnosis and the money is gone before the work even starts.`,
+      `I saw it at Vertex. Inbound calls were up 490 percent. Marketing looked like the winner. The raw data said the real leak was after the call connected. Only 16 percent booked. Fix the diagnosis, not the symptom, and booking went to 59 percent. Same calls. Far more business. No amount of extra activity would have found that.`,
+      `Then everything ties to a target you can check. Concrete steps. SMART goals. Follow-up audits that prove the number moved, or prove it did not. If it did not, we see it early and we adjust. That is the opposite of a metric picked to always look good.`,
+      `That is the whole difference. An agency sells you effort and stays out of the blast radius. I find what is actually wrong, put my name on the fix, and let the results grade the work.`,
+      `My mission is simple. To keep companies from paying firms that win even when their clients lose.`,
+      `If you are tired of buying activity and hoping it turns into growth, [Get in Touch](/contact). I will tell you what is actually wrong first.`,
+    ],
+    related:
+      "This piece is part of [a data and analytics audit that starts at the raw source](/insights/data-analytics). For the tooling side of the same story, read [why you can't fix what you can't see](/insights/data-analytics/you-cant-fix-what-you-cant-see). For the mindset underneath it, read [why a good audit works like a blood test](/insights/data-analytics/audit-is-a-blood-test) and [why your attribution report is fiction](/insights/data-analytics/attribution-is-fiction).",
+  },
+  {
+    slug: "you-cant-fix-what-you-cant-see",
+    pillarSlug: "data-analytics",
+    order: 4,
+    title: "You can't fix what you can't see",
+    dek:
+      "Most agency reports miss the real problem for two reasons. The incumbent has no reason to surface it, and the tooling can't build the cut that would. Here's the difference, and how I read past both.",
+    datePublished: RELEASE_PUBLISHED,
+    dateModified: RELEASE_MODIFIED,
+    cta: { label: "Get in Touch", href: "/contact" },
+    body: [
+      `Every agency reports. Almost none of them report on the thing that is actually wrong.`,
+      `That sounds like an accusation. It is really two separate problems wearing the same coat. One is about incentive. One is about tooling. They land in the same place: the number that would tell you the truth never makes it onto the page.`,
+      `Start with the one nobody says out loud.`,
+      `If an agency is the incumbent, and the report shows a real performance gap, that report is a confession. It says either we cannot see the problem or we cannot solve it. So the gap quietly does not get surfaced. Not always on purpose. But the incentive only points one way, and it does not point at the truth. The people paid to fix the problem are the same people writing the report card on the problem. You already know how that grades.`,
+      `That is the won't.`,
+      `The can't is quieter, and in a way more honest.`,
+      `Most reporting tools can only show you the dimensions they came with. Sessions. Source. Device. Landing page. The columns are pre-built, and you are free to slice the columns you were handed. What you cannot do is ask a question the tool was never built to answer. The tool is not hiding anything. It just does not have the column.`,
+      `So a gap opens up on its own. Not from bad faith. From a hard limit on what the software can see. And you cannot fix what you cannot see.`,
+      `Here is where my work is different, and it is worth showing you the actual move instead of just claiming it.`,
+      `I do not start with the dashboard. I start with the raw data, before anyone rolled it into a report. I clean it until it is usable. Then I do the part the dashboard cannot. I build new columns.`,
+      `The raw data has whatever it has. But sitting inside it are dimensions nobody labeled. So I engineer them. I take the search terms and tag each one brand or non-brand, because someone typing your name and someone who has never heard of you are two completely different businesses, and the standard report files them under the same word: organic. I take the same rows and split locational searches from business-unit searches, because "plumber near me" and "commercial pipe lining" are not the same customer, even though the tool counts them in one bucket.`,
+      `Those columns do not exist in the source. I create them from it.`,
+      `And once they exist, I can cut the data in ways a pre-built report has no dimension for. Brand versus non-brand. Location versus line of business. The cross-sections that tell you which part of your growth is real demand and which part is just people who already knew your name. That is not a setting I turned on. It is analysis, and it lives in columns nobody built until I built them.`,
+      `That is depth inside one source. Here is the part that no single tool can do at all.`,
+      `Every system is boxed into its own data. Analytics sees the website. The CRM sees the leads. The ad platform sees the spend. Call tracking sees the calls. Each one is honest about its own little yard, and blind to everything on the other side of the fence. That is why one dashboard can never tell you the whole truth. It was never allowed to look past its own fence.`,
+      `So I audit each system on its own, then I bring the results together into one master roll-up. I map the metrics from every source into a single view and read the ecosystem through several lenses at once. No one tool could build this, because no one tool can see across the others.`,
+      `And that is where the real proof shows up. When a problem is true, it does not appear in one system. It shows up in all of them. The website data says one thing, the CRM says the same thing, the call data agrees. Now it is not a hunch from a single report. It is confirmed from three directions. That is the difference between guessing and knowing.`,
+      `That is the whole moat, and it is not magic. Depth inside each source, from columns I build that the tool never shipped. Breadth across every source, from a roll-up no single tool can produce. One tells you what is really happening in a system. The other confirms it across all of them. Together they answer the question your business is actually asking, which is usually the one your last three reports skipped.`,
+      `If your reports look fine but your growth does not, that gap is the tell. The answer is almost never in the columns you were handed, or inside any one tool's fence. It takes someone who will read the raw data, build the cut nobody built, and line up every source until the real problem has nowhere left to hide. If that is the clarity you want, [Get in Touch](/contact).`,
+    ],
+    related:
+      "This piece is part of [a data and analytics audit of what's actually working](/insights/data-analytics). For the incentive side of the same story, read [how your agency can win while you lose](/insights/data-analytics/agency-can-win-while-you-lose). For the mindset underneath it, read [why a good audit works like a blood test](/insights/data-analytics/audit-is-a-blood-test) and [why your attribution report is fiction](/insights/data-analytics/attribution-is-fiction).",
   },
 ];
 

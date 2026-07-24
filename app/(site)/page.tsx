@@ -345,6 +345,43 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ======= THE DIFFERENCE — method -> the difference (agency vs one accountable name) =======
+          Placement per build spec: after the Method band, before the Cinema quote.
+          C1 section pattern (microlabel + h2 with one gold-italic <em> + intro +
+          4-card grid). Cards are non-clickable (no false-affordance lift, per the
+          method-card precedent). Opaque `--cream` bg keeps the depth-stack invariant
+          and alternates cleanly between methodband (cream-deep) and cinema (navy). */}
+      <section className="difference" id="difference">
+        <div className="wrap">
+          <div className="reveal">
+            <span className="microlabel">The difference</span>
+            <h2>Agencies sell you execution. <em>I find what&rsquo;s actually wrong first.</em></h2>
+            <p className="diff-sub">An agency is faceless, so it is never on the hook for results. I am one name, and I start with the diagnosis instead of the invoice.</p>
+          </div>
+          <div className="diff-grid reveal">
+            <div className="diff-card">
+              <h3>Diagnosis is the product</h3>
+              <p>I find and confirm the real problem before anyone spends a dollar fixing it. Implementation is optional scope. The diagnosis is the point, so you stop paying to fix a problem you only think you have.</p>
+            </div>
+            <div className="diff-card">
+              <h3>Precision, then a measurable path</h3>
+              <p>I confirm the problem, diagnose it with a laser, and hand you concrete steps toward predictable improvement. Everything ties to SMART goals and gets checked by follow-up audits that prove the number moved.</p>
+            </div>
+            <div className="diff-card">
+              <h3>You are the #1 stakeholder</h3>
+              <p>White-glove from day one. Constant communication, a real voice in every decision, and a solution built to fit you, not pulled off a shelf. You always know where things stand.</p>
+            </div>
+            <div className="diff-card">
+              <h3>One name, fully accountable</h3>
+              <p>You get me, face to face, one hundred percent of the time. No offshore hand-off, no white-label shop, no junior you never met. An agency is faceless and therefore blameless. I put my name on the outcome.</p>
+            </div>
+          </div>
+          <div className="diff-more reveal">
+            <a className="lt-link" href="/contact"><span className="lt">Bring me the problem</span> <span className="arr">&rarr;</span></a>
+          </div>
+        </div>
+      </section>
+
       {/* ======= CINEMA QUOTE — emotional peak; story-first, no contact CTA here ======= */}
       <CinemaQuote
         kicker="From the story"

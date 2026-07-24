@@ -544,6 +544,30 @@
 .c1 .method h3 { font-size: 17.5px; margin-bottom: 6px; }
 .c1 .method p { font-size: 13.5px; color: var(--ink-soft); }
 
+/* ---------- HOME: the difference (agency vs one accountable name) ----------
+   Opaque --cream bg keeps the depth-stack invariant and alternates between the
+   methodband (cream-deep) above and the cinema (navy) below. Dedicated class,
+   so it needs no override of `.c1 .section`. Cards are non-clickable (no lift,
+   matching the method-card false-affordance ruling). */
+.c1 .difference { background: var(--cream); padding: 100px 0; }
+.c1 .difference h2 { font-size: var(--fs-h2-band); max-width: 22ch; }
+.c1 .difference .diff-sub { color: var(--ink-soft); margin-top: 14px; max-width: 52ch; }
+.c1 .diff-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-top: 34px;
+}
+.c1 .diff-card {
+  background: #fff;
+  border: 1px solid var(--hair);
+  border-radius: var(--r);
+  padding: 24px;
+}
+.c1 .diff-card h3 { font-size: 18px; margin-bottom: 8px; }
+.c1 .diff-card p { font-size: 14px; color: var(--ink-soft); }
+.c1 .diff-more { margin-top: 34px; }
+
 /* ---------- cinema quote (§2.8) ---------- */
 .c1 .cinema {
   position: relative;
@@ -746,6 +770,7 @@
   .c1 .book-grid { gap: 46px; }
   .c1 .mini-offers { grid-template-columns: repeat(2, 1fr); }
   .c1 .method { grid-template-columns: repeat(2, 1fr); }
+  .c1 .diff-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 860px) {
   .c1 .arc-grid { grid-template-columns: 1fr; max-width: 480px; }
@@ -786,6 +811,8 @@
   .c1 .jump-row { gap: 14px; }
   .c1 .mini-offers { grid-template-columns: 1fr; }
   .c1 .method { grid-template-columns: 1fr; }
+  .c1 .difference { padding: 70px 0; }
+  .c1 .diff-grid { grid-template-columns: 1fr; }
 }
 
 /* ============================================================
