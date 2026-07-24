@@ -84,9 +84,9 @@ export default function HomePage() {
             <span className="he-name">Bradley Griffin</span>
             <span className="he-tag">Fractional CMO</span>
           </p>
-          <h1>Most growth problems aren&rsquo;t <em>marketing problems.</em></h1>
+          <h1>Growth stalls for a reason. <em>I find it.</em></h1>
           <p className="lede">
-            Fractional CMO, advisor, and operator. I find what&rsquo;s actually broken and move the number.
+            Marketing, the offer, positioning, business fundamentals. The cause can live anywhere. I find the right one and move on it.
           </p>
           <p className="hero-avail">
             <span className="av-dot" aria-hidden="true"></span>
