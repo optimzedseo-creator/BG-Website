@@ -282,7 +282,8 @@ export default function HomePage() {
         <div className="wrap">
           <div className="reveal">
             <span className="microlabel">The method</span>
-            <h2>The same four steps, <em>every time.</em></h2>
+            <h2>Every engagement is different. <em>This part isn&rsquo;t.</em></h2>
+            <p className="method-sub">Some of what I do stays with me. These four never move.</p>
           </div>
           <ol className="method reveal">
             <li>
