@@ -79,6 +79,11 @@ export interface Post {
    * anchors only.
    */
   related: string;
+  /**
+   * The single keystone/"start here" post surfaced as the /insights hero.
+   * Exactly one post carries this; getFeaturedPost() falls back to newest.
+   */
+  featured?: boolean;
 }
 
 /* ============================================================
@@ -347,6 +352,7 @@ export const posts: Post[] = [
     ],
     related:
       "This piece is the spine of [a data and analytics audit that starts at the raw source](/insights/data-analytics). For how I read that raw data, see [why your audit is a blood test](/insights/data-analytics/audit-is-a-blood-test); for what it exposes about your channels, [why your attribution report is fiction](/insights/data-analytics/attribution-is-fiction).",
+    featured: true,
   },
 ];
 
@@ -391,6 +397,37 @@ export function postUrl(pillarSlug: string, postSlug: string): string {
 /** The three OTHER pillars, for the lateral row. */
 export function lateralPillars(currentSlug: string): Pillar[] {
   return getPillars().filter((p) => p.slug !== currentSlug);
+}
+
+/**
+ * Real read-time in minutes from the post's own word count (title + body),
+ * at ~200 wpm, floored to 1. Never a hardcoded/fake number.
+ */
+export function readingTimeMinutes(post: Post): number {
+  const words = [post.title, ...post.body]
+    .join(" ")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean).length;
+  return Math.max(1, Math.round(words / 200));
+}
+
+/** All posts newest-first: date desc, then order desc as a same-date tiebreak. */
+export function getPostsNewestFirst(): Post[] {
+  return [...posts].sort(
+    (a, b) =>
+      b.datePublished.localeCompare(a.datePublished) || b.order - a.order,
+  );
+}
+
+/** The single keystone "start here" post; falls back to newest by date. */
+export function getFeaturedPost(): Post | undefined {
+  return posts.find((p) => p.featured) ?? getPostsNewestFirst()[0];
+}
+
+/** Pillars that currently have at least one published post (for filter chips). */
+export function populatedPillars(): Pillar[] {
+  return getPillars().filter((p) => getPosts(p.slug).length > 0);
 }
 
 /* ============================================================
