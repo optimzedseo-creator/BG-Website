@@ -34,7 +34,7 @@ const consultingJsonLd =
  * QUIET C1 (P2). Copy verbatim minus the em-dash sweep (C1-CONTENT-MAP §2).
  * ONE trust-peak CTA sits directly after "The difference" section (the
  * page's strongest earned moment, "I've run it" - §1.4), routed to
- * /contact?type=consulting. The proof-band "1,000%" / "10+ industries"
+ * /contact?type=consulting. The proof-band "1,000%" / "15+ industries"
  * stat tiles are CARRIED live claims on Brad's 9-item confirm/kill (§6,
  * item 5): preserved verbatim, not spread to any new surface. Hero/finale
  * pairs and every ?type= link preserved exactly.
@@ -117,7 +117,7 @@ export default function ConsultingPage() {
           <div className="proof-grid">
             <div className="pstat reveal"><div className="num">1,000%</div><div className="lbl">YoY lead growth on automation, Roofing GR</div></div>
             <div className="pstat reveal"><div className="num">+269%</div><div className="lbl">Booking rate, 16% &rarr; 59%, Vertex</div></div>
-            <div className="pstat reveal"><div className="num">10+</div><div className="lbl">Industry verticals served, Optimized</div></div>
+            <div className="pstat reveal"><div className="num">15+</div><div className="lbl">Industry verticals served, Optimized</div></div>
             <div className="pstat reveal"><div className="num">2</div><div className="lbl">Companies built on these systems, and sold</div></div>
           </div>
         </div>

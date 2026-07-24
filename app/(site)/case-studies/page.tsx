@@ -331,7 +331,7 @@ export default function CaseStudiesPage() {
               <ul>
                 <li><strong>23 employees</strong> across seven satellite offices spanning the continental U.S.</li>
                 <li><strong>$5M in annual revenue</strong>, built without outside capital.</li>
-                <li><strong>A client roster spanning 10+ industries</strong>, with Fortune 500 names among them, medical and private practice, SaaS, manufacturing, aerospace, automotive, e-commerce, food &amp; beverage, travel &amp; hospitality, legal, and real estate &amp; brokerages.</li>
+                <li><strong>A client roster spanning 15+ industries</strong>, with Fortune 500 names among them, medical and private practice, SaaS, manufacturing, aerospace, automotive, e-commerce, food &amp; beverage, travel &amp; hospitality, legal, and real estate &amp; brokerages.</li>
                 <li><strong>A successful exit</strong>, acquired by an equity firm expanding its US book of business. The breadth and caliber of the client roster were core drivers of the deal.</li>
               </ul>
             </div>
@@ -342,7 +342,7 @@ export default function CaseStudiesPage() {
               <div className="rcell"><div className="num">23</div><div className="lbl">Employees at peak</div></div>
               <div className="rcell"><div className="num">$5M</div><div className="lbl">Annual revenue</div></div>
               <div className="rcell"><div className="num">7</div><div className="lbl">Satellite offices, continental U.S.</div></div>
-              <div className="rcell"><div className="num">10<em>+</em></div><div className="lbl">Industries served</div></div>
+              <div className="rcell"><div className="num">15<em>+</em></div><div className="lbl">Industries served</div></div>
               <div className="rcell"><div className="num">Sold</div><div className="lbl">Acquired by an equity firm</div></div>
             </div>
             <p className="cs-pull">I&rsquo;ve held every role I now hire for. And the best proof of the work is what clients did next: Clint Hoppes came to Optimized as a customer, and later chose me as his business partner at Roofing GR.</p>
