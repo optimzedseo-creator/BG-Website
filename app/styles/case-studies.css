@@ -205,6 +205,11 @@
 .c1-cs .rev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .c1-cs .rev-card { background: #fff; border: 1px solid var(--hair); border-radius: var(--r); padding: 24px 22px; display: flex; flex-direction: column; }
 .c1-cs .rev-card p { font-size: 15px; line-height: 1.65; color: var(--ink-soft); flex: 1; margin: 0 0 14px; }
+/* cs-dark: review card on navy (Roofing GR now dark) — match the doc-exhibit/rcell idiom */
+.c1-cs .cs-dark .rev-score { color: var(--paper-on-dark); }
+.c1-cs .cs-dark .rev-count { color: var(--muted-on-dark); }
+.c1-cs .cs-dark .rev-stars { color: var(--gold-bright); }
+.c1-cs .cs-dark .rev-card { border-color: var(--line-dark); }
 .c1-cs .rev-who { font-size: 12.5px; font-weight: 600; letter-spacing: 0.04em; color: var(--gold-deep); }
 
 /* ---------- finale hairline against the preceding dark case ---------- */

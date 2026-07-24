@@ -43,7 +43,7 @@ export default function CaseStudiesPage() {
           <span className="microlabel">The record</span>
           <h1>A few companies, and what actually <em>changed.</em></h1>
           <p className="lede">
-            Seven engagements, documented the way a diligence team would want them: the situation as I found it,
+            Eight case files, documented the way a diligence team would want them: the situation as I found it,
             the system I built, and what it returned. <strong>Every company is named. Every claim is dated.</strong>
             Where the receipts exist as screenshots, they&rsquo;re attached as exhibits.
           </p>
@@ -78,22 +78,29 @@ export default function CaseStudiesPage() {
                 <span className="c">Optimized · 2011–2018</span>
                 <span className="a">&darr;</span>
               </a>
-              <a className="ix-row" href="#roofinggr">
+              <a className="ix-row" href="#optimized-seo">
                 <span className="n">05</span>
+                <span className="m">100 at #1</span>
+                <span className="t">Beating the agencies at their own keywords</span>
+                <span className="c">Optimized · 2011–2018</span>
+                <span className="a">&darr;</span>
+              </a>
+              <a className="ix-row" href="#roofinggr">
+                <span className="n">06</span>
                 <span className="m">+1,000%</span>
                 <span className="t">One thousand percent</span>
                 <span className="c">Roofing GR · 2021–2024</span>
                 <span className="a">&darr;</span>
               </a>
               <a className="ix-row" href="#wensco">
-                <span className="n">06</span>
+                <span className="n">07</span>
                 <span className="m">+30%</span>
                 <span className="t">The record quarter</span>
                 <span className="c">Wensco Sign Supply · 2019–2021</span>
                 <span className="a">&darr;</span>
               </a>
               <a className="ix-row" href="#griffin-opus">
-                <span className="n">07</span>
+                <span className="n">08</span>
                 <span className="m">Built</span>
                 <span className="t">Software I built, running a real business</span>
                 <span className="c">Griffin Opus · 2026–Present</span>
@@ -343,11 +350,11 @@ export default function CaseStudiesPage() {
         </div>
       </section>
 
-      {/* ======= CASE, OPTIMIZED SEO (companion proof to case 04) ======= */}
+      {/* ======= CASE 05, OPTIMIZED SEO (companion proof to case 04) ======= */}
       <section className="section cs" id="optimized-seo">
         <div className="wrap">
           <div className="reveal">
-            <p className="microlabel cs-eyebrow">Case file · Optimized</p>
+            <p className="microlabel cs-eyebrow">05, Case file · Optimized</p>
             <div className="cs-headrow">
               <div className="cs-metric">100 at #1</div>
               <div>
@@ -458,11 +465,11 @@ export default function CaseStudiesPage() {
         </div>
       </section>
 
-      {/* ======= CASE 05, ROOFING GR ======= */}
-      <section className="section cs" id="roofinggr">
+      {/* ======= CASE 06, ROOFING GR (dark) ======= */}
+      <section className="section cs cs-dark" id="roofinggr">
         <div className="wrap">
           <div className="reveal">
-            <p className="microlabel cs-eyebrow">05, Case file · Roofing GR</p>
+            <p className="microlabel cs-eyebrow">06, Case file · Roofing GR</p>
             <div className="cs-headrow">
               <div className="cs-metric">+1,000%</div>
               <div>
@@ -562,11 +569,11 @@ export default function CaseStudiesPage() {
         </div>
       </section>
 
-      {/* ======= CASE 06, WENSCO (dark) ======= */}
-      <section className="section cs cs-dark" id="wensco">
+      {/* ======= CASE 07, WENSCO ======= */}
+      <section className="section cs" id="wensco">
         <div className="wrap">
           <div className="reveal">
-            <p className="microlabel cs-eyebrow">06, Case file · Wensco Sign Supply</p>
+            <p className="microlabel cs-eyebrow">07, Case file · Wensco Sign Supply</p>
             <div className="cs-headrow">
               <div className="cs-metric">+30%</div>
               <div>
@@ -636,11 +643,11 @@ export default function CaseStudiesPage() {
         </div>
       </section>
 
-      {/* ======= CASE 07, GRIFFIN OPUS ======= */}
-      <section className="section cs" id="griffin-opus">
+      {/* ======= CASE 08, GRIFFIN OPUS (dark) ======= */}
+      <section className="section cs cs-dark" id="griffin-opus">
         <div className="wrap">
           <div className="reveal">
-            <p className="microlabel cs-eyebrow">07, Case file · Griffin Opus</p>
+            <p className="microlabel cs-eyebrow">08, Case file · Griffin Opus</p>
             <div className="cs-headrow">
               <div className="cs-metric">Built</div>
               <div>
