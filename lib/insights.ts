@@ -320,6 +320,34 @@ export const posts: Post[] = [
     related:
       "This piece is part of [a data and analytics audit of what's actually working](/insights/data-analytics). For the incentive side of the same story, read [how your agency can win while you lose](/insights/data-analytics/agency-can-win-while-you-lose). For the mindset underneath it, read [why a good audit works like a blood test](/insights/data-analytics/audit-is-a-blood-test) and [why your attribution report is fiction](/insights/data-analytics/attribution-is-fiction).",
   },
+  {
+    slug: "not-a-marketing-problem",
+    pillarSlug: "data-analytics",
+    order: 5,
+    title: "The problem shows up in marketing. It doesn't always live there.",
+    dek:
+      "Your marketing data is where the problem shows up, rarely where it lives, and tracing the symptom back to its real cause is the whole job.",
+    datePublished: RELEASE_PUBLISHED,
+    dateModified: RELEASE_MODIFIED,
+    cta: { label: "Get in Touch", href: "/contact" },
+    body: [
+      `When growth stalls, the numbers that look worst are almost always marketing numbers. Leads are down. Cost per lead is up. The funnel is leaking. So that is where everyone looks.`,
+      `Sometimes they are right. The problem really is in marketing, and I fix it. The offer is soft. The targeting is lazy. The funnel drops people it should keep. That is my lane, and I know how to close those gaps.`,
+      `Just as often, the marketing data is lying about where the problem lives. Not on purpose. Marketing is just the first place a problem shows up. A weak sales handoff, a call center that misses, a pricing mistake, a follow-up nobody owns. All of it lands in the marketing numbers first. The dashboard says marketing. The cause is three rooms away.`,
+      `The marketing data is smoke. Sometimes the fire is in marketing. Sometimes it is somewhere else entirely. My job is to find the fire, not to hose down the smoke.`,
+      `Two companies can walk in with the exact same symptom, leads down and cost per lead up, and have two completely different problems. One needs a better offer. The other needs to fix what happens after the lead comes in. Same dashboard, opposite fixes. Guess wrong and you spend a year and a budget on the wrong room.`,
+      `Here is why reading that difference is rare. Ask an agency what is wrong and the answer is always the same: buy more marketing. More ads, more channels, more retainer. Not because they are dishonest. Because that is what they sell. When the only thing you sell is marketing, every problem looks like a marketing problem.`,
+      `My incentive runs the other way. I do not win by selling you more spend. I win by finding the real problem, wherever it is. So when the cause is not in marketing, I have every reason to say so. That is the whole value.`,
+      `The cost of getting this wrong is brutal, and I have watched it happen. Growth slips. The numbers look like marketing. So leadership blames the marketer, then fires the marketer, then hires a new one to fix a problem that was never in marketing. Nothing changes, because nothing was actually wrong with the marketing. The door keeps spinning, and the real problem sits there untouched.`,
+      `I saw the clean version of this at Vertex. On the surface it was a marketing win. We drove inbound calls up 490 percent. If you stopped at the marketing dashboard, you would have called it a success and moved on.`,
+      `I did not stop there. I traced the calls past the point where marketing hands off. Only 16 percent of them turned into a booked job. The phone was ringing. The business was leaking at the step right after it rang. That is not a marketing problem. It is a booking problem, hiding inside a marketing number that looked great.`,
+      `So I built the fix where the fire actually was. Automated booking that routed each lead straight to the sales team, with no manual CRM entry. Booking went from 16 percent to 59 percent, on the same calls. No new traffic. We just stopped the bleeding one room over from where everyone was looking.`,
+      `My book is called "It's Not a Marketing Problem." That is the provocative version, and it is true more often than most companies want to admit. The honest version is sharper: the problem shows up in your marketing data, and the data will not tell you where it actually lives. Sometimes it is marketing. Sometimes it is not. Reading the difference is the job.`,
+      `If your marketing numbers look wrong and no one can tell you why, that gap is the tell. [Get in Touch](/contact) and I will trace it to the real problem, wherever it turns out to live.`,
+    ],
+    related:
+      "This piece is the spine of [a data and analytics audit that starts at the raw source](/insights/data-analytics). For how I read that raw data, see [why your audit is a blood test](/insights/data-analytics/audit-is-a-blood-test); for what it exposes about your channels, [why your attribution report is fiction](/insights/data-analytics/attribution-is-fiction).",
+  },
 ];
 
 /* ============================================================

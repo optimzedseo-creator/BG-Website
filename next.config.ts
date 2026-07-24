@@ -46,8 +46,10 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        // 1:1 successor now exists (the keystone "not a marketing problem"
+        // post). Re-pointed from the hub to the post (bradley-seo, 2026-07-24).
         source: "/writing/its-not-a-marketing-problem",
-        destination: "/insights/data-analytics",
+        destination: "/insights/data-analytics/not-a-marketing-problem",
         permanent: true,
       },
       {
