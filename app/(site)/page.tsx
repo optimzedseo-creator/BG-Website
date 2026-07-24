@@ -5,7 +5,7 @@ import CinemaQuote from "@/components/CinemaQuote";
 
 const TITLE = "Bradley Griffin - Fractional CMO, Advisor & Growth Operator";
 const DESCRIPTION =
-  "Most growth problems aren't marketing problems. Bradley Griffin is a fractional CMO and advisor who finds what's actually broken and builds growth that holds.";
+  "Growth stalls for a reason. Bradley Griffin is a fractional CMO and advisor who finds the real cause, wherever it lives, and moves on it.";
 const URL = "https://www.bradleygriffin.us/";
 const OG_IMAGE = "https://www.bradleygriffin.us/assets/bradley-griffin-og.jpg";
 
@@ -17,17 +17,19 @@ const OG_IMAGE = "https://www.bradleygriffin.us/assets/bradley-griffin-og.jpg";
  * to this metadata object — you'd get duplicates.
  *
  * D1 SUPERSEDED (2026-07-23, Brad's locked decision): the home SCREEN ONE
- * now leads with the buyer's PROBLEM, not the identity line. H1 is the locked
- * verbatim "Most growth problems aren't marketing problems."; "Soldier.
- * Operator. Builder." demotes to the subordinate eyebrow tag. Title +
- * description + og/twitter re-synced to the new problem-first, fractional-lead
- * positioning for snippet-to-page coherence (name anchor kept; liftable
- * identity sentence added, closing the AIO answerability gap; NO metric claims,
+ * leads with the buyer's PROBLEM, not the identity line. H1 is the locked
+ * verbatim "Growth stalls for a reason. I find it." (diagnosis-led: he finds
+ * the real growth blocker wherever it lives, be it the offer, positioning,
+ * business fundamentals, or marketing). "Soldier. Operator. Builder." demotes
+ * to the subordinate eyebrow tag. Title stays role-based; description +
+ * og/twitter re-synced to the diagnosis hook for snippet-to-page coherence
+ * (name anchor kept; the liftable "Bradley Griffin is a fractional CMO and
+ * advisor" identity sentence kept as the AIO answer line; NO metric claims,
  * matching the metric-free hero). JSON-LD deliberately kept BYTE-IDENTICAL:
  * it has zero H1 coupling, every Person claim (CMO/growth-exec, two exits,
  * NASDAQ, Ranger, knowsAbout incl. Fractional CMO Leadership) still appears in
- * the visible copy below, and re-titling jobTitle to "Fractional CMO" is a
- * positioning/claim call that needs factcheck + Brad — flagged, not made here.
+ * the visible copy below, and jobTitle already leads "Fractional CMO", so the
+ * diagnosis reframe needs no schema change.
  */
 export const metadata: Metadata = {
   title: TITLE,
@@ -75,7 +77,7 @@ export default function HomePage() {
           reachable without scrolling (Fractional primary). The identity line
           "Soldier. Operator. Builder." demotes to the subordinate eyebrow tag;
           the Storyteller arc + proof band stay below as the trust-closer.
-          H1 is LOCKED verbatim (book-title framing) — do not reword. */}
+          H1 is LOCKED verbatim (diagnosis-led) — do not reword. */}
       <section className="hero" id="top">
         <div className="hero-plate" data-px="plate" aria-hidden="true"></div>
         <div className="hero-veil" data-px="veil" aria-hidden="true"></div>
@@ -84,9 +86,9 @@ export default function HomePage() {
             <span className="he-name">Bradley Griffin</span>
             <span className="he-tag">Fractional CMO</span>
           </p>
-          <h1>Most growth problems aren&rsquo;t <em>marketing problems.</em></h1>
+          <h1>Growth stalls for a reason. <em>I find it.</em></h1>
           <p className="lede">
-            Fractional CMO, advisor, and operator. I find what&rsquo;s actually broken and move the number.
+            Marketing, the offer, positioning, business fundamentals. The cause can live anywhere. I find the right one and move on it.
           </p>
           <p className="hero-avail">
             <span className="av-dot" aria-hidden="true"></span>
