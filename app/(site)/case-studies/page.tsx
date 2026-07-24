@@ -380,7 +380,7 @@ export default function CaseStudiesPage() {
                 <li><strong>The proof was the product.</strong> A prospect could search &ldquo;best seo agency,&rdquo; find us at the top, and watch the service working before the first call.</li>
                 <li><strong>Then we did the same for clients,</strong> on the terms that sell their business, not ours.</li>
               </ul>
-              <p style={{ marginTop: "20px" }}>Take a butcher shop and meat market. Not a niche long-tail play. The real commercial head terms, tens of thousands of searches a month behind them. Most started unranked. We took them to the front page, several to the top spot.</p>
+              <p style={{ marginTop: "20px" }}>Take Heywood&rsquo;s Meat, a butcher shop and meat market in Georgia. Not a niche long-tail play. The real commercial head terms, tens of thousands of searches a month behind them. Most started unranked. We took them to the front page, several to the top spot.</p>
             </div>
           </div>
           <div className="cs-results reveal">
@@ -443,7 +443,7 @@ export default function CaseStudiesPage() {
               <div className="doc-exhibit">
                 <p className="pc-label">Exhibit, Client SEO report</p>
                 <div className="de-meta">
-                  <p><span>Client</span>Butcher shop &amp; meat market (name redacted)</p>
+                  <p><span>Client</span>Heywood&rsquo;s Meat, Georgia</p>
                   <p><span>Report</span>Commercial head-term rankings</p>
                 </div>
                 <p className="de-tablehead">Commercial head terms, monthly search volume and ranking result</p>
@@ -458,7 +458,7 @@ export default function CaseStudiesPage() {
                 </table>
                 <p className="de-verdict"><strong>Local-intent terms climbed as much as +89 positions.</strong> Retyped as reported: <span className="tick">+89</span> &lsquo;local butcher,&rsquo; <span className="tick">+77</span> &lsquo;the local butcher shop,&rsquo; <span className="tick">+71</span> &lsquo;local meat market.&rsquo;</p>
               </div>
-              <p className="excap"><span className="tick">Exhibit B</span>, Client ranking gains on commercial head terms, retyped from the original SEO report; client name redacted</p>
+              <p className="excap"><span className="tick">Exhibit B</span>, Client ranking gains on commercial head terms, retyped from the original SEO report for Heywood&rsquo;s Meat</p>
               <p className="exnote">The volumes are the point. These aren&rsquo;t long-tail scraps. They&rsquo;re the words the whole category competes for, taken from nowhere to the front page.</p>
             </div>
           </div>
